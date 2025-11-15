@@ -43,6 +43,40 @@ npm start
 npm run lint
 ```
 
+## Git & Deployment
+
+### Repository
+**GitHub**: https://github.com/msaad7777/Challengers-cc
+**Vercel**: Connected for automatic deployments
+
+### Deployment Workflow
+The project uses Git with automatic Vercel deployments. Any push to the `main` branch will trigger an automatic build and deployment.
+
+**Standard workflow for making changes**:
+```bash
+# 1. Make your code changes
+
+# 2. Stage all changes
+git add .
+
+# 3. Commit with descriptive message
+git commit -m "Description of changes"
+
+# 4. Push to GitHub (triggers automatic Vercel deployment)
+git push
+```
+
+### Manual Deployment (if needed)
+If you need to deploy without pushing to Git:
+```bash
+vercel --prod
+```
+
+### Checking Deployment Status
+- View deployments: https://vercel.com/challengersccs-projects/challengeers-website
+- Each push creates a new deployment
+- Production URL updates automatically after successful build
+
 ## Architecture
 
 ### App Router Structure
