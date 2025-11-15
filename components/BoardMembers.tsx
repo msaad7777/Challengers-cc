@@ -14,7 +14,7 @@ export default function BoardMembers() {
       name: "Gokul Prakash",
       title: "Director",
       role: "Board of Directors",
-      bio: "Hardware and Networking Engineer with a lifelong passion for cricket and community service. Dedicated to growing cricket in Canada while pursuing interests in YouTube blogging and international travel. Volunteered in numerous company events for community betterment over the past 15 years.",
+      bio: "Hardware and Networking Engineer with a lifelong passion for cricket and community service. Dedicated to growing cricket in Canada while pursuing interests in YouTube blogging and international travel. Volunteered in various community-based events for community betterment over the past 15 years.",
       image: "/gokul-final.jpeg",
       initials: "GP"
     },
