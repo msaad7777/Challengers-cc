@@ -304,11 +304,15 @@ The Ontario Trillium Foundation invests in community-based initiatives that help
 - Enhancing existing programs
 - **Ideal for**: Expanding to multiple teams, facility improvements, regional expansion
 
-**3. Capital Grants** ($10,000 - $500,000)
+**3. Capital Grants** ($10,000 - $200,000)
+- **NEXT DEADLINE**: March 4, 2026, at 5:00 p.m. ET
+- **Application Period**: February 4 - March 4, 2026
+- **Term Length**: Maximum 12 months
 - For facility construction, renovation, or purchase
 - Equipment purchases (scoreboards, nets, pitches)
 - Accessibility improvements
 - **Ideal for**: Cricket facility development, equipment, infrastructure
+- **⏰ IMMEDIATE OPPORTUNITY**: Application opens February 4, 2026!
 
 **Funding Priorities**:
 OTF supports projects in three main areas that align perfectly with cricket clubs:
@@ -365,18 +369,27 @@ OTF supports projects in three main areas that align perfectly with cricket club
    - Equipment and facilities
    - Partnerships with schools and clubs
 
-**Capital Grant Ideas ($10K-$500K)**:
-1. **Cricket Facility Development** ($250K)
-   - Permanent practice facility
-   - Turf pitches and nets
-   - Clubhouse improvements
-   - Accessible facilities
+**Capital Grant Ideas ($10K-$200K)**:
+1. **Cricket Facility Improvements** ($200K)
+   - Renovate/retrofit existing practice facility
+   - Install turf pitches and permanent nets
+   - Accessibility upgrades (ramps, washrooms)
+   - Clubhouse repairs and improvements
+   - Outdoor space enhancements
 
-2. **Equipment & Infrastructure** ($75K)
-   - Cricket equipment for all age groups
-   - Bowling machines and training aids
-   - Scoreboards and video analysis
-   - Storage and transportation
+2. **Cricket Equipment & Infrastructure** ($75K)
+   - Fixed equipment: Permanent nets, scoreboards, sight screens
+   - Non-fixed equipment: Bowling machines, training aids, portable nets
+   - Storage facilities for equipment
+   - Safety equipment and protective gear
+   - Video analysis and coaching tools
+
+3. **Multi-Sport Community Facility** ($150K)
+   - Shared facility improvements benefiting cricket and other community sports
+   - Accessible changing rooms and amenities
+   - Outdoor cricket pitch with multi-use surface
+   - Community gathering space
+   - Equipment storage for multiple sports programs
 
 **Application Requirements**:
 
@@ -409,6 +422,391 @@ OTF supports projects in three main areas that align perfectly with cricket club
 - Accessibility considerations
 - Removing barriers to participation
 - Cultural responsiveness
+
+---
+
+## **CAPITAL GRANT - DETAILED REQUIREMENTS** 🏗️
+
+**⚠️ CRITICAL INFORMATION FOR FACILITY & EQUIPMENT PROJECTS**
+
+The Capital Grant stream is specifically designed for organizations that need to update buildings, enhance physical spaces, and purchase equipment. This is **PERFECT** for Challengers CC's facility and equipment needs.
+
+### **Capital Grant Specifics**
+
+**Application Window**:
+- **Opens**: February 4, 2026
+- **Deadline**: March 4, 2026, at 5:00 p.m. ET
+- **⏰ ONE-MONTH APPLICATION WINDOW** - Preparation is critical!
+
+**Grant Amount**:
+- **Minimum**: $10,000
+- **Maximum**: $200,000
+- **Term**: Maximum 12 months (must complete project within 1 year)
+
+**Best Funding Priority Fit**:
+✅ **Foster Physically Active Lifestyles** - Cricket promotes physical activity and healthy living
+
+**Project Objectives** (Choose ONE):
+1. **Maintain or increase access to a program or service**
+   - Example: Renovate facility to serve more cricket players
+
+2. **Extend the life of a facility or space**
+   - Example: Repair aging cricket nets and pitch infrastructure
+
+3. **Improve a facility or space to make it more accessible**
+   - Example: Add wheelchair-accessible pathways to cricket grounds
+
+### **What You Can Fund - Project Activities** (Maximum 3 activities)
+
+**Activity 1: Purchase Equipment** 🛒
+- **Fixed Equipment**: Permanently installed items
+  - Permanent cricket nets and posts
+  - Electronic scoreboards
+  - Sight screens
+  - Boundary fencing
+  - Fixed seating/bleachers
+  - Lighting systems for evening play
+
+- **Non-Fixed Equipment**: Portable items
+  - Bowling machines
+  - Training aids and cones
+  - Portable nets and practice equipment
+  - Cricket balls, bats, protective gear
+  - Storage containers and carts
+  - Video analysis equipment
+  - First aid and safety equipment
+
+**Activity 2: Repair, Renovate and/or Retrofit Facility Structure or Space** 🔨
+- Repair existing clubhouse or facility building
+- Renovate change rooms and washrooms
+- Retrofit for accessibility (ramps, handrails, accessible washrooms)
+- Improve HVAC, plumbing, electrical systems
+- Roof repairs and weatherproofing
+- Interior improvements (flooring, walls, fixtures)
+- Energy efficiency upgrades
+
+**Activity 3: Enhance or Improve Outdoor Structure or Space** 🌳
+- Cricket pitch improvements and maintenance
+- Turf installation or resurfacing
+- Drainage systems
+- Landscaping for safety and aesthetics
+- Outdoor storage sheds
+- Pavilion or covered seating area
+- Pathways and accessible walkways
+- Parking area improvements
+- Outdoor lighting
+
+### **CRITICAL REQUIREMENT: Facility Ownership or Lease** ⚠️
+
+**IF you are working on a facility, you MUST provide ONE of the following**:
+
+**Option A: Proof of Ownership**
+- Current year tax bill with roll number
+- Current year Property Assessment Notice with roll number (from MPAC)
+- Land transfer document
+- Title or deed
+
+**Option B: Lease Agreement**
+- Must have **minimum 5 years remaining** at the application deadline (March 4, 2026)
+- So lease must be valid until **at least March 4, 2031**
+- Lease must clearly show the term/expiry date
+- Must be a formal written agreement
+
+**⚠️ IMPORTANT**: If Challengers CC plans to use City of London facilities or rent from private property:
+- Ensure lease agreement is in place
+- Confirm lease has 5+ years remaining
+- Get lease documentation ready BEFORE application period
+
+### **Budget Requirements**
+
+**Budget Categories** (Up to 5 items per category):
+
+**1. Construction and Renovation Costs**
+- Materials (lumber, concrete, turf, etc.)
+- Contractor costs (labor, installation)
+- Must provide itemized breakdown
+
+**2. Equipment Costs**
+- Fixed equipment (permanent installations)
+- Non-fixed equipment (portable items)
+- Include quantity, unit cost, total cost
+
+**3. Developmental Costs** (Maximum 20% of total budget)
+- Engineering plans and architectural drawings
+- Legal fees related to construction
+- Survey costs
+- Permits and approvals
+- Environmental assessments
+- Consultant fees for project planning
+
+**Budget Example for $150K Cricket Facility Project**:
+
+**Construction & Renovation** ($90,000):
+- Turf cricket pitch installation: $50,000
+- Drainage system: $25,000
+- Boundary fencing: $15,000
+
+**Equipment** ($45,000):
+- Permanent cricket nets (4 lanes): $30,000
+- Electronic scoreboard: $10,000
+- Sight screens (2): $5,000
+
+**Developmental** ($15,000 - 10% of budget):
+- Engineering and site plans: $8,000
+- Legal fees for facility agreement: $4,000
+- Permits and approvals: $3,000
+
+**TOTAL PROJECT**: $150,000 (within $200K max)
+
+### **Quote and Estimate Requirements** 📋
+
+**For ALL goods/services over $5,000**:
+- **Minimum 1 quote required** (OTF prefers 2 or more)
+- Quotes must be from **third-party vendors/suppliers**
+- Quotes must be **dated within 6 months** of application deadline
+- Must include vendor/supplier information
+
+**Multiple purchases from same supplier**:
+- If total exceeds $5,000, must provide quote
+- Example: Buying $3K bats + $2.5K balls from same supplier = $5.5K total = quote required
+
+**Acceptable Quote Documentation**:
+✅ PDF quote from vendor/supplier
+✅ Screenshot of online shopping cart showing:
+  - Date
+  - Vendor name
+  - Items and prices
+  - Total cost
+
+**Examples**:
+- Turf installation quote: $50K → Need 1-2 quotes from turf companies
+- Cricket nets: $30K → Need 1-2 quotes from cricket equipment suppliers
+- Bowling machine: $8K → Need 1-2 quotes from suppliers
+- Cricket balls: $2K → No quote required (under $5K)
+
+### **Eligible Costs** ✅
+
+What OTF **WILL** fund:
+- Construction materials and labor
+- Fixed and non-fixed equipment
+- Installation costs
+- Delivery and shipping
+- Developmental costs (engineering, legal, permits) - max 20%
+- Accessibility improvements
+- Safety equipment
+
+### **Ineligible Costs** ❌
+
+What OTF **WILL NOT** fund:
+- **Taxes eligible for rebates** (GST/HST if you can claim rebate)
+- **Contingency costs** (emergency reserve funds)
+- **Costs incurred BEFORE grant approval** - DO NOT start project early!
+- **General capital fundraising drives**
+- **Program staff salaries** (this is capital, not operational)
+- **Virtual infrastructure** (websites, apps, custom software)
+- **If part of larger project**: Must show OTF components can be completed independently OR that other funding is already secured
+
+⚠️ **CRITICAL**: Do NOT purchase anything or start construction before OTF approves the grant and you sign the grant contract. Costs incurred before approval are NOT eligible!
+
+### **Assessment Criteria - How Applications Are Scored**
+
+**Community Benefit and Relevance (30%)**:
+- Clear fit with "Foster Physically Active Lifestyles" priority
+- Responds to real community need (demonstrate with data/letters)
+- Realistic and achievable benefits
+- Budget is appropriate for anticipated impact
+
+**Project Plan and Feasibility (30%)**:
+- Clear plan with deliverables, tasks, and timelines
+- Project is ready-to-go and can be completed in 12 months
+- High likelihood of success
+- Demonstrates capacity to manage project
+
+**Project Budget (30%)**:
+- Budget is clear and detailed
+- Costs correspond to project plan
+- Costs are appropriate, reasonable, and valid
+- All other funding sources secured or plan to secure them
+
+**Populations Experiencing Barriers (10%)**:
+- Project helps people facing barriers access cricket:
+  - Socio-economic barriers (low-income families)
+  - Geographic barriers (underserved neighborhoods)
+  - Cultural barriers (newcomers, diverse communities)
+  - Gender barriers (women's cricket programs)
+  - Ability barriers (accessible facilities)
+  - Racial barriers (inclusive programming)
+
+### **Common Mistakes to Avoid** ⚠️
+
+**1. Missing or Incorrect Ownership/Lease Documentation**
+❌ Not providing proof of ownership when using owned facility
+❌ Lease has less than 5 years remaining
+❌ Lease doesn't show clear expiry date
+✅ Get proper ownership docs or 5+ year lease BEFORE applying
+
+**2. Missing Quotes for Items Over $5K**
+❌ No quotes provided for $30K cricket nets
+❌ Quotes are undated or too old (over 6 months)
+❌ Quotes don't match budget items
+✅ Get fresh, itemized quotes from 2+ suppliers for all items over $5K
+
+**3. Ineligible Costs in Budget**
+❌ Including HST when eligible for rebate
+❌ Including contingency funds
+❌ Including costs already incurred before approval
+✅ Review eligible vs. ineligible costs carefully
+
+**4. Budget Doesn't Match Project Plan**
+❌ Budget includes items not mentioned in project description
+❌ Timeline doesn't allow for 12-month completion
+❌ Costs seem unreasonable or inflated
+✅ Ensure perfect alignment between plan, budget, and timeline
+
+**5. Not Community-Level Impact**
+❌ Saying project will benefit "all of Ontario" (too broad)
+❌ Not clearly explaining who in London will benefit
+✅ Focus on specific London communities who will access cricket programs
+
+**6. Incomplete Financial Statements**
+❌ Wrong type of financial statements for organization size
+❌ Missing surplus/deficit explanation
+✅ Review financial requirements and use Financial Position Calculator
+
+### **Timeline for Capital Grant Application**
+
+**NOW - January 2026** (Pre-Application Preparation):
+- [ ] Identify facility needs (owned or leased?)
+- [ ] Secure facility access (ownership docs or 5+ year lease)
+- [ ] Create preliminary equipment and renovation list
+- [ ] Research vendors and get preliminary pricing
+- [ ] Identify project budget range ($10K-$200K)
+
+**January 2026** (Documentation Gathering):
+- [ ] Request quotes from 2-3 suppliers for all items over $5K
+- [ ] Ensure quotes are dated and detailed
+- [ ] Gather facility ownership OR lease documents
+- [ ] Confirm all documents meet OTF requirements
+- [ ] Prepare letters of support from community partners
+
+**February 4-28, 2026** (Application Window):
+- [ ] Complete OTF online application
+- [ ] Write project narrative (focus on physical activity, community benefit)
+- [ ] Upload all quotes and estimates
+- [ ] Upload facility ownership/lease documents
+- [ ] Upload financial statements
+- [ ] Review application for completeness
+- [ ] Submit before March 4, 2026 deadline
+
+**March-June 2026** (Review Period):
+- OTF reviews application (4-5 months)
+- May request additional information
+- Be responsive to any OTF inquiries
+- Await funding decision
+
+**July 2026** (If Approved):
+- Receive approval notification
+- Attend mandatory orientation meeting
+- Review and sign grant contract within 60 days
+- Grant becomes active after contract signed
+
+**August 2026 - July 2027** (Project Implementation):
+- Execute project within 12-month term
+- Purchase equipment and complete renovations
+- Submit required progress reports
+- Follow OTF grant recognition requirements
+
+**August 2027** (Project Completion):
+- Submit final report
+- Receive grant hold-back funds
+- Grant closes
+
+### **Strategic Approach for Challengers CC**
+
+**BEST CAPITAL GRANT PROJECT IDEAS**:
+
+**Option 1: Cricket Equipment Package** ($75K)
+- Permanent nets installation (4 lanes): $30K
+- Bowling machines (2): $15K
+- Electronic scoreboard: $10K
+- Sight screens (2): $5K
+- Training equipment and safety gear: $10K
+- Storage shed for equipment: $5K
+
+**Why this works**:
+✅ Entirely equipment-focused (easier to execute)
+✅ No facility ownership/lease complications
+✅ Can complete in 12 months
+✅ Clear community benefit (more players can train)
+
+**Option 2: Facility Accessibility & Improvement** ($150K)
+- Turf cricket pitch installation: $60K
+- Accessibility upgrades (ramps, washrooms): $40K
+- Clubhouse repairs and improvements: $30K
+- Equipment storage: $15K
+- Developmental costs (engineering, permits): $5K
+
+**Why this works**:
+✅ Addresses accessibility (scores well in assessment)
+✅ Extends facility life (project objective)
+✅ Benefits entire London cricket community
+✅ Requires secure facility ownership/lease
+
+**Option 3: Combined Equipment & Space Enhancement** ($120K)
+- Outdoor cricket practice area improvements: $50K
+- Permanent cricket nets (4 lanes): $30K
+- Accessible pathways and seating: $20K
+- Electronic scoreboard and sight screens: $15K
+- Developmental costs (site planning): $5K
+
+**Why this works**:
+✅ Balances equipment and space improvements
+✅ Accessibility component scores well
+✅ Realistic 12-month completion
+✅ Clear physical activity benefit
+
+### **Key Success Factors for Capital Grant** 🎯
+
+1. **Secure Facility Access Early**: Get ownership docs or 5+ year lease lined up NOW
+2. **Get Multiple Quotes**: Don't wait until application opens - start vendor research now
+3. **Focus on Physical Activity**: Emphasize how facility/equipment enables more people to play cricket
+4. **Demonstrate Accessibility**: Include accessibility improvements for higher scores
+5. **Community Letters of Support**: Get City of London, Cricket Ontario, community partners to write letters
+6. **Realistic Timeline**: Show you can complete project in 12 months
+7. **Complete Application**: Triple-check all documentation is included and correct
+
+### **Action Items for Challengers CC - Capital Grant**
+
+**URGENT - Before February 4, 2026**:
+- [ ] Decide on primary facility/equipment needs (choose 1-3 project activities)
+- [ ] Confirm facility access (ownership OR secure 5+ year lease agreement)
+- [ ] Gather facility ownership/lease documentation
+- [ ] Create detailed list of equipment and improvements needed
+- [ ] Research vendors and suppliers for equipment
+- [ ] Request 2-3 quotes for all items over $5K (get fresh quotes in Jan 2026)
+- [ ] Create draft budget ($10K-$200K range)
+- [ ] Request letters of support from partners
+- [ ] Review Capital grant eligibility and requirements thoroughly
+
+**CRITICAL - February 4-28, 2026 (Application Window)**:
+- [ ] Complete online OTF application
+- [ ] Select "Foster Physically Active Lifestyles" as funding priority
+- [ ] Select appropriate project objective
+- [ ] Write compelling project narrative (community need, benefits)
+- [ ] Upload all required quotes/estimates
+- [ ] Upload facility ownership OR 5+ year lease agreement
+- [ ] Upload organization financial statements
+- [ ] Upload letters of support
+- [ ] Review Common Mistakes list - ensure compliance
+- [ ] Submit application before March 4, 2026, 5:00 PM ET deadline
+
+**Resources**:
+- Capital Grant Page: https://otf.ca/capital-grant
+- OTF Contact: 1-800-263-2887 or grants@otf.ca
+- Financial Position Calculator: Available on OTF website
+- Quote Template: Request from vendors/suppliers
+
+---
 
 **Application Process**:
 
