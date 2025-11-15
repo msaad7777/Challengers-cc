@@ -30,7 +30,7 @@ export default function BoardMembers() {
       name: "Ankush Arora",
       title: "Director",
       role: "Player Development & Team Morale",
-      bio: "Civil Engineer bringing analytical precision to club operations. A mystery spin bowler with an athletic personality, known for his energetic presence and unwavering support that lifts team spirits on and off the field.",
+      bio: "Engineering Technologist bringing analytical precision to club operations. A mystery spin bowler with an athletic personality, known for his energetic presence and unwavering support that lifts team spirits on and off the field.",
       image: "/Ankush-boardm.jpeg",
       initials: "AA"
     },
