@@ -6,7 +6,7 @@ export default function BoardMembers() {
       name: "Mohammed Saad",
       title: "Director",
       role: "Board of Directors",
-      bio: "Cloud Architect with over 9 years of IT experience and a Science graduate. A nature lover and all-rounder who has played cricket since childhood, committed to advancing cricket excellence in London, Ontario.",
+      bio: "Science graduate with 10 years of cricket leadership experience as director and founding member of multiple cricket clubs across the globe. Established IT foundations and positive club environments while dedicated to community betterment through non-profit work since childhood.",
       image: "/saad-directors-pic.jpeg",
       initials: "MS"
     },
