@@ -7,7 +7,7 @@ export default function BoardMembers() {
       title: "Director",
       role: "Board of Directors",
       bio: "Science graduate with 10 years of cricket leadership experience as director and founding member of multiple cricket clubs across the globe. Established IT foundations and positive club environments while dedicated to community betterment through non-profit work since childhood.",
-      image: "/saad-directors-pic.jpeg",
+      image: "/saad-final.jpeg",
       initials: "MS"
     },
     {
@@ -15,7 +15,7 @@ export default function BoardMembers() {
       title: "Director",
       role: "Board of Directors",
       bio: "Hardware and Networking Engineer with a lifelong passion for cricket and community service. Dedicated to growing cricket in Canada while pursuing interests in YouTube blogging and international travel. Volunteered in numerous company events for community betterment over the past 15 years.",
-      image: "/gokul-directors.jpeg",
+      image: "/gokul-final.jpeg",
       initials: "GP"
     },
     {
