@@ -237,9 +237,9 @@ export default function Registration() {
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all text-white"
                 >
                   <option value="" className="bg-gray-900 text-gray-400">Select jersey type (optional)</option>
-                  <option value="T20" className="bg-gray-900 text-white">T20</option>
-                  <option value="T30" className="bg-gray-900 text-white">T30</option>
-                  <option value="Both" className="bg-gray-900 text-white">Both</option>
+                  <option value="Full Sleeve" className="bg-gray-900 text-white">Full Sleeve</option>
+                  <option value="Half Sleeve" className="bg-gray-900 text-white">Half Sleeve</option>
+                  <option value="Both (1 each)" className="bg-gray-900 text-white">Both (1 each)</option>
                 </select>
               </div>
 
