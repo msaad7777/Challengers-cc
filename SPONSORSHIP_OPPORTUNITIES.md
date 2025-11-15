@@ -269,6 +269,526 @@ Research these organizations as they support KidSport and may sponsor Challenger
 
 ---
 
+### Ontario Trillium Fund (OTF)
+**Administrator**: Ontario Trillium Foundation
+**Website**: https://otf.ca
+**Tagline**: "Building healthy and vibrant communities"
+
+**🌟 MAJOR OPPORTUNITY** - One of Ontario's largest grant programs!
+
+**Overview**:
+The Ontario Trillium Foundation invests in community-based initiatives that help build healthy and vibrant communities throughout Ontario. This is one of the most significant community funding sources available.
+
+**Funding Scale**:
+- **$110+ million** in grants awarded annually
+- Over **1,300 organizations** funded each year
+- Grants range from **$5,000 to $500,000**
+- Multi-year funding available (up to 3 years)
+
+**Eligibility for Challengers CC**:
+✅ **Not-for-profit organizations** incorporated in Ontario
+✅ **Registered Ontario NFP Corporation** (#1746974-8) - WE QUALIFY!
+✅ Organizations with charitable registration (or partnered with one)
+
+**Grant Streams**:
+
+**1. Seed Grants** ($5,000 - $75,000)
+- For organizations testing new ideas
+- Building organizational capacity
+- Pilot programs and community engagement
+- **Ideal for**: Youth cricket programs, community outreach, coaching development
+
+**2. Grow Grants** ($75,000 - $250,000)
+- For proven programs ready to expand
+- Reaching more people or new communities
+- Enhancing existing programs
+- **Ideal for**: Expanding to multiple teams, facility improvements, regional expansion
+
+**3. Capital Grants** ($10,000 - $500,000)
+- For facility construction, renovation, or purchase
+- Equipment purchases (scoreboards, nets, pitches)
+- Accessibility improvements
+- **Ideal for**: Cricket facility development, equipment, infrastructure
+
+**Funding Priorities**:
+OTF supports projects in three main areas that align perfectly with cricket clubs:
+
+**Priority 1: Belong** 🤝
+- Building strong, connected communities
+- Bringing people together across differences
+- Creating welcoming spaces for all
+- **Cricket Fit**: Diverse cricket community, newcomer integration, cultural connections
+
+**Priority 2: Engage** 💪
+- Increasing civic participation and leadership
+- Volunteer development and engagement
+- Youth leadership programs
+- **Cricket Fit**: Coaching certification, volunteer training, youth development programs
+
+**Priority 3: Thrive** 🏆
+- Improving health, wellness, and life skills
+- Building capacity of community organizations
+- Creating economic opportunities
+- **Cricket Fit**: Physical activity programs, mental health through sport, skills development
+
+**What Challengers CC Could Fund Through OTF**:
+
+**Seed Grant Ideas ($5K-$75K)**:
+1. **Youth Cricket Academy Pilot Program** ($40K)
+   - Introduce cricket to 100+ London youth
+   - Partner with schools and community centers
+   - Coaching and equipment
+   - Build foundation for future growth
+
+2. **Newcomer Cricket Integration Program** ($25K)
+   - Cricket as tool for newcomer settlement
+   - Partner with immigration services
+   - Cultural bridge-building through sport
+   - Community belonging and connection
+
+3. **Women's Cricket Development Initiative** ($35K)
+   - Launch women's cricket program
+   - Training and coaching for female players
+   - Break barriers in traditionally male-dominated sport
+   - Build inclusive cricket community
+
+**Grow Grant Ideas ($75K-$250K)**:
+1. **Regional Cricket Expansion Project** ($150K)
+   - Expand from London to surrounding communities
+   - Mobile cricket programs in underserved areas
+   - Coach training and certification
+   - Equipment distribution to partner organizations
+
+2. **Comprehensive Youth-to-Senior Pathway** ($200K)
+   - Full development pathway from age 5 to adult
+   - Coaching at all levels
+   - Equipment and facilities
+   - Partnerships with schools and clubs
+
+**Capital Grant Ideas ($10K-$500K)**:
+1. **Cricket Facility Development** ($250K)
+   - Permanent practice facility
+   - Turf pitches and nets
+   - Clubhouse improvements
+   - Accessible facilities
+
+2. **Equipment & Infrastructure** ($75K)
+   - Cricket equipment for all age groups
+   - Bowling machines and training aids
+   - Scoreboards and video analysis
+   - Storage and transportation
+
+**Application Requirements**:
+
+**1. Project Proposal**:
+- Clear description of what you'll do
+- Who will benefit and how
+- Timeline and milestones
+- Measurable outcomes
+
+**2. Budget**:
+- Detailed project budget
+- Other funding sources
+- In-kind contributions
+- Sustainability plan after grant ends
+
+**3. Organizational Information**:
+- Incorporation documents (NFP certificate)
+- Board of directors information
+- Financial statements
+- Governance policies
+
+**4. Community Support**:
+- Letters of support from partners
+- Community needs assessment
+- Consultation with beneficiaries
+- Demonstrated demand
+
+**5. Equity & Inclusion**:
+- How project serves diverse communities
+- Accessibility considerations
+- Removing barriers to participation
+- Cultural responsiveness
+
+**Application Process**:
+
+**Step 1: Determine Eligibility** (30 minutes)
+- Review eligibility criteria
+- Confirm incorporation status
+- Check if project aligns with OTF priorities
+
+**Step 2: Create OTF Grant Portal Account** (1 hour)
+- Register organization
+- Add board member information
+- Upload incorporation documents
+
+**Step 3: Develop Project Concept** (2-4 weeks)
+- Define project goals and outcomes
+- Engage community and partners
+- Create preliminary budget
+- Gather letters of support
+
+**Step 4: Complete Application** (3-6 weeks)
+- Online application form
+- Project narrative (2,000-3,000 words)
+- Detailed budget
+- Upload supporting documents
+
+**Step 5: Submit Before Deadline**
+- OTF has **rolling deadlines** throughout the year
+- Check website for specific intake dates
+- Applications reviewed within 4-6 months
+
+**Step 6: If Approved**
+- Grant agreement signed
+- Funding released (lump sum or installments)
+- Project implementation
+- Regular reporting requirements
+
+**Application Deadlines**:
+- **Rolling intake** - Applications accepted year-round
+- Check OTF website for current intake schedules
+- Typically 3-4 intake periods per year
+- Results within 4-6 months of submission
+
+**Why OTF is PERFECT for Challengers CC**:
+
+**1. Flexible Funding** 💰
+- $5K to $500K range fits various project sizes
+- Multi-year grants for sustained programs
+- Covers staffing, equipment, facilities, programs
+
+**2. Community Focus** 🏘️
+- Values community connections (cricket brings people together!)
+- Supports newcomer integration (cricket's diverse appeal)
+- Emphasizes belonging and inclusion (our club values)
+
+**3. Sport for Development** 🎯
+- Recognizes sport as community development tool
+- Physical literacy and wellness priorities
+- Youth engagement and leadership
+
+**4. Accessible Application** ✅
+- Online portal is user-friendly
+- Support available throughout process
+- Rolling deadlines provide flexibility
+
+**5. Long-term Impact** 📈
+- Multi-year funding allows program stability
+- Capacity-building focus strengthens organization
+- Sustainability requirements ensure lasting change
+
+**Success Tips**:
+
+✅ **Strong Community Connections**: Partner with schools, settlement agencies, community centers
+✅ **Clear Outcomes**: Define measurable impact (# of participants, skills developed, communities reached)
+✅ **Equity Focus**: Show how project serves underrepresented groups (women, newcomers, youth, low-income)
+✅ **Realistic Budget**: Include all costs, demonstrate financial planning
+✅ **Sustainability Plan**: Show how program continues after grant ends
+✅ **Letters of Support**: Get endorsements from Cricket Ontario, City of London, community partners
+
+**Action Items for Challengers CC**:
+
+**IMMEDIATE** (This Week):
+- [ ] Visit https://otf.ca and explore grant streams
+- [ ] Review current intake deadlines
+- [ ] Create OTF Grant Portal account
+- [ ] Identify which grant stream fits current priorities (Seed/Grow/Capital)
+
+**SHORT-TERM** (This Month):
+- [ ] Define primary project concept (Youth Academy, Newcomer Program, Facility, etc.)
+- [ ] Develop preliminary project budget
+- [ ] Identify community partners (schools, settlement agencies)
+- [ ] Review OTF application guidelines thoroughly
+
+**MEDIUM-TERM** (Next 2-3 Months):
+- [ ] Conduct community needs assessment
+- [ ] Gather letters of support from partners
+- [ ] Complete detailed project proposal
+- [ ] Finalize budget with all revenue sources
+- [ ] Prepare equity and inclusion plan
+
+**APPLICATION READY** (Before Deadline):
+- [ ] Complete online application via OTF portal
+- [ ] Upload all required documents
+- [ ] Submit before intake deadline
+- [ ] Follow up with OTF staff if questions arise
+
+**Resources & Support**:
+
+**OTF Contact**:
+- Website: https://otf.ca
+- Phone: 1-800-263-2887
+- Email: grants@otf.ca
+- Regional office support available
+
+**Application Resources**:
+- Online webinars and info sessions
+- Sample successful applications
+- Budget templates
+- Equity and inclusion toolkit
+
+**How to Present This to Board**:
+
+> "The Ontario Trillium Fund represents one of the largest community funding opportunities in Ontario, distributing over $110 million annually to 1,300 organizations. As a registered non-profit corporation, Challengers Cricket Club is eligible for grants ranging from $5,000 to $500,000.
+>
+> **Potential Projects**:
+> - Youth Cricket Academy: $40K (Seed Grant)
+> - Regional Expansion: $150K (Grow Grant)
+> - Facility Development: $250K (Capital Grant)
+>
+> **Why OTF Fits Our Mission**:
+> - Community belonging through cricket
+> - Newcomer integration and cultural connections
+> - Youth development and physical literacy
+> - Building healthy, vibrant communities
+>
+> **Next Steps**: Create OTF portal account, identify priority project, begin application development for next intake deadline."
+
+---
+
+### Ontario Sport and Recreation Communities Fund
+**Administrator**: Ministry of Tourism, Culture and Sport
+**Website**: http://www.grants.gov.on.ca
+
+**Overview**:
+Provides funding to help organizations increase opportunities for participation in sport and recreation, improve physical literacy, and strengthen the community sport and recreation sector.
+
+**Focus Areas**:
+- **Participation Growth**: Increasing sport and recreation participation
+- **Physical Literacy**: Developing fundamental movement skills
+- **Training & Development**: Coaching, youth development, volunteer development
+- **Community Capacity**: Strengthening sport and recreation organizations
+
+**Eligibility**:
+- Not-for-profit sport and recreation organizations
+- Registered in Ontario
+- Serving community-level participants
+
+**What This Could Fund for Challengers CC**:
+
+**1. Coaching Certification Program** 💪
+- Send coaches to Cricket Canada certification courses
+- Host local coaching clinics
+- Develop coaching mentorship program
+- Build sustainable coaching pipeline
+
+**2. Physical Literacy Through Cricket** 🏏
+- Fundamental movement skills using cricket
+- Youth programs focused on physical development
+- Partner with schools for phys-ed integration
+- Assessment and tracking of physical literacy gains
+
+**3. Volunteer Development Initiative** 🤝
+- Volunteer recruitment campaigns
+- Training programs for volunteers
+- Recognition and retention strategies
+- Build strong volunteer base
+
+**4. Community Outreach Programs** 🌍
+- Free cricket introduction programs
+- Equipment lending library
+- Mobile cricket programs in underserved areas
+- Barrier reduction for participation
+
+**Funding Priorities**:
+- Organizations serving priority populations (youth, women, newcomers, persons with disabilities)
+- Programs that increase participation rates
+- Training that builds sector capacity
+- Innovative approaches to physical literacy
+
+**Action Items**:
+- [ ] Monitor grants.gov.on.ca for application periods
+- [ ] Review program guidelines when applications open
+- [ ] Identify which priority area best fits Challengers CC
+- [ ] Develop coaching or volunteer training proposal
+- [ ] Partner with Cricket Ontario for application support
+
+---
+
+### Celebrate Ontario
+**Administrator**: Ministry of Tourism, Culture and Sport
+**Website**: http://www.grants.gov.on.ca
+
+**Overview**:
+Provides project-based funding to new or existing Ontario festivals and events to enhance programs, activities and services. Supports innovations that lead to long-term improvements, sustainability, and attraction of additional tourists.
+
+**Focus**: Tourism-driven events and festivals
+
+**Funding Purpose**:
+- Enhance existing events
+- Support new festival initiatives
+- Improve event sustainability
+- Attract tourists to Ontario communities
+- Promote Ontario as tourism destination
+
+**How This Could Apply to Challengers CC**:
+
+**1. London Cricket Festival** 🎉
+- Multi-day cricket tournament with cultural components
+- Food vendors, music, entertainment
+- Attract teams and spectators from across Ontario
+- Tourism boost for London hotels and businesses
+
+**2. Commonwealth Cricket & Culture Festival** 🌍
+- Celebrate cricket and Commonwealth cultures
+- International cricket exhibition matches
+- Cultural performances and food from cricket-playing nations
+- Position London as multicultural tourism destination
+
+**3. Annual Cricket Carnival** 🏏
+- Family-friendly cricket event
+- Youth cricket tournaments
+- Cricket skills demonstrations
+- Community entertainment and activities
+
+**Eligibility**:
+- Events must have tourism potential
+- Attract visitors from outside local area
+- Demonstrate economic impact on community
+- New or existing events seeking enhancement
+
+**Why This Matters**:
+If Challengers CC develops a cricket festival or major event, Celebrate Ontario funding could:
+- Cover marketing and promotion costs
+- Support event enhancements (entertainment, activities)
+- Help attract regional/national participants
+- Build event sustainability for future years
+
+**Action Items**:
+- [ ] Explore festival/event concept feasibility
+- [ ] Research tourism potential of cricket events in London
+- [ ] Monitor Celebrate Ontario application deadlines
+- [ ] Partner with Tourism London for support
+- [ ] Consider combining with Sport Hosting Program for major events
+
+---
+
+### Aviva Community Fund
+**Organization Type**: National Corporate Giving Program
+**Administrator**: Aviva Canada
+**Website**: https://www.aviva.ca/en/community/community-fund/
+
+**Overview**:
+Aviva Canada invests in charitable community initiatives across Canada. To date, they've distributed **$5.5+ million** in funding to community projects, with **$1 million available annually**.
+
+**Funding Model**:
+- **Crowdfunding + Voting System**
+- Organizations submit project ideas
+- Public votes for their favorite projects
+- Top-voted projects receive funding
+
+**Funding Levels**:
+Typically offers several funding tiers:
+- Small Projects: $10,000 - $25,000
+- Medium Projects: $25,000 - $75,000
+- Large Projects: $75,000 - $150,000
+
+**Eligibility**:
+- Canadian registered charities
+- Not-for-profit organizations with charitable partners
+- Community benefit focus
+- Projects that create positive social impact
+
+**Why This Matters for Challengers CC**:
+
+**1. National Visibility** 📢
+- Campaign creates awareness of Challengers CC across Canada
+- Social media exposure during voting period
+- Build supporter base beyond London
+
+**2. Community Engagement** 🤝
+- Mobilize cricket community to vote
+- Engage families, players, sponsors
+- Demonstrate community support for club
+- Build email list and social following
+
+**3. Flexible Funding** 💰
+- Projects can vary widely (facilities, programs, equipment)
+- Community decides what deserves funding
+- Competitive but achievable
+
+**4. Marketing Opportunity** 🎯
+- Creates compelling story for media
+- Video and social content for campaign
+- Practice for future fundraising efforts
+- Builds organizational profile
+
+**Potential Challengers CC Projects for Aviva**:
+
+**1. "Cricket for All: Youth Academy" ($50K)**
+- Free cricket programs for 200+ London youth
+- Equipment, coaching, facilities
+- Scholarships for low-income families
+- Emotional story: making cricket accessible to all kids
+
+**2. "Building London's Cricket Home" ($100K)**
+- Permanent cricket training facility
+- Community gathering space
+- Inclusive design for all abilities
+- Story: giving cricket a home in London
+
+**3. "Newcomer Welcome Through Cricket" ($35K)**
+- Cricket programs for newcomer families
+- Language and cultural integration
+- Community connections through sport
+- Story: cricket helping newcomers belong
+
+**How Aviva Community Fund Works**:
+
+**Step 1: Call for Ideas Opens**
+- Aviva announces application period (usually once per year)
+- Organizations submit project ideas online
+- Deadline typically 4-6 weeks
+
+**Step 2: Submit Project**
+- Complete online application
+- Project description (compelling story!)
+- Budget breakdown
+- Video pitch (2-3 minutes)
+- Photos of your organization
+
+**Step 3: Public Voting Period**
+- Project goes live on Aviva website
+- 2-4 week voting period
+- Public votes for favorite projects
+- Organizations mobilize supporters to vote
+
+**Step 4: Winners Announced**
+- Top-voted projects in each category win funding
+- Winners announced publicly
+- Funding agreement signed
+- Project implementation begins
+
+**Success Strategies**:
+
+✅ **Compelling Story**: Emotional, human-centered narrative (kids, families, community impact)
+✅ **Great Video**: Short, professional, heartwarming pitch video
+✅ **Mobilization Plan**: Strategy to get votes (email, social media, partners, players)
+✅ **Daily Engagement**: Post updates, thank voters, maintain momentum
+✅ **Partner Support**: Get Cricket Ontario, sponsors, community partners to share
+
+**Action Items**:
+- [ ] Follow Aviva Community Fund on social media for announcements
+- [ ] Sign up for Aviva newsletter to get application alerts
+- [ ] Identify compelling project idea for future campaign
+- [ ] Build email list and social following NOW for future voting
+- [ ] Study past winners to understand what resonates
+- [ ] Prepare video production plan (can use smartphones!)
+
+**Resources**:
+- Website: https://www.aviva.ca/en/community/community-fund/
+- Social Media: Follow @AvivaCanada
+- Past Winners: Review successful projects for inspiration
+
+**Timeline**:
+- Applications typically open once per year
+- Watch for announcements in spring/summer
+- Voting periods in fall
+- Winners announced before year-end
+
+---
+
 ### Ontario Sport Hosting Program
 **Administrator**: Ministry of Tourism, Culture and Sport
 **Website**: http://www.grants.gov.on.ca
