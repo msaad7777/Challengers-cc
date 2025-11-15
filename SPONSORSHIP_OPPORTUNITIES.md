@@ -1775,6 +1775,379 @@ For a **$150,000 National Cricket Tournament**:
 
 ---
 
+## Federal Funding Programs
+
+### Community Sport for All Initiative (CSAI) - Sport Support Program
+**Administrator**: Sport Canada - Department of Canadian Heritage
+**Level**: Federal (Government of Canada)
+**Website**: https://www.canada.ca/en/canadian-heritage/services/sport-support-program/community-sport-for-all.html
+**Contact**: sportcommunautaire-communitysport@pch.gc.ca | 819-997-0055 or 1-866-811-0055 (toll-free)
+
+**⚠️ CURRENT STATUS**: Application intake is **CLOSED** (2024-2026 funding cycle)
+
+**Overview**:
+The Community Sport for All Initiative (CSAI) is a federal program designed to remove barriers and increase sport participation rates for under-represented groups across Canada. This is a significant federal investment in making sport accessible and inclusive for all Canadians.
+
+**Mission**: Remove Barriers & Increase Participation for Under-Represented Groups
+
+**Priority Under-Represented Groups** 🌈:
+- **Black communities**
+- **Indigenous peoples** (First Nations, Métis, Inuit)
+- **Racialized communities**
+- **2SLGBTQI+ individuals**
+- **Low-income people**
+- **Persons with disabilities**
+- **Newcomers to Canada**
+- **Seniors**
+
+**How CSAI Works**:
+
+This is a **two-tier funding model**:
+
+**Tier 1: National-Level Organizations** (Receive federal funding)
+- Federal government funds national organizations
+- National organizations administer and disburse funding
+- Organizations must have scope and capacity to reach target groups in multiple jurisdictions across all 5 regions of Canada
+
+**Tier 2: Community Organizations** (Apply to funded national organizations)
+- Community organizations (like Challengers CC) contact funded national organizations
+- Apply for project funding from those national organizations
+- Deliver community sport initiatives that align with CSAI objectives
+
+**5 Regions of Canada** (funded organizations must reach all 5):
+1. Atlantic (NL, PEI, NS, NB)
+2. Central Canada (QC, ON)
+3. Prairies (MB, SK, AB)
+4. West (BC)
+5. North (YT, NT, NU)
+
+**Funded National-Level Organizations (2024-2026)** 💰:
+
+**Total CSAI Funding: $14+ million to 26 national organizations**
+
+**Organizations Most Relevant to Challengers CC**:
+
+**1. KidSport Canada** ($2,203,500) 🏆
+- **LARGEST RECIPIENT** alongside Canadian Tire Jumpstart
+- Already documented KidSport Ontario partnership
+- Funding increases KidSport's capacity to support youth sport
+- **ACTION**: Challengers CC should pursue KidSport Ontario partnership (required: Cricket Ontario affiliation)
+
+**2. Canadian Tire Jumpstart Charities** ($2,500,000) 🥇
+- **LARGEST SINGLE RECIPIENT**
+- Focus: Removing financial barriers for kids in sport
+- 300,000+ youth athletes supported annually
+- **POTENTIAL**: Approach Jumpstart about cricket program funding
+- Currently funds hockey, soccer, lacrosse, baseball - could expand to cricket
+- **ACTION**: Submit application to Jumpstart Charities for youth cricket programs
+
+**3. ParticipACTION** ($1,200,000) 💪
+- National organization promoting physical activity
+- Focus: Getting Canadians active through sport and recreation
+- Community programs and initiatives
+- **POTENTIAL**: Partner on community activation events featuring cricket
+- **ACTION**: Explore partnership opportunities for "Have a Go" cricket events
+
+**4. Canadian Women & Sport** ($500,000) 👩‍🦰
+- Focus: Advancing gender equity in Canadian sport system
+- Supporting girls and women in sport
+- **PERFECT FIT**: Women's cricket development program
+- **ACTION**: Develop women's cricket initiative and apply for funding
+
+**5. Canadian Paralympic Committee** ($300,000) ♿
+- Focus: Sport for persons with disabilities
+- Para-sport development and inclusion
+- **POTENTIAL**: Adaptive cricket programming
+- Aligns with ONPARA partnership concept documented earlier
+- **ACTION**: Explore adaptive/inclusive cricket program feasibility
+
+**6. Canadian Parks and Recreation Association** ($500,000) 🏞️
+- Community recreation and sport programs
+- Municipal and community partnerships
+- **POTENTIAL**: Cricket in parks and recreation programs
+- **ACTION**: Partner with London Parks & Recreation, apply for CPRA funding
+
+**Other Funded Organizations** (May fund cricket projects):
+- Jays Care Foundation ($450,000) - baseball, but could support cricket
+- Canadian Cerebral Palsy Sport Association ($236,000) - inclusive sport
+- Right to Play ($150,000) - sport for development
+- Athletics Canada ($450,000) - may have multi-sport initiatives
+- Various other sport federations with community programs
+
+**How Challengers CC Can Access CSAI Funding**:
+
+**Step 1: Identify Alignment** 🎯
+Choose which under-represented group(s) Challengers CC will prioritize:
+- ✅ **Newcomers to Canada** - cricket has strong appeal to newcomer communities
+- ✅ **Low-income people** - remove financial barriers to cricket participation
+- ✅ **Racialized communities** - cricket played globally, diverse participation
+- ✅ **Women and girls** - develop women's cricket programs
+- ✅ **Persons with disabilities** - adaptive cricket initiatives
+- ✅ **Seniors** - cricket for older adults, social connection
+
+**Step 2: Develop Project Concept** 📋
+Create a community cricket project that:
+- Serves one or more priority under-represented groups
+- Removes barriers to participation (financial, social, physical, cultural)
+- Increases participation and retention in cricket
+- Aligns with Canadian Sport Policy goals
+- Has measurable outcomes
+
+**Step 3: Contact Funded National Organizations** 📞
+Reach out to relevant organizations from the funded list:
+- **KidSport Canada** - for youth programs (low-income families)
+- **Jumpstart Charities** - for youth programs (financial barriers)
+- **Canadian Women & Sport** - for women's cricket programs
+- **Canadian Paralympic Committee** - for adaptive cricket
+- **ParticipACTION** - for community activation events
+- **CPRA** - for parks & recreation partnerships
+
+**Step 4: Submit Project Application** 📝
+Each funded organization has its own application process:
+- Follow their specific guidelines
+- Demonstrate alignment with CSAI objectives
+- Show how project serves under-represented groups
+- Provide clear budget and outcomes
+
+**Project Ideas for Challengers CC - CSAI Funding**:
+
+**Project 1: "Cricket for Newcomers" - Integration Through Sport** 🌍
+**Funded by**: KidSport Canada, ParticipACTION, or CPRA
+**Target**: Newcomers to Canada (refugees, immigrants)
+**Budget**: $25,000 - $50,000
+
+**Program Elements**:
+- Free cricket clinics for newcomer families
+- Partner with London Cross Cultural Learner Centre
+- Equipment provided at no cost
+- Multilingual coaching and support
+- Cultural celebration through cricket
+- Social connection and community integration
+
+**Outcomes**:
+- 100+ newcomer participants in Year 1
+- Increased sense of belonging and community
+- Physical activity and health benefits
+- Cultural bridge-building
+
+**Project 2: "Girls Got Game - Women's Cricket London"** 👩‍🦰
+**Funded by**: Canadian Women & Sport
+**Target**: Women and girls (under-represented in cricket)
+**Budget**: $30,000 - $60,000
+
+**Program Elements**:
+- Women's cricket league and recreational programs
+- Girls youth cricket academy (ages 8-18)
+- Female coaches and role models
+- Scholarships for low-income girls
+- Breaking barriers in traditionally male-dominated sport
+
+**Outcomes**:
+- 75+ women and girls participating
+- Increased female participation in cricket
+- Female coach development
+- Gender equity advancement
+
+**Project 3: "Adaptive Cricket - Cricket for All Abilities"** ♿
+**Funded by**: Canadian Paralympic Committee, Canadian Cerebral Palsy Sport Association
+**Target**: Persons with disabilities
+**Budget**: $40,000 - $70,000
+
+**Program Elements**:
+- Inclusive cricket programs (wheelchair, visual impairment, etc.)
+- Modified equipment and rules
+- Trained coaches in adaptive sport
+- Partner with ONPARA (Ontario Para Network)
+- "Have a Go" events for persons with disabilities
+
+**Outcomes**:
+- First adaptive cricket program in Ontario
+- 50+ participants with disabilities
+- Inclusive community sport model
+- National recognition and visibility
+
+**Project 4: "Jumpstart Cricket Academy - Removing Financial Barriers"** 💰
+**Funded by**: Canadian Tire Jumpstart Charities
+**Target**: Low-income youth and families
+**Budget**: $35,000 - $55,000
+
+**Program Elements**:
+- Free youth cricket programs for low-income families
+- Equipment provided at no cost
+- Transportation support
+- Healthy snacks and meals
+- Mentorship and positive role models
+
+**Outcomes**:
+- 120+ low-income youth playing cricket
+- Barriers to participation removed
+- Improved physical literacy and health
+- Social-emotional development
+
+**Project 5: "Active Aging Through Cricket - Seniors' Cricket Program"** 👴
+**Funded by**: ParticipACTION, CPRA
+**Target**: Seniors (55+)
+**Budget**: $20,000 - $40,000
+
+**Program Elements**:
+- Modified cricket for older adults
+- Social connection and community
+- Physical activity adapted for seniors
+- Health and wellness focus
+- Intergenerational cricket events
+
+**Outcomes**:
+- 60+ seniors participating in cricket
+- Reduced social isolation
+- Improved physical and mental health
+- Age-friendly sport programming
+
+**Why CSAI Matters for Challengers CC** 🎯:
+
+**1. Federal Recognition** 🇨🇦
+- Aligns with national priorities for sport inclusion
+- Access to federal funding through national organizations
+- Demonstrates commitment to equity and diversity
+
+**2. Addresses Core Values** 💚
+- Challengers CC mission includes community inclusion
+- Cricket is inherently multicultural and diverse
+- Perfect platform for serving under-represented groups
+
+**3. Multiple Funding Pathways** 💰
+- 26 funded organizations = 26 potential funding sources
+- Different organizations for different project types
+- Complements provincial funding (OTF, KidSport Ontario)
+
+**4. Innovation Opportunity** 💡
+- Become first cricket club in Ontario with adaptive cricket
+- Lead in women's cricket development
+- Pioneer newcomer integration through cricket
+- National visibility and recognition
+
+**5. Sustainable Programming** 📈
+- Build programs serving under-represented groups
+- Create long-term community impact
+- Strengthen club diversity and inclusion
+- Attract additional funders and sponsors
+
+**Strategic Partnerships for CSAI Applications**:
+
+To strengthen Challengers CC's CSAI applications, partner with:
+
+**Settlement Services**:
+- London Cross Cultural Learner Centre (newcomers)
+- Immigration services and ESL programs
+
+**Disability Organizations**:
+- Ontario Para Network (ONPARA)
+- Canadian Cerebral Palsy Sport Association
+- Accessibility services
+
+**Women's Sport**:
+- Canadian Women & Sport local representatives
+- Women in Sport and Physical Activity (WISPA)
+
+**Youth Services**:
+- Boys and Girls Club
+- YMCA/YWCA
+- School boards
+
+**Seniors Services**:
+- London Council on Aging
+- Seniors centres and community programs
+
+**Action Items for Challengers CC - CSAI**:
+
+**IMMEDIATE** (This Month):
+- [ ] Review funded national organizations list
+- [ ] Identify which organizations align with Challengers CC priorities
+- [ ] Research application processes for top 3-5 organizations
+- [ ] Determine which under-represented groups to prioritize
+
+**SHORT-TERM** (Next 3-6 Months):
+- [ ] Contact **KidSport Canada** about youth cricket funding
+- [ ] Contact **Canadian Tire Jumpstart** about youth program support
+- [ ] Contact **Canadian Women & Sport** about women's cricket funding
+- [ ] Contact **Canadian Paralympic Committee** about adaptive cricket
+- [ ] Develop 1-2 project concepts aligned with CSAI priorities
+- [ ] Identify local partner organizations (settlement services, disability orgs, etc.)
+
+**ONGOING**:
+- [ ] Monitor for next CSAI intake (2026+ funding cycle)
+- [ ] Track funded organizations' application deadlines
+- [ ] Build relationships with national organizations
+- [ ] Gather data on under-represented groups in London cricket community
+- [ ] Document diversity and inclusion initiatives for future applications
+
+**Resources & Contacts**:
+
+**CSAI General Information**:
+- Email: sportcommunautaire-communitysport@pch.gc.ca
+- Phone: 819-997-0055 or 1-866-811-0055 (toll-free)
+- Hours: Monday-Friday, 8:30 AM - 5:00 PM ET
+
+**Specific Organizations to Contact**:
+
+**KidSport Canada**:
+- Website: https://kidsportcanada.ca
+- Already connected through KidSport Ontario
+
+**Canadian Tire Jumpstart Charities**:
+- Website: https://jumpstart.canadiantire.ca
+- Application portal on website
+- Focus: Kids 4-18 from families facing financial barriers
+
+**Canadian Women & Sport**:
+- Website: https://womenandsport.ca
+- Email: info@womenandsport.ca
+- Focus: Gender equity in sport
+
+**ParticipACTION**:
+- Website: https://www.participaction.com
+- Community programs and partnerships
+
+**Canadian Paralympic Committee**:
+- Website: https://www.paralympic.ca
+- Para-sport development programs
+
+**Canadian Parks & Recreation Association**:
+- Website: https://cpra.ca
+- Community sport and recreation
+
+**How to Present This to Board**:
+
+> "The Community Sport for All Initiative (CSAI) represents $14+ million in federal funding distributed through 26 national organizations to support community sport projects for under-represented groups.
+>
+> **Opportunity for Challengers CC**:
+> While we cannot apply directly to CSAI (national scope required), we CAN apply to funded organizations like:
+> - **KidSport Canada** ($2.2M) - youth programs
+> - **Jumpstart Charities** ($2.5M) - financial barriers
+> - **Canadian Women & Sport** ($500K) - women's cricket
+> - **Canadian Paralympic Committee** ($300K) - adaptive cricket
+>
+> **Strategic Projects**:
+> 1. Cricket for Newcomers (integration program)
+> 2. Women's Cricket Development (gender equity)
+> 3. Adaptive Cricket (first in Ontario)
+> 4. Low-Income Youth Cricket (removing barriers)
+>
+> **Why This Aligns with Our Mission**:
+> - Cricket is inherently multicultural and inclusive
+> - We serve diverse London community
+> - Opportunity to pioneer inclusive cricket in Ontario
+> - Access to federal funding for community impact
+>
+> **Next Steps**:
+> - Identify priority under-represented group(s) to serve
+> - Contact 2-3 funded national organizations
+> - Develop project concept and budget
+> - Submit applications when organizations open their intake
+>
+> **Note**: Current CSAI intake is closed (2024-2026 cycle), but funded organizations may have ongoing application processes. Monitor for next federal intake in 2026+."
+
+---
+
 ## Corporate Sponsorship Opportunities
 
 ### Major Canadian Corporations with Amateur Sports Programs
