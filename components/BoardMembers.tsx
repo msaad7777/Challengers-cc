@@ -41,6 +41,14 @@ export default function BoardMembers() {
       bio: "Elite Zonal Wicket-keeper Batsman from Karnataka, India. Chief Estimator and Cost Consultant for Heavy Civil Projects in Canada. A hard-hitting batsman passionate about growing cricket in Canada and ensuring the club's financial excellence.",
       image: "/qaiser-treasurer.jpeg",
       initials: "QQM"
+    },
+    {
+      name: "Roman Mahmud",
+      title: "Social Chair",
+      role: "Social & Community Engagement",
+      bio: "Former first-class cricketer from Bangladesh with over 20 years of cricket leadership experience. Proud father of three, served as Social Chair for MTA University Society of All Nations (2008-09), President of MTA Cricket Club (2007-09), and Captain of Fleming College Cricket Team (2017). Passionate about nurturing the next generation of cricket players and creating fun, creative team building activities.",
+      image: "/Roman-social chair.jpeg",
+      initials: "RM"
     }
   ];
 
