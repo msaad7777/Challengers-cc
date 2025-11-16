@@ -95,8 +95,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-semibold mb-1">Email</h4>
-                    <a href="mailto:challengerscricketclub2026@gmail.com" className="text-gray-400 hover:text-primary-400 transition-colors">
-                      challengerscricketclub2026@gmail.com
+                    <a href="mailto:contact@challengerscc.ca" className="text-gray-400 hover:text-primary-400 transition-colors">
+                      contact@challengerscc.ca
                     </a>
                   </div>
                 </div>
