@@ -57,7 +57,7 @@ export default function Programs() {
   ];
 
   return (
-    <section className="section-padding bg-gradient-to-b from-gray-950 to-black relative overflow-hidden">
+    <section id="programs" className="section-padding bg-gradient-to-b from-gray-950 to-black relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{

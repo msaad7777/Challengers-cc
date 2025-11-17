@@ -1,6 +1,6 @@
 export default function About() {
   return (
-    <section className="section-padding bg-gradient-to-b from-black to-gray-950">
+    <section id="about" className="section-padding bg-gradient-to-b from-black to-gray-950">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
@@ -16,31 +16,37 @@ export default function About() {
           <div className="space-y-6">
             <div className="glass rounded-2xl p-8 glass-hover">
               <h3 className="text-2xl font-bold mb-4 text-primary-400">Our Story</h3>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                Challengers Cricket Club was born from a shared vision: to elevate the quality of cricket in London, Ontario.
+                In 2025, professionals from diverse backgrounds—engineering, finance, technology, healthcare, and
+                education—came together, united by their passion for cricket and commitment to community building.
+              </p>
               <p className="text-gray-300 leading-relaxed">
-                Formed in 2025, Challengers Cricket Club brings together passionate cricket enthusiasts from
-                various clubs across London, Ontario. United by our love for the game, we&apos;ve created a welcoming
-                community where players of all backgrounds come together as one team. We&apos;re more than just a
-                cricket club—we&apos;re building a family dedicated to growing the sport in London.
+                What makes us unique is our diversity of experience. From former first-class cricketers to seasoned
+                club administrators, from IT specialists to community organizers, each board member brings specialized
+                expertise. Together, we combine strategic thinking, technical knowledge, and grassroots experience to
+                create a professionally run, community-focused cricket club that London deserves.
               </p>
             </div>
 
             <div className="glass rounded-2xl p-8 glass-hover">
               <h3 className="text-2xl font-bold mb-4 text-accent-400">Our Mission</h3>
               <p className="text-gray-300 leading-relaxed">
-                To cultivate cricket excellence in London, Ontario by providing an inclusive platform where
-                players of all skill levels—from beginners to experienced cricketers—can develop their talents,
-                compete with integrity, and contribute to the cricket community. We welcome anyone passionate
-                about cricket who wants to be part of London&apos;s growing cricket scene.
+                To transform cricket in London, Ontario by establishing professional standards, fostering inclusive
+                participation, and creating pathways for players of all ages and skill levels. We&apos;re not just
+                another cricket club—we&apos;re building a movement that combines competitive excellence with community
+                development, bridging cultures and creating opportunities through the sport we love.
               </p>
             </div>
 
             <div className="glass rounded-2xl p-8 glass-hover">
-              <h3 className="text-2xl font-bold mb-4 gradient-text">Our Culture</h3>
+              <h3 className="text-2xl font-bold mb-4 gradient-text">Why We&apos;re Different</h3>
               <p className="text-gray-300 leading-relaxed">
-                We believe in unity, inclusivity, and the power of cricket to bring people together. Whether
-                you&apos;re joining us from another club or stepping onto the pitch for the first time, you&apos;ll find
-                a welcoming home at Challengers. Every practice, every match, every moment is an opportunity to
-                grow together and strengthen London&apos;s cricket community.
+                Our strength lies in our multidisciplinary approach. With professionals from banking, civil engineering,
+                hardware networking, and community services on our board, we bring corporate governance, financial
+                discipline, technical innovation, and community expertise to cricket administration. We&apos;re
+                federally incorporated, Cricket Ontario affiliated, and committed to transparency, professionalism,
+                and sustainable growth that benefits all of London&apos;s cricket community.
               </p>
             </div>
           </div>
