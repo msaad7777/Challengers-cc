@@ -110,7 +110,7 @@ export default function Contact() {
                   <div>
                     <h4 className="font-semibold mb-1">Season</h4>
                     <p className="text-gray-400">Launching 2026</p>
-                    <p className="text-sm text-gray-500 mt-1">Registration opens soon</p>
+                    <p className="text-sm text-primary-400 mt-1 font-semibold">Registration is open!</p>
                   </div>
                 </div>
               </div>
