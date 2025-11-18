@@ -56,7 +56,7 @@ export default function Registration() {
         body: formBody.toString(),
       });
 
-      setSubmitMessage('Thank you! We\'ll be in touch soon.');
+      setSubmitMessage('Thank you! We\'ll add you to our official WhatsApp group soon. If you\'re not added within 48 hours, please email us at contact@challengerscc.ca');
       setFormData({ name: '', email: '', phone: '', skillLevel: '', willingToPlay: '', playingRole: '', jerseySize: '', jerseyType: '', trouserWaistSize: '' });
     } catch (error) {
       setSubmitMessage('Something went wrong. Please try again.');

@@ -61,7 +61,7 @@ export default function Partners() {
               {/* Social Links */}
               <div className="flex items-center gap-3">
                 <a
-                  href="https://instagram.com/tpgcricket"
+                  href="https://www.instagram.com/tpgcricket/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1 text-xs text-gray-400 hover:text-primary-400 transition-colors"
