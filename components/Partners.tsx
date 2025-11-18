@@ -29,17 +29,34 @@ export default function Partners() {
             </div>
 
             <div className="flex flex-col items-center">
-              <div className="w-32 h-32 rounded-xl bg-white/10 flex items-center justify-center mb-4 p-4">
-                <Image
-                  src="/TPG-Cricket Academy.png"
-                  alt="TPG Cricket Academy"
-                  width={120}
-                  height={120}
-                  className="w-full h-full object-contain"
-                />
+              {/* Flip Card */}
+              <div className="flip-card w-32 h-32 mb-4">
+                <div className="flip-card-inner relative w-full h-full">
+                  {/* Front - Logo */}
+                  <div className="flip-card-front absolute w-full h-full rounded-xl bg-white/10 flex items-center justify-center p-4">
+                    <Image
+                      src="/TPG-Cricket Academy.png"
+                      alt="TPG Cricket Academy"
+                      width={120}
+                      height={120}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  {/* Back - Coach Photo */}
+                  <div className="flip-card-back absolute w-full h-full rounded-xl overflow-hidden">
+                    <Image
+                      src="/Manish-sir.jpeg"
+                      alt="Coach Manish Giri"
+                      width={128}
+                      height={128}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
               </div>
               <h3 className="text-lg font-bold text-white mb-1">TPG Cricket Academy</h3>
-              <p className="text-sm text-primary-400 font-medium mb-3">Official Coaching Partner</p>
+              <p className="text-sm text-primary-400 font-medium">Official Coaching Partner</p>
+              <p className="text-xs text-gray-400 mb-3">Coach Manish Giri • Ex-Delhi Cricketer</p>
 
               {/* Social Links */}
               <div className="flex items-center gap-3">
