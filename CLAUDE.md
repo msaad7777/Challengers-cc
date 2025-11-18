@@ -4,239 +4,100 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Challengers Cricket Club website - a modern, premium Next.js website for a new cricket club in London, Ontario launching in 2026. Built with Next.js 15 (App Router), TypeScript, and Tailwind CSS, featuring dark theme with glass morphism effects and Google Forms integration.
+Challengers Cricket Club website - Next.js 15 (App Router), TypeScript, Tailwind CSS with dark theme, glass morphism effects, and Google Forms integration.
 
-**Organization Details**:
-- Registered Ontario non-profit corporation
-- Valid NUANS name registration
-- Appropriate NAICS code
-- Contact: challengerscricketclub2026@gmail.com
-- Domain: challengerscc.ca
-- Instagram: @challengers.cc (https://instagram.com/challengers.cc)
-- Formed: 2025 - Currently Active
+**Organization**: Ontario NFP Corporation #1746974-8 | contact@challengerscc.ca | challengerscc.ca | @challengers.cc
 
 ## Development Commands
 
-### Install Dependencies
 ```bash
-npm install
+npm install        # Install dependencies
+npm run dev        # Dev server (http://localhost:3000)
+npm run build      # Production build
+npm start          # Production server
+npm run lint       # Run linter
 ```
 
-### Development Server
-```bash
-npm run dev
-```
-Opens at http://localhost:3000 with hot reload.
+## Deployment
 
-### Build for Production
-```bash
-npm run build
-```
-
-### Start Production Server
-```bash
-npm start
-```
-
-### Linting
-```bash
-npm run lint
-```
-
-## Git & Deployment
-
-### Repository
 **GitHub**: https://github.com/msaad7777/Challengers-cc
-**Vercel**: Connected for automatic deployments
+**Vercel**: Auto-deploys on push to `main` branch
+**Deploy URL**: https://vercel.com/challengersccs-projects/challengeers-website
 
-### Deployment Workflow
-The project uses Git with automatic Vercel deployments. Any push to the `main` branch will trigger an automatic build and deployment.
-
-**Standard workflow for making changes**:
-```bash
-# 1. Make your code changes
-
-# 2. Stage all changes
-git add .
-
-# 3. Commit with descriptive message
-git commit -m "Description of changes"
-
-# 4. Push to GitHub (triggers automatic Vercel deployment)
-git push
-```
-
-### Manual Deployment (if needed)
-If you need to deploy without pushing to Git:
-```bash
-vercel --prod
-```
-
-### Checking Deployment Status
-- View deployments: https://vercel.com/challengersccs-projects/challengeers-website
-- Each push creates a new deployment
-- Production URL updates automatically after successful build
+Standard workflow: `git add . && git commit -m "message" && git push`
 
 ## Architecture
 
-### App Router Structure
-- **app/layout.tsx**: Root layout with metadata and global styles
-- **app/page.tsx**: Homepage composing all sections
-- **app/sponsorship/page.tsx**: Dedicated sponsorship page with tiers and form
-- **app/globals.css**: Global styles, Tailwind directives, and custom utility classes
+### Structure
+- **app/layout.tsx** - Root layout, metadata, SEO (Open Graph, Twitter cards)
+- **app/page.tsx** - Homepage (Hero → About → SponsorshipBanner → Programs → BoardMembers → Registration → Contact → LegalDocuments → Footer)
+- **app/sponsorship/page.tsx** - Sponsorship tiers and inquiry form
+- **app/globals.css** - Custom utilities
 
-### Component Architecture
-All sections are separate components in `/components`:
-- **Hero.tsx**: Full-screen hero with CTAs and scroll indicator
-- **About.tsx**: Club story, mission, culture with feature highlights
-- **SponsorshipBanner.tsx**: Call-to-action banner for sponsorship (homepage)
-- **Programs.tsx**: Three program cards (Main Team, Youth, Community)
-- **BoardMembers.tsx**: Board member profiles with photos/initials, bios, and roles
-- **Registration.tsx**: Dual-column with full registration link + interest form
-- **Contact.tsx**: Contact form with club information
-- **LegalDocuments.tsx**: Legal documents section with downloadable PDFs
-- **Footer.tsx**: Site footer with links, social icons, and sponsorship link
+### Components (`/components`)
+- **Hero.tsx** - Video background (`/logo-video.mp4`), CTAs, smooth scroll to #interest-section
+- **About.tsx** - Mission, culture, features
+- **SponsorshipBanner.tsx** - CTA banner
+- **Programs.tsx** - Main Team, Youth, Community cards
+- **BoardMembers.tsx** - Profiles with photos/initials
+- **Registration.tsx** - Full form with cricket fields (skillLevel, willingToPlay, playingRole, jersey sizing)
+- **Contact.tsx** - Contact form
+- **LegalDocuments.tsx** - PDF downloads (all currently `available: false`)
+- **Footer.tsx** - Links, social icons
 
-### Page Routes
-- **/** - Homepage with all sections
-- **/sponsorship** - Full sponsorship page with packages and inquiry form
+### Design System
 
-### Design System (Tailwind Config)
+**Colors** (`tailwind.config.ts`):
+- `primary` - Cricket green (#10b981)
+- `accent` - Gold (#eab308)
 
-**Color Palette**:
-- `primary`: Cricket green (#10b981 family) - main brand color
-- `accent`: Gold/yellow (#eab308 family) - secondary highlights
+**Custom Utilities** (`globals.css`):
+- `.glass` - Glass morphism (bg-white/5, backdrop-blur)
+- `.gradient-text` - Primary to accent gradient
+- `.section-padding` - Consistent spacing (py-20 md:py-32)
 
-**Custom Utilities** (globals.css):
-- `.glass`: Glass morphism effect (bg-white/5 with backdrop-blur)
-- `.glass-hover`: Enhanced glass on hover
-- `.gradient-text`: Primary to accent gradient text
-- `.section-padding`: Consistent section spacing (py-20 md:py-32)
+**Animations**: `fade-in`, `slide-up`, `slide-in-right`, `float`
 
-**Animations**:
-- `fade-in`: Opacity fade in
-- `slide-up`: Slide up with fade
-- `slide-in-right`: Slide from right
-- `float`: Floating animation for decorative elements
+**Patterns**:
+- Cards: `glass rounded-2xl p-8 glass-hover`
+- Buttons: `bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105`
+- Inputs: `bg-white/5 border border-white/10 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20`
+- Headers: `<h2 className="text-4xl sm:text-5xl md:text-6xl font-bold">Text <span className="gradient-text">Gradient</span></h2>`
+
+**Responsive**: Mobile-first, standard Tailwind breakpoints (sm/md/lg)
 
 ### Google Forms Integration
 
-Forms use `mode: 'no-cors'` POST to Google Forms endpoints:
+All forms use `mode: 'no-cors'` POST with `GOOGLE_FORM_ACTION` and `ENTRY_IDS` constants. All three forms are configured and active.
 
-**Interest Form** (Registration.tsx):
-- Form action: `GOOGLE_FORM_ACTION` constant
-- Entry IDs: `ENTRY_IDS` object maps fields to Google Form entry IDs
-- Fields: name, email, phone, skillLevel
+**Registration.tsx**: name, email, phone, skillLevel, willingToPlay (T30/T20/Both), playingRole (Batsman/Bowler/Wicket Keeper/All Rounder), jerseySize, jerseyType, trouserWaistSize
 
-**Contact Form** (Contact.tsx):
-- Form action: `GOOGLE_FORM_ACTION` constant
-- Entry IDs: `ENTRY_IDS` object
-- Fields: name, email, message
+**Contact.tsx**: name, email, message
 
-**Sponsorship Form** (app/sponsorship/page.tsx):
-- Form action: `GOOGLE_FORM_ACTION` constant
-- Entry IDs: `ENTRY_IDS` object
-- Fields: organizationName, contactName, email, phone, sponsorshipLevel, message
+**Sponsorship page**: organizationName, contactName, email, phone, sponsorshipLevel, message
 
-**Setup Process**:
-1. Create Google Form with matching fields
-2. Get form ID from URL: `forms/d/e/{FORM_ID}/viewform`
-3. Inspect field names to find entry IDs (e.g., `entry.1234567890`)
-4. Replace placeholder constants in component files
+**Setup**: Get form ID from Google Forms URL → Inspect fields for entry IDs (e.g., `entry.1234567890`) → Update constants
 
-**Full Registration Links**:
-- Hero.tsx line ~52
-- Registration.tsx line ~105
-- Replace `YOUR_REGISTRATION_FORM_ID` with actual form ID
+### Key Details
 
-### State Management
-Uses React `useState` for form handling. Forms are client components (`"use client"`).
-
-### Styling Patterns
-
-**Cards**:
-```tsx
-className="glass rounded-2xl p-8 glass-hover"
-```
-
-**Buttons (Primary)**:
-```tsx
-className="bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105"
-```
-
-**Input Fields**:
-```tsx
-className="bg-white/5 border border-white/10 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
-```
-
-**Section Headers**:
-```tsx
-<h2 className="text-4xl sm:text-5xl md:text-6xl font-bold">
-  Text <span className="gradient-text">Gradient</span>
-</h2>
-```
-
-### Responsive Design
-- Mobile-first approach
-- Breakpoints: sm, md, lg (standard Tailwind)
-- Grid layouts adapt: `grid md:grid-cols-2 lg:grid-cols-3`
-- Text scales: `text-xl sm:text-2xl md:text-3xl lg:text-4xl`
-
-## Key Implementation Details
-
-### Smooth Scrolling
-- `html` has `scroll-smooth` class in layout.tsx
-- Hero CTA scrolls to `#interest-section` via JavaScript
-- Footer links use anchor tags with section IDs
-
-### Animation Delays
-Components use inline `style={{ animationDelay: '0.1s' }}` for staggered entrances.
-
-### Background Effects
-- Radial gradients for atmospheric effects
-- Positioned absolutely with low opacity (5-10%)
-- Blur effects using `blur-3xl` utility
-
-### Icons
-All icons are inline SVG components (Heroicons style). No icon library dependency.
+- Forms are client components (`"use client"`), use `useState`
+- Smooth scrolling via `scroll-smooth` class on `<html>`
+- Icons are inline SVG (no library dependency)
+- Background effects use radial gradients with low opacity (5-10%) and `blur-3xl`
+- Animation delays via inline `style={{ animationDelay: '0.1s' }}`
 
 ## Common Tasks
 
-### Adding a New Section
-1. Create component in `/components/SectionName.tsx`
-2. Import and add to `app/page.tsx`
-3. Use `.section-padding` utility for consistent spacing
-4. Follow existing section header pattern
+**Add Section**: Create `/components/SectionName.tsx` → Import in `app/page.tsx` → Use `.section-padding`
 
-### Updating Colors
-Edit `tailwind.config.ts` → `theme.extend.colors` → `primary` or `accent` values.
+**Update Colors**: Edit `tailwind.config.ts` → `theme.extend.colors`
 
-### Changing Form Integration
-1. Update `GOOGLE_FORM_ACTION` URL
-2. Update `ENTRY_IDS` object with correct field mappings
-3. Test submission (check Google Form responses)
+**Update Forms**: Change `GOOGLE_FORM_ACTION` URL and `ENTRY_IDS` object
 
-### Adding Social Links
-Update Footer.tsx social icons section (~line 57). Replace `#` with actual URLs.
+**Board Members**: Edit `boardMembers` array in `BoardMembers.tsx` (requires: name, title, role, bio, image path or null, initials)
 
-### Adding/Updating Board Members
-Edit `components/BoardMembers.tsx` → `boardMembers` array. Each member requires:
-- `name`, `title`, `role`, `bio`
-- `image` (path to photo in `/public`) or `null` (uses initials)
-- `initials` (shown if no image)
+**Legal Docs**: Edit `documents` array in `LegalDocuments.tsx`, set `available: true` when PDF uploaded to `/public/documents/`
 
-Photos should be added to `/public` directory and referenced with path like `/photo.jpeg`.
+**Social Links**: Footer.tsx line ~88 (Instagram configured, Facebook/Twitter use `#` placeholders)
 
-### Managing Legal Documents
-Edit `components/LegalDocuments.tsx` → `documents` array:
-- Set `available: true` when PDF is uploaded to `/public/documents/`
-- Update `fileUrl` path to match uploaded file
-- Documents marked as unavailable show "Coming Soon"
-
-## Important Notes
-
-- **Client Components**: Forms (Registration, Contact, Sponsorship) require `"use client"` directive
-- **Images**: Uses Next.js `Image` component for board member photos; other sections use SVG icons
-- **TypeScript**: All components use TypeScript with proper typing
-- **Accessibility**: Buttons and links include proper aria-labels where needed
-- **Performance**: Components use CSS animations (not JS) for better performance
+**Static Assets**: Place in `/public` (images, videos) or `/public/documents/` (PDFs). Reference with leading slash (`/image.jpg`)

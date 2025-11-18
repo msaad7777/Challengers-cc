@@ -2,6 +2,7 @@ import Hero from '@/components/Hero';
 import About from '@/components/About';
 import SponsorshipBanner from '@/components/SponsorshipBanner';
 import Programs from '@/components/Programs';
+import Partners from '@/components/Partners';
 import BoardMembers from '@/components/BoardMembers';
 import Registration from '@/components/Registration';
 import Contact from '@/components/Contact';
@@ -15,6 +16,7 @@ export default function Home() {
       <About />
       <SponsorshipBanner />
       <Programs />
+      <Partners />
       <BoardMembers />
       <Registration />
       <Contact />
