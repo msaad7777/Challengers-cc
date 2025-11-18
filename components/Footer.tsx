@@ -96,7 +96,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="https://instagram.com/challengers.cc"
+                href="https://www.instagram.com/challengers.cc/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-primary-500/50 transition-all"
