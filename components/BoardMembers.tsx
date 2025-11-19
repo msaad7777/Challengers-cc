@@ -7,7 +7,7 @@ export default function BoardMembers() {
       title: "Director",
       role: "Board of Directors",
       bio: "Science graduate with 10 years of cricket leadership experience as director and founding member of multiple cricket clubs across the globe. Established IT foundations and positive club environments while dedicated to community betterment through non-profit work since childhood.",
-      image: "/saad-final.jpeg",
+      image: "/saad-ground.png",
       initials: "MS"
     },
     {
