@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useRef } from 'react';
 
 export default function Registration() {
   const [formData, setFormData] = useState({
@@ -16,57 +16,45 @@ export default function Registration() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const GOOGLE_FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSfVYSWAYY8wgl_KIjsNwENzf2w57xp4ZcMBWXLeXRkY7L4DxQ/formResponse";
-  const ENTRY_IDS = {
-    name: "entry.1407381676",
-    email: "entry.1934782175",
-    phone: "entry.578432831",
-    skillLevel: "entry.980943308",
-    willingToPlay: "entry.1652603126",
-    playingRole: "entry.1089654944",
-    jerseySize: "entry.1146547898",
-    jerseyType: "entry.1555965869",
-    trouserWaistSize: "entry.1033675185"
-  };
+  // Google Form URL - just change this if you create a new form
+  const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfVYSWAYY8wgl_KIjsNwENzf2w57xp4ZcMBWXLeXRkY7L4DxQ/formResponse";
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitMessage('');
 
-    try {
-      const formBody = new URLSearchParams();
-      formBody.append(ENTRY_IDS.name, formData.name);
-      formBody.append(ENTRY_IDS.email, formData.email);
-      formBody.append(ENTRY_IDS.phone, formData.phone);
-      formBody.append(ENTRY_IDS.skillLevel, formData.skillLevel);
-      formBody.append(ENTRY_IDS.willingToPlay, formData.willingToPlay);
-      formBody.append(ENTRY_IDS.playingRole, formData.playingRole);
-      formBody.append(ENTRY_IDS.jerseySize, formData.jerseySize);
-      formBody.append(ENTRY_IDS.jerseyType, formData.jerseyType);
-      formBody.append(ENTRY_IDS.trouserWaistSize, formData.trouserWaistSize);
+    // Submit the form to iframe
+    if (formRef.current) {
+      formRef.current.submit();
+    }
 
-      await fetch(GOOGLE_FORM_ACTION, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formBody.toString(),
-      });
-
+    // Show success message after brief delay
+    setTimeout(() => {
       setSubmitMessage('Thank you! We\'ll add you to our official WhatsApp group soon. If you\'re not added within 48 hours, please email us at contact@challengerscc.ca');
       setFormData({ name: '', email: '', phone: '', skillLevel: '', willingToPlay: '', playingRole: '', jerseySize: '', jerseyType: '', trouserWaistSize: '' });
-    } catch (error) {
-      setSubmitMessage('Something went wrong. Please try again.');
-    } finally {
       setIsSubmitting(false);
-    }
+    }, 1000);
   };
 
   return (
     <section id="interest-section" className="section-padding bg-gradient-to-b from-black to-gray-950 relative overflow-hidden">
+      {/* Hidden iframe for form submission */}
+      <iframe
+        ref={iframeRef}
+        name="hidden_iframe"
+        id="hidden_iframe"
+        style={{ display: 'none' }}
+        onLoad={() => {
+          if (isSubmitting) {
+            setIsSubmitting(false);
+          }
+        }}
+      />
+
       {/* Background Glow */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-primary-500/10 to-accent-500/10 rounded-full blur-3xl"></div>
@@ -104,7 +92,14 @@ export default function Registration() {
               cricket background, and preferences. We&apos;ll be in touch soon!
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+              ref={formRef}
+              action={GOOGLE_FORM_URL}
+              method="POST"
+              target="hidden_iframe"
+              onSubmit={handleSubmit}
+              className="space-y-4"
+            >
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
                   Full Name *
@@ -112,6 +107,7 @@ export default function Registration() {
                 <input
                   type="text"
                   id="name"
+                  name="entry.1407381676"
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -127,6 +123,7 @@ export default function Registration() {
                 <input
                   type="email"
                   id="email"
+                  name="entry.112847984"
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -142,6 +139,7 @@ export default function Registration() {
                 <input
                   type="tel"
                   id="phone"
+                  name="entry.578432831"
                   required
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -156,6 +154,7 @@ export default function Registration() {
                 </label>
                 <select
                   id="skillLevel"
+                  name="entry.980943308"
                   required
                   value={formData.skillLevel}
                   onChange={(e) => setFormData({ ...formData, skillLevel: e.target.value })}
@@ -174,6 +173,7 @@ export default function Registration() {
                 </label>
                 <select
                   id="willingToPlay"
+                  name="entry.1652603126"
                   required
                   value={formData.willingToPlay}
                   onChange={(e) => setFormData({ ...formData, willingToPlay: e.target.value })}
@@ -192,6 +192,7 @@ export default function Registration() {
                 </label>
                 <select
                   id="playingRole"
+                  name="entry.1089654944"
                   required
                   value={formData.playingRole}
                   onChange={(e) => setFormData({ ...formData, playingRole: e.target.value })}
@@ -211,6 +212,7 @@ export default function Registration() {
                 </label>
                 <select
                   id="jerseySize"
+                  name="entry.1146547898"
                   value={formData.jerseySize}
                   onChange={(e) => setFormData({ ...formData, jerseySize: e.target.value })}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all text-white"
@@ -232,6 +234,7 @@ export default function Registration() {
                 </label>
                 <select
                   id="jerseyType"
+                  name="entry.1555965869"
                   value={formData.jerseyType}
                   onChange={(e) => setFormData({ ...formData, jerseyType: e.target.value })}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all text-white"
@@ -250,6 +253,7 @@ export default function Registration() {
                 <input
                   type="text"
                   id="trouserWaistSize"
+                  name="entry.1033675185"
                   value={formData.trouserWaistSize}
                   onChange={(e) => setFormData({ ...formData, trouserWaistSize: e.target.value })}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
