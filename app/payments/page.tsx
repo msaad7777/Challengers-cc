@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -11,6 +11,14 @@ interface CartItem {
   amount: number;
   quantity: number;
 }
+
+const REGISTRATION_FEE = 50;
+
+const SPONSORSHIP_TIERS = [
+  { id: 'title-sponsor', name: 'Title Sponsor', price: 3000, icon: '🏆' },
+  { id: 'platinum-sponsor', name: 'Platinum Sponsor', price: 1000, icon: '🥇' },
+  { id: 'gold-sponsor', name: 'Gold Sponsor', price: 500, icon: '🥈' },
+];
 
 export default function PaymentsPage() {
   const [playerInfo, setPlayerInfo] = useState({
@@ -31,15 +39,7 @@ export default function PaymentsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const REGISTRATION_FEE = 50;
-
-  const sponsorshipTiers = [
-    { id: 'title-sponsor', name: 'Title Sponsor', price: 3000, icon: '🏆' },
-    { id: 'platinum-sponsor', name: 'Platinum Sponsor', price: 1000, icon: '🥇' },
-    { id: 'gold-sponsor', name: 'Gold Sponsor', price: 500, icon: '🥈' },
-  ];
-
-  const updateCart = () => {
+  const updateCart = useCallback(() => {
     const items: CartItem[] = [];
 
     if (registrationSelected) {
@@ -80,7 +80,7 @@ export default function PaymentsPage() {
 
     // Sponsorship tiers
     if (selectedSponsorship) {
-      const tier = sponsorshipTiers.find(t => t.id === selectedSponsorship);
+      const tier = SPONSORSHIP_TIERS.find(t => t.id === selectedSponsorship);
       if (tier) {
         items.push({
           id: tier.id,
@@ -102,11 +102,15 @@ export default function PaymentsPage() {
     }
 
     setCart(items);
-  };
+  }, [registrationSelected, customAmounts, selectedSponsorship]);
+
+  // Auto-update cart when any selection changes
+  useEffect(() => {
+    updateCart();
+  }, [updateCart]);
 
   const handleRegistrationToggle = () => {
     setRegistrationSelected(!registrationSelected);
-    setTimeout(updateCart, 0);
   };
 
   const handleSponsorshipSelect = (tierId: string) => {
@@ -115,7 +119,6 @@ export default function PaymentsPage() {
       setCustomAmounts(prev => ({ ...prev, communityPartner: '' }));
     }
     setSelectedSponsorship(selectedSponsorship === tierId ? null : tierId);
-    setTimeout(updateCart, 0);
   };
 
   const handleCommunityPartnerChange = (value: string) => {
@@ -125,7 +128,6 @@ export default function PaymentsPage() {
       setSelectedSponsorship(null);
     }
     setCustomAmounts(prev => ({ ...prev, communityPartner: value }));
-    setTimeout(updateCart, 0);
   };
 
   const handleCustomAmountChange = (field: keyof typeof customAmounts, value: string) => {
@@ -133,7 +135,6 @@ export default function PaymentsPage() {
     if (value && !/^\d*\.?\d*$/.test(value)) return;
 
     setCustomAmounts(prev => ({ ...prev, [field]: value }));
-    setTimeout(updateCart, 0);
   };
 
   const cartTotal = cart.reduce((sum, item) => sum + item.amount * item.quantity, 0);
@@ -340,8 +341,7 @@ export default function PaymentsPage() {
                         type="text"
                         value={customAmounts.indoorPractice}
                         onChange={(e) => handleCustomAmountChange('indoorPractice', e.target.value)}
-                        onBlur={updateCart}
-                        className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                                                className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
                         placeholder="Enter amount"
                       />
                     </div>
@@ -361,8 +361,7 @@ export default function PaymentsPage() {
                         type="text"
                         value={customAmounts.t30League}
                         onChange={(e) => handleCustomAmountChange('t30League', e.target.value)}
-                        onBlur={updateCart}
-                        className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                                                className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
                         placeholder="Enter amount"
                       />
                     </div>
@@ -382,8 +381,7 @@ export default function PaymentsPage() {
                         type="text"
                         value={customAmounts.t20League}
                         onChange={(e) => handleCustomAmountChange('t20League', e.target.value)}
-                        onBlur={updateCart}
-                        className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                                                className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
                         placeholder="Enter amount"
                       />
                     </div>
@@ -408,7 +406,7 @@ export default function PaymentsPage() {
 
                 <div className="space-y-4">
                   {/* Fixed Sponsorship Tiers */}
-                  {sponsorshipTiers.map((tier) => (
+                  {SPONSORSHIP_TIERS.map((tier) => (
                     <div
                       key={tier.id}
                       className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
@@ -459,8 +457,7 @@ export default function PaymentsPage() {
                         type="text"
                         value={customAmounts.communityPartner}
                         onChange={(e) => handleCommunityPartnerChange(e.target.value)}
-                        onBlur={updateCart}
-                        className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition-all"
+                                                className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition-all"
                         placeholder="Enter custom amount"
                       />
                     </div>
