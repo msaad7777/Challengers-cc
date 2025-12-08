@@ -30,7 +30,7 @@ Standard workflow: `git add . && git commit -m "message" && git push`
 
 ### Structure
 - **app/layout.tsx** - Root layout, metadata, SEO (Open Graph, Twitter cards)
-- **app/page.tsx** - Homepage (Hero → About → SponsorshipBanner → Programs → BoardMembers → Registration → Contact → LegalDocuments → Footer)
+- **app/page.tsx** - Homepage (Hero → About → SponsorshipBanner → Programs → Partners → BoardMembers → Registration → Contact → LegalDocuments → Footer)
 - **app/sponsorship/page.tsx** - Sponsorship tiers and inquiry form
 - **app/globals.css** - Custom utilities
 
@@ -39,6 +39,7 @@ Standard workflow: `git add . && git commit -m "message" && git push`
 - **About.tsx** - Mission, culture, features
 - **SponsorshipBanner.tsx** - CTA banner
 - **Programs.tsx** - Main Team, Youth, Community cards
+- **Partners.tsx** - Partner/sponsor logos
 - **BoardMembers.tsx** - Profiles with photos/initials
 - **Registration.tsx** - Full form with cricket fields (skillLevel, willingToPlay, playingRole, jersey sizing)
 - **Contact.tsx** - Contact form

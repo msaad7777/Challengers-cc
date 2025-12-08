@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 export default function SponsorshipPage() {
@@ -127,35 +126,10 @@ export default function SponsorshipPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
-      {/* Header/Nav */}
-      <nav className="border-b border-white/10 bg-black/50 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity group">
-              <div className="w-10 h-10 rounded-full p-1">
-                <Image
-                  src="/ccc-logo.png"
-                  alt="CCC Logo"
-                  width={40}
-                  height={40}
-                  className="w-full h-full object-contain"
-                  style={{
-                    filter: 'drop-shadow(0 0 6px rgba(16, 185, 129, 0.2))',
-                    mixBlendMode: 'screen'
-                  }}
-                />
-              </div>
-              <span className="text-xl font-bold gradient-text">Challengers CC</span>
-            </Link>
-            <Link href="/" className="text-sm text-gray-400 hover:text-primary-400 transition-colors">
-              ← Back to Home
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
-      <section className="section-padding relative overflow-hidden">
+      <section className="section-padding pt-32 md:pt-40 relative overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-950 to-black">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary-900/20 via-transparent to-transparent"></div>
