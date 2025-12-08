@@ -39,10 +39,10 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20 md:pt-24">
         <div className="animate-fade-in">
           {/* Logo */}
-          <div className="mb-8 animate-slide-up flex justify-center">
+          <div className="mb-8 animate-slide-up flex justify-center mt-8">
             <div className="relative group">
               <div className="absolute -inset-4 bg-gradient-to-r from-primary-500/20 to-accent-500/20 rounded-full blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
               <div className="relative rounded-full p-2">

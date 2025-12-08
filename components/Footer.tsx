@@ -60,6 +60,11 @@ export default function Footer() {
                   Become a Sponsor
                 </a>
               </li>
+              <li>
+                <a href="/payments" className="text-gray-400 hover:text-primary-400 transition-colors text-sm">
+                  Make a Payment
+                </a>
+              </li>
             </ul>
           </div>
 
