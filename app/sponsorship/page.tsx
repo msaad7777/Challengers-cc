@@ -52,7 +52,7 @@ export default function SponsorshipPage() {
       setSubmitMessage('Thank you for your interest! We\'ll be in touch soon to discuss partnership opportunities.');
       setFormData({ organizationName: '', contactName: '', email: '', phone: '', sponsorshipLevel: '', message: '' });
     } catch (error) {
-      setSubmitMessage('Something went wrong. Please try emailing us directly at challengerscricketclub2026@gmail.com');
+      setSubmitMessage('Something went wrong. Please try emailing us directly at contact@challengerscc.ca');
     } finally {
       setIsSubmitting(false);
     }
@@ -561,8 +561,8 @@ export default function SponsorshipPage() {
 
             <div className="mt-8 pt-8 border-t border-white/10 text-center">
               <p className="text-gray-400 text-sm mb-2">Or contact us directly:</p>
-              <a href="mailto:challengerscricketclub2026@gmail.com" className="text-primary-400 hover:text-primary-300 font-semibold">
-                challengerscricketclub2026@gmail.com
+              <a href="mailto:contact@challengerscc.ca" className="text-primary-400 hover:text-primary-300 font-semibold">
+                contact@challengerscc.ca
               </a>
             </div>
           </div>
