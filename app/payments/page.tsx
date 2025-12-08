@@ -23,13 +23,21 @@ export default function PaymentsPage() {
   const [customAmounts, setCustomAmounts] = useState({
     indoorPractice: '',
     t30League: '',
-    t20League: ''
+    t20League: '',
+    communityPartner: ''
   });
   const [registrationSelected, setRegistrationSelected] = useState(false);
+  const [selectedSponsorship, setSelectedSponsorship] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   const REGISTRATION_FEE = 50;
+
+  const sponsorshipTiers = [
+    { id: 'title-sponsor', name: 'Title Sponsor', price: 3000, icon: '🏆' },
+    { id: 'platinum-sponsor', name: 'Platinum Sponsor', price: 1000, icon: '🥇' },
+    { id: 'gold-sponsor', name: 'Gold Sponsor', price: 500, icon: '🥈' },
+  ];
 
   const updateCart = () => {
     const items: CartItem[] = [];
@@ -70,11 +78,53 @@ export default function PaymentsPage() {
       });
     }
 
+    // Sponsorship tiers
+    if (selectedSponsorship) {
+      const tier = sponsorshipTiers.find(t => t.id === selectedSponsorship);
+      if (tier) {
+        items.push({
+          id: tier.id,
+          name: `Sponsorship - ${tier.name}`,
+          amount: tier.price,
+          quantity: 1
+        });
+      }
+    }
+
+    // Community Partner (custom amount)
+    if (customAmounts.communityPartner && parseFloat(customAmounts.communityPartner) > 0) {
+      items.push({
+        id: 'community-partner',
+        name: 'Sponsorship - Community Partner',
+        amount: parseFloat(customAmounts.communityPartner),
+        quantity: 1
+      });
+    }
+
     setCart(items);
   };
 
   const handleRegistrationToggle = () => {
     setRegistrationSelected(!registrationSelected);
+    setTimeout(updateCart, 0);
+  };
+
+  const handleSponsorshipSelect = (tierId: string) => {
+    // Clear community partner if selecting a fixed tier
+    if (customAmounts.communityPartner) {
+      setCustomAmounts(prev => ({ ...prev, communityPartner: '' }));
+    }
+    setSelectedSponsorship(selectedSponsorship === tierId ? null : tierId);
+    setTimeout(updateCart, 0);
+  };
+
+  const handleCommunityPartnerChange = (value: string) => {
+    if (value && !/^\d*\.?\d*$/.test(value)) return;
+    // Clear fixed tier sponsorship if entering custom amount
+    if (value && selectedSponsorship) {
+      setSelectedSponsorship(null);
+    }
+    setCustomAmounts(prev => ({ ...prev, communityPartner: value }));
     setTimeout(updateCart, 0);
   };
 
@@ -159,7 +209,7 @@ export default function PaymentsPage() {
             </h1>
 
             <p className="text-xl sm:text-2xl text-gray-300 mb-4 max-w-3xl mx-auto">
-              Pay for registration, practice sessions, and league fees securely online
+              Pay for registration, practice sessions, league fees, and sponsorships securely online
             </p>
 
             <div className="max-w-3xl mx-auto glass rounded-2xl p-6 mt-8">
@@ -335,6 +385,83 @@ export default function PaymentsPage() {
                         onBlur={updateCart}
                         className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
                         placeholder="Enter amount"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sponsorship Payments */}
+              <div className="glass rounded-2xl p-8 border-2 border-accent-500/30">
+                <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-accent-500/10 border border-accent-500/30 flex items-center justify-center">
+                    <svg className="w-5 h-5 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                    </svg>
+                  </div>
+                  Sponsorship Payments
+                </h2>
+                <p className="text-sm text-gray-400 mb-6">
+                  Support the club as a sponsor. View full sponsorship benefits on our{' '}
+                  <a href="/sponsorship" className="text-primary-400 hover:text-primary-300 underline">sponsorship page</a>.
+                </p>
+
+                <div className="space-y-4">
+                  {/* Fixed Sponsorship Tiers */}
+                  {sponsorshipTiers.map((tier) => (
+                    <div
+                      key={tier.id}
+                      className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                        selectedSponsorship === tier.id
+                          ? 'border-accent-500 bg-accent-500/10'
+                          : 'border-white/10 hover:border-white/20'
+                      }`}
+                      onClick={() => handleSponsorshipSelect(tier.id)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${
+                            selectedSponsorship === tier.id ? 'border-accent-500 bg-accent-500' : 'border-white/30'
+                          }`}>
+                            {selectedSponsorship === tier.id && (
+                              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold flex items-center gap-2">
+                              <span>{tier.icon}</span> {tier.name}
+                            </h3>
+                          </div>
+                        </div>
+                        <div className="text-xl font-bold text-accent-400">${tier.price.toLocaleString()}</div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Community Partner - Custom Amount */}
+                  <div className={`p-4 rounded-xl border-2 transition-all ${
+                    customAmounts.communityPartner ? 'border-accent-500 bg-accent-500/10' : 'border-white/10 hover:border-white/20'
+                  }`}>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-4">
+                        <span className="text-xl">🤝</span>
+                        <div>
+                          <h3 className="font-semibold">Community Partner</h3>
+                          <p className="text-sm text-gray-400">Any amount - support at your level</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-400">$</span>
+                      <input
+                        type="text"
+                        value={customAmounts.communityPartner}
+                        onChange={(e) => handleCommunityPartnerChange(e.target.value)}
+                        onBlur={updateCart}
+                        className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition-all"
+                        placeholder="Enter custom amount"
                       />
                     </div>
                   </div>
