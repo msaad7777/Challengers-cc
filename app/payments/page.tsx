@@ -12,7 +12,8 @@ interface CartItem {
   quantity: number;
 }
 
-const REGISTRATION_FEE = 50;
+const REGISTRATION_FEE = 100;
+const OUTDOOR_PRACTICE_FEE = 20;
 
 const SPONSORSHIP_TIERS = [
   { id: 'title-sponsor', name: 'Title Sponsor', price: 3000, icon: '🏆' },
