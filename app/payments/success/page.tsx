@@ -68,7 +68,7 @@ function SuccessContent() {
       </div>
 
       {/* Main Content */}
-      <section className="section-padding pt-32 md:pt-40 print:pt-8">
+      <section className="section-padding pt-32 md:pt-40 print:pt-4 print:pb-0">
         <div className="max-w-2xl mx-auto">
           {loading ? (
             <div className="text-center py-20">
@@ -78,45 +78,45 @@ function SuccessContent() {
           ) : (
             <>
               {/* Success Message */}
-              <div className="text-center mb-8">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-500/20 to-accent-500/20 flex items-center justify-center mx-auto mb-6 border-2 border-primary-500">
-                  <svg className="w-10 h-10 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="text-center mb-8 print:mb-4">
+                <div className="w-20 h-20 print:w-14 print:h-14 rounded-full bg-gradient-to-br from-primary-500/20 to-accent-500/20 flex items-center justify-center mx-auto mb-6 print:mb-3 border-2 border-primary-500">
+                  <svg className="w-10 h-10 print:w-7 print:h-7 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-bold mb-4">
+                <h1 className="text-3xl sm:text-4xl print:text-2xl font-bold mb-4 print:mb-2">
                   Payment <span className="gradient-text">Successful!</span>
                 </h1>
-                <p className="text-gray-400">
+                <p className="text-gray-400 print:text-sm">
                   Thank you for your payment. A confirmation email has been sent to your email address.
                 </p>
               </div>
 
               {/* Receipt Card */}
-              <div className="glass rounded-2xl p-8 border-2 border-primary-500/30" id="receipt">
+              <div className="glass rounded-2xl p-8 print:p-5 border-2 border-primary-500/30" id="receipt">
                 {/* Receipt Header */}
-                <div className="text-center pb-6 border-b border-white/10 mb-6">
-                  <div className="flex justify-center mb-4">
+                <div className="text-center pb-6 print:pb-3 border-b border-white/10 mb-6 print:mb-3">
+                  <div className="flex justify-center mb-4 print:mb-2">
                     <Image
                       src="/ccc-logo.png"
                       alt="CCC Logo"
                       width={60}
                       height={60}
-                      className="object-contain"
+                      className="object-contain print:w-10 print:h-10"
                     />
                   </div>
-                  <h2 className="text-xl font-bold">Challengers Cricket Club</h2>
-                  <p className="text-sm text-gray-400">Ontario NFP Corporation #1746974-8</p>
-                  <p className="text-sm text-gray-400">contact@challengerscc.ca | challengerscc.ca</p>
+                  <h2 className="text-xl print:text-lg font-bold">Challengers Cricket Club</h2>
+                  <p className="text-sm print:text-xs text-gray-400">Ontario NFP Corporation #1746974-8</p>
+                  <p className="text-sm print:text-xs text-gray-400">contact@challengerscc.ca | challengerscc.ca</p>
                 </div>
 
                 {/* Receipt Title */}
-                <div className="text-center mb-6">
+                <div className="text-center mb-6 print:mb-3">
                   <h3 className="text-lg font-semibold text-primary-400">PAYMENT RECEIPT</h3>
                 </div>
 
                 {/* Transaction Details */}
-                <div className="space-y-4 mb-6">
+                <div className="space-y-4 print:space-y-2 mb-6 print:mb-3">
                   {sessionId && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-400">Transaction ID:</span>
@@ -143,7 +143,7 @@ function SuccessContent() {
 
                 {/* Items */}
                 {paymentDetails?.items && paymentDetails.items.length > 0 && (
-                  <div className="border-t border-white/10 pt-6 mb-6">
+                  <div className="border-t border-white/10 pt-6 mb-6 print:pt-3 print:mb-3">
                     <h4 className="font-semibold mb-4">Payment Items</h4>
                     <div className="space-y-2">
                       {paymentDetails.items.map((item, index) => (
@@ -170,7 +170,7 @@ function SuccessContent() {
                 </div>
 
                 {/* Footer Note */}
-                <div className="mt-6 pt-6 border-t border-white/10 text-center">
+                <div className="mt-6 pt-6 print:mt-3 print:pt-3 border-t border-white/10 text-center">
                   <p className="text-xs text-gray-500">
                     This is an official receipt from Challengers Cricket Club.
                     <br />
@@ -240,13 +240,25 @@ function SuccessContent() {
       {/* Print Styles */}
       <style jsx global>{`
         @media print {
-          body {
+          @page {
+            size: auto;
+            margin: 10mm;
+          }
+          html, body {
             background: white !important;
             color: black !important;
+            font-size: 12px !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          .min-h-screen {
+            min-height: auto !important;
           }
           .glass {
             background: white !important;
             border: 1px solid #ccc !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
           }
           .gradient-text {
             background: none !important;
@@ -258,6 +270,10 @@ function SuccessContent() {
           }
           nav, footer {
             display: none !important;
+          }
+          section {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
           }
         }
       `}</style>
