@@ -151,7 +151,8 @@ export default function PaymentsPage() {
     }
 
     setError('');
-    window.location.href = 'https://donate.stripe.com/00w3cwaPAdAwdmT08j9R600';
+    const amountInCents = Math.round(cartTotal * 100);
+    window.location.href = `https://donate.stripe.com/00w3cwaPAdAwdmT08j9R600?prefilled_amount=${amountInCents}`;
   };
 
   return (
