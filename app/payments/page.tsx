@@ -1,160 +1,25 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-interface CartItem {
-  id: string;
-  name: string;
-  amount: number;
-  quantity: number;
-}
+const STRIPE_DONATION_LINK = 'https://donate.stripe.com/00w3cwaPAdAwdmT08j9R600';
 
-const REGISTRATION_FEE = 100;
-const OUTDOOR_PRACTICE_FEE = 20;
+const PAYMENT_OPTIONS = [
+  { name: 'Club Registration', description: '2026 Season membership', price: '$100', icon: '🏏' },
+  { name: 'Indoor Practice', description: 'Amount shared in WhatsApp group', price: 'Variable', icon: '🏋️' },
+  { name: 'T30 League Fee', description: '30-over format league registration', price: 'Variable', icon: '⚡' },
+  { name: 'T20 League Fee', description: '20-over format league registration', price: 'Variable', icon: '🔥' },
+];
 
 const SPONSORSHIP_TIERS = [
-  { id: 'title-sponsor', name: 'Title Sponsor', price: 3000, icon: '🏆' },
-  { id: 'platinum-sponsor', name: 'Platinum Sponsor', price: 1000, icon: '🥇' },
-  { id: 'gold-sponsor', name: 'Gold Sponsor', price: 500, icon: '🥈' },
+  { name: 'Title Sponsor', price: '$3,000', icon: '🏆' },
+  { name: 'Platinum Sponsor', price: '$1,000', icon: '🥇' },
+  { name: 'Gold Sponsor', price: '$500', icon: '🥈' },
+  { name: 'Community Partner', price: 'Any Amount', icon: '🤝' },
 ];
 
 export default function PaymentsPage() {
-  const [playerInfo, setPlayerInfo] = useState({
-    name: '',
-    email: '',
-    phone: ''
-  });
-
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [customAmounts, setCustomAmounts] = useState({
-    indoorPractice: '',
-    t30League: '',
-    t20League: '',
-    communityPartner: ''
-  });
-  const [registrationSelected, setRegistrationSelected] = useState(false);
-  const [selectedSponsorship, setSelectedSponsorship] = useState<string | null>(null);
-  const [error, setError] = useState('');
-
-  const updateCart = useCallback(() => {
-    const items: CartItem[] = [];
-
-    if (registrationSelected) {
-      items.push({
-        id: 'registration',
-        name: 'Club Registration',
-        amount: REGISTRATION_FEE,
-        quantity: 1
-      });
-    }
-
-    if (customAmounts.indoorPractice && parseFloat(customAmounts.indoorPractice) > 0) {
-      items.push({
-        id: 'indoor-practice',
-        name: 'Indoor Practice',
-        amount: parseFloat(customAmounts.indoorPractice),
-        quantity: 1
-      });
-    }
-
-    if (customAmounts.t30League && parseFloat(customAmounts.t30League) > 0) {
-      items.push({
-        id: 't30-league',
-        name: 'T30 League Fee',
-        amount: parseFloat(customAmounts.t30League),
-        quantity: 1
-      });
-    }
-
-    if (customAmounts.t20League && parseFloat(customAmounts.t20League) > 0) {
-      items.push({
-        id: 't20-league',
-        name: 'T20 League Fee',
-        amount: parseFloat(customAmounts.t20League),
-        quantity: 1
-      });
-    }
-
-    // Sponsorship tiers
-    if (selectedSponsorship) {
-      const tier = SPONSORSHIP_TIERS.find(t => t.id === selectedSponsorship);
-      if (tier) {
-        items.push({
-          id: tier.id,
-          name: `Sponsorship - ${tier.name}`,
-          amount: tier.price,
-          quantity: 1
-        });
-      }
-    }
-
-    // Community Partner (custom amount)
-    if (customAmounts.communityPartner && parseFloat(customAmounts.communityPartner) > 0) {
-      items.push({
-        id: 'community-partner',
-        name: 'Sponsorship - Community Partner',
-        amount: parseFloat(customAmounts.communityPartner),
-        quantity: 1
-      });
-    }
-
-    setCart(items);
-  }, [registrationSelected, customAmounts, selectedSponsorship]);
-
-  // Auto-update cart when any selection changes
-  useEffect(() => {
-    updateCart();
-  }, [updateCart]);
-
-  const handleRegistrationToggle = () => {
-    setRegistrationSelected(!registrationSelected);
-  };
-
-  const handleSponsorshipSelect = (tierId: string) => {
-    // Clear community partner if selecting a fixed tier
-    if (customAmounts.communityPartner) {
-      setCustomAmounts(prev => ({ ...prev, communityPartner: '' }));
-    }
-    setSelectedSponsorship(selectedSponsorship === tierId ? null : tierId);
-  };
-
-  const handleCommunityPartnerChange = (value: string) => {
-    if (value && !/^\d*\.?\d*$/.test(value)) return;
-    // Clear fixed tier sponsorship if entering custom amount
-    if (value && selectedSponsorship) {
-      setSelectedSponsorship(null);
-    }
-    setCustomAmounts(prev => ({ ...prev, communityPartner: value }));
-  };
-
-  const handleCustomAmountChange = (field: keyof typeof customAmounts, value: string) => {
-    // Only allow numbers and decimal point
-    if (value && !/^\d*\.?\d*$/.test(value)) return;
-
-    setCustomAmounts(prev => ({ ...prev, [field]: value }));
-  };
-
-  const cartTotal = cart.reduce((sum, item) => sum + item.amount * item.quantity, 0);
-
-  const handleCheckout = () => {
-    if (!playerInfo.name || !playerInfo.email) {
-      setError('Please enter your name and email');
-      return;
-    }
-
-    if (cart.length === 0) {
-      setError('Please select at least one payment item');
-      return;
-    }
-
-    setError('');
-    const amountInCents = Math.round(cartTotal * 100);
-    window.location.href = `https://donate.stripe.com/00w3cwaPAdAwdmT08j9R600?prefilled_amount=${amountInCents}`;
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
       <Navbar />
@@ -202,306 +67,75 @@ export default function PaymentsPage() {
         </div>
       </section>
 
-      {/* Payment Form Section */}
+      {/* Payment Options */}
       <section className="section-padding bg-gradient-to-b from-black to-gray-950">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Left Column - Player Info & Payment Options */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* Player Information */}
-              <div className="glass rounded-2xl p-8 border-2 border-white/10">
-                <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary-500/10 border border-primary-500/30 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                  Player Information
-                </h2>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Full Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={playerInfo.name}
-                      onChange={(e) => setPlayerInfo({ ...playerInfo, name: e.target.value })}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
-                      placeholder="John Doe"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Email Address *</label>
-                    <input
-                      type="email"
-                      required
-                      value={playerInfo.email}
-                      onChange={(e) => setPlayerInfo({ ...playerInfo, email: e.target.value })}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
-                      placeholder="john@example.com"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Phone Number</label>
-                    <input
-                      type="tel"
-                      value={playerInfo.phone}
-                      onChange={(e) => setPlayerInfo({ ...playerInfo, phone: e.target.value })}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
-                      placeholder="(519) 555-0123"
-                    />
+        <div className="max-w-5xl mx-auto">
+          {/* Player Fees */}
+          <div className="mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-center">
+              Player <span className="gradient-text">Fees</span>
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {PAYMENT_OPTIONS.map((option) => (
+                <div key={option.name} className="glass rounded-xl p-6 border-2 border-white/10">
+                  <div className="flex items-center gap-4">
+                    <span className="text-3xl">{option.icon}</span>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg">{option.name}</h3>
+                      <p className="text-sm text-gray-400">{option.description}</p>
+                    </div>
+                    <div className="text-lg font-bold gradient-text">{option.price}</div>
                   </div>
                 </div>
-              </div>
-
-              {/* Payment Categories */}
-              <div className="glass rounded-2xl p-8 border-2 border-white/10">
-                <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-accent-500/10 border border-accent-500/30 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                  </div>
-                  Select Payment Items
-                </h2>
-
-                <div className="space-y-4">
-                  {/* Club Registration */}
-                  <div
-                    className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                      registrationSelected
-                        ? 'border-primary-500 bg-primary-500/10'
-                        : 'border-white/10 hover:border-white/20'
-                    }`}
-                    onClick={handleRegistrationToggle}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${
-                          registrationSelected ? 'border-primary-500 bg-primary-500' : 'border-white/30'
-                        }`}>
-                          {registrationSelected && (
-                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                            </svg>
-                          )}
-                        </div>
-                        <div>
-                          <h3 className="font-semibold">Club Registration</h3>
-                          <p className="text-sm text-gray-400">2026 Season membership</p>
-                        </div>
-                      </div>
-                      <div className="text-xl font-bold gradient-text">${REGISTRATION_FEE}</div>
-                    </div>
-                  </div>
-
-                  {/* Indoor Practice */}
-                  <div className="p-4 rounded-xl border-2 border-white/10 hover:border-white/20 transition-all">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <h3 className="font-semibold">Indoor Practice</h3>
-                        <p className="text-sm text-gray-400">Enter amount shared in WhatsApp group</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-400">$</span>
-                      <input
-                        type="text"
-                        value={customAmounts.indoorPractice}
-                        onChange={(e) => handleCustomAmountChange('indoorPractice', e.target.value)}
-                                                className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
-                        placeholder="Enter amount"
-                      />
-                    </div>
-                  </div>
-
-                  {/* T30 League */}
-                  <div className="p-4 rounded-xl border-2 border-white/10 hover:border-white/20 transition-all">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <h3 className="font-semibold">T30 League Fee</h3>
-                        <p className="text-sm text-gray-400">30-over format league registration</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-400">$</span>
-                      <input
-                        type="text"
-                        value={customAmounts.t30League}
-                        onChange={(e) => handleCustomAmountChange('t30League', e.target.value)}
-                                                className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
-                        placeholder="Enter amount"
-                      />
-                    </div>
-                  </div>
-
-                  {/* T20 League */}
-                  <div className="p-4 rounded-xl border-2 border-white/10 hover:border-white/20 transition-all">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <h3 className="font-semibold">T20 League Fee</h3>
-                        <p className="text-sm text-gray-400">20-over format league registration</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-400">$</span>
-                      <input
-                        type="text"
-                        value={customAmounts.t20League}
-                        onChange={(e) => handleCustomAmountChange('t20League', e.target.value)}
-                                                className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
-                        placeholder="Enter amount"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Sponsorship Payments */}
-              <div className="glass rounded-2xl p-8 border-2 border-accent-500/30">
-                <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-accent-500/10 border border-accent-500/30 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                    </svg>
-                  </div>
-                  Sponsorship Payments
-                </h2>
-                <p className="text-sm text-gray-400 mb-6">
-                  Support the club as a sponsor. View full sponsorship benefits on our{' '}
-                  <a href="/sponsorship" className="text-primary-400 hover:text-primary-300 underline">sponsorship page</a>.
-                </p>
-
-                <div className="space-y-4">
-                  {/* Fixed Sponsorship Tiers */}
-                  {SPONSORSHIP_TIERS.map((tier) => (
-                    <div
-                      key={tier.id}
-                      className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                        selectedSponsorship === tier.id
-                          ? 'border-accent-500 bg-accent-500/10'
-                          : 'border-white/10 hover:border-white/20'
-                      }`}
-                      onClick={() => handleSponsorshipSelect(tier.id)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${
-                            selectedSponsorship === tier.id ? 'border-accent-500 bg-accent-500' : 'border-white/30'
-                          }`}>
-                            {selectedSponsorship === tier.id && (
-                              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                              </svg>
-                            )}
-                          </div>
-                          <div>
-                            <h3 className="font-semibold flex items-center gap-2">
-                              <span>{tier.icon}</span> {tier.name}
-                            </h3>
-                          </div>
-                        </div>
-                        <div className="text-xl font-bold text-accent-400">${tier.price.toLocaleString()}</div>
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* Community Partner - Custom Amount */}
-                  <div className={`p-4 rounded-xl border-2 transition-all ${
-                    customAmounts.communityPartner ? 'border-accent-500 bg-accent-500/10' : 'border-white/10 hover:border-white/20'
-                  }`}>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-4">
-                        <span className="text-xl">🤝</span>
-                        <div>
-                          <h3 className="font-semibold">Community Partner</h3>
-                          <p className="text-sm text-gray-400">Any amount - support at your level</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-400">$</span>
-                      <input
-                        type="text"
-                        value={customAmounts.communityPartner}
-                        onChange={(e) => handleCommunityPartnerChange(e.target.value)}
-                                                className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition-all"
-                        placeholder="Enter custom amount"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
+          </div>
 
-            {/* Right Column - Cart Summary */}
-            <div className="lg:col-span-1">
-              <div className="glass rounded-2xl p-6 border-2 border-primary-500/30 sticky top-24">
-                <h2 className="text-xl font-bold mb-6 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-primary-500/10 border border-primary-500/30 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
-                  Order Summary
-                </h2>
-
-                {cart.length === 0 ? (
-                  <div className="text-center py-8 text-gray-400">
-                    <svg className="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    <p className="text-sm">No items selected</p>
-                    <p className="text-xs mt-1">Select payment items from the left</p>
-                  </div>
-                ) : (
-                  <>
-                    <div className="space-y-3 mb-6">
-                      {cart.map((item) => (
-                        <div key={item.id} className="flex justify-between items-center py-2 border-b border-white/10">
-                          <span className="text-gray-300">{item.name}</span>
-                          <span className="font-semibold">${item.amount.toFixed(2)}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex justify-between items-center py-4 border-t border-white/20">
-                      <span className="text-lg font-bold">Total</span>
-                      <span className="text-2xl font-bold gradient-text">${cartTotal.toFixed(2)}</span>
-                    </div>
-                  </>
-                )}
-
-                {error && (
-                  <div className="mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500/30">
-                    <p className="text-sm text-red-400">{error}</p>
-                  </div>
-                )}
-
-                <button
-                  onClick={handleCheckout}
-                  disabled={cart.length === 0}
-                  className="w-full py-4 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold text-lg shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                >
-                  Proceed to Payment
-                </button>
-
-                <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                  Secured by Stripe
+          {/* Sponsorship Tiers */}
+          <div className="mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-center">
+              Sponsorship <span className="gradient-text">Tiers</span>
+            </h2>
+            <p className="text-center text-gray-400 mb-8">
+              Support the club as a sponsor. View full benefits on our{' '}
+              <a href="/sponsorship" className="text-primary-400 hover:text-primary-300 underline">sponsorship page</a>.
+            </p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {SPONSORSHIP_TIERS.map((tier) => (
+                <div key={tier.name} className="glass rounded-xl p-6 border-2 border-accent-500/20 text-center">
+                  <span className="text-3xl block mb-3">{tier.icon}</span>
+                  <h3 className="font-semibold text-lg mb-1">{tier.name}</h3>
+                  <div className="text-xl font-bold text-accent-400">{tier.price}</div>
                 </div>
+              ))}
+            </div>
+          </div>
 
-                {/* Club Info */}
-                <div className="mt-6 pt-6 border-t border-white/10">
-                  <p className="text-xs text-gray-500 text-center">
-                    <strong>Challengers Cricket Club</strong><br />
-                    Ontario NFP Corporation #1746974-8<br />
-                    contact@challengerscc.ca
-                  </p>
-                </div>
+          {/* CTA */}
+          <div className="text-center">
+            <div className="glass rounded-2xl p-8 border-2 border-primary-500/30 max-w-xl mx-auto">
+              <h3 className="text-2xl font-bold mb-3">Ready to Pay?</h3>
+              <p className="text-gray-400 mb-6">
+                Click below to proceed to our secure payment page where you can enter your amount.
+              </p>
+              <a
+                href={STRIPE_DONATION_LINK}
+                className="inline-block w-full py-4 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold text-lg shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105 text-center"
+              >
+                Proceed to Payment
+              </a>
+              <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                Secured by Stripe
+              </div>
+              <div className="mt-4 pt-4 border-t border-white/10">
+                <p className="text-xs text-gray-500">
+                  <strong>Challengers Cricket Club</strong><br />
+                  Ontario NFP Corporation #1746974-8<br />
+                  contact@challengerscc.ca
+                </p>
               </div>
             </div>
           </div>
@@ -523,15 +157,15 @@ export default function PaymentsPage() {
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-500/20 to-accent-500/20 flex items-center justify-center mx-auto mb-4 border-2 border-primary-500/30">
                 <span className="text-2xl font-bold gradient-text">1</span>
               </div>
-              <h3 className="font-semibold mb-2">Select Items</h3>
-              <p className="text-sm text-gray-400">Choose registration, practice fees, or league payments</p>
+              <h3 className="font-semibold mb-2">Choose Your Payment</h3>
+              <p className="text-sm text-gray-400">Review the options above and note your amount</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-500/20 to-accent-500/20 flex items-center justify-center mx-auto mb-4 border-2 border-primary-500/30">
                 <span className="text-2xl font-bold gradient-text">2</span>
               </div>
               <h3 className="font-semibold mb-2">Secure Payment</h3>
-              <p className="text-sm text-gray-400">Pay securely via Stripe with card or other methods</p>
+              <p className="text-sm text-gray-400">Enter your amount and pay securely via Stripe</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-500/20 to-accent-500/20 flex items-center justify-center mx-auto mb-4 border-2 border-primary-500/30">
@@ -561,11 +195,11 @@ export default function PaymentsPage() {
             </div>
             <div className="glass rounded-xl p-6">
               <h3 className="font-semibold mb-2">Will I receive a receipt?</h3>
-              <p className="text-sm text-gray-400">Yes, you will receive an email receipt from Stripe immediately after payment, plus a detailed receipt on our confirmation page.</p>
+              <p className="text-sm text-gray-400">Yes, you will receive an email receipt from Stripe immediately after payment.</p>
             </div>
             <div className="glass rounded-xl p-6">
               <h3 className="font-semibold mb-2">What payment methods are accepted?</h3>
-              <p className="text-sm text-gray-400">We accept all major credit and debit cards including Visa, Mastercard, American Express, and more.</p>
+              <p className="text-sm text-gray-400">We accept all major credit and debit cards, Apple Pay, Klarna, and Link.</p>
             </div>
             <div className="glass rounded-xl p-6">
               <h3 className="font-semibold mb-2">How do I know the correct amount for practice/league fees?</h3>
