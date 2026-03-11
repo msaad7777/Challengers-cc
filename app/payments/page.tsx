@@ -37,7 +37,6 @@ export default function PaymentsPage() {
   });
   const [registrationSelected, setRegistrationSelected] = useState(false);
   const [selectedSponsorship, setSelectedSponsorship] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   const updateCart = useCallback(() => {
@@ -140,7 +139,7 @@ export default function PaymentsPage() {
 
   const cartTotal = cart.reduce((sum, item) => sum + item.amount * item.quantity, 0);
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     if (!playerInfo.name || !playerInfo.email) {
       setError('Please enter your name and email');
       return;
@@ -151,40 +150,8 @@ export default function PaymentsPage() {
       return;
     }
 
-    setIsLoading(true);
     setError('');
-
-    try {
-      const response = await fetch('/api/create-checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          items: cart,
-          customerInfo: playerInfo
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.error) {
-        setError(data.error);
-        setIsLoading(false);
-        return;
-      }
-
-      // Redirect to Stripe Checkout URL
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        setError('Failed to create checkout session');
-      }
-    } catch {
-      setError('Something went wrong. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
+    window.location.href = 'https://donate.stripe.com/00w3cwaPAdAwdmT08j9R600';
   };
 
   return (
@@ -513,20 +480,10 @@ export default function PaymentsPage() {
 
                 <button
                   onClick={handleCheckout}
-                  disabled={isLoading || cart.length === 0}
+                  disabled={cart.length === 0}
                   className="w-full py-4 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold text-lg shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
-                  {isLoading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Processing...
-                    </span>
-                  ) : (
-                    'Proceed to Payment'
-                  )}
+                  Proceed to Payment
                 </button>
 
                 <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
