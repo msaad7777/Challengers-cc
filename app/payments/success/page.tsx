@@ -171,6 +171,9 @@ function SuccessContent() {
 
                 {/* Footer Note */}
                 <div className="mt-6 pt-6 print:mt-3 print:pt-3 border-t border-white/10 text-center">
+                  <p className="text-sm text-gray-400 mb-3">
+                    Your support helps us cover league registration, field rent, field insurance, unemployed members, equipment, and programs. Thank you for being a part of our community!
+                  </p>
                   <p className="text-xs text-gray-500">
                     This is an official receipt from Challengers Cricket Club.
                     <br />

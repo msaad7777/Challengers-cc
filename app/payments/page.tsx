@@ -116,7 +116,7 @@ export default function PaymentsPage() {
             <div className="glass rounded-2xl p-8 border-2 border-primary-500/30 max-w-xl mx-auto">
               <h3 className="text-2xl font-bold mb-3">Ready to Pay?</h3>
               <p className="text-gray-400 mb-6">
-                Click below to proceed to our secure payment page where you can enter your amount.
+                Your support helps us cover league registration, field rent, field insurance, unemployed members, equipment, and programs. Thank you for being a part of our community!
               </p>
               <a
                 href={STRIPE_DONATION_LINK}
