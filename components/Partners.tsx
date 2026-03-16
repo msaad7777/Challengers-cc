@@ -16,7 +16,7 @@ export default function Partners() {
         </div>
 
         {/* Partners Grid */}
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Coaching & Development */}
           <div className="glass rounded-2xl p-8 border-2 border-white/10 hover:border-white/20 transition-all duration-300 opacity-75">
             <div className="text-center mb-6">
@@ -61,6 +61,34 @@ export default function Partners() {
             </div>
           </div>
 
+          {/* Platinum Sponsor */}
+          <div className="glass rounded-2xl p-8 border-2 border-purple-500/30 hover:border-purple-500/50 transition-all duration-300">
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 rounded-full border border-purple-500/20 mb-4">
+                <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                <span className="text-sm font-semibold text-purple-400">Platinum Sponsor</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <div className="w-32 h-32 rounded-xl overflow-hidden mb-4">
+                <Image
+                  src="/bhupinder-singh-sponsor.jpeg"
+                  alt="Bhupinder Singh - Realtor at Century 21"
+                  width={128}
+                  height={128}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-1">Bhupinder Singh</h3>
+              <p className="text-sm text-purple-400 font-medium">Realtor® | Century 21</p>
+              <p className="text-xs text-gray-400 mt-1">First Canadian Corp.</p>
+              <a href="https://www.getrealwithinder.com" target="_blank" rel="noopener noreferrer" className="text-xs text-primary-400 hover:text-primary-300 mt-1">getrealwithinder.com</a>
+            </div>
+          </div>
+
           {/* Gold Sponsor */}
           <div className="glass rounded-2xl p-8 border-2 border-blue-500/30 hover:border-blue-500/50 transition-all duration-300">
             <div className="text-center mb-6">
@@ -85,6 +113,33 @@ export default function Partners() {
               <h3 className="text-lg font-bold text-white mb-1">Freddy George</h3>
               <p className="text-sm text-blue-400 font-medium">Licensed Financial Advisor</p>
               <p className="text-xs text-gray-400 mt-1">Wealth Management</p>
+            </div>
+          </div>
+
+          {/* Community Partner */}
+          <div className="glass rounded-2xl p-8 border-2 border-primary-500/30 hover:border-primary-500/50 transition-all duration-300">
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 rounded-full border border-primary-500/20 mb-4">
+                <svg className="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span className="text-sm font-semibold text-primary-400">Community Partner</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <div className="w-32 h-32 rounded-xl overflow-hidden mb-4 bg-white flex items-center justify-center p-2">
+                <Image
+                  src="/koverdrive-sponsor.png"
+                  alt="Kover Drive - Cricket Organization, London Ontario"
+                  width={128}
+                  height={128}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-1">Kover Drive</h3>
+              <p className="text-sm text-primary-400 font-medium">Cricket Organization</p>
+              <p className="text-xs text-gray-400 mt-1">London, Ontario</p>
             </div>
           </div>
         </div>
