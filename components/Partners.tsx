@@ -138,7 +138,7 @@ export default function Partners() {
                 />
               </div>
               <h3 className="text-lg font-bold text-white mb-1">Kover Drive</h3>
-              <p className="text-sm text-primary-400 font-medium">Cricket Organization</p>
+              <p className="text-sm text-primary-400 font-medium">Indoor Cricket Practice Facility</p>
               <p className="text-xs text-gray-400 mt-1">London, Ontario</p>
             </div>
           </div>
