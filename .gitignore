@@ -38,3 +38,44 @@ next-env.d.ts
 # sensitive/personal files
 Profile(3).pdf
 Treasurer-Analysis.xlsx
+
+# IDs, personal documents
+*-ID*.pdf
+*-IDs*.pdf
+*ID1*.pdf
+*Id2*.pdf
+DL-*.pdf
+PR-Card*.pdf
+*PR CARD*.pdf
+*_DL.pdf
+
+# Incorporation, legal, agreements
+*Incroporation*.pdf
+*Incorporation*.pdf
+*Letter of Direction*.pdf
+*Client Onboarding*.pdf
+*Bylaws*.docx
+*Bylaws*.md
+*Bylaws*.pdf
+*Constitution*.docx
+*Constitution*.pdf
+
+# Club internal documents
+*.xlsx
+*.docx
+*Allocation form*.docx
+
+# Sponsor/personal images not for public
+Ashvak Sheik.jpeg
+Bhupinder Logo.jpeg
+RabyIT.jpeg
+Freddy-First-Sponsor.jpeg
+koverdrive.pdf
+
+# Other sensitive/internal PDFs
+Bhupinder-OL*.pdf
+Challengers Cricket Club*.pdf
+
+# Original logo file (deployed copy is in /public)
+CCC-Logo.png
+public/ccc-logo-old.png
