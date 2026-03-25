@@ -116,6 +116,7 @@ export default function LookingForSponsorsPage() {
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-accent-600 to-accent-500"></div>
               <div className="text-4xl mb-4">🏆</div>
               <h3 className="text-xl font-bold mb-1">Title Sponsor</h3>
+              <p className="text-xs text-accent-400 font-semibold mb-2">Only 1 Available</p>
               <div className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-accent-600 to-accent-500 text-sm font-semibold mb-4">
                 $3,000
               </div>

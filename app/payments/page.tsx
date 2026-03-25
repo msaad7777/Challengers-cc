@@ -13,7 +13,7 @@ const PAYMENT_OPTIONS = [
 ];
 
 const SPONSORSHIP_TIERS = [
-  { name: 'Title Sponsor', price: '$3,000', icon: '🏆' },
+  { name: 'Title Sponsor (Only 1 Available)', price: '$3,000', icon: '🏆' },
   { name: 'Platinum Sponsor', price: '$1,000', icon: '🥇' },
   { name: 'Gold Sponsor', price: '$500', icon: '🥈' },
   { name: 'Community Partner', price: 'Any Amount', icon: '🤝' },
