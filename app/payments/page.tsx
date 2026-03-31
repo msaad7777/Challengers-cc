@@ -68,6 +68,8 @@ export default function PaymentsPage() {
         </div>
       </section>
 
+      <VerifiedBanner />
+
       {/* Payment Options */}
       <section className="section-padding bg-gradient-to-b from-black to-gray-950">
         <div className="max-w-5xl mx-auto">
@@ -210,7 +212,6 @@ export default function PaymentsPage() {
         </div>
       </section>
 
-      <VerifiedBanner />
       <Footer />
     </div>
   );
