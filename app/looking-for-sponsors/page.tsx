@@ -98,6 +98,8 @@ export default function LookingForSponsorsPage() {
         </div>
       </section>
 
+      <VerifiedBanner />
+
       {/* Sponsorship Packages */}
       <section className="section-padding bg-gradient-to-b from-gray-950 to-black">
         <div className="max-w-7xl mx-auto">
@@ -422,7 +424,6 @@ export default function LookingForSponsorsPage() {
         </div>
       </section>
 
-      <VerifiedBanner />
       <Footer />
     </div>
   );
