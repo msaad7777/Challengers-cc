@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import VerifiedBanner from '@/components/VerifiedBanner';
 import Link from 'next/link';
 
 export default function LookingForSponsorsPage() {
@@ -421,6 +422,7 @@ export default function LookingForSponsorsPage() {
         </div>
       </section>
 
+      <VerifiedBanner />
       <Footer />
     </div>
   );

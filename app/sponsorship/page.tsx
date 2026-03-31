@@ -3,6 +3,7 @@
 import { useState, FormEvent } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import VerifiedBanner from '@/components/VerifiedBanner';
 
 export default function SponsorshipPage() {
   const [formData, setFormData] = useState({
@@ -569,6 +570,7 @@ export default function SponsorshipPage() {
         </div>
       </section>
 
+      <VerifiedBanner />
       <Footer />
     </div>
   );

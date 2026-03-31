@@ -2,6 +2,7 @@
 
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import VerifiedBanner from '@/components/VerifiedBanner';
 
 const STRIPE_DONATION_LINK = 'https://donate.stripe.com/00w3cwaPAdAwdmT08j9R600';
 
@@ -209,6 +210,7 @@ export default function PaymentsPage() {
         </div>
       </section>
 
+      <VerifiedBanner />
       <Footer />
     </div>
   );
