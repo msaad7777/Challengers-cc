@@ -1,6 +1,7 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
+import VerifiedBanner from '@/components/VerifiedBanner';
 import SponsorshipBanner from '@/components/SponsorshipBanner';
 import Programs from '@/components/Programs';
 import Partners from '@/components/Partners';
@@ -16,6 +17,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <About />
+      <VerifiedBanner />
       <SponsorshipBanner />
       <Programs />
       <Partners />
