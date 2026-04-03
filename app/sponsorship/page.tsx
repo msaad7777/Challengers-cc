@@ -413,7 +413,7 @@ export default function SponsorshipPage() {
           </div>
 
           {/* Additional Info */}
-          <div className="mt-12 max-w-3xl mx-auto">
+          <div className="mt-12 max-w-3xl mx-auto space-y-4">
             <div className="glass rounded-xl p-6 border border-primary-500/20">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-lg bg-primary-500/10 border border-primary-500/30 flex items-center justify-center flex-shrink-0">
@@ -427,6 +427,83 @@ export default function SponsorshipPage() {
                     As a registered Ontario non-profit corporation, we can provide official tax receipts for all sponsorship contributions.
                     Receipts will be issued via email within 2 business days of payment confirmation.
                   </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Sponsorship Terms */}
+            <div className="glass rounded-xl p-6 border border-accent-500/20">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-lg bg-accent-500/10 border border-accent-500/30 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-2 text-accent-400">Sponsorship Terms &amp; Expectations</h4>
+                  <p className="text-sm text-gray-400 mb-3">
+                    Challengers Cricket Club is a registered Ontario non-profit corporation. Sponsorship is a community contribution
+                    that supports cricket development — it is not a commercial advertising or lead-generation contract.
+                  </p>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-sm font-medium text-gray-300 mb-1">What We Offer Sponsors:</p>
+                      <ul className="text-sm text-gray-400 space-y-1">
+                        <li className="flex items-start gap-2">
+                          <svg className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Brand exposure on jerseys, website, and social media as per your sponsorship tier
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <svg className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Opportunity to introduce your services to our members at events (matches, BBQs, tournaments)
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <svg className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Distribution of your promotional materials (flyers, brochures) to our players and community
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <svg className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Sharing your information with members via forms, group chats, and newsletters
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-300 mb-1">What Sponsorship Does Not Include:</p>
+                      <ul className="text-sm text-gray-400 space-y-1">
+                        <li className="flex items-start gap-2">
+                          <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                          Guaranteed leads, client referrals, or business conversions
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                          Mandatory sign-ups or purchases of sponsor services by members
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                          Guaranteed one-on-one meetings between sponsors and individual members
+                        </li>
+                      </ul>
+                    </div>
+                    <p className="text-xs text-gray-500 italic">
+                      We share sponsor information with our members and create opportunities for introductions, but any individual
+                      engagement with sponsor services is entirely voluntary and at each member&apos;s own discretion. As a non-profit,
+                      the club does not receive commissions or referral fees from sponsors.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
