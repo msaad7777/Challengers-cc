@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
 
     // Retrieve the Checkout Session
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ['line_items', 'payment_intent'],
+      expand: ['line_items', 'payment_intent', 'payment_intent.latest_charge'],
     });
 
     // Parse items from metadata
@@ -44,6 +44,16 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Get the Stripe receipt URL from the charge
+    let receiptUrl: string | null = null;
+    const paymentIntent = session.payment_intent;
+    if (paymentIntent && typeof paymentIntent !== 'string') {
+      const charge = paymentIntent.latest_charge;
+      if (charge && typeof charge !== 'string') {
+        receiptUrl = charge.receipt_url ?? null;
+      }
+    }
+
     const paymentDetails = {
       id: session.id,
       amount: session.amount_total || 0,
@@ -53,6 +63,7 @@ export async function GET(request: NextRequest) {
       items: items,
       created: session.created,
       status: session.payment_status,
+      receiptUrl,
     };
 
     return NextResponse.json(paymentDetails);

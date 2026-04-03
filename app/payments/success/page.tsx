@@ -14,6 +14,7 @@ interface PaymentDetails {
   customerName: string;
   items: { name: string; amount: number }[];
   created: number;
+  receiptUrl: string | null;
 }
 
 function SuccessContent() {
@@ -190,6 +191,19 @@ function SuccessContent() {
 
               {/* Action Buttons */}
               <div className="mt-8 flex flex-col sm:flex-row gap-4 print:hidden">
+                {paymentDetails?.receiptUrl && (
+                  <a
+                    href={paymentDetails.receiptUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-3 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold flex items-center justify-center gap-2 shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    View Stripe Receipt
+                  </a>
+                )}
                 <button
                   onClick={handlePrint}
                   className="flex-1 py-3 glass glass-hover rounded-lg font-semibold flex items-center justify-center gap-2"
@@ -201,7 +215,7 @@ function SuccessContent() {
                 </button>
                 <Link
                   href="/"
-                  className="flex-1 py-3 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold text-center shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105"
+                  className="flex-1 py-3 glass glass-hover rounded-lg font-semibold text-center flex items-center justify-center"
                 >
                   Back to Home
                 </Link>

@@ -319,8 +319,109 @@ export default function LookingForSponsorsPage() {
         </div>
       </section>
 
-      {/* Contact / CTA Section */}
+      {/* Sponsorship Terms */}
       <section className="section-padding bg-gradient-to-b from-gray-950 to-black">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+              Important <span className="gradient-text">Sponsorship Terms</span>
+            </h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              As a registered Ontario non-profit corporation, we want to be fully transparent about what sponsorship means
+            </p>
+            <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto rounded-full mt-6"></div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="glass rounded-2xl p-8 border-2 border-primary-500/20">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-lg bg-primary-500/10 border border-primary-500/30 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-primary-400">What We Offer</h3>
+              </div>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 text-primary-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-sm text-gray-300">Brand visibility on jerseys, website, and social media per your tier</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 text-primary-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-sm text-gray-300">Opportunities to introduce your services at club events (matches, BBQs, tournaments)</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 text-primary-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-sm text-gray-300">Distribution of your promotional materials to our players and community members</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 text-primary-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-sm text-gray-300">Sharing your info with members via forms, group chats, and newsletters</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="glass rounded-2xl p-8 border-2 border-red-500/20">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/30 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-red-400">What We Cannot Guarantee</h3>
+              </div>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span className="text-sm text-gray-300">Guaranteed leads, client referrals, or business conversions</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span className="text-sm text-gray-300">Mandatory sign-ups or purchases of sponsor services by members</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span className="text-sm text-gray-300">Guaranteed one-on-one meetings between sponsors and individual members</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span className="text-sm text-gray-300">Any obligation for members to use or purchase sponsor products/services</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-8 glass rounded-xl p-6 border border-accent-500/20">
+            <p className="text-sm text-gray-400 text-center">
+              <span className="text-accent-400 font-semibold">Sponsorship is community support, not a sales contract.</span>{' '}
+              We create opportunities for introductions and share sponsor information with our members, but any individual
+              engagement with sponsor services is entirely voluntary and at each member&apos;s own discretion. As a non-profit
+              organization, the club does not receive commissions or referral fees from sponsors — and in turn, sponsors
+              should not expect guaranteed business outcomes from their contribution.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact / CTA Section */}
+      <section className="section-padding bg-gradient-to-b from-black to-gray-950">
         <div className="max-w-4xl mx-auto">
           <div className="glass rounded-2xl p-8 md:p-12 border-2 border-primary-500/30 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-500/20 to-transparent rounded-bl-full"></div>

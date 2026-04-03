@@ -72,6 +72,9 @@ RabyIT.jpeg
 Freddy-First-Sponsor.jpeg
 koverdrive.pdf
 
+# OAuth/API credentials
+client_secret*.json
+
 # Other sensitive/internal PDFs
 Bhupinder-OL*.pdf
 Challengers Cricket Club*.pdf

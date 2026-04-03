@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Challengers Cricket Club website - Next.js 15 (App Router), TypeScript, Tailwind CSS with dark theme, glass morphism effects, Google Forms integration, and Stripe payments.
 
-**Organization**: Ontario NFP Corporation #1746974-8 | contact@challengerscc.ca | challengerscc.ca | @challengers.cc
+**Organization**: Ontario NFP Corporation #1746974-8 | challengerscc.ca | @challengers.cc
+**Emails**: `contact@challengerscc.ca` (official/Google Workspace), `challengerscricketclub2026@gmail.com` (legacy Gmail, used for SMTP outreach)
+**Reference docs at root**: `GOOGLE_FORMS_SETUP.md` (form setup guide, partially stale), `SPONSORSHIP_OPPORTUNITIES.md`
 
 ## Development Commands
 
@@ -19,6 +21,8 @@ npm run lint       # Run linter
 ```
 
 No test framework is configured. There are no unit or integration tests.
+
+Linting uses `next lint` with the `next/core-web-vitals` ESLint preset (`.eslintrc.json`).
 
 ## Environment Variables
 
@@ -36,28 +40,28 @@ Note: `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` exists in `.env.example` but is never
 
 ## Architecture
 
-TypeScript strict mode is enabled. Path alias `@/*` maps to the project root (e.g., `import Navbar from '@/components/Navbar'`). Font: Inter (via `next/font/google`). `next.config.ts` is empty — no `images.remotePatterns` configured, so `next/image` with external URLs will fail.
+TypeScript strict mode is enabled. Path alias `@/*` maps to the project root (e.g., `import Navbar from '@/components/Navbar'`). Font: Inter (via `next/font/google`). `next.config.ts` is empty — no `images.remotePatterns` configured, so `next/image` with external URLs will fail. Root layout (`app/layout.tsx`) sets `metadataBase` to `https://challengerscc.ca` with Open Graph and Twitter card metadata.
 
 ### Pages
 
 - **/** - Homepage: composes 11 components in sequence (Navbar → Hero → About → SponsorshipBanner → Programs → Partners → BoardMembers → Registration → Contact → LegalDocuments → Footer)
 - **/sponsorship** - Sponsorship tiers and inquiry form (self-contained `"use client"` page)
-- **/payments** - Stripe checkout for registration, practice fees, league fees, and sponsorships
+- **/payments** - Static payment info page listing fees and sponsorship tiers, with a single "Proceed to Payment" link to a Stripe-hosted donation page (`STRIPE_DONATION_LINK`)
 - **/payments/success** - Payment receipt with print functionality (uses `<Suspense>` wrapper for `useSearchParams()` — required by Next.js 15 App Router)
 - **/payments/cancel** - Payment cancellation page
 - **/looking-for-sponsors** - Public-facing sponsor recruitment page for 2026 season (server component, includes Navbar + Footer)
 
-The payments pages have no shared layout — each imports `Navbar` independently. The main `/payments` page includes `<Footer>`, but success and cancel pages do not.
+The payments pages have no shared layout — each imports `Navbar` independently. The main `/payments` page includes `<Footer>`, but success and cancel pages do not. The `/payments` page no longer has a cart system — it's purely informational with a link to Stripe's hosted payment page.
 
 ### API Routes
 
 - **app/api/create-checkout/route.ts** - Creates Stripe Checkout sessions (POST). Lazy Stripe initialization to avoid build-time errors on Vercel. Currency: CAD.
-- **app/api/payment-details/route.ts** - Retrieves payment session details by `session_id` query param (GET). Returns raw Unix timestamp for `session.created`.
+- **app/api/payment-details/route.ts** - Retrieves payment session details by `session_id` query param (GET). Returns raw Unix timestamp for `session.created`. Expands `payment_intent.latest_charge` to include Stripe receipt URL.
 
 ### Component Rendering Model
 
 - **Server components** (default): About, BoardMembers, Footer, LegalDocuments, Partners, Programs, SponsorshipBanner
-- **Client components** (`"use client"`): Navbar, Hero, Registration, Contact
+- **Client components** (`"use client"`): Navbar, Hero, Registration, Contact, VerifiedNonprofit (imported by Footer, uses `canvas-confetti` + IntersectionObserver), VerifiedBanner (inline verification badge strip, used on payments/sponsorship/looking-for-sponsors pages)
 
 ### Design System
 
@@ -87,21 +91,22 @@ The payments pages have no shared layout — each imports `Navbar` independently
 
 ### Stripe Payment Flow
 
-`/payments` page → user builds cart + enters info → POST to `/api/create-checkout` → Stripe Checkout session created → redirect via `window.location.href` → on success, redirect to `/payments/success?session_id=...` → page calls `/api/payment-details` to display receipt.
+The `/payments` page links directly to a Stripe-hosted donation page (`STRIPE_DONATION_LINK`). On successful payment, Stripe redirects to `/payments/success?session_id=...`, which calls `/api/payment-details` to display a receipt with print functionality.
 
-The flow is entirely server-side Stripe. `@stripe/stripe-js` is in `package.json` but is never imported — no client-side Stripe.js is used.
+The API routes (`/api/create-checkout` and `/api/payment-details`) still exist. `create-checkout` accepts a `CartItem[]` + `customerInfo` POST body and creates a Stripe Checkout session — but it is **not currently called** by any frontend page. `@stripe/stripe-js` is in `package.json` but is never imported — no client-side Stripe.js is used.
 
 ### Known Duplication and Inconsistencies
 
-- **`CartItem` interface** is defined separately in both `app/payments/page.tsx` and `app/api/create-checkout/route.ts` — no shared types file exists
-- **Sponsorship tiers** are defined in two places with different data: `app/payments/page.tsx` (3 tiers in `SPONSORSHIP_TIERS` array, plus a separate Community Partner custom-amount input handled via `customAmounts.communityPartner` state) and `app/sponsorship/page.tsx` (4 tiers including Community Partner, with full benefits/colors)
+- **Sponsorship tiers** are defined in two places with different data: `app/payments/page.tsx` (4 tiers in `SPONSORSHIP_TIERS` — display only, no benefits) and `app/sponsorship/page.tsx` (4 tiers with full benefits/colors/icons). Amounts must be kept in sync manually
 - **Social media links** (Instagram, Facebook) are hardcoded in 6+ locations: Navbar, Contact, Footer, Registration (twice — success state and persistent social CTA), payments success page, and payments cancel page — no centralized constant
-- **`OUTDOOR_PRACTICE_FEE = 20`** is defined in `app/payments/page.tsx` but never used (Indoor Practice uses a custom amount input instead)
+- **`CartItem` interface** exists only in `app/api/create-checkout/route.ts` — the API route is not currently called by any frontend page
 - **Programs "Learn More" buttons** are non-functional `<button>` elements with no `href` or `onClick`
 - **Legal document PDFs** are in the project root, not in `/public/documents/` where `LegalDocuments.tsx` expects them. All four documents have `available: false`
 - **Footer broken links**: Twitter icon (`href="#"`), Privacy Policy (`href="#"`), and Terms of Service (`href="#"`) are all non-functional
-- **Unused import**: `app/payments/page.tsx` imports `Image` from `next/image` but never renders it
-- **Sensitive files at project root**: Non-code files in the repo root are not gitignored and should be: `Challengers Cricket Club Expenses (1).xlsx`, `2026 Season Allocation form - Challengers Cricket (2).docx`, `Challengers_Cricket_Club_Constitution_Bylaws_2026 (1).docx`, `Challengers-Cricket-Club-Bylaws.md` (`Treasurer-Analysis.xlsx` is already gitignored)
+- **Sensitive files at project root**: The project root contains 30+ untracked personal/legal files (IDs, incorporation docs, bylaws, sponsor logos, `.xlsx` spreadsheets). `.gitignore` has patterns for most of them, but new files may not be covered. **Always check `git status` before committing** and never stage files outside `app/`, `components/`, `public/`, or config files without reviewing
+- **Google OAuth client secret** (`client_secret_206211108604-*.json`) is in the project root — must never be committed
+- **`@stripe/stripe-js`** is listed in `package.json` dependencies but is never imported anywhere — only the server-side `stripe` package is used
+- **`Information-Sheet-Fiche-de-renseignements.pdf`** and `2025-26-sport-hosting-guidelines-en.pdf` are at the project root — internal reference docs, not for public or git
 
 ## Common Tasks
 
@@ -117,6 +122,6 @@ The flow is entirely server-side Stripe. `@stripe/stripe-js` is in `package.json
 
 **Static Assets**: Place in `/public` (images, videos) or `/public/documents/` (PDFs). Reference with leading slash (`/image.jpg`)
 
-**Payment Items**: Edit `REGISTRATION_FEE` constant and `SPONSORSHIP_TIERS` array in `app/payments/page.tsx`
+**Payment Items**: Edit `PAYMENT_OPTIONS` and `SPONSORSHIP_TIERS` arrays in `app/payments/page.tsx` (display only — actual payment amounts are set on the Stripe-hosted donation page)
 
 **Sponsorship Tiers**: Edit `sponsorshipTiers` array in `app/sponsorship/page.tsx` (name, price, subtitle, color, icon, benefits) AND `SPONSORSHIP_TIERS` in `app/payments/page.tsx` if amounts change
