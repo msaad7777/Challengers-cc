@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Challengers Cricket Club — 2026 Season Sponsorship Proposal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: #1a1a1a;
+    line-height: 1.6;
+    background: #fff;
+  }
+
+  .page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 50px 60px;
+    page-break-after: always;
+  }
+
+  .page:last-child { page-break-after: avoid; }
+
+  /* Header */
+  .header { text-align: center; margin-bottom: 40px; }
+  .header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #0d9668;
+    margin-bottom: 8px;
+  }
+  .header .subtitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+  }
+  .header .meta {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+  }
+  .header-line {
+    height: 4px;
+    background: linear-gradient(to right, #10b981, #eab308);
+    border-radius: 2px;
+    margin: 20px 0 30px;
+  }
+
+  /* Section titles */
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0d9668;
+    margin-bottom: 6px;
+  }
+  h2::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: #10b981;
+    border-radius: 2px;
+    margin-top: 4px;
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+  }
+
+  p { font-size: 14px; margin-bottom: 12px; color: #333; }
+
+  /* Stats row */
+  .stats {
+    display: flex;
+    justify-content: space-between;
+    margin: 24px 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .stat {
+    flex: 1;
+    text-align: center;
+    padding: 16px 8px;
+    border-right: 1px solid #e5e7eb;
+  }
+  .stat:last-child { border-right: none; }
+  .stat .number {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0d9668;
+  }
+  .stat .label {
+    font-size: 12px;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  /* Lists */
+  ul { padding-left: 20px; margin-bottom: 16px; }
+  li { font-size: 14px; margin-bottom: 6px; color: #333; }
+  li strong { color: #1a1a1a; }
+
+  /* Tier cards */
+  .tier {
+    border-left: 4px solid #10b981;
+    background: #f9fafb;
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 16px;
+  }
+  .tier.title { border-left-color: #eab308; background: #fffbeb; }
+  .tier.platinum { border-left-color: #10b981; }
+  .tier.gold { border-left-color: #3b82f6; }
+  .tier.community { border-left-color: #8b5cf6; }
+  .tier h3 { margin-bottom: 10px; }
+  .tier ul { margin-bottom: 0; }
+  .tier li { font-size: 13px; margin-bottom: 4px; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  th {
+    background: #0d9668;
+    color: #fff;
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #333;
+  }
+  tr:last-child td { border-bottom: none; }
+  .table-alt tr:nth-child(even) td { background: #f9fafb; }
+
+  /* Budget table */
+  .budget-table td:nth-child(2),
+  .budget-table td:nth-child(3),
+  .budget-table th:nth-child(2),
+  .budget-table th:nth-child(3) {
+    text-align: right;
+  }
+  .budget-total td {
+    font-weight: 700;
+    border-top: 2px solid #0d9668;
+    background: #ecfdf5 !important;
+  }
+
+  /* Verified section */
+  .verified {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 30px 0;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #fafafa;
+  }
+  .verified-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #888;
+    font-weight: 600;
+    margin-right: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .verified-logo {
+    height: 32px;
+    padding: 4px 14px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    object-fit: contain;
+  }
+
+  /* CTA box */
+  .cta-box {
+    background: #1a1a2e;
+    color: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    margin: 30px 0;
+  }
+  .cta-box h2 { color: #10b981; }
+  .cta-box h2::after { background: #10b981; margin: 4px auto 16px; }
+  .cta-box p { color: #ccc; font-size: 14px; }
+  .cta-box .methods { margin: 16px 0; text-align: center; }
+  .cta-box .methods p { color: #fff; margin-bottom: 6px; }
+  .cta-box a { color: #10b981; text-decoration: underline; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 20px 0;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 30px;
+  }
+  .footer-links { font-size: 13px; color: #0d9668; margin-bottom: 8px; }
+  .footer-links a { color: #0d9668; text-decoration: none; }
+  .footer-legal { font-size: 11px; color: #999; }
+
+  .closing-box {
+    border: 2px solid #10b981;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    margin: 20px 0;
+  }
+  .closing-box p { font-size: 15px; color: #333; margin: 0; }
+  .closing-box strong { color: #0d9668; }
+
+  .section-gap { margin-top: 30px; }
+
+  /* Current sponsors */
+  .sponsors-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .sponsor-badge {
+    background: #f0fdf4;
+    border: 1px solid #d1fae5;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #065f46;
+  }
+  .sponsor-badge .role {
+    font-weight: 400;
+    color: #666;
+    font-size: 11px;
+    display: block;
+  }
+
+  @media print {
+    body { background: #fff; }
+    .page { padding: 30px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 -->
+<div class="page">
+  <div class="header">
+    <h1>Challengers Cricket Club</h1>
+    <div class="subtitle">2026 Season Sponsorship Proposal</div>
+    <div class="meta">
+      Ontario NFP Corporation #1746974-8<br>
+      London, Ontario | challengerscc.ca
+    </div>
+  </div>
+  <div class="header-line"></div>
+
+  <h2>About Us</h2>
+  <p>
+    Challengers Cricket Club (CCC) is a registered Ontario non-profit corporation dedicated to building an inclusive cricket community in London, Ontario. We foster youth development, promote diversity, and bring newcomers, young professionals, and families together through sport. Our members compete in league tournaments across Ontario while creating a welcoming environment for all skill levels and backgrounds. We provide accessible pathways to sport for financially disadvantaged newcomer families, breaking barriers to participation and building community belonging through cricket.
+  </p>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="number">40+</div>
+      <div class="label">Active Players</div>
+    </div>
+    <div class="stat">
+      <div class="number">2</div>
+      <div class="label">League Teams</div>
+    </div>
+    <div class="stat">
+      <div class="number">1,500+</div>
+      <div class="label">Social Media Reach</div>
+    </div>
+    <div class="stat">
+      <div class="number">May–Oct</div>
+      <div class="label">2026 Season</div>
+    </div>
+  </div>
+
+  <!-- Verified By -->
+  <div class="verified">
+    <div class="verified-label">
+      <svg width="16" height="16" fill="#10b981" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd"/></svg>
+      Verified By
+    </div>
+    <img src="../techsoup-logo.png" alt="TechSoup Canada" class="verified-logo">
+    <img src="../goodstack-logo.jpg" alt="Goodstack" class="verified-logo">
+    <img src="../google-nonprofits.jpg" alt="Google for Nonprofits" class="verified-logo">
+  </div>
+
+  <h2>2026 Season Highlights</h2>
+  <ul>
+    <li><strong>League Participation:</strong> London Cricket League (LCL T30) and London Cricket T20</li>
+    <li><strong>Home Ground:</strong> Northridge Cricket Ground, London</li>
+    <li><strong>Training:</strong> Year-round — indoor winter training + outdoor summer sessions</li>
+    <li><strong>Media:</strong> Weekly match updates, reels, and promotions on Instagram & Facebook</li>
+    <li><strong>Community Events:</strong> Youth cricket clinics, cultural celebrations, and social gatherings</li>
+    <li><strong>Youth Program:</strong> Subsidized cricket for 20 newcomer youth aged 8–17 at no cost to families</li>
+    <li><strong>Tournaments:</strong> 6+ league tournaments across Southwestern Ontario</li>
+  </ul>
+
+  <div class="section-gap"></div>
+  <h2>Current Partners</h2>
+  <div class="sponsors-grid">
+    <div class="sponsor-badge">LawStop <span class="role">Title Sponsor</span></div>
+    <div class="sponsor-badge">Bhupinder Transportation <span class="role">Platinum Sponsor</span></div>
+    <div class="sponsor-badge">Freddy's <span class="role">Gold Sponsor</span></div>
+    <div class="sponsor-badge">Ashvak Sheik <span class="role">Gold Sponsor</span></div>
+    <div class="sponsor-badge">RabyIT <span class="role">Gold Sponsor</span></div>
+    <div class="sponsor-badge">Kover Drive Cricket <span class="role">Community Partner</span></div>
+    <div class="sponsor-badge">TPG Cricket Academy <span class="role">Official Coaching Partner</span></div>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page">
+  <h2>Sponsorship Tiers</h2>
+
+  <div class="tier title">
+    <h3>Title Sponsor — $3,000 CAD</h3>
+    <ul>
+      <li>Naming rights to the club (e.g., "Challengers CC powered by [Your Brand]")</li>
+      <li>Largest logo placement on official team jerseys (front chest)</li>
+      <li>Primary branding on all banners, posters, and event materials</li>
+      <li>Featured sponsor on website homepage with link to your business</li>
+      <li>Social media spotlight posts (minimum 2x/month throughout season)</li>
+      <li>VIP access to all matches, AGM dinners, and club events</li>
+      <li>Exclusive event stall access at home matches for brand activation</li>
+      <li>Complimentary club membership for a company representative</li>
+      <li>Official payment receipt (may be claimed as a business expense)</li>
+    </ul>
+  </div>
+
+  <div class="tier platinum">
+    <h3>Platinum Sponsor — $1,000 CAD</h3>
+    <ul>
+      <li>Logo on official team jerseys (sleeve)</li>
+      <li>Social media branding and regular mentions</li>
+      <li>Logo on club website sponsors section with link</li>
+      <li>Match-day acknowledgment and announcements</li>
+      <li>Invitation to club events and AGM dinner</li>
+      <li>Branded mention in match-day posts and reels</li>
+      <li>Official payment receipt (may be claimed as a business expense)</li>
+    </ul>
+  </div>
+
+  <div class="tier gold">
+    <h3>Gold Sponsor — $500 CAD</h3>
+    <ul>
+      <li>Logo on practice kit / training gear</li>
+      <li>Select social media posts featuring your brand</li>
+      <li>Logo on website supporting sponsors section</li>
+      <li>Event invitations and club networking opportunities</li>
+      <li>Official payment receipt (may be claimed as a business expense)</li>
+    </ul>
+  </div>
+
+  <div class="tier community">
+    <h3>Community Partner — Any Amount or In-Kind</h3>
+    <ul>
+      <li>Contribute equipment, gift cards, food sponsorship, discounts, or services</li>
+      <li>Logo on website community partners section</li>
+      <li>Social media recognition and shout-outs</li>
+      <li>Event mentions and acknowledgment</li>
+      <li>Official payment receipt for monetary contributions (may be claimed as a business expense)</li>
+    </ul>
+  </div>
+
+  <div class="section-gap"></div>
+  <h2>Marketing Exposure</h2>
+  <table class="table-alt">
+    <tr>
+      <th>Platform</th>
+      <th>Estimated Reach</th>
+      <th>Details</th>
+    </tr>
+    <tr>
+      <td>Instagram & Facebook</td>
+      <td>1,500+ followers</td>
+      <td>Weekly posts, reels, stories across SW Ontario</td>
+    </tr>
+    <tr>
+      <td>League & Match Visibility</td>
+      <td>2–3 teams per event</td>
+      <td>Jersey branding seen by all league participants</td>
+    </tr>
+    <tr>
+      <td>Event Exposure</td>
+      <td>200+ per event</td>
+      <td>Posters, flyers, sponsor booths at home matches</td>
+    </tr>
+    <tr>
+      <td>Club Website</td>
+      <td>Growing traffic</td>
+      <td>Logo with link on challengerscc.ca</td>
+    </tr>
+  </table>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page">
+  <h2>2026 Project Budget — $28,000 CAD</h2>
+  <p>
+    The "Cricket for Community" project budget covers our full 2026 season operations including a subsidized youth development program for 20 newcomer children, weekly community cricket sessions, and participation in 6+ league tournaments across Ontario.
+  </p>
+
+  <h3 style="margin-top: 20px;">Revenue Sources</h3>
+  <table class="budget-table table-alt">
+    <tr>
+      <th>Source</th>
+      <th>Confirmed</th>
+      <th>Projected</th>
+    </tr>
+    <tr>
+      <td>Institutional Grants (RBC, OTF, Jumpstart)</td>
+      <td>$0</td>
+      <td>$15,000</td>
+    </tr>
+    <tr>
+      <td>Private Sector Sponsorships</td>
+      <td>$3,000</td>
+      <td>$5,000</td>
+    </tr>
+    <tr>
+      <td>Member Registration Fees & Fundraising</td>
+      <td>$3,000</td>
+      <td>$2,000</td>
+    </tr>
+    <tr class="budget-total">
+      <td>Total Revenue</td>
+      <td>$6,000</td>
+      <td>$22,000</td>
+    </tr>
+  </table>
+  <p style="font-size: 12px; color: #888; margin-top: -8px;">Total project budget: $28,000 CAD</p>
+
+  <h3 style="margin-top: 24px;">Expense Breakdown</h3>
+  <table class="budget-table table-alt">
+    <tr>
+      <th>Category</th>
+      <th>Amount</th>
+      <th>Details</th>
+    </tr>
+    <tr>
+      <td><strong>Equipment & Uniforms</strong></td>
+      <td>$6,000</td>
+      <td>Bats, balls, pads, helmets, stumps, jerseys, training kits</td>
+    </tr>
+    <tr>
+      <td><strong>Youth Subsidy Program</strong></td>
+      <td>$4,000</td>
+      <td>Registration, league fees, and equipment for 20 newcomer youth at zero cost to families</td>
+    </tr>
+    <tr>
+      <td><strong>Coaching & Development</strong></td>
+      <td>$4,000</td>
+      <td>TPG Cricket Academy professional coaching for youth and community sessions</td>
+    </tr>
+    <tr>
+      <td><strong>League Fees & Tournaments</strong></td>
+      <td>$3,000</td>
+      <td>LCL T30, T20 league entry fees; 6+ tournament registrations across Ontario</td>
+    </tr>
+    <tr>
+      <td><strong>Travel & Umpiring</strong></td>
+      <td>$2,000</td>
+      <td>Away match travel, umpire fees for home matches</td>
+    </tr>
+    <tr>
+      <td><strong>Ground Rental & Facilities</strong></td>
+      <td>$1,000</td>
+      <td>Northridge Cricket Ground bookings, indoor winter facility rental</td>
+    </tr>
+    <tr>
+      <td><strong>Administration</strong></td>
+      <td>$2,500</td>
+      <td>Insurance, banking fees, communications, office supplies, website hosting</td>
+    </tr>
+    <tr>
+      <td><strong>Storytelling & Impact</strong></td>
+      <td>$2,500</td>
+      <td>Photography, video production, social media content, impact documentation</td>
+    </tr>
+    <tr>
+      <td><strong>Evaluation</strong></td>
+      <td>$1,000</td>
+      <td>Pre/post-season surveys, data collection tools, impact report production</td>
+    </tr>
+    <tr>
+      <td><strong>Other</strong></td>
+      <td>$2,000</td>
+      <td>First aid supplies, volunteer training, community event costs, contingency</td>
+    </tr>
+    <tr class="budget-total">
+      <td><strong>Total Expenses</strong></td>
+      <td><strong>$28,000</strong></td>
+      <td></td>
+    </tr>
+  </table>
+
+  <div class="section-gap"></div>
+  <h2>Expense Summary by Category</h2>
+  <table class="budget-table table-alt">
+    <tr>
+      <th>RBC Budget Category</th>
+      <th>Amount</th>
+      <th>% of Budget</th>
+    </tr>
+    <tr>
+      <td>Project Expenses</td>
+      <td>$20,000</td>
+      <td>71.4%</td>
+    </tr>
+    <tr>
+      <td>Administrative Expenses</td>
+      <td>$2,500</td>
+      <td>8.9%</td>
+    </tr>
+    <tr>
+      <td>Storytelling Expenses</td>
+      <td>$2,500</td>
+      <td>8.9%</td>
+    </tr>
+    <tr>
+      <td>Other Expenses</td>
+      <td>$2,000</td>
+      <td>7.1%</td>
+    </tr>
+    <tr>
+      <td>Evaluation Expenses</td>
+      <td>$1,000</td>
+      <td>3.6%</td>
+    </tr>
+    <tr>
+      <td>Project Salaries</td>
+      <td>$0</td>
+      <td>0.0%</td>
+    </tr>
+    <tr class="budget-total">
+      <td><strong>Total</strong></td>
+      <td><strong>$28,000</strong></td>
+      <td><strong>100%</strong></td>
+    </tr>
+  </table>
+</div>
+
+<!-- PAGE 4 -->
+<div class="page">
+  <h2>How to Sponsor Us</h2>
+  <div class="cta-box">
+    <h2>Support Challengers Cricket Club</h2>
+    <p>We gratefully accept contributions of any amount. You can sponsor us in three ways:</p>
+    <div class="methods">
+      <p><strong>1. Online:</strong> Visit <a href="https://challengerscc.ca/payments">challengerscc.ca/payments</a> — instant payment receipt</p>
+      <p><strong>2. Interac e-Transfer:</strong> Send to <a href="mailto:contact@challengerscc.ca">contact@challengerscc.ca</a></p>
+      <p><strong>3. Cheque:</strong> Payable to "Challengers Cricket Club" — contact us for address</p>
+    </div>
+    <p style="font-size: 12px; color: #aaa; margin-top: 12px;">Official payment receipts and certificates of sponsorship provided for all contributions. Sponsor contributions may be claimed as a business expense. Challengers Cricket Club is not yet a registered charity and does not issue CRA charitable tax receipts.</p>
+  </div>
+
+  <div style="text-align: center; margin: 20px 0;">
+    <div class="footer-links">
+      <a href="mailto:contact@challengerscc.ca">contact@challengerscc.ca</a> &middot;
+      <a href="https://challengerscc.ca">challengerscc.ca</a> &middot;
+      <a href="https://challengerscc.ca/sponsorship">Sponsorship Info</a> &middot;
+      Instagram <a href="https://instagram.com/challengers.cc">@challengers.cc</a>
+    </div>
+  </div>
+
+  <!-- Verified By -->
+  <div class="verified">
+    <div class="verified-label">
+      <svg width="16" height="16" fill="#10b981" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd"/></svg>
+      Verified By
+    </div>
+    <img src="../techsoup-logo.png" alt="TechSoup Canada" class="verified-logo">
+    <img src="../goodstack-logo.jpg" alt="Goodstack" class="verified-logo">
+    <img src="../google-nonprofits.jpg" alt="Google for Nonprofits" class="verified-logo">
+  </div>
+
+  <div class="closing-box">
+    <p><strong>Thank you for your consideration.</strong> Let's build the future of cricket together!</p>
+  </div>
+
+  <div class="footer">
+    <div class="footer-legal">
+      Challengers Cricket Club &middot; Ontario NFP Corporation #1746974-8 &middot; London, Ontario, Canada
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
