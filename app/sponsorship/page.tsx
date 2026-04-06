@@ -212,7 +212,7 @@ export default function SponsorshipPage() {
                 </svg>
               </div>
               <h3 className="text-lg font-bold mb-2">Tax Benefits</h3>
-              <p className="text-sm text-gray-400">Registered Ontario non-profit corporation - tax receipts available</p>
+              <p className="text-sm text-gray-400">Registered Ontario non-profit corporation</p>
             </div>
 
             <div className="glass rounded-2xl p-6 glass-hover">
@@ -327,7 +327,7 @@ export default function SponsorshipPage() {
                   <svg className="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Tax receipt via email
+                  Payment receipt via email
                 </li>
               </ul>
               <a
@@ -362,7 +362,7 @@ export default function SponsorshipPage() {
                   <svg className="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Tax receipt provided
+                  Payment receipt provided
                 </li>
                 <li className="flex items-center gap-2">
                   <svg className="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -400,7 +400,7 @@ export default function SponsorshipPage() {
                   <svg className="w-4 h-4 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Tax receipt provided
+                  Payment receipt provided
                 </li>
                 <li className="flex items-center gap-2">
                   <svg className="w-4 h-4 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -422,10 +422,11 @@ export default function SponsorshipPage() {
                   </svg>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2 text-primary-400">Tax Receipts Available</h4>
+                  <h4 className="font-semibold mb-2 text-primary-400">Payment Receipts</h4>
                   <p className="text-sm text-gray-400">
-                    As a registered Ontario non-profit corporation, we can provide official tax receipts for all sponsorship contributions.
-                    Receipts will be issued via email within 2 business days of payment confirmation.
+                    Official payment receipts are provided for all sponsorship contributions via email within 2 business days of payment confirmation.
+                    As a registered Ontario non-profit corporation, sponsor contributions may be claimed as a business expense.
+                    Challengers Cricket Club is not yet a registered charity and does not issue CRA charitable tax receipts.
                   </p>
                 </div>
               </div>
