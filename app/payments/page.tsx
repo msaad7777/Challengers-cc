@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import VerifiedBanner from '@/components/VerifiedBanner';
 
 const STRIPE_DONATION_LINK = 'https://donate.stripe.com/00w3cwaPAdAwdmT08j9R600';
+const ZEFFY_DONATION_LINK = 'https://www.zeffy.com/en-CA/donation-form/challengers-cricket-building-community-through-sport';
 
 const PAYMENT_OPTIONS = [
   { name: 'Club Registration', description: '2026 Season membership', price: '$100', icon: '🏏' },
@@ -121,17 +122,29 @@ export default function PaymentsPage() {
               <p className="text-gray-400 mb-6">
                 Your support helps us cover league registration, field rent, field insurance, unemployed members, equipment, and programs. Thank you for being a part of our community!
               </p>
-              <a
-                href={STRIPE_DONATION_LINK}
-                className="inline-block w-full py-4 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold text-lg shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105 text-center"
-              >
-                Proceed to Payment
-              </a>
+              <div className="space-y-3">
+                <a
+                  href={ZEFFY_DONATION_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block w-full py-4 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold text-lg shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105 text-center"
+                >
+                  Pay via Zeffy (0% Fees)
+                </a>
+                <a
+                  href={STRIPE_DONATION_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block w-full py-3 glass glass-hover rounded-lg font-semibold text-sm border border-white/10 hover:border-primary-500/50 transition-all duration-300 text-center"
+                >
+                  Pay via Stripe (Credit/Debit Card)
+                </a>
+              </div>
               <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
-                Secured by Stripe
+                Zeffy: 100% goes to the club | Stripe: 2.2% + $0.30 fee applies
               </div>
               <div className="mt-4 pt-4 border-t border-white/10">
                 <p className="text-xs text-gray-500">
