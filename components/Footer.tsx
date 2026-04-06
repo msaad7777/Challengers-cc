@@ -139,10 +139,10 @@ export default function Footer() {
               © {currentYear} Challengers Cricket Club. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm">
-              <a href="#" className="text-gray-500 hover:text-primary-400 transition-colors">
+              <a href="/documents/privacy-policy.html" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary-400 transition-colors">
                 Privacy Policy
               </a>
-              <a href="#" className="text-gray-500 hover:text-primary-400 transition-colors">
+              <a href="/documents/terms-of-service.html" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary-400 transition-colors">
                 Terms of Service
               </a>
             </div>
