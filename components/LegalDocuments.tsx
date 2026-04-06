@@ -69,6 +69,7 @@ export default function LegalDocuments() {
       icon: "🔒",
       tag: "Policy",
       requestable: false,
+      viewUrl: "/documents/privacy-policy.html",
     },
     {
       title: "Terms of Service",
@@ -76,6 +77,7 @@ export default function LegalDocuments() {
       icon: "📋",
       tag: "Policy",
       requestable: false,
+      viewUrl: "/documents/terms-of-service.html",
     }
   ];
 
@@ -136,7 +138,7 @@ export default function LegalDocuments() {
               <h3 className="text-lg font-bold mb-2">{doc.title}</h3>
               <p className="text-sm text-gray-400 mb-4">{doc.description}</p>
 
-              {/* Request / Coming Soon Button */}
+              {/* Request / View / Coming Soon Button */}
               {doc.requestable ? (
                 <button
                   onClick={() => setRequestingDoc(doc.title)}
@@ -147,6 +149,19 @@ export default function LegalDocuments() {
                   </svg>
                   Request Document
                 </button>
+              ) : doc.viewUrl ? (
+                <a
+                  href={doc.viewUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold text-sm hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  View Document
+                </a>
               ) : (
                 <div className="w-full py-3 glass rounded-lg text-center text-sm text-gray-500">
                   Coming Soon
