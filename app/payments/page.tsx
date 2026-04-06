@@ -8,10 +8,8 @@ const STRIPE_DONATION_LINK = 'https://donate.stripe.com/00w3cwaPAdAwdmT08j9R600'
 const ZEFFY_DONATION_LINK = 'https://www.zeffy.com/en-CA/donation-form/challengers-cricket-building-community-through-sport';
 
 const PAYMENT_OPTIONS = [
-  { name: 'Club Registration', description: '2026 Season membership', price: '$100', icon: '🏏' },
-  { name: 'Indoor Practice', description: 'Amount shared in WhatsApp group', price: 'Variable', icon: '🏋️' },
-  { name: 'T30 League Fee', description: '30-over format league registration', price: 'Variable', icon: '⚡' },
-  { name: 'T20 League Fee', description: '20-over format league registration', price: 'Variable', icon: '🔥' },
+  { name: 'Club Registration', description: '2026 Season membership (includes indoor & outdoor practice)', price: '$100', icon: '🏏' },
+  { name: 'LCL + LPL League Fee', description: 'London Cricket League & London Premier League combined', price: '$200', icon: '⚡' },
 ];
 
 const SPONSORSHIP_TIERS = [
