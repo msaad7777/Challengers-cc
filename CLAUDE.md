@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Challengers Cricket Club website - Next.js 15 (App Router), TypeScript, Tailwind CSS with dark theme, glass morphism effects, Google Forms integration, and Stripe payments.
+Challengers Cricket Club website — London, Ontario cricket club. Next.js 15 (App Router), TypeScript, Tailwind CSS with dark theme, glass morphism effects, Google Forms integration, and Stripe payments.
 
 **Organization**: Ontario NFP Corporation #1746974-8 | challengerscc.ca | @challengers.cc
 **Emails**: `contact@challengerscc.ca` (official/Google Workspace), `challengerscricketclub2026@gmail.com` (legacy Gmail, used for SMTP outreach)

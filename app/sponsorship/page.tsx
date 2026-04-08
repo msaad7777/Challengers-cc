@@ -62,7 +62,7 @@ export default function SponsorshipPage() {
   const sponsorshipTiers = [
     {
       name: "Title Sponsor",
-      price: "$3,000",
+      price: "$2,000",
       subtitle: "Only 1 Available",
       color: "from-accent-600 to-accent-500",
       icon: "🏆",
@@ -603,7 +603,7 @@ export default function SponsorshipPage() {
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all text-white"
                 >
                   <option value="" className="bg-gray-900 text-gray-400">Select a level</option>
-                  <option value="Title Sponsor - $3,000" className="bg-gray-900 text-white">🏆 Title Sponsor - $3,000</option>
+                  <option value="Title Sponsor - $2,000" className="bg-gray-900 text-white">🏆 Title Sponsor - $2,000</option>
                   <option value="Platinum Sponsor - $1,000" className="bg-gray-900 text-white">🥇 Platinum Sponsor - $1,000</option>
                   <option value="Gold Sponsor - $500" className="bg-gray-900 text-white">🥈 Gold Sponsor - $500</option>
                   <option value="Community Partner - Any Amount/In-Kind" className="bg-gray-900 text-white">🤝 Community Partner - Any Amount/In-Kind</option>
