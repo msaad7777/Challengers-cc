@@ -13,7 +13,7 @@ const PAYMENT_OPTIONS = [
 ];
 
 const SPONSORSHIP_TIERS = [
-  { name: 'Title Sponsor (Only 1 Available)', price: '$3,000', icon: '🏆' },
+  { name: 'Title Sponsor (Only 1 Available)', price: '$2,000', icon: '🏆' },
   { name: 'Platinum Sponsor', price: '$1,000', icon: '🥇' },
   { name: 'Gold Sponsor', price: '$500', icon: '🥈' },
   { name: 'Community Partner', price: 'Any Amount', icon: '🤝' },
@@ -127,7 +127,7 @@ export default function PaymentsPage() {
                   rel="noopener noreferrer"
                   className="inline-block w-full py-4 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold text-lg shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105 text-center"
                 >
-                  Pay via Zeffy (0% Fees)
+                  Confirm Payment via Zeffy (0% Fees)
                 </a>
                 <a
                   href={STRIPE_DONATION_LINK}
@@ -135,7 +135,7 @@ export default function PaymentsPage() {
                   rel="noopener noreferrer"
                   className="inline-block w-full py-3 glass glass-hover rounded-lg font-semibold text-sm border border-white/10 hover:border-primary-500/50 transition-all duration-300 text-center"
                 >
-                  Pay via Stripe (Credit/Debit Card)
+                  Confirm Payment via Stripe (Credit/Debit Card)
                 </a>
               </div>
               <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">

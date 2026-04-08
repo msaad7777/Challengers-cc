@@ -121,7 +121,7 @@ export default function LookingForSponsorsPage() {
               <h3 className="text-xl font-bold mb-1">Title Sponsor</h3>
               <p className="text-xs text-accent-400 font-semibold mb-2">Only 1 Available</p>
               <div className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-accent-600 to-accent-500 text-sm font-semibold mb-4">
-                $3,000
+                $2,000
               </div>
               <ul className="space-y-2">
                 <li className="flex items-start gap-2">
