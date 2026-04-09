@@ -164,6 +164,95 @@ export const blogPosts: BlogPost[] = [
     },
   },
   {
+    slug: 'kover-drive-community-partner',
+    title: 'Sponsor Spotlight: Kover Drive — Our Home for Indoor Practice',
+    excerpt:
+      'Kover Drive Sports is London\'s premier indoor cricket facility and Challengers Cricket Club\'s official Community Partner. Book a lane and train with us.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Every great cricket team needs a great training ground. For Challengers Cricket Club, that home is
+        <strong class="text-white">Kover Drive Sports</strong> — London's premier indoor cricket and multi-sport
+        facility, and our official Community Partner for the 2026 season.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">London's Best Indoor Cricket Facility</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Located at <strong class="text-white">Oxbury Mall, 1299 Oxford St E, London, ON</strong>, Kover Drive
+        offers a state-of-the-art indoor setup with multiple cricket lanes, pro-grade nets, advanced pitching
+        machines, and a dedicated training zone. Whether you are working on your batting, bowling, or fielding,
+        Kover Drive provides the perfect environment to sharpen your skills year-round.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">Why We Chose Kover Drive</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        When we were looking for a practice facility for Challengers CC, Kover Drive stood out immediately.
+        The quality of the lanes, the welcoming atmosphere, and the passion of the team running it made it
+        an easy decision. Our players train here regularly, and the facility has become a second home for the club.
+      </p>
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <h3 class="text-2xl font-bold text-white mb-4">What Kover Drive Offers</h3>
+        <ul class="text-gray-300 text-lg leading-relaxed mb-4 list-disc list-inside space-y-2">
+          <li>Multiple cricket lanes with pro-grade nets</li>
+          <li>Advanced bowling/pitching machines</li>
+          <li>Dedicated training zone</li>
+          <li>Online booking system — reserve your lane in seconds</li>
+          <li>Open daily 8 AM to 10 PM</li>
+          <li>Free parking at Oxbury Mall</li>
+          <li>Flexible memberships for individuals and teams</li>
+          <li>Safe, secure, and welcoming environment</li>
+        </ul>
+        <p class="text-gray-400 text-sm">Lane rate: $45/hr + tax | Training zone: $60/hr + tax</p>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">Watch Our Partner Intro</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Check out our official partner introduction video featuring Kover Drive and Challengers Cricket Club.
+      </p>
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic">
+          "Kover Drive is more than a facility — it is where our team comes together to train, compete,
+          and build the bonds that make us stronger on match day."
+        </p>
+        <cite class="text-gray-400 mt-2 block">— Challengers Cricket Club</cite>
+      </blockquote>
+      <h3 class="text-2xl font-bold text-white mb-4">Book Your Session</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Whether you are a Challengers CC member or just a cricket enthusiast looking for a quality indoor
+        facility in London — Kover Drive is the place. Book your lane online and experience London's best
+        indoor cricket setup.
+      </p>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 24px 0;">
+        <a href="https://koverdrivesports.ca/booking" target="_blank" rel="noopener noreferrer"
+          style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: linear-gradient(to right, #10b981, #059669); color: white; font-weight: 600; border-radius: 8px; text-decoration: none; font-size: 16px;">
+          Book a Lane Now
+        </a>
+        <a href="https://koverdrivesports.ca/" target="_blank" rel="noopener noreferrer"
+          style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; font-weight: 600; border-radius: 8px; text-decoration: none; font-size: 16px;">
+          Visit Website
+        </a>
+      </div>
+      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; margin: 24px 0;">
+        <h4 class="text-lg font-bold text-white mb-3 text-center">Kover Drive Sports — Contact Info</h4>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; color: #9ca3af; font-size: 14px;">
+          <span>1299 Oxford St E, London, ON</span>
+          <span>+1 (519) 702-2683</span>
+          <span>koverdrivelondonon@gmail.com</span>
+        </div>
+      </div>
+      <p class="text-gray-400 text-sm italic">
+        Kover Drive Sports is a Community Partner of Challengers Cricket Club. Mention Challengers CC when you book!
+      </p>
+    `,
+    category: 'Sponsor Spotlight',
+    author: 'Challengers CC',
+    date: '2026-04-09',
+    image: null,
+    video: '/videos/koverdrive-blog.mp4',
+    featured: true,
+    sponsorContact: {
+      name: 'Kover Drive Sports',
+      email: 'koverdrivelondonon@gmail.com',
+      title: 'Community Partner',
+    },
+  },
+  {
     slug: 'md-monirul-islam-player-profile',
     title: 'Player Profile: Md Monirul Islam — Director & All-Rounder',
     excerpt:
