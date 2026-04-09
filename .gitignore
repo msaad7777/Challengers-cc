@@ -79,9 +79,6 @@ client_secret*.json
 Bhupinder-OL*.pdf
 Challengers Cricket Club*.pdf
 
-# Video files (too large for Git, host externally)
-public/videos/*.mp4
-
 # Original logo file (deployed copy is in /public)
 CCC-Logo.png
 public/ccc-logo-old.png
