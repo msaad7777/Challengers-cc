@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { blogPosts, getPostBySlug, getRelatedPosts } from '../data';
+import SponsorContactForm from '../SponsorContactForm';
 
 const categoryColors: Record<string, string> = {
   'Sponsor Spotlight': 'bg-accent-500/20 text-accent-400 border-accent-500/30',
@@ -143,6 +144,17 @@ export default async function BlogPostPage({
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </div>
+
+          {/* Sponsor Contact Form */}
+          {post.sponsorContact && (
+            <div className="mt-8">
+              <SponsorContactForm
+                sponsorName={post.sponsorContact.name}
+                sponsorEmail={post.sponsorContact.email}
+                sponsorTitle={post.sponsorContact.title}
+              />
+            </div>
+          )}
 
           {/* Share Section */}
           <div className="mt-12 glass rounded-2xl p-8 text-center">

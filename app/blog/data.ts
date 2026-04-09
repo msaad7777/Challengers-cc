@@ -9,6 +9,11 @@ export interface BlogPost {
   image: string | null;
   video: string | null;
   featured: boolean;
+  sponsorContact?: {
+    name: string;
+    email: string;
+    title: string;
+  };
 }
 
 export const blogPosts: BlogPost[] = [
@@ -66,20 +71,11 @@ export const blogPosts: BlogPost[] = [
           <li>Relocation assistance for newcomers to Canada</li>
         </ul>
       </div>
-      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; margin: 24px 0; text-align: center;">
-        <h3 class="text-2xl font-bold text-white mb-2">Get in Touch with Bhupinder</h3>
-        <p class="text-gray-400 mb-6">Ready to buy, sell, or just have questions about the market? Reach out directly.</p>
-        <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 20px;">
-          <a href="https://getrealwithinder.com/" target="_blank" rel="noopener noreferrer"
-            style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: linear-gradient(to right, #10b981, #059669); color: white; font-weight: 600; border-radius: 8px; text-decoration: none;">
-            Visit Website
-          </a>
-          <a href="mailto:bhupinder@century21.ca"
-            style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; font-weight: 600; border-radius: 8px; text-decoration: none;">
-            Email Bhupinder
-          </a>
-        </div>
-        <p class="text-gray-500 text-sm">Mention Challengers Cricket Club when you reach out!</p>
+      <div style="text-align: center; margin: 24px 0;">
+        <a href="https://getrealwithinder.com/" target="_blank" rel="noopener noreferrer"
+          style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: linear-gradient(to right, #10b981, #059669); color: white; font-weight: 600; border-radius: 8px; text-decoration: none;">
+          Visit Bhupinder's Website
+        </a>
       </div>
       <p class="text-gray-400 text-sm italic">
         Bhupinder Singh is a Platinum Sponsor of Challengers Cricket Club. Supporting our sponsors means supporting the club.
@@ -91,6 +87,11 @@ export const blogPosts: BlogPost[] = [
     image: null,
     video: '/videos/Bhupinder-Final-Insta.mp4',
     featured: true,
+    sponsorContact: {
+      name: 'Bhupinder Singh',
+      email: 'bhupinder@century21.ca',
+      title: 'Platinum Sponsor',
+    },
   },
   {
     slug: 'rabyit-gold-sponsor',
