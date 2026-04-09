@@ -136,7 +136,7 @@ export default function Footer() {
         <div className="border-t border-white/10 pt-8 mt-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-500 text-sm">
-              © {currentYear} Challengers Cricket Club. All rights reserved.
+              © {currentYear} Challengers Cricket Club. Ontario NFP Corporation #1746974-8. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm">
               <a href="/documents/privacy-policy.html" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary-400 transition-colors">
