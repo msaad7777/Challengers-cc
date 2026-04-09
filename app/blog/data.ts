@@ -254,19 +254,19 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'tarek-islam-player-profile',
-    title: 'Player Profile: Tarek Islam — Director & All-Rounder',
+    title: 'Player Profile: Tarek Islam, Director & All-Rounder',
     excerpt:
       'Meet Tarek Islam, one of the founding directors of Challengers Cricket Club and a fine all-rounder who brings leadership both on and off the field.',
     content: `
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Every cricket team needs players who can do it all — bat, bowl, field, and lead. At Challengers Cricket Club,
+        Every cricket team needs players who can do it all: bat, bowl, field, and lead. At Challengers Cricket Club,
         <strong class="text-white">Tarek Islam</strong> is exactly that player. A genuine all-rounder and one of the
         founding directors of the club, Monirul is an asset to any team he plays for.
       </p>
       <h3 class="text-2xl font-bold text-white mb-4">On the Field</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         Monirul is a batting all-rounder with a competitive spirit that lifts the entire team. Whether he is anchoring
-        an innings with the bat, picking up crucial wickets, or taking sharp catches in the field — he delivers when
+        an innings with the bat, picking up crucial wickets, or taking sharp catches in the field, he delivers when
         it matters most. His strategic judgment and calm under pressure make him a go-to player in high-stakes matches
         across the LCL, LPL, and UFCL leagues.
       </p>
@@ -275,7 +275,7 @@ export const blogPosts: BlogPost[] = [
         Beyond cricket, Monirul serves as a <strong class="text-white">Director</strong> on the Challengers Cricket Club
         board. His background as a Banking Advisor brings financial discipline and strategic thinking to club operations.
         He is also the co-founder of the <strong class="text-white">Bangladesh Association of London, Ontario</strong> and
-        the <strong class="text-white">Nucleus71 political think tank</strong> — a testament to his commitment to
+        the <strong class="text-white">Nucleus71 political think tank</strong>, a testament to his commitment to
         community building and purposeful leadership.
       </p>
       <h3 class="text-2xl font-bold text-white mb-4">Leadership Credentials</h3>
@@ -291,10 +291,10 @@ export const blogPosts: BlogPost[] = [
       </div>
       <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
         <p class="text-gray-300 text-lg italic">
-          "Cricket teaches you discipline, teamwork, and how to handle pressure — the same skills you need
+          "Cricket teaches you discipline, teamwork, and how to handle pressure. The same skills you need
           to build a community. Challengers Cricket Club is where both come together."
         </p>
-        <cite class="text-gray-400 mt-2 block">— Tarek Islam, Director & All-Rounder</cite>
+        <cite class="text-gray-400 mt-2 block">Tarek Islam, Director & All-Rounder</cite>
       </blockquote>
       <h3 class="text-2xl font-bold text-white mb-4">Why He Matters to Challengers CC</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
