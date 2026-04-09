@@ -164,6 +164,68 @@ export const blogPosts: BlogPost[] = [
     },
   },
   {
+    slug: 'md-monirul-islam-player-profile',
+    title: 'Player Profile: Md Monirul Islam — Director & All-Rounder',
+    excerpt:
+      'Meet Md Monirul Islam, one of the founding directors of Challengers Cricket Club and a fine all-rounder who brings leadership both on and off the field.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Every cricket team needs players who can do it all — bat, bowl, field, and lead. At Challengers Cricket Club,
+        <strong class="text-white">Md Monirul Islam</strong> is exactly that player. A genuine all-rounder and one of the
+        founding directors of the club, Monirul is an asset to any team he plays for.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">On the Field</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Monirul is a batting all-rounder with a competitive spirit that lifts the entire team. Whether he is anchoring
+        an innings with the bat, picking up crucial wickets, or taking sharp catches in the field — he delivers when
+        it matters most. His strategic judgment and calm under pressure make him a go-to player in high-stakes matches
+        across the LCL, LPL, and UFCL leagues.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">Off the Field</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Beyond cricket, Monirul serves as a <strong class="text-white">Director</strong> on the Challengers Cricket Club
+        board. His background as a Banking Advisor brings financial discipline and strategic thinking to club operations.
+        He is also the co-founder of the <strong class="text-white">Bangladesh Association of London, Ontario</strong> and
+        the <strong class="text-white">Nucleus71 political think tank</strong> — a testament to his commitment to
+        community building and purposeful leadership.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">Leadership Credentials</h3>
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <ul class="text-gray-300 text-lg leading-relaxed list-disc list-inside space-y-2">
+          <li>Director, Challengers Cricket Club</li>
+          <li>Co-founder, Bangladesh Association of London, Ontario</li>
+          <li>Co-founder, Nucleus71 Political Think Tank</li>
+          <li>Former Vice President, Kabi Nazrul College Debating Society</li>
+          <li>National Debating Competition Representative</li>
+          <li>University of Dhaka Graduate</li>
+        </ul>
+      </div>
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic">
+          "Cricket teaches you discipline, teamwork, and how to handle pressure — the same skills you need
+          to build a community. Challengers Cricket Club is where both come together."
+        </p>
+        <cite class="text-gray-400 mt-2 block">— Md Monirul Islam, Director & All-Rounder</cite>
+      </blockquote>
+      <h3 class="text-2xl font-bold text-white mb-4">Why He Matters to Challengers CC</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Having someone like Monirul on your team — a player who can win matches with bat and ball, and simultaneously
+        help govern the club with professionalism — is rare. His dual role as director and all-rounder makes him one of
+        the most valuable members of Challengers Cricket Club. Whether we are chasing a target on the field or building
+        partnerships off it, Monirul is always in the game.
+      </p>
+      <p class="text-gray-400 text-sm italic">
+        This is the first in our Player Profile series. Stay tuned for more stories from the Challengers Cricket Club squad.
+      </p>
+    `,
+    category: 'Player Profile',
+    author: 'Challengers CC',
+    date: '2026-04-09',
+    image: '/Tarek-Director.jpeg',
+    video: null,
+    featured: true,
+  },
+  {
     slug: '2026-season-kickoff',
     title: '2026 Season Kickoff: What to Expect This Year',
     excerpt:
