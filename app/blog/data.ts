@@ -221,7 +221,7 @@ export const blogPosts: BlogPost[] = [
     category: 'Player Profile',
     author: 'Challengers CC',
     date: '2026-04-09',
-    image: '/Tarek-Director.jpeg',
+    image: '/Tarek-Profile.jpeg',
     video: null,
     featured: true,
   },
