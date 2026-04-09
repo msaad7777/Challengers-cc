@@ -50,9 +50,39 @@ export const blogPosts: BlogPost[] = [
       </p>
       <h3 class="text-2xl font-bold text-white mb-4">Looking for a Realtor in London?</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        If you are buying or selling property in London and the surrounding area, consider reaching out to
-        Bhupinder. His expertise, local knowledge, and client-first approach make him a trusted choice.
-        Supporting our sponsors means supporting the club.
+        Whether you are buying your first home, upgrading to a bigger space, selling a property, or looking for
+        investment opportunities in London and the surrounding area — Bhupinder Singh is your go-to realtor.
+        With deep local knowledge, a client-first approach, and years of experience in the Ontario real estate
+        market, Bhupinder makes the process smooth and stress-free.
+      </p>
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <h3 class="text-2xl font-bold text-white mb-4">Services Bhupinder Offers</h3>
+        <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc list-inside space-y-2">
+          <li>Residential buying and selling</li>
+          <li>First-time home buyer guidance</li>
+          <li>Investment property consultation</li>
+          <li>Pre-construction and new builds</li>
+          <li>Market analysis and property valuation</li>
+          <li>Relocation assistance for newcomers to Canada</li>
+        </ul>
+      </div>
+      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; margin: 24px 0; text-align: center;">
+        <h3 class="text-2xl font-bold text-white mb-2">Get in Touch with Bhupinder</h3>
+        <p class="text-gray-400 mb-6">Ready to buy, sell, or just have questions about the market? Reach out directly.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 20px;">
+          <a href="https://getrealwithinder.com/" target="_blank" rel="noopener noreferrer"
+            style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: linear-gradient(to right, #10b981, #059669); color: white; font-weight: 600; border-radius: 8px; text-decoration: none;">
+            Visit Website
+          </a>
+          <a href="mailto:bhupinder@century21.ca"
+            style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; font-weight: 600; border-radius: 8px; text-decoration: none;">
+            Email Bhupinder
+          </a>
+        </div>
+        <p class="text-gray-500 text-sm">Mention Challengers Cricket Club when you reach out!</p>
+      </div>
+      <p class="text-gray-400 text-sm italic">
+        Bhupinder Singh is a Platinum Sponsor of Challengers Cricket Club. Supporting our sponsors means supporting the club.
       </p>
     `,
     category: 'Sponsor Spotlight',
