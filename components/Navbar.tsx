@@ -31,6 +31,7 @@ export default function Navbar() {
     { label: 'Contact', href: isHomePage ? '#contact' : '/#contact', isPage: false },
     { label: 'Sponsorship', href: '/sponsorship', isPage: true },
     { label: 'Looking for Sponsors', href: '/looking-for-sponsors', isPage: true },
+    { label: 'Blog', href: '/blog', isPage: true },
     { label: 'Payments', href: '/payments', isPage: true },
   ];
 
