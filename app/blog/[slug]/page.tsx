@@ -129,7 +129,7 @@ export default async function BlogPostPage({
               <img
                 src={post.image}
                 alt={post.title}
-                className="w-full h-auto max-h-[500px] object-cover"
+                className="w-full h-auto object-contain"
               />
             </div>
           )}
