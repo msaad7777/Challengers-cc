@@ -101,9 +101,9 @@ export const blogPosts: BlogPost[] = [
     content: `
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         We are thrilled to announce <strong class="text-white">RabyIT</strong> as a Gold Sponsor for the
-        Challengers Cricket Club 2026 season. Specializing in <strong class="text-white">Accounting, Payroll
-        & Tax Services</strong>, RabyIT is a business built on precision, reliability, and genuine care
-        for its clients — values that align perfectly with our club's mission.
+        Challengers Cricket Club 2026 season. With over <strong class="text-white">350 agents across four
+        global locations</strong>, RabyIT is a leading business process outsourcing company built on
+        reliability, innovation, and genuine care for its clients — values that align perfectly with our club's mission.
       </p>
       <h3 class="text-2xl font-bold text-white mb-4">Why RabyIT Chose Challengers</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
@@ -122,22 +122,30 @@ export const blogPosts: BlogPost[] = [
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         Check out our official sponsor introduction video featuring RabyIT and Challengers Cricket Club.
       </p>
-      <h3 class="text-2xl font-bold text-white mb-4">Need Accounting or Tax Help?</h3>
+      <h3 class="text-2xl font-bold text-white mb-4">Looking to Scale Your Business?</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Whether you are a small business owner, freelancer, or individual looking for reliable accounting,
-        payroll, or tax services, RabyIT has you covered. Their team handles everything so you can focus on
-        growing your business.
+        RabyIT is a leading business process outsourcing company with over 350 agents across four global locations
+        serving 25+ satisfied clients. Whether you need call center solutions, technical support, or software
+        development — RabyIT delivers fast, reliable, and cost-effective results.
       </p>
       <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
         <h3 class="text-2xl font-bold text-white mb-4">Services RabyIT Offers</h3>
         <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc list-inside space-y-2">
-          <li>Personal and corporate tax filing</li>
-          <li>Bookkeeping and accounting</li>
-          <li>Payroll management</li>
-          <li>HST/GST returns</li>
-          <li>Small business setup and consulting</li>
-          <li>Year-end financial statements</li>
+          <li>Call Center Solutions</li>
+          <li>Customer Success Management</li>
+          <li>Technical Support</li>
+          <li>Content Moderation</li>
+          <li>Data Processing</li>
+          <li>Software Development (ST-CRM)</li>
+          <li>Professional Services</li>
         </ul>
+        <p class="text-gray-400 text-sm">Headquartered in London, ON with partner offices in Dhaka, New York, and Dominican Republic.</p>
+      </div>
+      <div style="text-align: center; margin: 24px 0;">
+        <a href="https://rabyit.com/" target="_blank" rel="noopener noreferrer"
+          style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: linear-gradient(to right, #10b981, #059669); color: white; font-weight: 600; border-radius: 8px; text-decoration: none;">
+          Visit RabyIT Website
+        </a>
       </div>
       <p class="text-gray-400 text-sm italic">
         RabyIT is a Gold Sponsor of Challengers Cricket Club. Supporting our sponsors means supporting the club.
@@ -151,7 +159,7 @@ export const blogPosts: BlogPost[] = [
     featured: false,
     sponsorContact: {
       name: 'RabyIT',
-      email: 'info@rabyit.ca',
+      email: 'info@rabyit.com',
       title: 'Gold Sponsor',
     },
   },
