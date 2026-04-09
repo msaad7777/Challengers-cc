@@ -298,10 +298,10 @@ export const blogPosts: BlogPost[] = [
       </blockquote>
       <h3 class="text-2xl font-bold text-white mb-4">Why He Matters to Challengers CC</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Having someone like Monirul on your team — a player who can win matches with bat and ball, and simultaneously
-        help govern the club with professionalism — is rare. His dual role as director and all-rounder makes him one of
+        Having someone like Tarek on your team, a player who can win matches with bat and ball, and simultaneously
+        help govern the club with professionalism, is rare. His dual role as director and all-rounder makes him one of
         the most valuable members of Challengers Cricket Club. Whether we are chasing a target on the field or building
-        partnerships off it, Monirul is always in the game.
+        partnerships off it, Tarek is always in the game.
       </p>
       <p class="text-gray-400 text-sm italic">
         This is the first in our Player Profile series. Stay tuned for more stories from the Challengers Cricket Club squad.
