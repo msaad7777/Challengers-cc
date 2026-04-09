@@ -199,7 +199,7 @@ export const blogPosts: BlogPost[] = [
           <li>Flexible memberships for individuals and teams</li>
           <li>Safe, secure, and welcoming environment</li>
         </ul>
-        <p class="text-gray-400 text-sm">Lane rate: $45/hr + tax | Training zone: $60/hr + tax</p>
+        <p class="text-gray-400 text-sm">Contact Kover Drive for current rates and availability.</p>
       </div>
       <h3 class="text-2xl font-bold text-white mb-4">Watch Our Partner Intro</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
