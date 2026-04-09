@@ -123,6 +123,17 @@ export default async function BlogPostPage({
       {/* Article Content */}
       <section className="py-12 md:py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Featured Image */}
+          {post.image && (
+            <div className="glass rounded-2xl overflow-hidden mb-8">
+              <img
+                src={post.image}
+                alt={post.title}
+                className="w-full h-auto max-h-[500px] object-cover"
+              />
+            </div>
+          )}
+
           {/* Video Player */}
           {post.video && (
             <div className="glass rounded-2xl p-6 md:p-8 mb-8">
