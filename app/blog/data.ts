@@ -125,8 +125,22 @@ export const blogPosts: BlogPost[] = [
       <h3 class="text-2xl font-bold text-white mb-4">Need Accounting or Tax Help?</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         Whether you are a small business owner, freelancer, or individual looking for reliable accounting,
-        payroll, or tax services, RabyIT has you covered. Reach out to them and mention Challengers Cricket
-        Club — supporting our sponsors keeps the club running strong.
+        payroll, or tax services, RabyIT has you covered. Their team handles everything so you can focus on
+        growing your business.
+      </p>
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <h3 class="text-2xl font-bold text-white mb-4">Services RabyIT Offers</h3>
+        <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc list-inside space-y-2">
+          <li>Personal and corporate tax filing</li>
+          <li>Bookkeeping and accounting</li>
+          <li>Payroll management</li>
+          <li>HST/GST returns</li>
+          <li>Small business setup and consulting</li>
+          <li>Year-end financial statements</li>
+        </ul>
+      </div>
+      <p class="text-gray-400 text-sm italic">
+        RabyIT is a Gold Sponsor of Challengers Cricket Club. Supporting our sponsors means supporting the club.
       </p>
     `,
     category: 'Sponsor Spotlight',
@@ -135,6 +149,11 @@ export const blogPosts: BlogPost[] = [
     image: null,
     video: '/videos/RabyIt-final-insta.mp4',
     featured: false,
+    sponsorContact: {
+      name: 'RabyIT',
+      email: 'info@rabyit.ca',
+      title: 'Gold Sponsor',
+    },
   },
   {
     slug: '2026-season-kickoff',
