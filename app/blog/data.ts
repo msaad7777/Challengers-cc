@@ -253,14 +253,14 @@ export const blogPosts: BlogPost[] = [
     },
   },
   {
-    slug: 'md-monirul-islam-player-profile',
-    title: 'Player Profile: Md Monirul Islam — Director & All-Rounder',
+    slug: 'tarek-islam-player-profile',
+    title: 'Player Profile: Tarek Islam — Director & All-Rounder',
     excerpt:
-      'Meet Md Monirul Islam, one of the founding directors of Challengers Cricket Club and a fine all-rounder who brings leadership both on and off the field.',
+      'Meet Tarek Islam, one of the founding directors of Challengers Cricket Club and a fine all-rounder who brings leadership both on and off the field.',
     content: `
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         Every cricket team needs players who can do it all — bat, bowl, field, and lead. At Challengers Cricket Club,
-        <strong class="text-white">Md Monirul Islam</strong> is exactly that player. A genuine all-rounder and one of the
+        <strong class="text-white">Tarek Islam</strong> is exactly that player. A genuine all-rounder and one of the
         founding directors of the club, Monirul is an asset to any team he plays for.
       </p>
       <h3 class="text-2xl font-bold text-white mb-4">On the Field</h3>
@@ -294,7 +294,7 @@ export const blogPosts: BlogPost[] = [
           "Cricket teaches you discipline, teamwork, and how to handle pressure — the same skills you need
           to build a community. Challengers Cricket Club is where both come together."
         </p>
-        <cite class="text-gray-400 mt-2 block">— Md Monirul Islam, Director & All-Rounder</cite>
+        <cite class="text-gray-400 mt-2 block">— Tarek Islam, Director & All-Rounder</cite>
       </blockquote>
       <h3 class="text-2xl font-bold text-white mb-4">Why He Matters to Challengers CC</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
@@ -310,7 +310,7 @@ export const blogPosts: BlogPost[] = [
     category: 'Player Profile',
     author: 'Challengers CC',
     date: '2026-04-09',
-    image: '/Tarek-Profile.jpeg',
+    image: '/Tarek-Islam.jpeg',
     video: null,
     featured: true,
   },
