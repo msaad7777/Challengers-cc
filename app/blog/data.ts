@@ -620,7 +620,6 @@ export const blogPosts: BlogPost[] = [
         <li>Google Ad Grants powering our outreach to new players and sponsors</li>
         <li>A dedicated blog to keep the community informed and celebrate our sponsors and players</li>
         <li>Sponsor introduction videos for every partner</li>
-        <li>Youth-focused programs to introduce cricket to the next generation</li>
       </ul>
       <h3 class="text-2xl font-bold text-white mb-4">Want to Join in 2027?</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
