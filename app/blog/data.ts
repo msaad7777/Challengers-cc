@@ -261,18 +261,18 @@ export const blogPosts: BlogPost[] = [
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         Every cricket team needs players who can do it all: bat, bowl, field, and lead. At Challengers Cricket Club,
         <strong class="text-white">Tarek Islam</strong> is exactly that player. A genuine all-rounder and one of the
-        founding directors of the club, Monirul is an asset to any team he plays for.
+        founding directors of the club, Tarek is an asset to any team he plays for.
       </p>
       <h3 class="text-2xl font-bold text-white mb-4">On the Field</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Monirul is a batting all-rounder with a competitive spirit that lifts the entire team. Whether he is anchoring
+        Tarek is a batting all-rounder with a competitive spirit that lifts the entire team. Whether he is anchoring
         an innings with the bat, picking up crucial wickets, or taking sharp catches in the field, he delivers when
         it matters most. His strategic judgment and calm under pressure make him a go-to player in high-stakes matches
         across the LCL, LPL, and UFCL leagues.
       </p>
       <h3 class="text-2xl font-bold text-white mb-4">Off the Field</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Beyond cricket, Monirul serves as a <strong class="text-white">Director</strong> on the Challengers Cricket Club
+        Beyond cricket, Tarek serves as a <strong class="text-white">Director</strong> on the Challengers Cricket Club
         board. His background as a Banking Advisor brings financial discipline and strategic thinking to club operations.
         He is also the co-founder of the <strong class="text-white">Bangladesh Association of London, Ontario</strong> and
         the <strong class="text-white">Nucleus71 political think tank</strong>, a testament to his commitment to
