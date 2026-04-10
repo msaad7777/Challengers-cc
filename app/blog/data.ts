@@ -581,9 +581,9 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: '2026-season-kickoff',
-    title: '2026 Season Kickoff: What to Expect This Year',
+    title: '2026 Season Kickoff: Registration Closed, Season Is ON!',
     excerpt:
-      'The Challengers Cricket Club 2026 season is here. From new sponsors to expanded programs, here is everything you need to know about the year ahead.',
+      'The Challengers Cricket Club 2026 season is officially underway! Registration is now closed. Missed out? We would love to have you in 2027.',
     content: `
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         The wait is over. Challengers Cricket Club is officially kicking off the
@@ -591,27 +591,43 @@ export const blogPosts: BlogPost[] = [
         ahead. After months of planning, sponsorship outreach, and community building, the club is stronger
         and more prepared than ever.
       </p>
+      <div style="background: linear-gradient(135deg, rgba(234,179,8,0.15), rgba(16,185,129,0.15)); border: 2px solid rgba(234,179,8,0.4); border-radius: 16px; padding: 24px; margin: 24px 0; text-align: center;">
+        <h3 class="text-2xl font-bold text-white mb-2">2026 Registration is Officially CLOSED!</h3>
+        <p class="text-gray-300 text-lg mb-4">
+          Our squad is locked in and ready to compete. Thank you to every player who registered for the 2026 season.
+          It is going to be one for the books!
+        </p>
+        <p class="text-gray-400">
+          Missed out? Don't worry! Drop us a message at
+          <a href="mailto:contact@challengerscc.ca" class="text-primary-400 hover:text-primary-300 underline">contact@challengerscc.ca</a>
+          and we will put you on the priority list for the <strong class="text-white">2027 season</strong>.
+          We would love to have you on the team next year!
+        </p>
+      </div>
       <h3 class="text-2xl font-bold text-white mb-4">Growing Our Sponsor Family</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         This season, we are proud to have an incredible lineup of sponsors backing the club. From our
-        Platinum Sponsor Bhupinder Singh to Gold Sponsors like Freddy, Ashvak, and RabyIT, plus community
-        partners Kover Drive and TPG Cricket Academy — every sponsor plays a vital role in making this
+        Platinum Sponsor Bhupinder Singh to Gold Sponsors like Freddy George, Ashvak Sheik, and RabyIT, plus community
+        partners Kover Drive, MakZiN Media, and TPG Cricket Academy. Every sponsor plays a vital role in making this
         season possible.
-      </p>
-      <h3 class="text-2xl font-bold text-white mb-4">Registration Is Open</h3>
-      <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Registration for the 2026 season is now open. Whether you are a seasoned cricketer or picking up
-        a bat for the first time, Challengers CC welcomes players of all skill levels. Our programs include
-        weekly practice sessions, league matches, youth development clinics, and social events.
       </p>
       <h3 class="text-2xl font-bold text-white mb-4">What Is New This Year</h3>
       <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc list-inside space-y-2">
         <li>Expanded practice schedule with professional coaching from TPG Cricket Academy</li>
+        <li>Indoor training at Kover Drive Sports, London's premier cricket facility</li>
+        <li>Competing in LCL, LPL, UFCL and leagues across Ontario</li>
         <li>New payment options including Zeffy (0% processing fees) alongside Stripe</li>
         <li>Google Ad Grants powering our outreach to new players and sponsors</li>
-        <li>A dedicated blog (you are reading it!) to keep the community informed</li>
+        <li>A dedicated blog to keep the community informed and celebrate our sponsors and players</li>
+        <li>Sponsor introduction videos for every partner</li>
         <li>Youth-focused programs to introduce cricket to the next generation</li>
       </ul>
+      <h3 class="text-2xl font-bold text-white mb-4">Want to Join in 2027?</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        If you missed registration this year, don't sweat it! We are already planning for an even bigger 2027 season.
+        Send us an email at <a href="mailto:contact@challengerscc.ca" class="text-primary-400 hover:text-primary-300 underline">contact@challengerscc.ca</a>
+        with your name and contact info, and we will reach out as soon as 2027 registration opens. Spots will fill up fast!
+      </p>
       <h3 class="text-2xl font-bold text-white mb-4">Stay Connected</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         Follow us on <a href="https://www.instagram.com/challengers.cc/" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">Instagram @challengers.cc</a>
@@ -619,13 +635,12 @@ export const blogPosts: BlogPost[] = [
         <a href="mailto:contact@challengerscc.ca" class="text-primary-400 hover:text-primary-300 underline">contact@challengerscc.ca</a>.
       </p>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        This is going to be a season to remember. Welcome to Challengers Cricket Club — let us build
-        something great together.
+        Let's go Challengers! This is going to be a season to remember. Game on!
       </p>
     `,
     category: 'Club News',
     author: 'Challengers CC',
-    date: '2026-04-01',
+    date: '2026-04-09',
     image: null,
     video: null,
     featured: true,
