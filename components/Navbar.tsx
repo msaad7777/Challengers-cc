@@ -32,6 +32,7 @@ export default function Navbar() {
     { label: 'Sponsorship', href: '/sponsorship', isPage: true },
     { label: 'Looking for Sponsors', href: '/looking-for-sponsors', isPage: true },
     { label: 'Blog', href: '/blog', isPage: true },
+    { label: 'C3H', href: '/c3h', isPage: true },
     { label: 'Payments', href: '/payments', isPage: true },
   ];
 
