@@ -445,6 +445,12 @@ export const blogPosts: BlogPost[] = [
         </p>
         <cite class="text-gray-400 mt-2 block">Madhu Reddy, All-Rounder, Challengers Cricket Club</cite>
       </blockquote>
+      <h3 class="text-2xl font-bold text-white mb-4">The Calm Under Pressure</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Known for his calm presence and team-first mentality, Madhu brings stability in high-pressure situations.
+        His ability to stay composed and make smart decisions makes him a trusted figure within the squad. When
+        the game is on the line, Madhu is the player you want out there.
+      </p>
       <h3 class="text-2xl font-bold text-white mb-4">Why Madhu Matters to Challengers CC</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         A player who can contribute with both bat and ball, stay calm under pressure, and set the standard in
