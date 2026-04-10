@@ -43,6 +43,14 @@ export default function BoardMembers() {
       initials: "QQM"
     },
     {
+      name: "Madhu Reddy",
+      title: "Secretary",
+      role: "Club Administration",
+      bio: "Senior Network Security Engineer with double master's degrees in Electronics and Communications. A versatile all-rounder who has been playing cricket since his teens. Known for his calm presence and team-first mentality, Madhu brings stability in high-pressure situations both on and off the field.",
+      image: "/secretary-ccc.jpeg",
+      initials: "MR"
+    },
+    {
       name: "Roman Mahmud",
       title: "Social Chair",
       role: "Social & Community Engagement",
