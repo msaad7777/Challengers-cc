@@ -164,6 +164,72 @@ export const blogPosts: BlogPost[] = [
     },
   },
   {
+    slug: 'freddy-george-gold-sponsor',
+    title: 'Sponsor Spotlight: Freddy George, Gold Sponsor & Financial Advisor',
+    excerpt:
+      'Meet Freddy George, a Licensed Financial Advisor and Gold Sponsor of Challengers Cricket Club. He is not just supporting the team on the field but helping members build strong financial habits off the field too.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Challengers Cricket Club is proud to welcome <strong class="text-white">Freddy George</strong> as our
+        Gold Sponsor for the 2026 season. Freddy is a Licensed Financial Advisor who brings the same
+        commitment and care to our cricket community that he brings to every client he serves.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">More Than a Sponsor</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        What makes Freddy unique as a sponsor is that he does not just support the team financially. He
+        genuinely wants to help every member of Challengers CC build strong financial habits and achieve
+        their personal goals. He has offered to conduct free financial literacy sessions for our team
+        members and their families.
+      </p>
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic">
+          "As a sponsor, I don't just want to support the team on the field, but also off the field by
+          helping everyone here build strong financial habits and achieve their personal goals."
+        </p>
+        <cite class="text-gray-400 mt-2 block">Freddy George, Licensed Financial Advisor</cite>
+      </blockquote>
+      <h3 class="text-2xl font-bold text-white mb-4">Watch Our Sponsor Intro</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Check out our official sponsor introduction video featuring Freddy George and Challengers Cricket Club.
+      </p>
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <h3 class="text-2xl font-bold text-white mb-4">How Freddy Can Help You</h3>
+        <ul class="text-gray-300 text-lg leading-relaxed mb-4 list-disc list-inside space-y-2">
+          <li>Saving for the future and retirement planning</li>
+          <li>Managing investments and growing your wealth</li>
+          <li>Protecting what matters most with insurance</li>
+          <li>Personalized financial planning for individuals and families</li>
+          <li>Free financial literacy sessions for Challengers CC members</li>
+        </ul>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">Book a Free Session with Freddy</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Freddy is offering a free financial literacy session to all Challengers Cricket Club members and
+        their families. Fill out his form and he will personally reach out to schedule a session with you.
+      </p>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 24px 0;">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSddFlpgvxVSdJHShOUCfDmWA5G3PoFMJ9-mvjFdyHUnLHl6cQ/viewform" target="_blank" rel="noopener noreferrer"
+          style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: linear-gradient(to right, #10b981, #059669); color: white; font-weight: 600; border-radius: 8px; text-decoration: none; font-size: 16px;">
+          Book Free Financial Session
+        </a>
+      </div>
+      <p class="text-gray-400 text-sm italic">
+        Freddy George is a Gold Sponsor of Challengers Cricket Club. Supporting our sponsors means supporting the club.
+      </p>
+    `,
+    category: 'Sponsor Spotlight',
+    author: 'Challengers CC',
+    date: '2026-04-04',
+    image: null,
+    video: '/videos/freddy-george-sponsor.mp4',
+    featured: true,
+    sponsorContact: {
+      name: 'Freddy George',
+      email: 'freddy.george@example.com',
+      title: 'Gold Sponsor',
+    },
+  },
+  {
     slug: 'kover-drive-community-partner',
     title: 'Sponsor Spotlight: Kover Drive — Our Home for Indoor Practice',
     excerpt:
