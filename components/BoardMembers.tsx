@@ -22,7 +22,7 @@ export default function BoardMembers() {
       name: "Tarek Islam",
       title: "Director",
       role: "Board of Directors",
-      bio: "Banking Advisor and batting all-rounder bringing strategic judgment and competitive spirit to club leadership. Co-founder of the Bangladesh Association of London, Ontario, and Nucleus71 political think tank. Former Vice President of Kabi Nazrul College Debating Society and National Debating Competition representative. University of Dhaka graduate committed to purposeful leadership and community engagement.",
+      bio: "Batting all-rounder bringing strategic judgment and competitive spirit to club leadership. Co-founder of the Bangladesh Association of London, Ontario. University of Dhaka graduate committed to purposeful leadership and community engagement through sport.",
       image: "/Tarek-Director.jpeg",
       initials: "TI"
     },
