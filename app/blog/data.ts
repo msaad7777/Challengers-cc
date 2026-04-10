@@ -404,6 +404,65 @@ export const blogPosts: BlogPost[] = [
     },
   },
   {
+    slug: 'madhu-reddy-player-profile',
+    title: 'Player Profile: Madhu Reddy, Senior Network Security Engineer & All-Rounder',
+    excerpt:
+      'Meet Madhu Reddy, a Senior Network Security Engineer with double masters, and a versatile all-rounder who has been playing cricket since his teens. A true asset to Challengers Cricket Club.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Every successful team is built on players who can adapt, deliver, and lead when it matters most. At
+        Challengers Cricket Club, <strong class="text-white">Madhu Reddy</strong> stands out as a reliable
+        all-rounder, bringing consistency, intelligence, and competitive edge to every game.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">On the Field</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        With the bat, Madhu combines composure with calculated aggression, capable of anchoring innings or
+        accelerating when required. With the ball, he delivers disciplined spells and breaks partnerships at
+        crucial moments. In the field, his awareness, energy, and sharp execution set the standard for the team.
+        Madhu has been playing cricket since his teens and brings years of experience to every match.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">Off the Field</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Beyond cricket, Madhu is a <strong class="text-white">Senior Network Security Engineer</strong> in the IT
+        industry. He holds <strong class="text-white">double master's degrees in Electronics and Communications</strong>,
+        bringing the same analytical precision and discipline to his professional career that he brings to the cricket
+        field. His passion for active sports and competitive mindset make him a natural fit for Challengers CC.
+      </p>
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <h3 class="text-2xl font-bold text-white mb-4">Quick Facts</h3>
+        <ul class="text-gray-300 text-lg leading-relaxed list-disc list-inside space-y-2">
+          <li>Role: All-Rounder (Bat & Ball)</li>
+          <li>Profession: Senior Network Security Engineer</li>
+          <li>Education: Double Master's in Electronics & Communications</li>
+          <li>Playing cricket since: Teenage years</li>
+          <li>Hobbies: Active sports</li>
+        </ul>
+      </div>
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic">
+          "Cricket is where discipline meets passion. Every game is a chance to push yourself further
+          and lift the team around you."
+        </p>
+        <cite class="text-gray-400 mt-2 block">Madhu Reddy, All-Rounder, Challengers Cricket Club</cite>
+      </blockquote>
+      <h3 class="text-2xl font-bold text-white mb-4">Why Madhu Matters to Challengers CC</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        A player who can contribute with both bat and ball, stay calm under pressure, and set the standard in
+        the field is invaluable. Madhu Reddy is exactly that player for Challengers Cricket Club. His experience,
+        work ethic, and competitive spirit make him one of the key players to watch this 2026 season.
+      </p>
+      <p class="text-gray-400 text-sm italic">
+        Part of our Player Profile series. Stay tuned for more stories from the Challengers Cricket Club squad.
+      </p>
+    `,
+    category: 'Player Profile',
+    author: 'Challengers CC',
+    date: '2026-04-09',
+    image: '/Madhu-Reddy.jpeg',
+    video: null,
+    featured: false,
+  },
+  {
     slug: 'tarek-islam-player-profile',
     title: 'Player Profile: Tarek Islam, Director & All-Rounder',
     excerpt:
