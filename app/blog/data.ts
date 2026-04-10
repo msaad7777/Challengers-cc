@@ -489,22 +489,12 @@ export const blogPosts: BlogPost[] = [
         it matters most. His strategic judgment and calm under pressure make him a go-to player in high-stakes matches
         across the LCL, LPL, and UFCL leagues.
       </p>
-      <h3 class="text-2xl font-bold text-white mb-4">Off the Field</h3>
-      <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Beyond cricket, Tarek serves as a <strong class="text-white">Director</strong> on the Challengers Cricket Club
-        board. His background as a Banking Advisor brings financial discipline and strategic thinking to club operations.
-        He is also the co-founder of the <strong class="text-white">Bangladesh Association of London, Ontario</strong> and
-        the <strong class="text-white">Nucleus71 political think tank</strong>, a testament to his commitment to
-        community building and purposeful leadership.
-      </p>
-      <h3 class="text-2xl font-bold text-white mb-4">Leadership Credentials</h3>
       <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <h3 class="text-2xl font-bold text-white mb-4">Quick Facts</h3>
         <ul class="text-gray-300 text-lg leading-relaxed list-disc list-inside space-y-2">
-          <li>Director, Challengers Cricket Club</li>
-          <li>Co-founder, Bangladesh Association of London, Ontario</li>
-          <li>Co-founder, Nucleus71 Political Think Tank</li>
-          <li>Former Vice President, Kabi Nazrul College Debating Society</li>
-          <li>National Debating Competition Representative</li>
+          <li>Club Role: Director, Challengers Cricket Club</li>
+          <li>Playing Role: Batting All-Rounder</li>
+          <li>Playing cricket since his teens</li>
           <li>University of Dhaka Graduate</li>
         </ul>
       </div>
