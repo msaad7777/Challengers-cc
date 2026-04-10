@@ -472,6 +472,62 @@ export const blogPosts: BlogPost[] = [
     featured: false,
   },
   {
+    slug: 'judin-thomas-player-profile',
+    title: 'Player Profile: Judin Thomas, Bowling All-Rounder',
+    excerpt:
+      'Meet Judin Thomas, a bowling all-rounder with a background in finance and marketing. A cricket enthusiast who brings discipline from the banking world to the cricket field.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Challengers Cricket Club welcomes <strong class="text-white">Judin Thomas</strong>, a bowling all-rounder
+        who combines sharp cricketing instincts with a professional mindset shaped by years in the banking industry.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">On the Field</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Judin is a bowling all-rounder who leads the attack with the ball. His ability to swing the ball early,
+        maintain tight lines, and pick up wickets at key moments makes him a vital part of the Challengers bowling
+        unit. With the bat, he adds valuable runs lower down the order, often turning tight games in the team's
+        favour with crucial cameos.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">Beyond Cricket</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        A former bank employee with experience in finance and marketing, Judin brings discipline, analytical
+        thinking, and a results-driven mindset to everything he does. He is also a passionate stock market
+        investor who enjoys studying markets and building financial knowledge off the field.
+      </p>
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <h3 class="text-2xl font-bold text-white mb-4">Quick Facts</h3>
+        <ul class="text-gray-300 text-lg leading-relaxed list-disc list-inside space-y-2">
+          <li>Playing Role: Bowling All-Rounder</li>
+          <li>Background: Former bank employee, finance & marketing</li>
+          <li>Interests: Stock market investing, active sports</li>
+          <li>Cricket enthusiast with years of playing experience</li>
+        </ul>
+      </div>
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic">
+          "Cricket and investing have a lot in common. Both require patience, timing, and the courage
+          to take your shot when the opportunity is right."
+        </p>
+        <cite class="text-gray-400 mt-2 block">Judin Thomas, Bowling All-Rounder, Challengers Cricket Club</cite>
+      </blockquote>
+      <h3 class="text-2xl font-bold text-white mb-4">Why Judin Matters to Challengers CC</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Every team needs a player who can break partnerships with the ball and chip in with the bat when it counts.
+        Judin Thomas is that player. His professional discipline, competitive fire, and love for cricket make him a
+        valuable addition to the Challengers Cricket Club squad for the 2026 season.
+      </p>
+      <p class="text-gray-400 text-sm italic">
+        Part of our Player Profile series. Stay tuned for more stories from the Challengers Cricket Club squad.
+      </p>
+    `,
+    category: 'Player Profile',
+    author: 'Challengers CC',
+    date: '2026-04-09',
+    image: '/Judin-Thomas.jpeg',
+    video: null,
+    featured: false,
+  },
+  {
     slug: 'tarek-islam-player-profile',
     title: 'Player Profile: Tarek Islam, Director & All-Rounder',
     excerpt:
