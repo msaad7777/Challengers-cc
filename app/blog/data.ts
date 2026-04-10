@@ -169,6 +169,10 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'MakZiN Media joins Challengers Cricket Club as a Community Partner. A London-based software development agency with 11+ years of experience building custom web apps, e-commerce, and cloud solutions.',
     content: `
+      <h3 class="text-2xl font-bold text-white mb-4">Watch Our Partner Intro</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Check out our official partner introduction video featuring MakZiN Media and Challengers Cricket Club.
+      </p>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         Challengers Cricket Club is excited to welcome <strong class="text-white">MakZiN Media Inc.</strong> as
         our newest Community Partner for the 2026 season. Based right here in London, Ontario, MakZiN Media is a
@@ -240,7 +244,7 @@ export const blogPosts: BlogPost[] = [
     author: 'Challengers CC',
     date: '2026-04-09',
     image: null,
-    video: null,
+    video: '/videos/makzin-media-sponsor.mp4',
     featured: false,
     sponsorContact: {
       name: 'MakZiN Media',
