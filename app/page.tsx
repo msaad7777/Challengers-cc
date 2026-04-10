@@ -8,6 +8,7 @@ import Partners from '@/components/Partners';
 import BoardMembers from '@/components/BoardMembers';
 import Registration from '@/components/Registration';
 import Contact from '@/components/Contact';
+import Clubhouse from '@/components/Clubhouse';
 import LegalDocuments from '@/components/LegalDocuments';
 import Footer from '@/components/Footer';
 
@@ -24,6 +25,7 @@ export default function Home() {
       <BoardMembers />
       <Registration />
       <Contact />
+      <Clubhouse />
       <LegalDocuments />
       <Footer />
     </main>
