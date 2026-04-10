@@ -164,6 +164,91 @@ export const blogPosts: BlogPost[] = [
     },
   },
   {
+    slug: 'makzin-media-community-partner',
+    title: 'Partner Spotlight: MakZiN Media, Building Digital Solutions for Our Community',
+    excerpt:
+      'MakZiN Media joins Challengers Cricket Club as a Community Partner. A London-based software development agency with 11+ years of experience building custom web apps, e-commerce, and cloud solutions.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Challengers Cricket Club is excited to welcome <strong class="text-white">MakZiN Media Inc.</strong> as
+        our newest Community Partner for the 2026 season. Based right here in London, Ontario, MakZiN Media is a
+        professional software development agency with over 11 years of experience delivering custom digital solutions
+        for businesses of all sizes.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">A London Success Story</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Founded with the belief that every business deserves access to quality software, MakZiN Media has delivered
+        50+ projects for 30+ happy clients across Canada and beyond. From startups to established enterprises, their
+        team builds custom web applications, mobile apps, and cloud infrastructure that scales with your business.
+      </p>
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic">
+          "We built MakZiN Media because we kept seeing the same problem. Small and mid-sized businesses were getting
+          stuck with bad software, or no software at all, simply because they weren't enterprise-sized. Good tech
+          shouldn't depend on how big your company is."
+        </p>
+        <cite class="text-gray-400 mt-2 block">Misbahuddin Mohammed, President, MakZiN Media Inc.</cite>
+      </blockquote>
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <h3 class="text-2xl font-bold text-white mb-4">Services MakZiN Media Offers</h3>
+        <ul class="text-gray-300 text-lg leading-relaxed mb-4 list-disc list-inside space-y-2">
+          <li>Custom Web Development (React, Vue.js, Nuxt, TypeScript)</li>
+          <li>Mobile App Development (iOS & Android)</li>
+          <li>Cloud & DevOps (AWS, Docker, Kubernetes)</li>
+          <li>E-commerce Platforms</li>
+          <li>AI Integration & Intelligent Automation</li>
+          <li>IT Consultation & Strategy</li>
+          <li>Ongoing Maintenance & Support</li>
+        </ul>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">Why This Partnership Matters</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Cricket clubs and community organizations need strong digital presence to grow. Having a partner like
+        MakZiN Media who understands technology and community gives Challengers CC a competitive edge. Whether
+        it is building a better website, automating operations, or creating digital tools for the club,
+        MakZiN Media has the expertise to make it happen.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">Need a Website or App Built?</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        If you are a business owner, startup founder, or organization looking for a reliable tech partner in
+        London, MakZiN Media delivers custom solutions that drive real results. Mention Challengers Cricket Club
+        when you reach out!
+      </p>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 24px 0;">
+        <a href="https://makzin.media/" target="_blank" rel="noopener noreferrer"
+          style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: linear-gradient(to right, #10b981, #059669); color: white; font-weight: 600; border-radius: 8px; text-decoration: none; font-size: 16px;">
+          Visit MakZiN Media
+        </a>
+        <a href="https://makzin.media/#contact" target="_blank" rel="noopener noreferrer"
+          style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; font-weight: 600; border-radius: 8px; text-decoration: none; font-size: 16px;">
+          Get a Free Quote
+        </a>
+      </div>
+      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; margin: 24px 0;">
+        <h4 class="text-lg font-bold text-white mb-3 text-center">MakZiN Media Inc. Contact Info</h4>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; color: #9ca3af; font-size: 14px;">
+          <span>151B York St, London, ON N6A 1A8</span>
+          <span>+1 519-914-0980</span>
+          <span>info@makzin.media</span>
+        </div>
+      </div>
+      <p class="text-gray-400 text-sm italic">
+        MakZiN Media is a Community Partner of Challengers Cricket Club. Supporting our partners means supporting the club.
+      </p>
+    `,
+    category: 'Sponsor Spotlight',
+    author: 'Challengers CC',
+    date: '2026-04-09',
+    image: null,
+    video: null,
+    featured: false,
+    sponsorContact: {
+      name: 'MakZiN Media',
+      email: 'info@makzin.media',
+      title: 'Community Partner',
+    },
+  },
+  {
     slug: 'freddy-george-gold-sponsor',
     title: 'Sponsor Spotlight: Freddy George, Gold Sponsor & Financial Advisor',
     excerpt:
