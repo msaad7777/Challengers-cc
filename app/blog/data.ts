@@ -405,7 +405,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'madhu-reddy-player-profile',
-    title: 'Player Profile: Madhu Reddy, Senior Network Security Engineer & All-Rounder',
+    title: 'Player Profile: Madhu Reddy, Secretary & All-Rounder',
     excerpt:
       'Meet Madhu Reddy, a Senior Network Security Engineer with double masters, and a versatile all-rounder who has been playing cricket since his teens. A true asset to Challengers Cricket Club.',
     content: `
@@ -423,15 +423,18 @@ export const blogPosts: BlogPost[] = [
       </p>
       <h3 class="text-2xl font-bold text-white mb-4">Off the Field</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Beyond cricket, Madhu is a <strong class="text-white">Senior Network Security Engineer</strong> in the IT
-        industry. He holds <strong class="text-white">double master's degrees in Electronics and Communications</strong>,
-        bringing the same analytical precision and discipline to his professional career that he brings to the cricket
-        field. His passion for active sports and competitive mindset make him a natural fit for Challengers CC.
+        Beyond cricket, Madhu serves as the <strong class="text-white">Secretary</strong> of Challengers Cricket Club
+        and is a <strong class="text-white">Senior Network Security Engineer</strong> in the IT industry. He holds
+        <strong class="text-white">double master's degrees in Electronics and Communications</strong>, bringing the
+        same analytical precision and discipline to his professional career and club administration that he brings
+        to the cricket field. His passion for active sports and competitive mindset make him a natural fit for
+        Challengers CC.
       </p>
       <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
         <h3 class="text-2xl font-bold text-white mb-4">Quick Facts</h3>
         <ul class="text-gray-300 text-lg leading-relaxed list-disc list-inside space-y-2">
-          <li>Role: All-Rounder (Bat & Ball)</li>
+          <li>Club Role: Secretary, Challengers Cricket Club</li>
+          <li>Playing Role: All-Rounder (Bat & Ball)</li>
           <li>Profession: Senior Network Security Engineer</li>
           <li>Education: Double Master's in Electronics & Communications</li>
           <li>Playing cricket since: Teenage years</li>
