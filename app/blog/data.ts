@@ -476,6 +476,66 @@ export const blogPosts: BlogPost[] = [
     featured: false,
   },
   {
+    slug: 'fahad-aktar-player-profile',
+    title: 'Player Profile: Fahad Aktar, AI Consultant & Constant Learner',
+    excerpt:
+      'Meet Fahad Aktar, an AI consultant, teacher, and mentor who applies the same philosophy of constant learning and improvement to his cricket as he does to his career.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Some players bring more than just skill to the team. <strong class="text-white">Fahad Aktar</strong>
+        brings a mindset. As an AI consultant, teacher, and mentor by profession, Fahad believes in constant
+        learning and improvement, and that philosophy shapes everything he does on the cricket field.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">On the Field</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Fahad approaches cricket the way he approaches technology: study, adapt, and improve. Every session
+        is an opportunity to refine technique, analyze what went wrong, and come back stronger. That growth
+        mindset makes him the kind of player who gets better every time he steps onto the field. His
+        willingness to learn from every delivery, every innings, and every match is what sets him apart.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">Beyond Cricket</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        As an <strong class="text-white">AI consultant</strong>, Fahad works at the cutting edge of technology,
+        helping businesses leverage artificial intelligence to solve real problems. He is also a
+        <strong class="text-white">teacher and mentor</strong>, guiding others through their learning journeys.
+        That combination of tech expertise and teaching instinct makes him a natural fit in a team environment
+        where knowledge sharing and collective growth matter.
+      </p>
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <h3 class="text-2xl font-bold text-white mb-4">Quick Facts</h3>
+        <ul class="text-gray-300 text-lg leading-relaxed list-disc list-inside space-y-2">
+          <li>Profession: AI Consultant, Teacher & Mentor</li>
+          <li>Philosophy: Constant learning and improvement</li>
+          <li>Approach to cricket: Study, adapt, get better every game</li>
+          <li>Strength: Growth mindset on and off the field</li>
+        </ul>
+      </div>
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic">
+          "I believe in constant learning and improvement and that's what I have been trying to apply
+          on my cricket as well!"
+        </p>
+        <cite class="text-gray-400 mt-2 block">Fahad Aktar, Challengers Cricket Club</cite>
+      </blockquote>
+      <h3 class="text-2xl font-bold text-white mb-4">Why Fahad Matters to Challengers CC</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        A team full of talented players is good. A team full of players who are constantly trying to get
+        better is unstoppable. Fahad brings that energy to Challengers Cricket Club. His professional
+        background in AI and mentoring, combined with his hunger to improve as a cricketer, makes him a
+        player who elevates everyone around him.
+      </p>
+      <p class="text-gray-400 text-sm italic">
+        Part of our Player Profile series. Stay tuned for more stories from the Challengers Cricket Club squad.
+      </p>
+    `,
+    category: 'Player Profile',
+    author: 'Challengers CC',
+    date: '2026-04-10',
+    image: '/Fahad-Aktar.jpeg',
+    video: null,
+    featured: false,
+  },
+  {
     slug: 'dr-shoab-ahmad-player-profile',
     title: 'Player Profile: Dr. Shoab Ahmad, Physician & Cricket Purist',
     excerpt:
