@@ -26,15 +26,13 @@ export default function Navbar() {
   const menuItems = [
     { label: 'Home', href: '/', isPage: true },
     { label: 'About', href: isHomePage ? '#about' : '/#about', isPage: false },
-    { label: 'Programs', href: isHomePage ? '#programs' : '/#programs', isPage: false },
-    { label: 'Registration', href: isHomePage ? '#interest-section' : '/#interest-section', isPage: false },
-    { label: 'Contact', href: isHomePage ? '#contact' : '/#contact', isPage: false },
-    { label: 'Sponsorship', href: '/sponsorship', isPage: true },
-    { label: 'Looking for Sponsors', href: '/looking-for-sponsors', isPage: true },
     { label: 'Schedule', href: '/schedule', isPage: true },
     { label: 'Blog', href: '/blog', isPage: true },
-    { label: 'C3H', href: '/c3h', isPage: true },
+    { label: 'Sponsorship', href: '/sponsorship', isPage: true },
     { label: 'Payments', href: '/payments', isPage: true },
+    { label: 'Register', href: isHomePage ? '#interest-section' : '/#interest-section', isPage: false },
+    { label: 'Contact', href: isHomePage ? '#contact' : '/#contact', isPage: false },
+    { label: 'C3H', href: '/c3h', isPage: true },
   ];
 
   return (
