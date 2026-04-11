@@ -476,6 +476,65 @@ export const blogPosts: BlogPost[] = [
     featured: false,
   },
   {
+    slug: 'saikrishna-goriparthi-player-profile',
+    title: 'Player Profile: Saikrishna Goriparthi, Right-Hand Bat & Off-Break Bowler',
+    excerpt:
+      'Meet Saikrishna Goriparthi, a right-handed batsman and right-arm off-break bowler who captained his college team to a district championship. A competitor who thrives under pressure.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Challengers Cricket Club welcomes <strong class="text-white">Saikrishna Goriparthi</strong>, a
+        right-handed batsman and right-arm off-break bowler whose cricket journey is built on leadership,
+        competition, and a deep love for the game.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">On the Field</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Saikrishna is a versatile cricketer who contributes with both bat and ball. As a right-handed batsman,
+        he brings solid technique and the ability to build innings or accelerate when needed. With his right-arm
+        off-break bowling, he adds a tactical spin option that can break partnerships and control the run rate
+        in crucial phases of the game.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">A Proven Leader</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Leadership runs in Saikrishna's cricket DNA. He captained his departmental Civil Engineering cricket
+        team and represented his college cricket team, leading them to a <strong class="text-white">district
+        championship victory</strong>. That experience of leading a team to a title brings a winning mentality
+        and composure that every squad needs.
+      </p>
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <h3 class="text-2xl font-bold text-white mb-4">Quick Facts</h3>
+        <ul class="text-gray-300 text-lg leading-relaxed list-disc list-inside space-y-2">
+          <li>Batting: Right-handed batsman</li>
+          <li>Bowling: Right-arm off-break</li>
+          <li>Leadership: Captained departmental Civil Engineering team</li>
+          <li>Achievement: District championship winner with college team</li>
+          <li>Background: Civil Engineering</li>
+        </ul>
+      </div>
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic">
+          "I enjoy cricket because it brings out my competitive spirit and teaches me teamwork, discipline,
+          and the ability to perform under pressure."
+        </p>
+        <cite class="text-gray-400 mt-2 block">Saikrishna Goriparthi, Challengers Cricket Club</cite>
+      </blockquote>
+      <h3 class="text-2xl font-bold text-white mb-4">Why Saikrishna Matters to Challengers CC</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        A district championship-winning cricketer who can bat, bowl off-spin, and captain a side is exactly
+        the kind of player who elevates a team. Saikrishna brings proven leadership, a competitive edge, and
+        the experience of performing when it matters most. Watch out for him this 2026 season.
+      </p>
+      <p class="text-gray-400 text-sm italic">
+        Part of our Player Profile series. Stay tuned for more stories from the Challengers Cricket Club squad.
+      </p>
+    `,
+    category: 'Player Profile',
+    author: 'Challengers CC',
+    date: '2026-04-10',
+    image: '/Sai-Goriparthi.jpeg',
+    video: null,
+    featured: false,
+  },
+  {
     slug: 'judin-thomas-player-profile',
     title: 'Player Profile: Judin Thomas, Bowling All-Rounder',
     excerpt:
