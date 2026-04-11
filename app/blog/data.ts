@@ -476,6 +476,64 @@ export const blogPosts: BlogPost[] = [
     featured: false,
   },
   {
+    slug: 'dr-shoab-ahmad-player-profile',
+    title: 'Player Profile: Dr. Shoab Ahmad, Physician & Cricket Purist',
+    excerpt:
+      'Meet Dr. Shoab Ahmad, a physician by profession but a cricket purist at heart. When he is not saving lives, he is out on the field doing what he loves most.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Not every cricketer walks onto the field after a shift at the hospital. <strong class="text-white">Dr. Shoab Ahmad</strong>
+        does. A physician by profession and a cricket purist at heart, Shoab brings a unique blend of precision,
+        calm under pressure, and relentless passion for the game to Challengers Cricket Club.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">On the Field</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Shoab plays cricket the way it was meant to be played. No shortcuts, no gimmicks. His approach to the
+        game is pure and technical, built on years of loving the sport. Whether batting, bowling, or fielding,
+        he brings the same focus and composure that defines his medical career. In high-pressure situations,
+        having a player with the steady hands of a doctor is exactly what a team needs.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">Beyond Cricket</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        When Shoab is not on the cricket field or at the hospital, you will find him with his hands deep in a
+        DIY project. He has a passion for working on electricals, electronics, mechanics, and cars. The same
+        analytical mind that diagnoses patients and reads bowlers also loves taking things apart and putting
+        them back together.
+      </p>
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <h3 class="text-2xl font-bold text-white mb-4">Quick Facts</h3>
+        <ul class="text-gray-300 text-lg leading-relaxed list-disc list-inside space-y-2">
+          <li>Profession: Physician</li>
+          <li>Cricket Style: Purist, technically sound</li>
+          <li>Hobbies: DIY electricals, electronics, mechanics, cars</li>
+          <li>What drives him: Love for the game in its purest form</li>
+        </ul>
+      </div>
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic">
+          "Cricket is the one place where everything else fades away. No phones, no pagers, no emergencies.
+          Just you, the ball, and the game. That is why I play."
+        </p>
+        <cite class="text-gray-400 mt-2 block">Dr. Shoab Ahmad, Challengers Cricket Club</cite>
+      </blockquote>
+      <h3 class="text-2xl font-bold text-white mb-4">Why Dr. Shoab Matters to Challengers CC</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Every team needs players who love the game for what it is. Shoab is that player. His calm demeanour,
+        professional discipline, and genuine passion for cricket make him a valued member of the Challengers
+        squad. Plus, having a doctor on the team who can also fix your car is not a bad deal.
+      </p>
+      <p class="text-gray-400 text-sm italic">
+        Part of our Player Profile series. Stay tuned for more stories from the Challengers Cricket Club squad.
+      </p>
+    `,
+    category: 'Player Profile',
+    author: 'Challengers CC',
+    date: '2026-04-10',
+    image: null,
+    video: null,
+    featured: false,
+  },
+  {
     slug: 'saikrishna-goriparthi-player-profile',
     title: 'Player Profile: Saikrishna Goriparthi, Right-Hand Bat & Off-Break Bowler',
     excerpt:
