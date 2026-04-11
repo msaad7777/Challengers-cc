@@ -92,7 +92,7 @@ const matches = [
     match: 10,
     date: 'August 8, 2026',
     day: 'Saturday',
-    time: '8:00 AM',
+    time: '1:00 PM',
     opponent: 'Forest City Cricketers',
     venue: 'North London Athletic Fields',
     home: false,
@@ -194,7 +194,6 @@ export default function SchedulePage() {
                   <th className="text-left px-6 py-4 text-sm font-semibold text-gray-400">Time</th>
                   <th className="text-left px-6 py-4 text-sm font-semibold text-gray-400">Opponent</th>
                   <th className="text-left px-6 py-4 text-sm font-semibold text-gray-400">Venue</th>
-                  <th className="text-center px-6 py-4 text-sm font-semibold text-gray-400">Type</th>
                 </tr>
               </thead>
               <tbody>
@@ -219,17 +218,6 @@ export default function SchedulePage() {
                     <td className="px-6 py-4">
                       <span className="text-sm text-gray-400">{m.venue}</span>
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      <span
-                        className={`text-xs font-medium px-3 py-1 rounded-full ${
-                          m.home
-                            ? 'bg-primary-500/20 text-primary-400 border border-primary-500/30'
-                            : 'bg-white/10 text-gray-400 border border-white/20'
-                        }`}
-                      >
-                        {m.home ? 'Home' : 'Away'}
-                      </span>
-                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -241,21 +229,10 @@ export default function SchedulePage() {
             {matches.map((m) => (
               <div
                 key={m.match}
-                className={`glass rounded-xl p-5 border-l-4 ${
-                  m.home ? 'border-l-primary-500' : 'border-l-gray-600'
-                }`}
+                className="glass rounded-xl p-5 border-l-4 border-l-primary-500"
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-bold text-primary-400">Match {m.match}</span>
-                  <span
-                    className={`text-xs font-medium px-3 py-1 rounded-full ${
-                      m.home
-                        ? 'bg-primary-500/20 text-primary-400 border border-primary-500/30'
-                        : 'bg-white/10 text-gray-400 border border-white/20'
-                    }`}
-                  >
-                    {m.home ? 'Home' : 'Away'}
-                  </span>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">vs {m.opponent}</h3>
                 <div className="space-y-1 text-sm text-gray-400">
