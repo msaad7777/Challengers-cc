@@ -481,6 +481,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'Meet Dr. Shoab Ahmad, a physician by profession but a cricket purist at heart. When he is not saving lives, he is out on the field doing what he loves most.',
     content: `
+
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         Not every cricketer walks onto the field after a shift at the hospital. <strong class="text-white">Dr. Shoab Ahmad</strong>
         does. A physician by profession and a cricket purist at heart, Shoab brings a unique blend of precision,
@@ -529,7 +530,7 @@ export const blogPosts: BlogPost[] = [
     category: 'Player Profile',
     author: 'Challengers CC',
     date: '2026-04-10',
-    image: null,
+    image: '/DrShoab-Ahmad.jpeg',
     video: null,
     featured: false,
   },
