@@ -489,8 +489,8 @@ export const blogPosts: BlogPost[] = [
       <h3 class="text-2xl font-bold text-white mb-4">On the Field</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         Gokul is not just a player. He is a match winner with the ball. A <strong class="text-white">Bowler
-        of the Tournament</strong> award winner, Gokul remains to this day one of the
-        <strong class="text-white">leading wicket takers</strong> in every league he plays. His ability to
+        of the Tournament</strong> award winner, Gokul is consistently one of the
+        <strong class="text-white">top performing bowlers</strong> in any tournament he plays. His ability to
         pick up wickets at crucial moments, maintain pressure on batsmen, and lead the bowling attack makes
         him one of the most dangerous bowlers in London's cricket scene. Whether it is a practice session
         or a league match, Gokul gives everything he has and his dedication to growing cricket in Canada
@@ -528,7 +528,7 @@ export const blogPosts: BlogPost[] = [
           <li>Club Role: Director, Challengers Cricket Club</li>
           <li>Playing Role: Bowler</li>
           <li>Achievement: Bowler of the Tournament</li>
-          <li>Record: One of the leading wicket takers in every league he plays</li>
+          <li>Record: Consistently one of the top performing bowlers in any tournament</li>
           <li>Profession: Hardware and Networking Engineer</li>
           <li>Community Service: 15+ years of volunteering</li>
           <li>Interests: YouTube blogging, international travel</li>
