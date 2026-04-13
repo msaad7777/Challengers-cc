@@ -824,6 +824,79 @@ export const blogPosts: BlogPost[] = [
     featured: true,
   },
   {
+    slug: 'lcl-t30-schedule-2026',
+    title: 'LCL T30 Schedule Is Out! 14 Matches Across London & Sarnia',
+    excerpt:
+      'The 2026 London Cricket League T30 schedule has been released! Challengers CC will play 14 matches from May to September across four venues. Check out the full fixture list.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        The wait is over! The <strong class="text-white">2026 LCL T30 league schedule</strong> has officially
+        been released and Challengers Cricket Club is locked in for <strong class="text-white">14 matches</strong>
+        running from May through September. It is going to be an action-packed season!
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">Season at a Glance</h3>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0;">
+        <div style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 12px; padding: 16px; text-align: center;">
+          <div class="text-2xl font-bold text-primary-400">14</div>
+          <div class="text-xs text-gray-400">Matches</div>
+        </div>
+        <div style="background: rgba(234,179,8,0.1); border: 1px solid rgba(234,179,8,0.3); border-radius: 12px; padding: 16px; text-align: center;">
+          <div class="text-2xl font-bold text-accent-400">4</div>
+          <div class="text-xs text-gray-400">Venues</div>
+        </div>
+        <div style="background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3); border-radius: 12px; padding: 16px; text-align: center;">
+          <div class="text-2xl font-bold text-blue-400">May - Sep</div>
+          <div class="text-xs text-gray-400">Season</div>
+        </div>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">Key Fixtures to Watch</h3>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc list-inside space-y-2">
+        <li><strong class="text-white">Season Opener (May 10)</strong> vs London Predators at Northridge Cricket Ground</li>
+        <li><strong class="text-white">Away Trip to Sarnia (June 14)</strong> vs Sarnia Spartans at Mike Vier Park</li>
+        <li><strong class="text-white">Canada Day Clash (July 1)</strong> vs London Rising Stars</li>
+        <li><strong class="text-white">Back-to-Back Weekend (July 25-26)</strong> vs LCC Mavericks & London Rising Stars</li>
+        <li><strong class="text-white">Season Finale Double Header (Sep 12-13)</strong> vs Inferno Spartans & Tigers Cricket Club</li>
+      </ul>
+      <h3 class="text-2xl font-bold text-white mb-4">Our Opponents</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        This season we face some of the strongest teams in the London Cricket League including London Predators,
+        Forest City Cricketers, Sarnia Spartans, Western Cricket Academy B, London Rising Stars, LCC Maple Stars,
+        LCC Mavericks, London Eagle Predators, Inferno Spartans, and Tigers Cricket Club. Every match is going
+        to be a battle and we are ready for it.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">Venues</h3>
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <ul class="text-gray-300 text-lg leading-relaxed list-disc list-inside space-y-2">
+          <li>Northridge Cricket Ground, London</li>
+          <li>North London Athletic Fields, London</li>
+          <li>Silverwoods Cricket Ground, London</li>
+          <li>Mike Vier Park, Sarnia</li>
+        </ul>
+      </div>
+      <div style="text-align: center; margin: 24px 0;">
+        <a href="/schedule" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: linear-gradient(to right, #10b981, #059669); color: white; font-weight: 600; border-radius: 8px; text-decoration: none; font-size: 16px;">
+          View Full Schedule
+        </a>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">LCL T20 & LPL Coming Soon</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        The T30 is just the beginning. We are also registered for the LCL T20 league and the London Premier
+        League (LPL). Those schedules will be published as soon as fixtures are confirmed. Keep an eye on
+        our <a href="/schedule" class="text-primary-400 hover:text-primary-300 underline">Schedule page</a>
+        for updates.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Let's go Challengers! Game on!
+      </p>
+    `,
+    category: 'Club News',
+    author: 'Challengers CC',
+    date: '2026-04-13',
+    image: null,
+    video: null,
+    featured: true,
+  },
+  {
     slug: '2026-season-kickoff',
     title: '2026 Season Kickoff: Registration Closed, Season Is ON!',
     excerpt:
