@@ -476,6 +476,68 @@ export const blogPosts: BlogPost[] = [
     featured: false,
   },
   {
+    slug: 'gokul-prakash-player-profile',
+    title: 'Player Profile: Gokul Prakash, Director & Community Cricket Champion',
+    excerpt:
+      'Meet Gokul Prakash, a Director of Challengers Cricket Club, Hardware and Networking Engineer, and a man who has dedicated 15+ years to community service and growing cricket in Canada.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Some people play cricket. Others live it. <strong class="text-white">Gokul Prakash</strong> has been
+        doing both for as long as he can remember. A founding director of Challengers Cricket Club, Gokul
+        brings a lifelong passion for cricket and over 15 years of community service to everything he does.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">On the Field</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Gokul is the kind of player every team needs. Reliable, committed, and always ready to put the team
+        first. His love for cricket is infectious and his presence on the field lifts the energy of the
+        entire squad. Whether it is a practice session or a league match, Gokul gives everything he has.
+        His dedication to growing cricket in Canada drives him to not just play but to build the sport
+        from the ground up.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">Beyond Cricket</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        By profession, Gokul is a <strong class="text-white">Hardware and Networking Engineer</strong>, bringing
+        technical expertise and problem-solving skills to the club's operations. Outside of work and cricket,
+        he pursues his passion for <strong class="text-white">YouTube blogging</strong> and
+        <strong class="text-white">international travel</strong>, documenting his experiences and connecting
+        with communities around the world. His 15+ years of volunteering in community-based events speaks
+        to his deep commitment to making a positive impact wherever he goes.
+      </p>
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <h3 class="text-2xl font-bold text-white mb-4">Quick Facts</h3>
+        <ul class="text-gray-300 text-lg leading-relaxed list-disc list-inside space-y-2">
+          <li>Club Role: Director, Challengers Cricket Club</li>
+          <li>Profession: Hardware and Networking Engineer</li>
+          <li>Community Service: 15+ years of volunteering</li>
+          <li>Interests: YouTube blogging, international travel</li>
+          <li>Mission: Growing cricket in Canada</li>
+        </ul>
+      </div>
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic">
+          "Cricket is more than a game. It is a way to bring people together, build friendships, and
+          create something meaningful for the community. That is why I am here."
+        </p>
+        <cite class="text-gray-400 mt-2 block">Gokul Prakash, Director, Challengers Cricket Club</cite>
+      </blockquote>
+      <h3 class="text-2xl font-bold text-white mb-4">Why Gokul Matters to Challengers CC</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        A founding director who plays, volunteers, and actively works to grow the sport in Canada is the
+        backbone of any cricket club. Gokul Prakash is that backbone for Challengers CC. His dedication,
+        experience, and genuine love for cricket and community make him irreplaceable.
+      </p>
+      <p class="text-gray-400 text-sm italic">
+        Part of our Player Profile series. Stay tuned for more stories from the Challengers Cricket Club squad.
+      </p>
+    `,
+    category: 'Player Profile',
+    author: 'Challengers CC',
+    date: '2026-04-13',
+    image: '/Gokul-Prakash-Profile.jpeg',
+    video: null,
+    featured: false,
+  },
+  {
     slug: 'fahad-aktar-player-profile',
     title: 'Player Profile: Fahad Aktar, AI Consultant & Constant Learner',
     excerpt:
