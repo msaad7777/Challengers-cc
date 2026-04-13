@@ -488,12 +488,31 @@ export const blogPosts: BlogPost[] = [
       </p>
       <h3 class="text-2xl font-bold text-white mb-4">On the Field</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Gokul is the kind of player every team needs. Reliable, committed, and always ready to put the team
-        first. His love for cricket is infectious and his presence on the field lifts the energy of the
-        entire squad. Whether it is a practice session or a league match, Gokul gives everything he has.
-        His dedication to growing cricket in Canada drives him to not just play but to build the sport
-        from the ground up.
+        Gokul is not just a player. He is a match winner with the ball. A <strong class="text-white">Bowler
+        of the Tournament</strong> award winner, Gokul remains to this day one of the
+        <strong class="text-white">leading wicket takers</strong> in every league he plays. His ability to
+        pick up wickets at crucial moments, maintain pressure on batsmen, and lead the bowling attack makes
+        him one of the most dangerous bowlers in London's cricket scene. Whether it is a practice session
+        or a league match, Gokul gives everything he has and his dedication to growing cricket in Canada
+        drives him to not just play but to build the sport from the ground up.
       </p>
+      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 20px; margin: 20px 0;">
+        <h4 class="text-lg font-bold text-accent-400 mb-3 text-center">Achievements</h4>
+        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+          <div style="background: rgba(234,179,8,0.1); border: 1px solid rgba(234,179,8,0.3); border-radius: 12px; padding: 16px 24px; text-align: center;">
+            <div class="text-2xl mb-1">🏆</div>
+            <div class="text-sm font-bold text-accent-400">Bowler of the Tournament</div>
+          </div>
+          <div style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 12px; padding: 16px 24px; text-align: center;">
+            <div class="text-2xl mb-1">🎯</div>
+            <div class="text-sm font-bold text-primary-400">Leading Wicket Taker</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin: 24px 0;">
+        <img src="/Gokul-Achievement-1.jpeg" alt="Gokul Prakash - Bowler of the Tournament" style="width: 100%; border-radius: 12px;" />
+        <p class="text-gray-500 text-xs text-center mt-2">Gokul Prakash receiving his Bowler of the Tournament award</p>
+      </div>
       <h3 class="text-2xl font-bold text-white mb-4">Beyond Cricket</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         By profession, Gokul is a <strong class="text-white">Hardware and Networking Engineer</strong>, bringing
@@ -507,10 +526,12 @@ export const blogPosts: BlogPost[] = [
         <h3 class="text-2xl font-bold text-white mb-4">Quick Facts</h3>
         <ul class="text-gray-300 text-lg leading-relaxed list-disc list-inside space-y-2">
           <li>Club Role: Director, Challengers Cricket Club</li>
+          <li>Playing Role: Bowler</li>
+          <li>Achievement: Bowler of the Tournament</li>
+          <li>Record: One of the leading wicket takers in every league he plays</li>
           <li>Profession: Hardware and Networking Engineer</li>
           <li>Community Service: 15+ years of volunteering</li>
           <li>Interests: YouTube blogging, international travel</li>
-          <li>Mission: Growing cricket in Canada</li>
         </ul>
       </div>
       <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
