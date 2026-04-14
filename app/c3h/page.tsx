@@ -33,7 +33,7 @@ export default function C3HPage() {
               Private. Secure. Built for the team. Sign in with Google.
             </p>
             <a
-              href="/c3h/login"
+              href="/api/auth/signin/google?callbackUrl=/c3h/dashboard"
               className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-white text-gray-900 font-semibold hover:bg-gray-100 transition-all duration-300 shadow-xl hover:scale-105 mb-8"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
