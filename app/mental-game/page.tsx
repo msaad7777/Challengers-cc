@@ -310,34 +310,6 @@ export default function MentalGamePage() {
             </div>
           </div>
 
-          {/* COMING SOON */}
-          <div className="glass rounded-2xl p-8 mb-8 border-2 border-accent-500/30 text-center">
-            <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-4">
-              <span className="text-xs font-medium text-accent-400 uppercase tracking-wider">Coming Soon to C3H</span>
-            </div>
-            <h2 className="text-2xl font-bold text-white mb-3">Personal Player Reflection Portal</h2>
-            <p className="text-gray-400 text-sm max-w-xl mx-auto mb-6">
-              Login, fill your personal reset card, track KPIs per innings, log reflections, and access your batting mind map — all saved to your profile.
-            </p>
-            <div className="grid sm:grid-cols-2 gap-3 max-w-lg mx-auto text-left mb-6">
-              <div className="glass rounded-xl p-3 border border-white/10">
-                <h4 className="text-primary-400 font-bold text-xs">Personal Reset Card</h4>
-              </div>
-              <div className="glass rounded-xl p-3 border border-white/10">
-                <h4 className="text-accent-400 font-bold text-xs">Post-Innings Reflection</h4>
-              </div>
-              <div className="glass rounded-xl p-3 border border-white/10">
-                <h4 className="text-blue-400 font-bold text-xs">KPI Tracker</h4>
-              </div>
-              <div className="glass rounded-xl p-3 border border-white/10">
-                <h4 className="text-purple-400 font-bold text-xs">Visual Mind Map</h4>
-              </div>
-            </div>
-            <a href="/c3h" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105 text-sm">
-              Learn More About C3H
-            </a>
-          </div>
-
           {/* FINAL QUOTE */}
           <div className="text-center">
             <div className="glass rounded-2xl p-8 border border-primary-500/20">
