@@ -117,7 +117,7 @@ export default function NetsPage() {
   };
 
   useEffect(() => {
-    if (session?.user?.email) loadReflections();
+    if (session?.user?.email) loadReflections().catch(() => setLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
@@ -150,7 +150,7 @@ export default function NetsPage() {
       notes,
       createdAt: new Date().toISOString(),
     });
-    await loadReflections();
+    try { await loadReflections(); } catch { /* index may still be building */ }
     setSaving(false);
     setView('list');
     setMatch(''); setMatchIndex(0); setHowGotOut([]); setWhatWentRight([]);
