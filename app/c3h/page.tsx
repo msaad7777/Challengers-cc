@@ -253,12 +253,12 @@ export default function C3HPage() {
             <h3 className="text-xl font-bold text-white mb-6 text-center">Build Roadmap</h3>
             <div className="space-y-3 max-w-lg mx-auto">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary-500/20 flex items-center justify-center border border-primary-500/30 flex-shrink-0">
-                  <span className="text-xs font-bold text-primary-400">1</span>
+                <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
                 </div>
                 <div>
                   <p className="text-white text-sm font-medium">Google Auth + Player Login</p>
-                  <p className="text-gray-500 text-xs">Sign in with Google, player profiles</p>
+                  <p className="text-primary-400 text-xs">Live — 32 players whitelisted</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
