@@ -262,17 +262,26 @@ export default function C3HPage() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 flex-shrink-0">
-                  <span className="text-xs font-bold text-gray-400">2</span>
+                <div className="w-8 h-8 rounded-full bg-accent-500 flex items-center justify-center flex-shrink-0">
+                  <span className="text-xs font-bold text-white">2</span>
                 </div>
                 <div>
                   <p className="text-white text-sm font-medium">The Nets — Reflection Cards & Mindset Tools</p>
-                  <p className="text-gray-500 text-xs">Personal reflection per match, mental game checklists</p>
+                  <p className="text-accent-400 text-xs">In Progress — Reflection cards live, pattern tracker live</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 flex-shrink-0">
                   <span className="text-xs font-bold text-gray-400">3</span>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-medium">The Nets — Practice Match Scorer</p>
+                  <p className="text-gray-500 text-xs">Coin toss, add players, live scoring, results linked to reflections</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 flex-shrink-0">
+                  <span className="text-xs font-bold text-gray-400">4</span>
                 </div>
                 <div>
                   <p className="text-white text-sm font-medium">The Scoreboard — Match KPIs & Season Stats</p>
@@ -281,7 +290,7 @@ export default function C3HPage() {
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 flex-shrink-0">
-                  <span className="text-xs font-bold text-gray-400">4</span>
+                  <span className="text-xs font-bold text-gray-400">5</span>
                 </div>
                 <div>
                   <p className="text-white text-sm font-medium">The Dugout — Squad Selection</p>
@@ -290,7 +299,7 @@ export default function C3HPage() {
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 flex-shrink-0">
-                  <span className="text-xs font-bold text-gray-400">5</span>
+                  <span className="text-xs font-bold text-gray-400">6</span>
                 </div>
                 <div>
                   <p className="text-white text-sm font-medium">The Pavilion — Board Governance</p>
