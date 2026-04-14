@@ -15,7 +15,7 @@ interface Reflection {
   matchIndex: number;
   match: string;
   opponent: string;
-  howGotOut: string;
+  howGotOut: string | string[];
   whatWentRight: string[];
   whatWentWrong: string[];
   mindsetWord: string;
@@ -29,7 +29,8 @@ interface Reflection {
 
 const HOW_GOT_OUT_OPTIONS = [
   'Bowled', 'Caught — Slips/Gully', 'Caught — Infield', 'Caught — Boundary',
-  'LBW', 'Run Out', 'Stumped', 'Hit Wicket', 'Did not bat', 'Not out',
+  'Caught — Keeper', 'Caught — Hit straight to fielder', 'LBW', 'Run Out',
+  'Stumped', 'Hit Wicket', 'Did not bat', 'Not out',
 ];
 
 const WHAT_WENT_RIGHT_OPTIONS = [
@@ -75,7 +76,7 @@ export default function NetsPage() {
   // Form state
   const [match, setMatch] = useState('');
   const [matchIndex, setMatchIndex] = useState(0);
-  const [howGotOut, setHowGotOut] = useState('');
+  const [howGotOut, setHowGotOut] = useState<string[]>([]);
   const [whatWentRight, setWhatWentRight] = useState<string[]>([]);
   const [whatWentWrong, setWhatWentWrong] = useState<string[]>([]);
   const [mindsetWord, setMindsetWord] = useState('');
@@ -152,7 +153,7 @@ export default function NetsPage() {
     await loadReflections();
     setSaving(false);
     setView('list');
-    setMatch(''); setMatchIndex(0); setHowGotOut(''); setWhatWentRight([]);
+    setMatch(''); setMatchIndex(0); setHowGotOut([]); setWhatWentRight([]);
     setWhatWentWrong([]); setMindsetWord(''); setNextInningsPlan('');
     setStrengthToBuild(''); setPressureResponse(''); setIntentScore(3); setNotes('');
   };
@@ -169,9 +170,10 @@ export default function NetsPage() {
     matchRefs.forEach(r => {
       r.whatWentWrong.forEach(w => { mistakeCounts[w] = (mistakeCounts[w] || 0) + 1; });
       r.whatWentRight.forEach(w => { strengthCounts[w] = (strengthCounts[w] || 0) + 1; });
-      if (r.howGotOut && r.howGotOut !== 'Not out' && r.howGotOut !== 'Did not bat') {
-        dismissalCounts[r.howGotOut] = (dismissalCounts[r.howGotOut] || 0) + 1;
-      }
+      const outs = Array.isArray(r.howGotOut) ? r.howGotOut : r.howGotOut ? [r.howGotOut] : [];
+      outs.filter(o => o !== 'Not out' && o !== 'Did not bat').forEach(o => {
+        dismissalCounts[o] = (dismissalCounts[o] || 0) + 1;
+      });
     });
 
     const topMistakes = Object.entries(mistakeCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
@@ -359,7 +361,7 @@ export default function NetsPage() {
                         <span className="text-gray-500 text-xs">{r.date}</span>
                       </div>
                       <div className="flex items-center gap-3 text-xs text-gray-400">
-                        <span>Out: {r.howGotOut || 'N/A'}</span>
+                        <span>Out: {Array.isArray(r.howGotOut) ? r.howGotOut.join(', ') || 'N/A' : r.howGotOut || 'N/A'}</span>
                         <span>Intent: {r.intentScore}/5</span>
                         <span className="text-primary-400">{r.mindsetWord || '—'}</span>
                       </div>
@@ -385,7 +387,7 @@ export default function NetsPage() {
                 <div className="grid grid-cols-3 gap-3 mb-6">
                   <div className="glass rounded-xl p-3 text-center">
                     <p className="text-gray-500 text-xs mb-1">Got Out</p>
-                    <p className="text-white font-bold text-xs">{selectedReflection.howGotOut || 'N/A'}</p>
+                    <p className="text-white font-bold text-xs">{Array.isArray(selectedReflection.howGotOut) ? selectedReflection.howGotOut.join(', ') || 'N/A' : selectedReflection.howGotOut || 'N/A'}</p>
                   </div>
                   <div className="glass rounded-xl p-3 text-center">
                     <p className="text-gray-500 text-xs mb-1">Intent</p>
@@ -435,9 +437,16 @@ export default function NetsPage() {
 
                 <div className="glass rounded-2xl p-6 border border-white/10">
                   <h3 className="text-lg font-bold text-white mb-3">How Did You Get Out?</h3>
+                  {matchIndex === 99 && <p className="text-gray-500 text-xs mb-3">Practice session — select all that apply</p>}
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {HOW_GOT_OUT_OPTIONS.map(opt => (
-                      <button key={opt} onClick={() => setHowGotOut(opt)} className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${howGotOut === opt ? 'bg-primary-500/20 text-primary-400 border-primary-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'}`}>{opt}</button>
+                      <button key={opt} onClick={() => {
+                        if (matchIndex === 99) {
+                          toggleCheckbox(opt, howGotOut, setHowGotOut);
+                        } else {
+                          setHowGotOut(howGotOut.includes(opt) && howGotOut.length === 1 ? [] : [opt]);
+                        }
+                      }} className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${howGotOut.includes(opt) ? 'bg-primary-500/20 text-primary-400 border-primary-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'}`}>{howGotOut.includes(opt) ? '✓ ' : ''}{opt}</button>
                     ))}
                   </div>
                 </div>
