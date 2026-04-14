@@ -258,7 +258,7 @@ export default function C3HPage() {
                 </div>
                 <div>
                   <p className="text-white text-sm font-medium">Google Auth + Player Login</p>
-                  <p className="text-primary-400 text-xs">Live — 32 players whitelisted</p>
+                  <p className="text-primary-400 text-xs">Live</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
