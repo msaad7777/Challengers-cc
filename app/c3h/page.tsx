@@ -3,8 +3,10 @@ import Footer from '@/components/Footer';
 
 export const metadata = {
   title: 'C3H — Members Portal | Challengers Cricket Club',
-  description: 'C3H is the private members portal for Challengers Cricket Club. The Nets for coaching and video feedback. The Pavilion for board governance and voting.',
+  description: 'C3H is the private members portal for Challengers Cricket Club. The Nets, The Dugout, The Scoreboard, and The Pavilion.',
 };
+
+const checkIcon = (color: string) => `<svg class="w-4 h-4 ${color} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>`;
 
 export default function C3HPage() {
   return (
@@ -16,145 +18,272 @@ export default function C3HPage() {
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-950 to-black">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary-900/20 via-transparent to-transparent"></div>
         </div>
-
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-8">
-              <span className="text-xs font-medium text-accent-400 uppercase tracking-wider">Coming Soon</span>
+              <span className="text-xs font-medium text-accent-400 uppercase tracking-wider">Members Only — Coming Soon</span>
             </div>
-
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6">
               C<span className="gradient-text">3</span>H
             </h1>
             <p className="text-xl sm:text-2xl text-gray-300 mb-2">
-              Challengers Cricket Club — Members Portal
+              Challengers Cricket Club Hub
             </p>
             <p className="text-gray-500 text-sm mb-8">
-              Private. Secure. Built for the team.
+              Private. Secure. Built for the team. Sign in with Google.
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto rounded-full"></div>
           </div>
         </div>
       </section>
 
-      {/* Two Portals */}
+      {/* 4 Modules */}
       <section className="section-padding bg-gradient-to-b from-black to-gray-950">
         <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-6">
 
             {/* The Nets */}
-            <div className="glass rounded-2xl p-8 border-2 border-primary-500/20 hover:border-primary-500/50 transition-all duration-300 relative overflow-hidden">
+            <div className="glass rounded-2xl p-7 border-2 border-primary-500/20 hover:border-primary-500/50 transition-all duration-300 relative overflow-hidden">
               <div className="absolute top-4 right-4">
                 <span className="text-xs font-medium px-3 py-1 rounded-full bg-accent-500/20 text-accent-400 border border-accent-500/30">
                   Coming Soon
                 </span>
               </div>
-              <div className="text-5xl mb-6">🏏</div>
-              <h2 className="text-3xl font-bold text-white mb-3">The Nets</h2>
-              <p className="text-primary-400 text-sm font-medium mb-4">Coaching & Video Feedback Portal</p>
-              <p className="text-gray-400 leading-relaxed mb-6">
-                Upload your batting or bowling videos via YouTube links and get personalized feedback from our coaching staff.
-                Improve your technique, track your progress, and take your game to the next level.
-              </p>
-              <ul className="space-y-3 text-sm text-gray-400">
-                <li className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-primary-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Upload training videos via YouTube links
+              <div className="text-4xl mb-4">🏏</div>
+              <h2 className="text-2xl font-bold text-white mb-1">The Nets</h2>
+              <p className="text-primary-400 text-sm font-medium mb-4">Coaching, Mindset & Reflection</p>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-primary-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Upload training videos for coach feedback
                 </li>
-                <li className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-primary-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Receive coach feedback in text or audio
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-primary-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Personal reflection card per match
                 </li>
-                <li className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-primary-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Private one-on-one coaching conversations
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-primary-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Mental game tools and mindset notes
                 </li>
-                <li className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-primary-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Track improvement over the season
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-primary-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Bounce back routine and reset card
                 </li>
               </ul>
-              <div className="mt-6 pt-6 border-t border-white/10">
+              <div className="mt-5 pt-5 border-t border-white/10">
                 <p className="text-xs text-gray-500">Access: All registered players & coaches</p>
               </div>
             </div>
 
-            {/* The Pavilion */}
-            <div className="glass rounded-2xl p-8 border-2 border-accent-500/20 hover:border-accent-500/50 transition-all duration-300 relative overflow-hidden">
+            {/* The Dugout */}
+            <div className="glass rounded-2xl p-7 border-2 border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 relative overflow-hidden">
               <div className="absolute top-4 right-4">
                 <span className="text-xs font-medium px-3 py-1 rounded-full bg-accent-500/20 text-accent-400 border border-accent-500/30">
                   Coming Soon
                 </span>
               </div>
-              <div className="text-5xl mb-6">🏛️</div>
-              <h2 className="text-3xl font-bold text-white mb-3">The Pavilion</h2>
-              <p className="text-accent-400 text-sm font-medium mb-4">Board Governance & Voting Portal</p>
-              <p className="text-gray-400 leading-relaxed mb-6">
-                A private space for board members to review resolutions, cast votes, and e-sign documents.
-                Democratic decision-making made simple and transparent.
-              </p>
-              <ul className="space-y-3 text-sm text-gray-400">
-                <li className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-accent-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+              <div className="text-4xl mb-4">🪖</div>
+              <h2 className="text-2xl font-bold text-white mb-1">The Dugout</h2>
+              <p className="text-blue-400 text-sm font-medium mb-4">Squad Selection & Team Management</p>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Captain selects squad for each match
+                </li>
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Players notified when selected
+                </li>
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Match details, venue, and timing
+                </li>
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Availability confirmation from players
+                </li>
+              </ul>
+              <div className="mt-5 pt-5 border-t border-white/10">
+                <p className="text-xs text-gray-500">Access: Captains + Admin</p>
+              </div>
+            </div>
+
+            {/* The Scoreboard */}
+            <div className="glass rounded-2xl p-7 border-2 border-red-500/20 hover:border-red-500/50 transition-all duration-300 relative overflow-hidden">
+              <div className="absolute top-4 right-4">
+                <span className="text-xs font-medium px-3 py-1 rounded-full bg-accent-500/20 text-accent-400 border border-accent-500/30">
+                  Coming Soon
+                </span>
+              </div>
+              <div className="text-4xl mb-4">📊</div>
+              <h2 className="text-2xl font-bold text-white mb-1">The Scoreboard</h2>
+              <p className="text-red-400 text-sm font-medium mb-4">Performance Tracking & KPIs</p>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Batting KPIs: runs, strike rate, dot ball %
+                </li>
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Bowling KPIs: economy, dot balls, wickets
+                </li>
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Team contribution score per match
+                </li>
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Season stats and performance trends
+                </li>
+              </ul>
+              <div className="mt-5 pt-5 border-t border-white/10">
+                <p className="text-xs text-gray-500">Access: All registered players</p>
+              </div>
+            </div>
+
+            {/* The Pavilion */}
+            <div className="glass rounded-2xl p-7 border-2 border-accent-500/20 hover:border-accent-500/50 transition-all duration-300 relative overflow-hidden">
+              <div className="absolute top-4 right-4">
+                <span className="text-xs font-medium px-3 py-1 rounded-full bg-accent-500/20 text-accent-400 border border-accent-500/30">
+                  Coming Soon
+                </span>
+              </div>
+              <div className="text-4xl mb-4">🏛️</div>
+              <h2 className="text-2xl font-bold text-white mb-1">The Pavilion</h2>
+              <p className="text-accent-400 text-sm font-medium mb-4">Board Governance & Voting</p>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-accent-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                   Submit and review board resolutions
                 </li>
-                <li className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-accent-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Vote agree or disagree on each resolution
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-accent-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Vote agree or disagree
                 </li>
-                <li className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-accent-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-accent-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                   E-sign documents digitally
                 </li>
-                <li className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-accent-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-accent-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                   Full transparency with voting records
                 </li>
               </ul>
-              <div className="mt-6 pt-6 border-t border-white/10">
+              <div className="mt-5 pt-5 border-t border-white/10">
                 <p className="text-xs text-gray-500">Access: Board members only (Directors, Treasurer, Secretary)</p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* How It Works */}
+          <div className="mt-16 glass rounded-2xl p-8 md:p-12 border border-white/10">
+            <h3 className="text-2xl font-bold text-white mb-6 text-center">
+              How C<span className="gradient-text">3</span>H Works
+            </h3>
+            <div className="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+              <div className="text-center">
+                <div className="w-14 h-14 rounded-full bg-primary-500/20 flex items-center justify-center mx-auto mb-3 border-2 border-primary-500/30">
+                  <span className="text-xl font-bold gradient-text">1</span>
+                </div>
+                <h4 className="text-white font-bold text-sm mb-1">Sign In</h4>
+                <p className="text-gray-500 text-xs">Log in with your Google account (@challengerscc.ca or approved Gmail)</p>
+              </div>
+              <div className="text-center">
+                <div className="w-14 h-14 rounded-full bg-primary-500/20 flex items-center justify-center mx-auto mb-3 border-2 border-primary-500/30">
+                  <span className="text-xl font-bold gradient-text">2</span>
+                </div>
+                <h4 className="text-white font-bold text-sm mb-1">Your Dashboard</h4>
+                <p className="text-gray-500 text-xs">See your next match, stats, reflection cards, and notifications in one place</p>
+              </div>
+              <div className="text-center">
+                <div className="w-14 h-14 rounded-full bg-primary-500/20 flex items-center justify-center mx-auto mb-3 border-2 border-primary-500/30">
+                  <span className="text-xl font-bold gradient-text">3</span>
+                </div>
+                <h4 className="text-white font-bold text-sm mb-1">Grow</h4>
+                <p className="text-gray-500 text-xs">Track your performance, reflect after every game, and improve every season</p>
               </div>
             </div>
           </div>
 
           {/* What is C3H */}
-          <div className="mt-16 glass rounded-2xl p-8 md:p-12 text-center border border-white/10">
-            <h3 className="text-2xl font-bold text-white mb-4">
+          <div className="mt-8 glass rounded-2xl p-8 text-center border border-white/10">
+            <h3 className="text-xl font-bold text-white mb-4">
               What is C<span className="gradient-text">3</span>H?
             </h3>
-            <p className="text-gray-400 leading-relaxed max-w-3xl mx-auto mb-6">
-              C3H stands for Challengers Cricket Club Hub. It is a private, members-only portal
+            <p className="text-gray-400 text-sm max-w-2xl mx-auto mb-6">
+              C3H stands for Challengers Cricket Club Hub. A private, members-only portal
               built exclusively for Challengers CC players and board members. No public access.
               No outsiders. Just the team.
             </p>
-            <div className="grid sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
-              <div className="glass rounded-xl p-4">
-                <div className="text-2xl font-bold gradient-text mb-1">C</div>
-                <div className="text-xs text-gray-500">Challengers</div>
+            <div className="grid grid-cols-4 gap-4 max-w-md mx-auto">
+              <div className="glass rounded-xl p-3">
+                <div className="text-lg font-bold gradient-text">🏏</div>
+                <div className="text-xs text-gray-500 mt-1">The Nets</div>
               </div>
-              <div className="glass rounded-xl p-4">
-                <div className="text-2xl font-bold gradient-text mb-1">C C</div>
-                <div className="text-xs text-gray-500">Cricket Club</div>
+              <div className="glass rounded-xl p-3">
+                <div className="text-lg font-bold gradient-text">🪖</div>
+                <div className="text-xs text-gray-500 mt-1">The Dugout</div>
               </div>
-              <div className="glass rounded-xl p-4">
-                <div className="text-2xl font-bold gradient-text mb-1">H</div>
-                <div className="text-xs text-gray-500">Hub</div>
+              <div className="glass rounded-xl p-3">
+                <div className="text-lg font-bold gradient-text">📊</div>
+                <div className="text-xs text-gray-500 mt-1">Scoreboard</div>
+              </div>
+              <div className="glass rounded-xl p-3">
+                <div className="text-lg font-bold gradient-text">🏛️</div>
+                <div className="text-xs text-gray-500 mt-1">Pavilion</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Build Roadmap */}
+          <div className="mt-8 glass rounded-2xl p-8 border border-primary-500/20">
+            <h3 className="text-xl font-bold text-white mb-6 text-center">Build Roadmap</h3>
+            <div className="space-y-3 max-w-lg mx-auto">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary-500/20 flex items-center justify-center border border-primary-500/30 flex-shrink-0">
+                  <span className="text-xs font-bold text-primary-400">1</span>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-medium">Google Auth + Player Login</p>
+                  <p className="text-gray-500 text-xs">Sign in with Google, player profiles</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 flex-shrink-0">
+                  <span className="text-xs font-bold text-gray-400">2</span>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-medium">The Nets — Reflection Cards & Mindset Tools</p>
+                  <p className="text-gray-500 text-xs">Personal reflection per match, mental game checklists</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 flex-shrink-0">
+                  <span className="text-xs font-bold text-gray-400">3</span>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-medium">The Scoreboard — Match KPIs & Season Stats</p>
+                  <p className="text-gray-500 text-xs">Score entry, batting/bowling stats, contribution tracking</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 flex-shrink-0">
+                  <span className="text-xs font-bold text-gray-400">4</span>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-medium">The Dugout — Squad Selection</p>
+                  <p className="text-gray-500 text-xs">Captain picks team, players confirm availability</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 flex-shrink-0">
+                  <span className="text-xs font-bold text-gray-400">5</span>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-medium">The Pavilion — Board Governance</p>
+                  <p className="text-gray-500 text-xs">Resolutions, voting, e-sign, meeting records</p>
+                </div>
               </div>
             </div>
           </div>
@@ -162,9 +291,9 @@ export default function C3HPage() {
           {/* Stay Updated */}
           <div className="text-center mt-12">
             <p className="text-gray-500 text-sm">
-              C3H is currently under development. Follow us on{' '}
+              C3H is under active development. Follow{' '}
               <a href="https://www.instagram.com/challengers.cc/" target="_blank" rel="noopener noreferrer" className="text-primary-400 hover:text-primary-300 underline">
-                Instagram @challengers.cc
+                @challengers.cc
               </a>{' '}
               for launch updates.
             </p>
