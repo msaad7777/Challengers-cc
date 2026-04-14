@@ -12,16 +12,47 @@ const BOARD_EMAILS = [
   'roman@challengerscc.ca',
 ];
 
-// Whitelisted player Gmail accounts (add players here)
+// Whitelisted player Gmail accounts
 const PLAYER_EMAILS: string[] = [
-  // Add player Gmail addresses here as they register
-  // 'player@gmail.com',
+  'denisondavis9@gmail.com',
+  'qureshiqaiser007@gmail.com',
+  'vantarimadhu@gmail.com',
+  'mbadru3434@gmail.com',
+  'judinthomas96@gmail.com',
+  'abhishekladva09@gmail.com',
+  'monirulislambd64@gmail.com',
+  'ashvak.realtor07@gmail.com',
+  'bhindadhesi18@gmail.com',
+  'sallu.ahmed8@gmail.com',
+  'saiakhira@gmail.com',
+  'farooqchoudhary123@gmail.com',
+  'vijayvyadav1998@gmail.com',
+  'rajputshivam9558@gmail.com',
+  'shabyansari0023@gmail.com',
+  'manoharanukuri9@gmail.com',
+  'mohayminul13@gmail.com',
+  'romans987@gmail.com',
+  'fahadakbar@gmail.com',
+  'gokulprakash663@gmail.com',
+  '92ankusharora@gmail.com',
+  'georgefreddy963@gmail.com',
+  'andrewjebarson18@gmail.com',
+  'tgururaga@gmail.com',
+  '108.noman@gmail.com',
+  'shafiul078.aust@gmail.com',
+  'sujelahmed06@gmail.com',
+  'syedshahriar77@gmail.com',
+  'gmc715625@gmail.com',
+  'atik1991rah@gmail.com',
+  'majharulalam456@gmail.com',
+  'makhan4u4ever@gmail.com',
 ];
 
 function getUserRole(email: string): 'board' | 'player' | null {
-  if (email.endsWith('@challengerscc.ca')) return 'board';
-  if (BOARD_EMAILS.includes(email)) return 'board';
-  if (PLAYER_EMAILS.includes(email)) return 'player';
+  const lower = email.toLowerCase();
+  if (lower.endsWith('@challengerscc.ca')) return 'board';
+  if (BOARD_EMAILS.includes(lower)) return 'board';
+  if (PLAYER_EMAILS.includes(lower)) return 'player';
   return null;
 }
 
