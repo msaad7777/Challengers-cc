@@ -368,6 +368,292 @@ export default function MentalGamePage() {
             </div>
           </div>
 
+          {/* PRE-MATCH ROUTINE */}
+          <div className="glass rounded-2xl p-8 md:p-12 mb-8 border border-primary-500/20">
+            <h2 className="text-3xl font-bold text-white mb-2">Pre-Match Mental Script</h2>
+            <p className="text-gray-400 mb-6">Read this before every innings. 2-3 minutes to get in the zone.</p>
+            <div className="space-y-3 text-gray-300 text-lg italic leading-relaxed">
+              <p>Today, I walk out with clarity.</p>
+              <p>I see it early. I play it late.</p>
+              <p>My head is still. My base is strong.</p>
+              <p>First 10 balls are sacred.</p>
+              <p>I absorb. Then cash in.</p>
+              <p>I lead with front foot. I breathe. I rebuild.</p>
+              <p>One ball at a time. One decision at a time.</p>
+              <p>This is not luck. This is a process. This is power.</p>
+              <p className="text-primary-400 font-bold not-italic">I walk tall. I won this battle.</p>
+            </div>
+          </div>
+
+          {/* LOOK BREATHE SAY */}
+          <div className="mb-8">
+            <div className="text-center mb-8">
+              <h2 className="text-4xl font-bold">
+                LOOK. BREATHE. <span className="gradient-text">SAY.</span>
+              </h2>
+              <p className="text-gray-400 mt-2">Your 3-step pre-ball routine. Every single delivery.</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="glass rounded-2xl p-6 border-t-4 border-t-primary-500">
+                <h3 className="text-xl font-bold text-white mb-3">LOOK</h3>
+                <p className="text-primary-400 text-sm font-medium mb-3">Visual Trigger</p>
+                <ul className="text-gray-400 text-sm space-y-2">
+                  <li>Scan the field for gaps</li>
+                  <li>Pick the bowler&apos;s hand and wrist</li>
+                  <li>Commit to your scoring option</li>
+                </ul>
+              </div>
+              <div className="glass rounded-2xl p-6 border-t-4 border-t-accent-500">
+                <h3 className="text-xl font-bold text-white mb-3">BREATHE</h3>
+                <p className="text-accent-400 text-sm font-medium mb-3">Physical Cue</p>
+                <ul className="text-gray-400 text-sm space-y-2">
+                  <li>One calm breath through the nose</li>
+                  <li>Drop shoulders, release tension</li>
+                  <li>Feel the ground under your feet</li>
+                </ul>
+              </div>
+              <div className="glass rounded-2xl p-6 border-t-4 border-t-blue-500">
+                <h3 className="text-xl font-bold text-white mb-3">SAY</h3>
+                <p className="text-blue-400 text-sm font-medium mb-3">Verbal Cue</p>
+                <ul className="text-gray-400 text-sm space-y-2">
+                  <li>&quot;Ball dekh kahan pitch ho raha hai&quot;</li>
+                  <li>&quot;Merit pe khelna hai&quot;</li>
+                  <li>Short trigger phrase that locks intent</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* 3 PHASE INNINGS PLAN */}
+          <div className="glass rounded-2xl p-8 md:p-12 mb-8">
+            <h2 className="text-3xl font-bold text-white mb-2">The 3-Phase Innings Plan</h2>
+            <p className="text-gray-400 mb-6">You do not just &quot;survive and swing.&quot; You build, build, explode.</p>
+            <div className="space-y-4">
+              <div className="glass rounded-xl p-6 border-l-4 border-l-blue-500">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-blue-400 font-bold text-lg">Phase 1</span>
+                  <span className="text-white font-bold">Start Smart (Balls 1-10)</span>
+                </div>
+                <p className="text-gray-400 text-sm mb-2"><strong className="text-white">Goal:</strong> Settle in, find timing, assess conditions</p>
+                <p className="text-gray-400 text-sm mb-2"><strong className="text-white">Priority:</strong> Rotate strike, leave well, get singles</p>
+                <p className="text-gray-400 text-sm"><strong className="text-white">Mindset:</strong> Calm, sharp, patient</p>
+              </div>
+              <div className="glass rounded-xl p-6 border-l-4 border-l-accent-500">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-accent-400 font-bold text-lg">Phase 2</span>
+                  <span className="text-white font-bold">Build Fast (Balls 11-25)</span>
+                </div>
+                <p className="text-gray-400 text-sm mb-2"><strong className="text-white">Goal:</strong> Score freely and build pressure back</p>
+                <p className="text-gray-400 text-sm mb-2"><strong className="text-white">Priority:</strong> Hit gaps, use your go-to scoring shots</p>
+                <p className="text-gray-400 text-sm"><strong className="text-white">Mindset:</strong> Intentional, alert, proactive</p>
+              </div>
+              <div className="glass rounded-xl p-6 border-l-4 border-l-red-500">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-red-400 font-bold text-lg">Phase 3</span>
+                  <span className="text-white font-bold">Finish Strong (Balls 25+)</span>
+                </div>
+                <p className="text-gray-400 text-sm mb-2"><strong className="text-white">Goal:</strong> Accelerate and dominate</p>
+                <p className="text-gray-400 text-sm mb-2"><strong className="text-white">Priority:</strong> Find boundaries, manipulate field</p>
+                <p className="text-gray-400 text-sm"><strong className="text-white">Mindset:</strong> Brave, calculated, aggressive</p>
+              </div>
+            </div>
+          </div>
+
+          {/* KPIs */}
+          <div className="glass rounded-2xl p-8 md:p-12 mb-8 border border-accent-500/20">
+            <h2 className="text-3xl font-bold text-white mb-6">Performance KPIs</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="glass rounded-xl p-6 text-center">
+                <div className="text-3xl mb-2">📊</div>
+                <h4 className="text-white font-bold mb-2">Runs per 10 Balls</h4>
+                <p className="text-gray-400 text-sm mb-2">Target: 5-7 runs per 10 balls</p>
+                <p className="text-gray-500 text-xs">(Total runs / Balls faced) x 10</p>
+              </div>
+              <div className="glass rounded-xl p-6 text-center">
+                <div className="text-3xl mb-2">🎯</div>
+                <h4 className="text-white font-bold mb-2">Intent Score (1-5)</h4>
+                <p className="text-gray-400 text-sm mb-2">How decisive and purposeful did you feel?</p>
+                <p className="text-gray-500 text-xs">1=Froze | 3=Second-guessed | 5=Total clarity</p>
+              </div>
+              <div className="glass rounded-xl p-6 text-center">
+                <div className="text-3xl mb-2">⚡</div>
+                <h4 className="text-white font-bold mb-2">Dot Ball %</h4>
+                <p className="text-gray-400 text-sm mb-2">Target: Under 40%</p>
+                <p className="text-gray-500 text-xs">(Dot balls / Total balls) x 100</p>
+              </div>
+            </div>
+          </div>
+
+          {/* SHOT MAP */}
+          <div className="glass rounded-2xl p-8 md:p-12 mb-8">
+            <h2 className="text-3xl font-bold text-white mb-6">Shot Map</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="glass rounded-xl p-6 border-l-4 border-l-blue-500">
+                <h4 className="text-blue-400 font-bold mb-3">Offside Shots</h4>
+                <ul className="text-gray-400 text-sm space-y-1">
+                  <li>Square Drive</li><li>Late Cut</li><li>Back Foot Punch</li><li>Cover Drive</li><li>Square Push</li><li>Dab to Third Man</li>
+                </ul>
+              </div>
+              <div className="glass rounded-xl p-6 border-l-4 border-l-primary-500">
+                <h4 className="text-primary-400 font-bold mb-3">Straight Shots</h4>
+                <ul className="text-gray-400 text-sm space-y-1">
+                  <li>Straight Drive</li><li>Push Down the Ground</li><li>On Drive</li><li>Defensive Push</li><li>Lofted Straight Drive</li><li>Flick to Mid-on</li>
+                </ul>
+              </div>
+              <div className="glass rounded-xl p-6 border-l-4 border-l-red-500">
+                <h4 className="text-red-400 font-bold mb-3">Leg-side Shots</h4>
+                <ul className="text-gray-400 text-sm space-y-1">
+                  <li>Slap Pull</li><li>Flick Off Pads</li><li>Whip through Mid-wicket</li><li>Sweep</li><li>Lap Sweep</li><li>Pull Shot</li><li>Paddle</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* WEEKLY TRAINING SCHEDULE */}
+          <div className="glass rounded-2xl p-8 md:p-12 mb-8 border border-primary-500/20">
+            <h2 className="text-3xl font-bold text-white mb-6">Mon-Fri Visual Training Schedule</h2>
+            <div className="space-y-4">
+              <div className="glass rounded-xl p-5 border-l-4 border-l-blue-500">
+                <h4 className="text-white font-bold">Monday — CNS & Vision Activation</h4>
+                <p className="text-gray-400 text-sm mt-1">Laser pointer tracking | Ball drop react drills | Breathwork + mirror stillness</p>
+              </div>
+              <div className="glass rounded-xl p-5 border-l-4 border-l-primary-500">
+                <h4 className="text-white font-bold">Tuesday — Batting Integration</h4>
+                <p className="text-gray-400 text-sm mt-1">Occlusion net practice | Numbered ball zone focus | Light nets with delayed cue</p>
+              </div>
+              <div className="glass rounded-xl p-5 border-l-4 border-l-accent-500">
+                <h4 className="text-white font-bold">Wednesday — Mental Reset & Head Alignment</h4>
+                <p className="text-gray-400 text-sm mt-1">Breath cycle (4-1-6) | Mirror eye-level tracking | Visualisation (10 balls from crease)</p>
+              </div>
+              <div className="glass rounded-xl p-5 border-l-4 border-l-purple-500">
+                <h4 className="text-white font-bold">Thursday — Visual Precision & Judgement</h4>
+                <p className="text-gray-400 text-sm mt-1">Numbered ball pickup | Eye switch drills (bowler&apos;s eye to release) | Head-in-line with video</p>
+              </div>
+              <div className="glass rounded-xl p-5 border-l-4 border-l-red-500">
+                <h4 className="text-white font-bold">Friday — Simulation Day</h4>
+                <p className="text-gray-400 text-sm mt-1">First 20 balls with zone lock-in | 2-zone scoring simulation | Mirror check + 3-sec reset</p>
+              </div>
+            </div>
+          </div>
+
+          {/* TECHNICAL ALIGNMENT */}
+          <div className="glass rounded-2xl p-8 md:p-12 mb-8">
+            <h2 className="text-3xl font-bold text-white mb-6">Technical Alignment — Stance to Contact</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="glass rounded-xl p-6 border border-white/10">
+                <h4 className="text-primary-400 font-bold mb-3">Stance Setup</h4>
+                <ul className="text-gray-400 text-sm space-y-2">
+                  <li>Grip soft on inner thigh</li>
+                  <li>Elbows locked till shot command</li>
+                  <li>Bat no wider than off stump</li>
+                  <li>Head over front leg stump</li>
+                  <li>Front foot slightly open, ready to lead</li>
+                  <li>Back foot flat, toe points to cover-point</li>
+                  <li>Eyes wide. Still.</li>
+                </ul>
+              </div>
+              <div className="glass rounded-xl p-6 border border-white/10">
+                <h4 className="text-accent-400 font-bold mb-3">Shot Execution Rules</h4>
+                <ul className="text-gray-400 text-sm space-y-2">
+                  <li>Cover Drive: Front foot moves max 3 stumps</li>
+                  <li>Backfoot: Land on toe, play into gaps</li>
+                  <li>Front Foot: Land on heel, play under head</li>
+                  <li>Pull: Elbows lock early, extend after contact</li>
+                  <li>Signal forward even on short balls. Then release.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* AVOID THESE MISTAKES */}
+          <div className="glass rounded-2xl p-8 md:p-12 mb-8 border border-red-500/20">
+            <h2 className="text-3xl font-bold text-white mb-6">Avoid These Mistakes</h2>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {['No high backlift', 'No tight grip', 'No front foot freeze', 'No chasing', 'No mid-line bat hover', 'No overreach', 'No shortcut shots'].map((mistake) => (
+                <div key={mistake} className="flex items-center gap-2 text-gray-400 text-sm">
+                  <span className="text-red-400">&#10007;</span>
+                  {mistake}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* VIDEO RESOURCES */}
+          <div className="glass rounded-2xl p-8 md:p-12 mb-8">
+            <h2 className="text-3xl font-bold text-white mb-6">Training Videos</h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <a href="https://www.youtube.com/watch?v=_WzvojkFOXsD" target="_blank" rel="noopener noreferrer" className="glass rounded-xl p-5 border border-white/10 hover:border-primary-500/30 transition-all flex items-center gap-3">
+                <span className="text-3xl">▶️</span>
+                <span className="text-gray-300 text-sm">Batting Technique Video 1</span>
+              </a>
+              <a href="https://www.youtube.com/watch?v=I77hh5I69gA" target="_blank" rel="noopener noreferrer" className="glass rounded-xl p-5 border border-white/10 hover:border-primary-500/30 transition-all flex items-center gap-3">
+                <span className="text-3xl">▶️</span>
+                <span className="text-gray-300 text-sm">Batting Technique Video 2</span>
+              </a>
+              <a href="https://www.youtube.com/watch?v=0y59UH4HkMc" target="_blank" rel="noopener noreferrer" className="glass rounded-xl p-5 border border-white/10 hover:border-primary-500/30 transition-all flex items-center gap-3">
+                <span className="text-3xl">▶️</span>
+                <span className="text-gray-300 text-sm">Batting Technique Video 3</span>
+              </a>
+              <a href="https://www.youtube.com/watch?v=dgg0n6Pk_AM" target="_blank" rel="noopener noreferrer" className="glass rounded-xl p-5 border border-white/10 hover:border-primary-500/30 transition-all flex items-center gap-3">
+                <span className="text-3xl">▶️</span>
+                <span className="text-gray-300 text-sm">Batting Technique Video 4</span>
+              </a>
+            </div>
+          </div>
+
+          {/* DAILY CONDITIONING */}
+          <div className="glass rounded-2xl p-8 md:p-12 mb-8 border border-accent-500/20">
+            <h2 className="text-3xl font-bold text-white mb-6 text-center">Daily Mental Conditioning</h2>
+            <div className="space-y-3 text-center text-lg">
+              <p className="text-gray-300 italic">Main hamesha run banata hoon.</p>
+              <p className="text-gray-300 italic">Main hamesha match jeetata hoon.</p>
+              <p className="text-gray-300 italic">I solve the problem in front of me.</p>
+              <p className="text-primary-400 font-bold italic">I win every ball.</p>
+            </div>
+          </div>
+
+          {/* COMING SOON - Personal Player Portal */}
+          <div className="glass rounded-2xl p-8 md:p-12 mb-8 border-2 border-accent-500/30 text-center">
+            <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-6">
+              <span className="text-xs font-medium text-accent-400 uppercase tracking-wider">Coming Soon to C3H — The Nets</span>
+            </div>
+            <h2 className="text-3xl font-bold text-white mb-4">Personal Player Reflection Portal</h2>
+            <p className="text-gray-400 max-w-2xl mx-auto mb-6">
+              Soon, every Challengers CC player will have their own private login to access personalised tools:
+            </p>
+            <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto text-left mb-6">
+              <div className="glass rounded-xl p-4 border border-white/10">
+                <h4 className="text-primary-400 font-bold text-sm mb-2">Personal Reset Card</h4>
+                <p className="text-gray-500 text-xs">Fill in your mindset word, strengths, and pressure response. Saved to your profile.</p>
+              </div>
+              <div className="glass rounded-xl p-4 border border-white/10">
+                <h4 className="text-accent-400 font-bold text-sm mb-2">Post-Innings Reflection</h4>
+                <p className="text-gray-500 text-xs">Checklists for how you got out, what worked, what to change. Track patterns over time.</p>
+              </div>
+              <div className="glass rounded-xl p-4 border border-white/10">
+                <h4 className="text-blue-400 font-bold text-sm mb-2">KPI Tracker</h4>
+                <p className="text-gray-500 text-xs">Log runs per 10 balls, intent score, and dot ball % after every innings.</p>
+              </div>
+              <div className="glass rounded-xl p-4 border border-white/10">
+                <h4 className="text-purple-400 font-bold text-sm mb-2">Visual Mind Map</h4>
+                <p className="text-gray-500 text-xs">Your personal batting blueprint with phases, shot map, and pre-ball routine.</p>
+              </div>
+            </div>
+            <a href="/c3h" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105">
+              Learn More About C3H
+            </a>
+          </div>
+
+          {/* Final Quote */}
+          <div className="text-center mb-8">
+            <div className="glass rounded-2xl p-8 md:p-12 border border-primary-500/20">
+              <p className="text-2xl md:text-3xl font-bold text-white mb-4">
+                &quot;I play with presence. I trust my rhythm. This is a command. Now I go win — one ball at a time.&quot;
+              </p>
+              <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto rounded-full mt-6"></div>
+            </div>
+          </div>
+
         </div>
       </section>
 
