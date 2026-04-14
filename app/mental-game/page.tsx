@@ -258,24 +258,13 @@ export default function MentalGamePage() {
                 <p className="text-gray-500 text-xs mt-1">Full playlist — 7 videos on batting technique, shot selection, and match awareness</p>
               </div>
             </a>
-            <div className="grid sm:grid-cols-2 gap-3">
-              <a href="https://www.youtube.com/watch?v=_WzvojkFOXsD" target="_blank" rel="noopener noreferrer" className="glass rounded-xl p-4 border border-white/10 hover:border-primary-500/30 transition-all flex items-center gap-3">
-                <span className="text-2xl">▶️</span>
-                <span className="text-gray-300 text-sm">Batting Drills — Video 1</span>
-              </a>
-              <a href="https://www.youtube.com/watch?v=I77hh5I69gA" target="_blank" rel="noopener noreferrer" className="glass rounded-xl p-4 border border-white/10 hover:border-primary-500/30 transition-all flex items-center gap-3">
-                <span className="text-2xl">▶️</span>
-                <span className="text-gray-300 text-sm">Batting Drills — Video 2</span>
-              </a>
-              <a href="https://www.youtube.com/watch?v=0y59UH4HkMc" target="_blank" rel="noopener noreferrer" className="glass rounded-xl p-4 border border-white/10 hover:border-primary-500/30 transition-all flex items-center gap-3">
-                <span className="text-2xl">▶️</span>
-                <span className="text-gray-300 text-sm">Batting Drills — Video 3</span>
-              </a>
-              <a href="https://www.youtube.com/watch?v=dgg0n6Pk_AM" target="_blank" rel="noopener noreferrer" className="glass rounded-xl p-4 border border-white/10 hover:border-primary-500/30 transition-all flex items-center gap-3">
-                <span className="text-2xl">▶️</span>
-                <span className="text-gray-300 text-sm">Batting Drills — Video 4</span>
-              </a>
-            </div>
+            <a href="https://www.youtube.com/@tpgcricket6843/videos" target="_blank" rel="noopener noreferrer" className="glass rounded-xl p-6 border border-white/10 hover:border-primary-500/30 transition-all flex items-center gap-4">
+              <span className="text-4xl">▶️</span>
+              <div>
+                <span className="text-white font-bold">TPG Cricket Academy — Our Coaching Partner</span>
+                <p className="text-gray-500 text-xs mt-1">Coaching drills, batting tips, and training sessions from Coach Manish Giri</p>
+              </div>
+            </a>
           </div>
 
           {/* POST-GAME REFLECTION */}
