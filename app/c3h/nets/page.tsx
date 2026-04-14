@@ -196,64 +196,121 @@ export default function NetsPage() {
   const getCoachingTip = (r: Reflection): string => {
     const wrongs = r.whatWentWrong;
     const rights = r.whatWentRight;
-    const out = Array.isArray(r.howGotOut) ? r.howGotOut : [r.howGotOut];
-    const tips: string[] = [];
+    const out = Array.isArray(r.howGotOut) ? r.howGotOut : r.howGotOut ? [r.howGotOut] : [];
+    const intent = r.intentScore;
+    const sections: { title: string; tip: string }[] = [];
 
-    // Dismissal-based tips
-    if (out.some(o => o.includes('Caught — Infield') || o.includes('Hit straight to fielder'))) {
-      tips.push('Getting caught infield often means playing too early or hitting without finding the gap. Focus on waiting for the ball to come to you and picking the gap before committing to the shot.');
+    // Check for repeated patterns across reflections
+    const matchRefs = reflections.filter(ref => ref.id !== r.id && ref.matchIndex !== 99);
+    const pastWrongs = matchRefs.flatMap(ref => ref.whatWentWrong);
+    const pastOuts = matchRefs.flatMap(ref => Array.isArray(ref.howGotOut) ? ref.howGotOut : ref.howGotOut ? [ref.howGotOut] : []);
+    const repeatedMistakes = wrongs.filter(w => pastWrongs.includes(w));
+    const repeatedDismissals = out.filter(o => pastOuts.includes(o) && o !== 'Not out' && o !== 'Did not bat');
+
+    // PATTERN ALERTS — most valuable insight
+    if (repeatedDismissals.length > 0) {
+      sections.push({
+        title: 'Pattern Alert',
+        tip: `You have been dismissed "${repeatedDismissals[0]}" in multiple matches. This is not a one-off — it is a pattern. In your next nets session, ask your coach to specifically set up drills that simulate this dismissal so you can train a different response.`
+      });
     }
-    if (out.some(o => o.includes('Bowled'))) {
-      tips.push('Getting bowled suggests a gap between bat and pad or playing across the line. Work on keeping your head still and playing straight through the line of the ball.');
+    if (repeatedMistakes.length > 0 && repeatedDismissals.length === 0) {
+      sections.push({
+        title: 'Recurring Issue',
+        tip: `"${repeatedMistakes[0]}" keeps showing up in your reflections. Awareness is the first step — now you need a specific drill or trigger to break this habit. Write down one concrete action you will do differently next time this situation arises.`
+      });
     }
-    if (out.some(o => o.includes('LBW'))) {
-      tips.push('LBW dismissals often come from not getting your front foot to the pitch of the ball. Focus on moving your front foot towards the ball and playing with a straight bat.');
+
+    // COMBINED SIGNALS — dismissal + mistake together
+    if (out.some(o => o.includes('Caught — Infield') || o.includes('Hit straight to fielder')) && wrongs.includes('Poor shot selection')) {
+      sections.push({ title: 'Shot Discipline', tip: 'You picked the wrong shot and it went straight to a fielder. Before playing an attacking shot, scan the field first. In your next session, practice the LOOK step — identify where the gap is before the bowler delivers. If there is no gap, rotate strike instead.' });
+    } else if (out.some(o => o.includes('Caught — Infield') || o.includes('Hit straight to fielder')) && wrongs.includes('Played too early')) {
+      sections.push({ title: 'Timing Fix', tip: 'You committed to the shot before the ball arrived and it went to a fielder. Work on letting the ball come to you. A good drill: in nets, deliberately play every ball half a second later than you normally would. This trains patience and improves timing.' });
+    } else if (out.some(o => o.includes('Caught — Infield') || o.includes('Hit straight to fielder'))) {
+      sections.push({ title: 'Finding Gaps', tip: 'Getting caught infield means the ball went where a fielder was standing. Before each ball, use your LOOK routine to identify at least two gaps. Only play into those zones. If unsure, defend or work a single.' });
     }
-    if (out.some(o => o.includes('Caught — Keeper') || o.includes('Caught — Slips'))) {
-      tips.push('Edges to keeper and slips usually mean fishing outside off stump. Tighten your zone — leave anything you do not need to play.');
+
+    if (out.some(o => o.includes('Bowled')) && wrongs.includes('Lost concentration')) {
+      sections.push({ title: 'Focus Through the Ball', tip: 'Getting bowled when concentration drops means your head moved or you did not watch the ball onto the bat. Try this: after every boundary or good shot, do a deliberate reset — tap bat, breathe, say your trigger word. The ball after a good shot is when most batters lose focus.' });
+    } else if (out.some(o => o.includes('Bowled')) && wrongs.includes('No clear plan')) {
+      sections.push({ title: 'Know Your Stump', tip: 'Getting bowled without a plan means you were reactive, not proactive. Before each ball, decide: am I looking to score or survive this delivery? Even "I will defend anything on the stumps" is a plan. No plan = no purpose = easy wicket.' });
+    } else if (out.some(o => o.includes('Bowled'))) {
+      sections.push({ title: 'Straight Bat', tip: 'Getting bowled usually means bat is not covering the stumps. Focus on playing straight — bat comes down in line with off stump. Practice shadow batting: stand at the crease and swing the bat straight 20 times before your next session.' });
     }
+
+    if (out.some(o => o.includes('LBW')) && wrongs.includes('Poor footwork')) {
+      sections.push({ title: 'Front Foot First', tip: 'LBW with poor footwork means your front foot is not getting to the pitch of the ball. Drill: place a coin one step ahead of your crease. Every ball in nets, your front foot must land on or past that coin. This one change will dramatically reduce LBW dismissals.' });
+    } else if (out.some(o => o.includes('LBW'))) {
+      sections.push({ title: 'Get Forward', tip: 'LBW happens when you are stuck on the crease. Lead with your front foot towards the ball and get your bat in line. If the ball is full, front foot forward. If short, back and across. The danger zone is being half-forward — commit to one or the other.' });
+    }
+
+    if (out.some(o => o.includes('Caught — Keeper') || o.includes('Caught — Slips')) && wrongs.includes('Chased a wide delivery')) {
+      sections.push({ title: 'Leave It Alone', tip: 'Edging to the keeper while chasing width is the most fixable dismissal in cricket. Set a strict rule: anything more than one bat-width outside off stump, leave it. Do not even move your bat. Practice this in nets — let 5 balls outside off go past you without playing. It takes discipline but it works.' });
+    } else if (out.some(o => o.includes('Caught — Keeper') || o.includes('Caught — Slips'))) {
+      sections.push({ title: 'Soft Hands', tip: 'Edges carry to the keeper when you push hard at the ball. Practice playing with soft hands — let the ball come to the bat rather than driving at it. In nets, try playing defensive shots where the ball drops at your feet instead of racing away.' });
+    }
+
     if (out.some(o => o.includes('Run Out'))) {
-      tips.push('Run outs come from miscommunication or hesitation. Call early, call loud, and commit to the run or stay. No half-runs.');
+      sections.push({ title: 'Communication', tip: 'Run outs are 100% preventable. Three rules: (1) The striker calls for shots in front of the wicket, non-striker calls for shots behind. (2) Call YES, NO, or WAIT — never "maybe." (3) If in doubt, do not run. One dot ball is better than losing a wicket.' });
     }
 
-    // What went wrong tips
-    if (wrongs.includes('Poor shot selection')) {
-      tips.push('Next session, set yourself a rule: first 10 balls, only play shots you are 90% sure about.');
-    }
-    if (wrongs.includes('Overthinking')) {
-      tips.push('Simplify your approach. Use your LOOK-BREATHE-SAY routine before every ball to stay present instead of thinking ahead.');
-    }
-    if (wrongs.includes('Lost concentration')) {
-      tips.push('Try resetting between every ball — tap your bat, take a breath, and refocus. Concentration is a muscle you can train.');
-    }
-    if (wrongs.includes('Chased a wide delivery')) {
-      tips.push('Draw an imaginary line on off stump. Anything outside it, let it go. Train yourself to leave well — it is a skill.');
-    }
-    if (wrongs.includes('Froze under pressure')) {
-      tips.push('Pressure is a signal, not a stop sign. Use your breathing routine (4 in, 6 out) and remind yourself of one strength you trust.');
-    }
-    if (wrongs.includes('Tried to hit too hard')) {
-      tips.push('Power comes from timing, not effort. Focus on meeting the ball cleanly rather than swinging hard. Let the bat do the work.');
+    if (out.some(o => o.includes('Stumped')) && wrongs.includes('Rushed my innings')) {
+      sections.push({ title: 'Stay Grounded', tip: 'Getting stumped while rushing means you are charging down the wicket without reading the ball. Against spin, go forward only if the ball is in your hitting zone. If you go down, make sure your back foot stays behind the crease as insurance.' });
     }
 
-    // Positive reinforcement
-    if (rights.includes('Stayed calm under pressure') && wrongs.length > 0) {
-      tips.push('You stayed calm under pressure — that is your superpower. Build on that composure next time.');
-    }
-    if (rights.includes('Good intent throughout')) {
-      tips.push('Your intent was strong — keep backing yourself. Intent without recklessness is what separates good players from great ones.');
-    }
-
-    // Intent score based
-    if (r.intentScore <= 2) {
-      tips.push('Your intent was low this match. Before your next innings, read your pre-match script and pick one aggressive intent to carry in.');
+    // MENTAL STATE — intent + mistakes combined
+    if (intent <= 2 && wrongs.includes('Froze under pressure')) {
+      sections.push({ title: 'Break the Freeze', tip: 'Low intent plus freezing under pressure means you went into survival mode. Before your next innings, stand at the crease and say out loud: "I am here to score, not survive." Pick one scoring shot you trust and commit to playing it in the first 5 balls. Action beats anxiety.' });
+    } else if (intent <= 2 && wrongs.includes('Defensive mindset')) {
+      sections.push({ title: 'Flip the Script', tip: 'You batted defensively with low intent. Defence has a place, but not as your default. Challenge yourself: next innings, score at least one run every three balls in your first 10. This forces you to look for singles and stay active instead of blocking.' });
+    } else if (intent <= 2) {
+      sections.push({ title: 'Raise Your Intent', tip: 'Your intent score was low. Intent does not mean slogging — it means having a clear purpose for every ball. Before each delivery, decide: "I am looking to score off this ball" or "I am going to defend this one well." Both are intentional. Blocking without a plan is not.' });
     }
 
-    if (tips.length === 0) {
-      return 'Keep reflecting after every game. The players who grow fastest are the ones who review honestly and plan clearly. You are on the right track.';
+    if (intent >= 4 && wrongs.includes('Tried to hit too hard')) {
+      sections.push({ title: 'Channel the Intent', tip: 'You had great intent but tried to muscle the ball too hard. High intent with poor execution usually means your head is falling over or your base is too wide. Next session, focus on hitting through the ball, not at it. Think "timing" not "power." The best shots in cricket look effortless.' });
     }
 
-    return tips.slice(0, 2).join(' ');
+    if (intent >= 4 && rights.length >= 3 && wrongs.length <= 1) {
+      sections.push({ title: 'Keep This Going', tip: 'Strong intent, multiple things going right, minimal mistakes — this is what a quality innings looks like. Save this reflection and read it before your next match. This is your template. Replicate the process, not the result.' });
+    }
+
+    // POSITIVE REINFORCEMENT — what went right matters
+    if (rights.includes('Stayed calm under pressure') && rights.includes('Used my pre-ball routine')) {
+      sections.push({ title: 'Mental Game Working', tip: 'You stayed calm AND used your routine — that is the system working exactly as designed. Your routine is now protecting your performance. Trust it even more next time.' });
+    } else if (rights.includes('Stayed calm under pressure') && wrongs.length > 0) {
+      sections.push({ title: 'Composure is Your Edge', tip: 'Despite some technical issues, you stayed calm. That composure is what separates players who improve from players who get stuck. Fix the technical stuff in nets, but protect this calm mindset at all costs — it is your biggest asset.' });
+    }
+
+    if (rights.includes('Adapted to conditions') && rights.includes('Read the bowler well')) {
+      sections.push({ title: 'Cricket IQ', tip: 'Adapting to conditions and reading the bowler shows high cricket intelligence. This is a skill most players never develop. Keep a mental note of what you noticed — which bowler did what, how the pitch behaved — and share it with teammates. This kind of awareness wins matches.' });
+    }
+
+    if (rights.includes('Good running between wickets') && !wrongs.includes('Did not rotate strike')) {
+      sections.push({ title: 'Running Pressure', tip: 'Good running between wickets is an underrated skill. It puts pressure on the fielding side, tires the bowler, and keeps the scoreboard moving. Keep pushing for those quick singles — they add up faster than boundaries.' });
+    }
+
+    // PRACTICE SESSION specific
+    if (r.matchIndex === 99 || r.matchIndex === 98) {
+      if (wrongs.length > 2) {
+        sections.push({ title: 'Practice Focus', tip: `You identified ${wrongs.length} things that went wrong. For your next practice, pick only the top one and work exclusively on that. Trying to fix everything at once leads to fixing nothing. One focus, one session, real improvement.` });
+      }
+      if (out.length > 2) {
+        sections.push({ title: 'Dismissal Variety', tip: `You got out ${out.length} different ways in practice. Look at which dismissal happened most — that is your priority to fix. Ask your coach to bowl specifically to that weakness in your next session.` });
+      }
+    }
+
+    // NEXT INNINGS PLAN feedback
+    if (r.nextInningsPlan && r.nextInningsPlan.length > 5) {
+      sections.push({ title: 'Your Plan', tip: `You said: "${r.nextInningsPlan}" — good. Now make it specific. When exactly will you do this? Against what type of ball? Write it as: "When [situation], I will [action]." This turns a wish into a trigger.` });
+    }
+
+    if (sections.length === 0) {
+      return 'Solid reflection. Keep this habit going — the players who grow fastest are the ones who review honestly after every game. You are building the foundation for long-term improvement.';
+    }
+
+    // Return top 2 most relevant insights
+    return sections.slice(0, 2).map(s => `**${s.title}:** ${s.tip}`).join('\n\n');
   };
 
   return (
@@ -490,12 +547,23 @@ export default function NetsPage() {
                 {selectedReflection.notes && <div className="mb-3"><h4 className="text-gray-400 font-bold text-xs mb-1">Notes</h4><p className="text-gray-300 text-sm">{selectedReflection.notes}</p></div>}
               </div>
 
-              {/* AI Coaching Tip */}
+              {/* Coaching Insight */}
               <div className="mt-4 glass rounded-2xl p-6 border border-primary-500/20">
                 <h4 className="text-primary-400 font-bold text-sm mb-3">Coaching Insight</h4>
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  {getCoachingTip(selectedReflection)}
-                </p>
+                <div className="space-y-4">
+                  {getCoachingTip(selectedReflection).split('\n\n').map((block, i) => {
+                    const boldMatch = block.match(/^\*\*(.+?):\*\*\s*(.+)$/);
+                    if (boldMatch) {
+                      return (
+                        <div key={i}>
+                          <p className="text-white font-bold text-sm mb-1">{boldMatch[1]}</p>
+                          <p className="text-gray-300 text-sm leading-relaxed">{boldMatch[2]}</p>
+                        </div>
+                      );
+                    }
+                    return <p key={i} className="text-gray-300 text-sm leading-relaxed">{block}</p>;
+                  })}
+                </div>
               </div>
 
               {/* Delete */}
