@@ -68,17 +68,17 @@ export default function DashboardPage() {
           <div className="grid sm:grid-cols-2 gap-6">
 
             {/* The Nets */}
-            <div className="glass rounded-2xl p-6 border-2 border-primary-500/20 hover:border-primary-500/50 transition-all duration-300">
+            <a href="/c3h/nets" className="glass rounded-2xl p-6 border-2 border-primary-500/20 hover:border-primary-500/50 transition-all duration-300 block">
               <div className="text-3xl mb-3">🏏</div>
               <h2 className="text-xl font-bold text-white mb-1">The Nets</h2>
               <p className="text-primary-400 text-xs font-medium mb-3">Coaching, Mindset & Reflection</p>
               <p className="text-gray-400 text-sm mb-4">
-                Upload videos, fill your reflection card, and track your mental game.
+                Fill your reflection card, track your mindset, and plan your next innings.
               </p>
-              <span className="text-xs px-3 py-1 rounded-full bg-accent-500/20 text-accent-400 border border-accent-500/30">
-                Coming Soon
+              <span className="text-xs px-3 py-1 rounded-full bg-primary-500/20 text-primary-400 border border-primary-500/30">
+                Open
               </span>
-            </div>
+            </a>
 
             {/* The Scoreboard */}
             <div className="glass rounded-2xl p-6 border-2 border-red-500/20 hover:border-red-500/50 transition-all duration-300">
