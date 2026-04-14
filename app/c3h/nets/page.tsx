@@ -48,22 +48,29 @@ const WHAT_WENT_WRONG_OPTIONS = [
 ];
 
 const MATCHES = [
-  { label: 'M1 — vs London Predators (May 10)', index: 1 },
-  { label: 'M2 — vs Forest City Cricketers (May 18)', index: 2 },
-  { label: 'M3 — vs Sarnia Spartans (Jun 14)', index: 3 },
-  { label: 'M4 — vs Western Cricket Academy B (Jun 27)', index: 4 },
-  { label: 'M5 — vs London Rising Stars (Jul 1)', index: 5 },
-  { label: 'M6 — vs LCC Maple Stars (Jul 11)', index: 6 },
-  { label: 'M7 — vs LCC Mavericks (Jul 25)', index: 7 },
-  { label: 'M8 — vs London Rising Stars (Jul 26)', index: 8 },
-  { label: 'M9 — vs Western Cricket Academy B (Aug 2)', index: 9 },
-  { label: 'M10 — vs Forest City Cricketers (Aug 8)', index: 10 },
-  { label: 'M11 — vs Sarnia Spartans (Aug 23)', index: 11 },
-  { label: 'M12 — vs London Eagle Predators (Sep 5)', index: 12 },
-  { label: 'M13 — vs Inferno Spartans (Sep 12)', index: 13 },
-  { label: 'M14 — vs Tigers Cricket Club (Sep 13)', index: 14 },
-  { label: 'Practice Session', index: 99 },
+  { label: 'M1 — vs London Predators (May 10)', index: 1, date: '2026-05-10' },
+  { label: 'M2 — vs Forest City Cricketers (May 18)', index: 2, date: '2026-05-18' },
+  { label: 'M3 — vs Sarnia Spartans (Jun 14)', index: 3, date: '2026-06-14' },
+  { label: 'M4 — vs Western Cricket Academy B (Jun 27)', index: 4, date: '2026-06-27' },
+  { label: 'M5 — vs London Rising Stars (Jul 1)', index: 5, date: '2026-07-01' },
+  { label: 'M6 — vs LCC Maple Stars (Jul 11)', index: 6, date: '2026-07-11' },
+  { label: 'M7 — vs LCC Mavericks (Jul 25)', index: 7, date: '2026-07-25' },
+  { label: 'M8 — vs London Rising Stars (Jul 26)', index: 8, date: '2026-07-26' },
+  { label: 'M9 — vs Western Cricket Academy B (Aug 2)', index: 9, date: '2026-08-02' },
+  { label: 'M10 — vs Forest City Cricketers (Aug 8)', index: 10, date: '2026-08-08' },
+  { label: 'M11 — vs Sarnia Spartans (Aug 23)', index: 11, date: '2026-08-23' },
+  { label: 'M12 — vs London Eagle Predators (Sep 5)', index: 12, date: '2026-09-05' },
+  { label: 'M13 — vs Inferno Spartans (Sep 12)', index: 13, date: '2026-09-12' },
+  { label: 'M14 — vs Tigers Cricket Club (Sep 13)', index: 14, date: '2026-09-13' },
+  { label: 'Practice Match', index: 98, date: 'always' },
+  { label: 'Practice Session', index: 99, date: 'always' },
 ];
+
+function isMatchAvailable(matchDate: string): boolean {
+  if (matchDate === 'always') return true;
+  const today = new Date().toISOString().split('T')[0];
+  return matchDate <= today;
+}
 
 export default function NetsPage() {
   const { data: session, status } = useSession();
@@ -518,7 +525,11 @@ export default function NetsPage() {
                   <h3 className="text-lg font-bold text-white mb-3">Match</h3>
                   <select value={match} onChange={e => { setMatch(e.target.value); const m = MATCHES.find(x => x.label === e.target.value); setMatchIndex(m?.index || 0); }} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 text-white text-sm">
                     <option value="" className="bg-gray-900">Select match...</option>
-                    {MATCHES.map(m => <option key={m.label} value={m.label} className="bg-gray-900">{m.label}</option>)}
+                    {MATCHES.filter(m => isMatchAvailable(m.date)).map(m => <option key={m.label} value={m.label} className="bg-gray-900">{m.label}</option>)}
+                    {MATCHES.filter(m => !isMatchAvailable(m.date)).length > 0 && (
+                      <option disabled className="bg-gray-900 text-gray-600">── Upcoming (locked) ──</option>
+                    )}
+                    {MATCHES.filter(m => !isMatchAvailable(m.date)).map(m => <option key={m.label} disabled className="bg-gray-900 text-gray-600">{m.label}</option>)}
                   </select>
                 </div>
 
