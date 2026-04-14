@@ -186,6 +186,69 @@ export default function NetsPage() {
 
   const patterns = getPatterns();
 
+  const getCoachingTip = (r: Reflection): string => {
+    const wrongs = r.whatWentWrong;
+    const rights = r.whatWentRight;
+    const out = Array.isArray(r.howGotOut) ? r.howGotOut : [r.howGotOut];
+    const tips: string[] = [];
+
+    // Dismissal-based tips
+    if (out.some(o => o.includes('Caught — Infield') || o.includes('Hit straight to fielder'))) {
+      tips.push('Getting caught infield often means playing too early or hitting without finding the gap. Focus on waiting for the ball to come to you and picking the gap before committing to the shot.');
+    }
+    if (out.some(o => o.includes('Bowled'))) {
+      tips.push('Getting bowled suggests a gap between bat and pad or playing across the line. Work on keeping your head still and playing straight through the line of the ball.');
+    }
+    if (out.some(o => o.includes('LBW'))) {
+      tips.push('LBW dismissals often come from not getting your front foot to the pitch of the ball. Focus on moving your front foot towards the ball and playing with a straight bat.');
+    }
+    if (out.some(o => o.includes('Caught — Keeper') || o.includes('Caught — Slips'))) {
+      tips.push('Edges to keeper and slips usually mean fishing outside off stump. Tighten your zone — leave anything you do not need to play.');
+    }
+    if (out.some(o => o.includes('Run Out'))) {
+      tips.push('Run outs come from miscommunication or hesitation. Call early, call loud, and commit to the run or stay. No half-runs.');
+    }
+
+    // What went wrong tips
+    if (wrongs.includes('Poor shot selection')) {
+      tips.push('Next session, set yourself a rule: first 10 balls, only play shots you are 90% sure about.');
+    }
+    if (wrongs.includes('Overthinking')) {
+      tips.push('Simplify your approach. Use your LOOK-BREATHE-SAY routine before every ball to stay present instead of thinking ahead.');
+    }
+    if (wrongs.includes('Lost concentration')) {
+      tips.push('Try resetting between every ball — tap your bat, take a breath, and refocus. Concentration is a muscle you can train.');
+    }
+    if (wrongs.includes('Chased a wide delivery')) {
+      tips.push('Draw an imaginary line on off stump. Anything outside it, let it go. Train yourself to leave well — it is a skill.');
+    }
+    if (wrongs.includes('Froze under pressure')) {
+      tips.push('Pressure is a signal, not a stop sign. Use your breathing routine (4 in, 6 out) and remind yourself of one strength you trust.');
+    }
+    if (wrongs.includes('Tried to hit too hard')) {
+      tips.push('Power comes from timing, not effort. Focus on meeting the ball cleanly rather than swinging hard. Let the bat do the work.');
+    }
+
+    // Positive reinforcement
+    if (rights.includes('Stayed calm under pressure') && wrongs.length > 0) {
+      tips.push('You stayed calm under pressure — that is your superpower. Build on that composure next time.');
+    }
+    if (rights.includes('Good intent throughout')) {
+      tips.push('Your intent was strong — keep backing yourself. Intent without recklessness is what separates good players from great ones.');
+    }
+
+    // Intent score based
+    if (r.intentScore <= 2) {
+      tips.push('Your intent was low this match. Before your next innings, read your pre-match script and pick one aggressive intent to carry in.');
+    }
+
+    if (tips.length === 0) {
+      return 'Keep reflecting after every game. The players who grow fastest are the ones who review honestly and plan clearly. You are on the right track.';
+    }
+
+    return tips.slice(0, 2).join(' ');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
       <Navbar />
@@ -418,6 +481,30 @@ export default function NetsPage() {
                 {selectedReflection.strengthToBuild && <div className="mb-3"><h4 className="text-blue-400 font-bold text-xs mb-1">Strength to Back</h4><p className="text-gray-300 text-sm">{selectedReflection.strengthToBuild}</p></div>}
                 {selectedReflection.pressureResponse && <div className="mb-3"><h4 className="text-purple-400 font-bold text-xs mb-1">If I Feel Pressure</h4><p className="text-gray-300 text-sm">{selectedReflection.pressureResponse}</p></div>}
                 {selectedReflection.notes && <div className="mb-3"><h4 className="text-gray-400 font-bold text-xs mb-1">Notes</h4><p className="text-gray-300 text-sm">{selectedReflection.notes}</p></div>}
+              </div>
+
+              {/* AI Coaching Tip */}
+              <div className="mt-4 glass rounded-2xl p-6 border border-primary-500/20">
+                <h4 className="text-primary-400 font-bold text-sm mb-3">Coaching Insight</h4>
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  {getCoachingTip(selectedReflection)}
+                </p>
+              </div>
+
+              {/* Delete */}
+              <div className="mt-4 text-center">
+                <button
+                  onClick={async () => {
+                    if (confirm('Delete this reflection?')) {
+                      await deleteDoc(doc(db, 'reflections', selectedReflection.id));
+                      try { await loadReflections(); } catch { /* index building */ }
+                      setView('list');
+                    }
+                  }}
+                  className="text-red-400 text-xs hover:text-red-300 underline"
+                >
+                  Delete this reflection
+                </button>
               </div>
             </>
           )}
