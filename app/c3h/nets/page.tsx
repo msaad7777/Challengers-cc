@@ -496,7 +496,19 @@ export default function NetsPage() {
                   ))}
                 </div>
               )}
-              <div className="mt-6 glass rounded-xl p-4 border border-primary-500/20 text-center">
+              {/* Video Review */}
+              <div className="mt-6 glass rounded-xl p-5 border border-accent-500/20">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-2xl">🎥</span>
+                  <h4 className="text-white font-bold text-sm">Need a Video Review?</h4>
+                </div>
+                <p className="text-gray-400 text-sm mb-3">
+                  Upload your batting or bowling video to YouTube (unlisted) and share the link with your captain or team group for feedback from TPG Cricket Academy coaching staff.
+                </p>
+                <p className="text-gray-500 text-xs">Talk to your captain to arrange a review session.</p>
+              </div>
+
+              <div className="mt-4 glass rounded-xl p-4 border border-primary-500/20 text-center">
                 <Link href="/mental-game" className="text-primary-400 text-sm font-medium hover:text-primary-300 underline">Open The Mental Game Guide &rarr;</Link>
               </div>
             </>
