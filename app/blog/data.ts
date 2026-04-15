@@ -320,10 +320,14 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'sai-thai-community-partner',
-    title: 'Sponsor Spotlight: Sai Thai, Bringing Rich Thai Flavours to Our Community',
+    title: 'Sponsor Spotlight: Sai Thai Chef, Bringing Rich Thai Flavours to Our Community',
     excerpt:
-      'Sai Thai joins Challengers Cricket Club as a Community Partner, bringing authentic Thai cuisine and a shared passion for bringing people together.',
+      'Sai Thai Chef joins Challengers Cricket Club as a Community Partner, bringing authentic Thai cuisine and a shared passion for bringing people together.',
     content: `
+      <h3 class="text-2xl font-bold text-white mb-4">Watch Our Partner Intro</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Check out our official partner introduction video featuring Sai Thai Chef and Challengers Cricket Club.
+      </p>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         Challengers Cricket Club is proud to welcome <strong class="text-white">Sai Thai</strong> as our
         newest Community Partner for the 2026 season. Known for its authentic flavours and commitment to quality,
@@ -357,7 +361,7 @@ export const blogPosts: BlogPost[] = [
     author: 'Challengers CC',
     date: '2026-04-14',
     image: '/sai-thai-sponsor.jpeg',
-    video: null,
+    video: '/videos/sai-thai-sponsor.mp4',
     featured: false,
   },
   {
