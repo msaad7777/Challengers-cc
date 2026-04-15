@@ -80,18 +80,18 @@ export default function DashboardPage() {
               </span>
             </a>
 
-            {/* The Scoreboard */}
-            <div className="glass rounded-2xl p-6 border-2 border-red-500/20 hover:border-red-500/50 transition-all duration-300">
+            {/* The Scorer */}
+            <a href="/c3h/scorer" className="glass rounded-2xl p-6 border-2 border-red-500/20 hover:border-red-500/50 transition-all duration-300 block">
               <div className="text-3xl mb-3">📊</div>
-              <h2 className="text-xl font-bold text-white mb-1">The Scoreboard</h2>
-              <p className="text-red-400 text-xs font-medium mb-3">Performance Tracking & KPIs</p>
+              <h2 className="text-xl font-bold text-white mb-1">The Scorer</h2>
+              <p className="text-red-400 text-xs font-medium mb-3">Match Scoring & Scorecard</p>
               <p className="text-gray-400 text-sm mb-4">
-                View your batting and bowling stats, season trends, and match contributions.
+                Score matches ball-by-ball, coin toss, live scorecard, and match results.
               </p>
-              <span className="text-xs px-3 py-1 rounded-full bg-accent-500/20 text-accent-400 border border-accent-500/30">
-                Coming Soon
+              <span className="text-xs px-3 py-1 rounded-full bg-primary-500/20 text-primary-400 border border-primary-500/30">
+                Open
               </span>
-            </div>
+            </a>
 
             {/* The Dugout */}
             <div className="glass rounded-2xl p-6 border-2 border-blue-500/20 hover:border-blue-500/50 transition-all duration-300">
