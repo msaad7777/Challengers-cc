@@ -223,30 +223,60 @@ export default function Partners() {
             </div>
           </div>
 
-          {/* Community Partner */}
+          {/* Community Partners */}
           <div className="glass rounded-2xl p-8 border-2 border-primary-500/30 hover:border-primary-500/50 transition-all duration-300">
             <div className="text-center mb-6">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 rounded-full border border-primary-500/20 mb-4">
                 <svg className="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span className="text-sm font-semibold text-primary-400">Community Partner</span>
+                <span className="text-sm font-semibold text-primary-400">Community Partners</span>
               </div>
             </div>
 
-            <div className="flex flex-col items-center">
-              <div className="w-32 h-32 rounded-xl overflow-hidden mb-4 bg-white flex items-center justify-center p-2">
-                <Image
-                  src="/koverdrive-sponsor.png"
-                  alt="Kover Drive - Cricket Organization, London Ontario"
-                  width={128}
-                  height={128}
-                  className="w-full h-full object-contain"
-                />
+            <div className="grid sm:grid-cols-3 gap-6">
+              <div className="flex flex-col items-center">
+                <div className="w-28 h-28 rounded-xl overflow-hidden mb-3 bg-white flex items-center justify-center p-2">
+                  <Image
+                    src="/koverdrive-sponsor.png"
+                    alt="Kover Drive - Indoor Cricket Facility, London Ontario"
+                    width={112}
+                    height={112}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <h3 className="text-sm font-bold text-white mb-1">Kover Drive</h3>
+                <p className="text-xs text-primary-400 font-medium">Indoor Cricket Facility</p>
+                <p className="text-xs text-gray-500">London, ON</p>
               </div>
-              <h3 className="text-lg font-bold text-white mb-1">Kover Drive</h3>
-              <p className="text-sm text-primary-400 font-medium">Indoor Cricket Practice Facility</p>
-              <p className="text-xs text-gray-400 mt-1">London, Ontario</p>
+              <div className="flex flex-col items-center">
+                <div className="w-28 h-28 rounded-xl overflow-hidden mb-3 bg-black flex items-center justify-center p-2">
+                  <Image
+                    src="/makzin-media-sponsor.png"
+                    alt="MakZiN Media - Software Development, London Ontario"
+                    width={112}
+                    height={112}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <h3 className="text-sm font-bold text-white mb-1">MakZiN Media</h3>
+                <p className="text-xs text-primary-400 font-medium">Software Development</p>
+                <p className="text-xs text-gray-500">London, ON</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="w-28 h-28 rounded-xl overflow-hidden mb-3 bg-gray-800 flex items-center justify-center p-2">
+                  <Image
+                    src="/sai-thai-sponsor.jpeg"
+                    alt="Sai Thai Chef - Authentic Thai Cuisine"
+                    width={112}
+                    height={112}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <h3 className="text-sm font-bold text-white mb-1">Sai Thai Chef</h3>
+                <p className="text-xs text-primary-400 font-medium">Authentic Thai Cuisine</p>
+                <p className="text-xs text-gray-500">London, ON</p>
+              </div>
             </div>
           </div>
         </div>
