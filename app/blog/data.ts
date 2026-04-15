@@ -319,6 +319,48 @@ export const blogPosts: BlogPost[] = [
     },
   },
   {
+    slug: 'sai-thai-community-partner',
+    title: 'Sponsor Spotlight: Sai Thai, Bringing Rich Thai Flavours to Our Community',
+    excerpt:
+      'Sai Thai joins Challengers Cricket Club as a Community Partner, bringing authentic Thai cuisine and a shared passion for bringing people together.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Challengers Cricket Club is proud to welcome <strong class="text-white">Sai Thai</strong> as our
+        newest Community Partner for the 2026 season. Known for its authentic flavours and commitment to quality,
+        Sai Thai brings the rich taste of Thai cuisine to our community.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">A Perfect Partnership</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Cricket and great food go hand in hand. Whether it is a post-match meal with the team or fuelling
+        up before a big game, Sai Thai brings the kind of flavours that bring people together. Their support
+        reflects a shared passion for community, quality, and bringing people from all backgrounds to the same table.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">Why Sai Thai?</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Sai Thai is known for its authentic Thai cuisine, prepared with care and quality ingredients. From
+        classic Pad Thai to rich curries and fresh stir-fries, every dish is crafted to deliver the true
+        taste of Thailand right here in our community.
+      </p>
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic">
+          "Good food brings people together, just like cricket. We are proud to support Challengers
+          Cricket Club and the community they are building."
+        </p>
+        <cite class="text-gray-400 mt-2 block">Sai Thai</cite>
+      </blockquote>
+      <p class="text-gray-400 text-sm italic">
+        Sai Thai is a Community Partner of Challengers Cricket Club. Supporting our partners means supporting the club.
+        Mention Challengers CC when you visit!
+      </p>
+    `,
+    category: 'Sponsor Spotlight',
+    author: 'Challengers CC',
+    date: '2026-04-14',
+    image: '/sai-thai-sponsor.jpeg',
+    video: null,
+    featured: false,
+  },
+  {
     slug: 'kover-drive-community-partner',
     title: 'Sponsor Spotlight: Kover Drive — Our Home for Indoor Practice',
     excerpt:
