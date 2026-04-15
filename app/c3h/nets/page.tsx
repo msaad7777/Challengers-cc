@@ -16,6 +16,9 @@ interface Reflection {
   match: string;
   opponent: string;
   howGotOut: string | string[];
+  feeling: number;
+  bodyStatus: string[];
+  nutrition: string;
   whatWentRight: string[];
   whatWentWrong: string[];
   mindsetWord: string;
@@ -26,6 +29,32 @@ interface Reflection {
   notes: string;
   createdAt: string;
 }
+
+const BODY_STATUS_OPTIONS = [
+  'Feeling fresh and strong',
+  'Slight fatigue',
+  'Sore muscles',
+  'Minor injury — playing through it',
+  'Carrying an injury — limited movement',
+  'Back pain',
+  'Shoulder/arm pain',
+  'Knee/leg pain',
+  'Dehydrated',
+  'Low energy',
+  'Well rested',
+  'Mentally sharp',
+  'Mentally tired',
+  'Stressed from work/life',
+];
+
+const NUTRITION_OPTIONS = [
+  'Had a proper meal before',
+  'Light meal only',
+  'Skipped meal',
+  'Well hydrated',
+  'Not enough water',
+  'Had energy drink/snack',
+];
 
 const HOW_GOT_OUT_OPTIONS = [
   'Bowled', 'Caught — Slips/Gully', 'Caught — Infield', 'Caught — Boundary',
@@ -84,6 +113,9 @@ export default function NetsPage() {
   const [match, setMatch] = useState('');
   const [matchIndex, setMatchIndex] = useState(0);
   const [howGotOut, setHowGotOut] = useState<string[]>([]);
+  const [feeling, setFeeling] = useState(3);
+  const [bodyStatus, setBodyStatus] = useState<string[]>([]);
+  const [nutrition, setNutrition] = useState<string[]>([]);
   const [whatWentRight, setWhatWentRight] = useState<string[]>([]);
   const [whatWentWrong, setWhatWentWrong] = useState<string[]>([]);
   const [mindsetWord, setMindsetWord] = useState('');
@@ -147,6 +179,9 @@ export default function NetsPage() {
       match,
       opponent,
       howGotOut,
+      feeling,
+      bodyStatus,
+      nutrition,
       whatWentRight,
       whatWentWrong,
       mindsetWord,
@@ -160,7 +195,7 @@ export default function NetsPage() {
     try { await loadReflections(); } catch { /* index may still be building */ }
     setSaving(false);
     setView('list');
-    setMatch(''); setMatchIndex(0); setHowGotOut([]); setWhatWentRight([]);
+    setMatch(''); setMatchIndex(0); setHowGotOut([]); setFeeling(3); setBodyStatus([]); setNutrition([]); setWhatWentRight([]);
     setWhatWentWrong([]); setMindsetWord(''); setNextInningsPlan('');
     setStrengthToBuild(''); setPressureResponse(''); setIntentScore(3); setNotes('');
   };
@@ -523,7 +558,11 @@ export default function NetsPage() {
                   <h2 className="text-lg font-bold text-white">{selectedReflection.match}</h2>
                   <span className="text-gray-500 text-sm">{selectedReflection.date}</span>
                 </div>
-                <div className="grid grid-cols-3 gap-3 mb-6">
+                <div className="grid grid-cols-4 gap-3 mb-6">
+                  <div className="glass rounded-xl p-3 text-center">
+                    <p className="text-gray-500 text-xs mb-1">Feeling</p>
+                    <p className="text-white font-bold text-xs">{['😫','😐','🙂','💪','🔥'][((selectedReflection.feeling || 3) - 1)]} {selectedReflection.feeling || 3}/5</p>
+                  </div>
                   <div className="glass rounded-xl p-3 text-center">
                     <p className="text-gray-500 text-xs mb-1">Got Out</p>
                     <p className="text-white font-bold text-xs">{Array.isArray(selectedReflection.howGotOut) ? selectedReflection.howGotOut.join(', ') || 'N/A' : selectedReflection.howGotOut || 'N/A'}</p>
@@ -537,6 +576,19 @@ export default function NetsPage() {
                     <p className="text-primary-400 font-bold text-xs">{selectedReflection.mindsetWord || '—'}</p>
                   </div>
                 </div>
+                {((selectedReflection.bodyStatus && selectedReflection.bodyStatus.length > 0) || (selectedReflection.nutrition && selectedReflection.nutrition.length > 0)) && (
+                  <div className="mb-4">
+                    <h4 className="text-blue-400 font-bold text-xs mb-2">Match Day Check-In</h4>
+                    <div className="flex flex-wrap gap-1">
+                      {(selectedReflection.bodyStatus || []).map(b => (
+                        <span key={b} className="text-xs px-2 py-1 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">{b}</span>
+                      ))}
+                      {(selectedReflection.nutrition || []).map(n => (
+                        <span key={n} className="text-xs px-2 py-1 rounded-full bg-primary-500/20 text-primary-400 border border-primary-500/30">{n}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 {selectedReflection.whatWentRight.length > 0 && (
                   <div className="mb-4">
                     <h4 className="text-primary-400 font-bold text-xs mb-2">What Went Right</h4>
@@ -611,6 +663,38 @@ export default function NetsPage() {
                     )}
                     {MATCHES.filter(m => !isMatchAvailable(m.date)).map(m => <option key={m.label} disabled className="bg-gray-900 text-gray-600">{m.label}</option>)}
                   </select>
+                </div>
+
+                {/* Match Day Check-In */}
+                <div className="glass rounded-2xl p-6 border border-blue-500/20">
+                  <h3 className="text-lg font-bold text-white mb-1">How Are You Feeling Today?</h3>
+                  <p className="text-gray-500 text-xs mb-4">Pre-match body and mind check</p>
+                  <div className="flex gap-3 justify-center mb-4">
+                    {[
+                      { score: 1, emoji: '😫', label: 'Rough' },
+                      { score: 2, emoji: '😐', label: 'Low' },
+                      { score: 3, emoji: '🙂', label: 'Okay' },
+                      { score: 4, emoji: '💪', label: 'Good' },
+                      { score: 5, emoji: '🔥', label: 'Great' },
+                    ].map(f => (
+                      <button key={f.score} onClick={() => setFeeling(f.score)} className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl border transition-all ${feeling === f.score ? 'bg-blue-500/20 text-blue-400 border-blue-500/50 scale-110' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'}`}>
+                        <span className="text-xl">{f.emoji}</span>
+                        <span className="text-xs">{f.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-gray-500 text-xs mb-2">Body status (select all that apply)</p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {BODY_STATUS_OPTIONS.map(opt => (
+                      <button key={opt} onClick={() => toggleCheckbox(opt, bodyStatus, setBodyStatus)} className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${bodyStatus.includes(opt) ? 'bg-blue-500/20 text-blue-400 border-blue-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'}`}>{bodyStatus.includes(opt) ? '✓ ' : ''}{opt}</button>
+                    ))}
+                  </div>
+                  <p className="text-gray-500 text-xs mb-2">Nutrition & hydration</p>
+                  <div className="flex flex-wrap gap-2">
+                    {NUTRITION_OPTIONS.map(opt => (
+                      <button key={opt} onClick={() => toggleCheckbox(opt, nutrition, setNutrition)} className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${nutrition.includes(opt) ? 'bg-primary-500/20 text-primary-400 border-primary-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'}`}>{nutrition.includes(opt) ? '✓ ' : ''}{opt}</button>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="glass rounded-2xl p-6 border border-white/10">
