@@ -80,28 +80,6 @@ export default function Partners() {
             </div>
           </div>
 
-          {/* Facilities */}
-          <div className="glass rounded-2xl p-8 border-2 border-white/10 hover:border-white/20 transition-all duration-300 opacity-75">
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10 mb-4">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-                <span className="text-sm font-semibold text-gray-400">Facilities</span>
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <div className="w-32 h-32 rounded-xl bg-white/5 flex items-center justify-center mb-4">
-                <svg className="w-16 h-16 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-bold text-gray-400 mb-1">City of London Recreation</h3>
-              <p className="text-sm text-gray-500 font-medium">Coming Soon</p>
-            </div>
-          </div>
-
           {/* Platinum Sponsor */}
           <div className="glass rounded-2xl p-8 border-2 border-purple-500/30 hover:border-purple-500/50 transition-all duration-300">
             <div className="text-center mb-6">
@@ -234,7 +212,7 @@ export default function Partners() {
               </div>
             </div>
 
-            <div className="grid sm:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-3 gap-8">
               <div className="flex flex-col items-center">
                 <div className="w-28 h-28 rounded-xl overflow-hidden mb-3 bg-white flex items-center justify-center p-2">
                   <Image
