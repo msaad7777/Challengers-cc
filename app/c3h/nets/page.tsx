@@ -18,7 +18,7 @@ interface Reflection {
   howGotOut: string | string[];
   feeling: number;
   bodyStatus: string[];
-  nutrition: string;
+  nutrition: string[];
   whatWentRight: string[];
   whatWentWrong: string[];
   mindsetWord: string;
