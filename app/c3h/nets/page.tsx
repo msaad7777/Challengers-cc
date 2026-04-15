@@ -222,8 +222,9 @@ export default function NetsPage() {
     const topStrengths = Object.entries(strengthCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
     const topDismissals = Object.entries(dismissalCounts).sort((a, b) => b[1] - a[1]).slice(0, 3);
     const intentTrend = matchRefs.map(r => ({ match: r.match.split(' —')[0], score: r.intentScore })).reverse();
+    const feelingTrend = matchRefs.map(r => ({ match: r.match.split(' —')[0], score: r.feeling || 3 })).reverse();
 
-    return { topMistakes, topStrengths, topDismissals, intentTrend, matchRefs };
+    return { topMistakes, topStrengths, topDismissals, intentTrend, feelingTrend, matchRefs };
   };
 
   const patterns = getPatterns();
@@ -425,6 +426,23 @@ export default function NetsPage() {
                       <span className="text-xs text-primary-400 font-bold">{t.score}</span>
                       <div
                         className="w-10 rounded-t-lg bg-gradient-to-t from-primary-600 to-primary-400"
+                        style={{ height: `${(t.score / 5) * 100}%` }}
+                      ></div>
+                      <span className="text-xs text-gray-500">{t.match}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Feeling Trend */}
+              <div className="glass rounded-2xl p-6 border border-blue-500/20">
+                <h3 className="text-lg font-bold text-white mb-4">How I Felt — Match Day</h3>
+                <div className="flex items-end gap-3 justify-center h-32">
+                  {patterns.feelingTrend.map((t, i) => (
+                    <div key={i} className="flex flex-col items-center gap-1">
+                      <span className="text-xs">{['😫','😐','🙂','💪','🔥'][(t.score - 1)]}</span>
+                      <div
+                        className="w-10 rounded-t-lg bg-gradient-to-t from-blue-600 to-blue-400"
                         style={{ height: `${(t.score / 5) * 100}%` }}
                       ></div>
                       <span className="text-xs text-gray-500">{t.match}</span>
