@@ -32,6 +32,7 @@ export default function ScorerPage() {
   const [customTeam, setCustomTeam] = useState('');
   const [totalOvers, setTotalOvers] = useState(30);
   const [venue, setVenue] = useState('');
+  const [customVenue, setCustomVenue] = useState('');
 
   // Toss
   const [tossFlipping, setTossFlipping] = useState(false);
@@ -286,7 +287,18 @@ export default function ScorerPage() {
                     </div>
                     <div>
                       <label className="text-gray-400 text-xs block mb-1">Venue</label>
-                      <input value={venue} onChange={e => setVenue(e.target.value)} placeholder="Ground name" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary-500 placeholder-gray-600" />
+                      <select value={venue} onChange={e => { setVenue(e.target.value); if (e.target.value !== 'custom') setCustomVenue(''); }} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary-500">
+                        <option value="" className="bg-gray-900">Select venue...</option>
+                        <option value="Northridge Cricket Ground" className="bg-gray-900">Northridge Cricket Ground</option>
+                        <option value="North London Athletic Fields" className="bg-gray-900">North London Athletic Fields</option>
+                        <option value="Silverwoods Cricket Ground" className="bg-gray-900">Silverwoods Cricket Ground</option>
+                        <option value="Mike Vier Park, Sarnia" className="bg-gray-900">Mike Vier Park, Sarnia</option>
+                        <option value="Kover Drive Sports (Indoor)" className="bg-gray-900">Kover Drive Sports (Indoor)</option>
+                        <option value="custom" className="bg-gray-900">Other — Enter manually</option>
+                      </select>
+                      {venue === 'custom' && (
+                        <input value={customVenue} onChange={e => setCustomVenue(e.target.value)} placeholder="Enter ground name" className="w-full mt-2 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary-500 placeholder-gray-600" />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -392,7 +404,7 @@ export default function ScorerPage() {
                   team1, team2,
                   team1Players, team2Players,
                   tossWinner, tossDecision,
-                  totalOvers, venue,
+                  totalOvers, venue: venue === 'custom' ? customVenue : venue,
                   date: new Date().toISOString().split('T')[0],
                   innings1: createEmptyInnings(battingFirst, bowlingFirst),
                   innings2: createEmptyInnings(bowlingFirst, battingFirst),
