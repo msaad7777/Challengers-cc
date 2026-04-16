@@ -94,6 +94,75 @@ export default function ScorerPage() {
     return match.currentInnings === 1 ? match.innings2 : match.innings1;
   };
 
+  const undoLastBall = async () => {
+    if (!match) return;
+    const inn = getCurrentInnings()!;
+    if (inn.balls.length === 0) return;
+
+    const newBalls = inn.balls.slice(0, -1);
+    const lastBall = inn.balls[inn.balls.length - 1];
+    const totalRuns = newBalls.reduce((sum, b) => sum + b.runs + b.extras, 0);
+    const totalWickets = newBalls.filter(b => b.isWicket).length;
+    const legalBalls = newBalls.filter(b => b.extraType !== 'wide' && b.extraType !== 'noball').length;
+
+    const updatedExtras = { wides: 0, noballs: 0, byes: 0, legbyes: 0, penalty: 0 };
+    newBalls.forEach(b => {
+      if (b.extraType === 'wide') updatedExtras.wides += 1 + b.runs;
+      if (b.extraType === 'noball') updatedExtras.noballs += 1 + b.runs;
+      if (b.extraType === 'bye') updatedExtras.byes += b.runs;
+      if (b.extraType === 'legbye') updatedExtras.legbyes += b.runs;
+    });
+
+    // Restore batters from before this ball
+    const updatedInnings: Innings = {
+      ...inn,
+      balls: newBalls,
+      totalRuns,
+      totalWickets,
+      totalOvers: Math.floor(legalBalls / 6),
+      totalBalls: legalBalls,
+      extras: updatedExtras,
+      currentBatter1: lastBall.batter || inn.currentBatter1,
+      currentBowler: lastBall.bowler || inn.currentBowler,
+      isComplete: false,
+    };
+
+    // If wicket was undone, restore dismissed player
+    if (lastBall.isWicket && lastBall.dismissedPlayer) {
+      if (lastBall.dismissedPlayer === inn.currentBatter1 || !inn.currentBatter1) {
+        updatedInnings.currentBatter1 = lastBall.dismissedPlayer;
+      } else {
+        updatedInnings.currentBatter2 = lastBall.dismissedPlayer;
+      }
+    }
+
+    // Reverse strike rotation
+    if (lastBall.extraType !== 'wide' && lastBall.extraType !== 'noball') {
+      if (legalBalls % 6 === 0 && legalBalls > 0) {
+        // Was end of over — swap back
+        const temp = updatedInnings.currentBatter1;
+        updatedInnings.currentBatter1 = updatedInnings.currentBatter2;
+        updatedInnings.currentBatter2 = temp;
+      }
+    }
+    if (lastBall.runs % 2 === 1) {
+      const temp = updatedInnings.currentBatter1;
+      updatedInnings.currentBatter1 = updatedInnings.currentBatter2;
+      updatedInnings.currentBatter2 = temp;
+    }
+
+    const updatedMatch = {
+      ...match,
+      status: 'playing' as const,
+      [match.currentInnings === 1 ? 'innings1' : 'innings2']: updatedInnings,
+    };
+
+    setMatch(updatedMatch);
+    setShowBowlerModal(false);
+    setShowBatterSelect(false);
+    await saveMatch(updatedMatch);
+  };
+
   const recordBall = async (runs: number, extraType: '' | 'wide' | 'noball' | 'bye' | 'legbye' = '', isWicket = false) => {
     if (!match) return;
     const inn = getCurrentInnings()!;
@@ -574,8 +643,11 @@ export default function ScorerPage() {
                     </div>
                   </div>
 
-                  {/* View Scorecard */}
-                  <button onClick={() => setView('scorecard')} className="mt-3 w-full py-2 rounded-lg bg-white/5 text-gray-400 text-xs border border-white/10 hover:bg-white/10">View Full Scorecard</button>
+                  {/* Undo & Scorecard */}
+                  <div className="mt-3 flex gap-2">
+                    <button onClick={undoLastBall} disabled={!inn || inn.balls.length === 0} className="flex-1 py-2 rounded-lg bg-red-500/10 text-red-400 text-xs border border-red-500/20 hover:bg-red-500/20 disabled:opacity-30 transition-all">Undo Last Ball</button>
+                    <button onClick={() => setView('scorecard')} className="flex-1 py-2 rounded-lg bg-white/5 text-gray-400 text-xs border border-white/10 hover:bg-white/10">View Scorecard</button>
+                  </div>
                 </div>
               )}
 
