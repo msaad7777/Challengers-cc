@@ -252,8 +252,18 @@ export default function ScorerPage() {
     setMatch(updatedMatch);
     await saveMatch(updatedMatch);
 
-    // Reset wicket modal
+    // Reset wicket modal and clear dismissed batter
     if (isWicket) {
+      // Clear the dismissed player from current batters
+      const innKey = match.currentInnings === 1 ? 'innings1' : 'innings2';
+      const latestInn = updatedMatch[innKey];
+      if (dismissedPlayer === latestInn.currentBatter1) {
+        latestInn.currentBatter1 = '';
+      } else if (dismissedPlayer === latestInn.currentBatter2) {
+        latestInn.currentBatter2 = '';
+      }
+      setMatch({ ...updatedMatch, [innKey]: latestInn });
+
       setShowWicketModal(false);
       setWicketType('');
       setDismissedPlayer('');
@@ -523,29 +533,68 @@ export default function ScorerPage() {
               </div>
 
               {/* Current Players */}
-              <div className="glass rounded-xl p-3 border border-white/10">
-                <div className="flex justify-between text-xs">
-                  <div>
-                    <span className="text-primary-400 font-bold">🏏 {inn.currentBatter1 || 'Select batter'}</span>
-                    <span className="text-gray-500 ml-1">*</span>
+              {(() => {
+                const getBatterScore = (name: string) => {
+                  if (!name || !inn) return { runs: 0, balls: 0 };
+                  let runs = 0, balls = 0;
+                  inn.balls.forEach(b => {
+                    if (b.batter === name) {
+                      if (b.extraType !== 'wide') balls++;
+                      if (!b.extraType || b.extraType === 'noball') runs += b.runs;
+                    }
+                  });
+                  return { runs, balls };
+                };
+                const getBowlerFigures = (name: string) => {
+                  if (!name || !inn) return { wickets: 0, runs: 0, overs: '' };
+                  let wickets = 0, runs = 0, legalBalls = 0;
+                  inn.balls.forEach(b => {
+                    if (b.bowler === name) {
+                      runs += b.runs + b.extras;
+                      if (b.extraType !== 'wide' && b.extraType !== 'noball') legalBalls++;
+                      if (b.isWicket && b.wicketType !== 'Run Out') wickets++;
+                    }
+                  });
+                  return { wickets, runs, overs: `${Math.floor(legalBalls / 6)}.${legalBalls % 6}` };
+                };
+                const b1 = getBatterScore(inn.currentBatter1);
+                const b2 = getBatterScore(inn.currentBatter2);
+                const bw = getBowlerFigures(inn.currentBowler);
+                return (
+                  <div className="glass rounded-xl p-3 border border-white/10">
+                    <div className="flex justify-between text-xs mb-1">
+                      <div>
+                        <span className="text-primary-400 font-bold">🏏 {inn.currentBatter1 || 'Select batter'}</span>
+                        <span className="text-gray-500 ml-1">*</span>
+                        {inn.currentBatter1 && <span className="text-white font-bold ml-2">{b1.runs}({b1.balls})</span>}
+                      </div>
+                      <div>
+                        <span className="text-gray-400">{inn.currentBatter2 || 'Select batter'}</span>
+                        {inn.currentBatter2 && <span className="text-white font-bold ml-2">{b2.runs}({b2.balls})</span>}
+                      </div>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      🎾 {inn.currentBowler || 'Select bowler'}
+                      {inn.currentBowler && <span className="text-white font-bold ml-2">{bw.overs}-{bw.runs}-{bw.wickets}</span>}
+                    </div>
                   </div>
-                  <span className="text-gray-400">{inn.currentBatter2 || 'Select batter'}</span>
-                </div>
-                <div className="text-xs text-gray-500 mt-1">🎾 {inn.currentBowler || 'Select bowler'}</div>
-              </div>
+                );
+              })()}
 
               {/* Select Batters Modal */}
               {showBatterSelect && (
                 <div className="glass rounded-2xl p-6 border-2 border-primary-500/30">
-                  <h3 className="text-lg font-bold text-white mb-3">Select Batters</h3>
+                  <h3 className="text-lg font-bold text-white mb-3">{inn.totalWickets > 0 && (!inn.currentBatter1 || !inn.currentBatter2) ? 'Select New Batter' : 'Select Batters'}</h3>
                   <div className="space-y-3">
-                    {!inn.currentBatter1 && (
+                    {!inn.currentBatter1 && (() => {
+                      const dismissed = inn.balls.filter(b => b.isWicket).map(b => b.dismissedPlayer);
+                      const available = (inn.battingTeam === team1 ? team1Players : team2Players)
+                        .filter(p => p.name !== inn.currentBatter2 && !dismissed.includes(p.name));
+                      return (
                       <div>
                         <p className="text-gray-400 text-xs mb-2">Striker:</p>
                         <div className="flex flex-wrap gap-1">
-                          {(inn.battingTeam === team1 ? team1Players : team2Players)
-                            .filter(p => p.name !== inn.currentBatter2)
-                            .map(p => (
+                          {available.map(p => (
                               <button key={p.id} onClick={() => {
                                 const updated = { ...match, [match.currentInnings === 1 ? 'innings1' : 'innings2']: { ...inn, currentBatter1: p.name } };
                                 setMatch(updated);
@@ -554,14 +603,17 @@ export default function ScorerPage() {
                             ))}
                         </div>
                       </div>
-                    )}
-                    {!inn.currentBatter2 && (
+                      );
+                    })()}
+                    {!inn.currentBatter2 && (() => {
+                      const dismissed = inn.balls.filter(b => b.isWicket).map(b => b.dismissedPlayer);
+                      const available = (inn.battingTeam === team1 ? team1Players : team2Players)
+                        .filter(p => p.name !== inn.currentBatter1 && !dismissed.includes(p.name));
+                      return (
                       <div>
                         <p className="text-gray-400 text-xs mb-2">Non-Striker:</p>
                         <div className="flex flex-wrap gap-1">
-                          {(inn.battingTeam === team1 ? team1Players : team2Players)
-                            .filter(p => p.name !== inn.currentBatter1)
-                            .map(p => (
+                          {available.map(p => (
                               <button key={p.id} onClick={() => {
                                 const updated = { ...match, [match.currentInnings === 1 ? 'innings1' : 'innings2']: { ...inn, currentBatter2: p.name } };
                                 setMatch(updated);
@@ -570,7 +622,8 @@ export default function ScorerPage() {
                             ))}
                         </div>
                       </div>
-                    )}
+                      );
+                    })()}
                     {!inn.currentBowler && (
                       <div>
                         <p className="text-gray-400 text-xs mb-2">Opening Bowler:</p>
