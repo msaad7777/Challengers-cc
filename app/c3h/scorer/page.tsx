@@ -320,6 +320,7 @@ export default function ScorerPage() {
                 ) : (
                   <div className="space-y-4">
                     <p className="text-2xl font-bold text-accent-400">{tossResult === 'heads' ? '👑 Heads!' : '🦅 Tails!'}</p>
+                    <button onClick={() => { setTossResult(null); setTossWinner(''); setTossDecision('bat'); }} className="text-gray-400 text-xs underline hover:text-primary-400">Toss Again</button>
                     <div>
                       <label className="text-gray-400 text-xs block mb-2">Who won the toss?</label>
                       <div className="flex gap-2">
