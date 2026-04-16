@@ -31,8 +31,10 @@ export default function ScorerPage() {
   const [team2, setTeam2] = useState('');
   const [customTeam, setCustomTeam] = useState('');
   const [totalOvers, setTotalOvers] = useState(30);
+  const [maxWickets, setMaxWickets] = useState(10);
   const [venue, setVenue] = useState('');
   const [customVenue, setCustomVenue] = useState('');
+  const [showExtrasMenu, setShowExtrasMenu] = useState<'wide' | 'noball' | null>(null);
 
   // Toss
   const [tossFlipping, setTossFlipping] = useState(false);
@@ -209,7 +211,7 @@ export default function ScorerPage() {
       totalOvers: Math.floor(legalBalls / 6),
       totalBalls: legalBalls,
       extras: updatedExtras,
-      isComplete: legalBalls >= match.totalOvers * 6 || totalWickets >= 10 ||
+      isComplete: legalBalls >= match.totalOvers * 6 || totalWickets >= (match.maxWickets || 10) ||
         (match.currentInnings === 2 && totalRuns > match.innings1.totalRuns),
     };
 
@@ -240,7 +242,7 @@ export default function ScorerPage() {
         const i1 = updatedMatch.innings1.totalRuns;
         const i2 = updatedInnings.totalRuns;
         if (i2 > i1) {
-          updatedMatch.result = `${updatedInnings.battingTeam} won by ${10 - updatedInnings.totalWickets} wickets`;
+          updatedMatch.result = `${updatedInnings.battingTeam} won by ${(match.maxWickets || 10) - updatedInnings.totalWickets} wickets`;
         } else if (i1 > i2) {
           updatedMatch.result = `${updatedMatch.innings1.battingTeam} won by ${i1 - i2} runs`;
         } else {
@@ -357,11 +359,17 @@ export default function ScorerPage() {
                       <input value={customTeam} onChange={e => { setCustomTeam(e.target.value); setTeam2(e.target.value); }} placeholder="Enter team name" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary-500 placeholder-gray-600" />
                     )}
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-3">
                     <div>
                       <label className="text-gray-400 text-xs block mb-1">Overs</label>
                       <select value={totalOvers} onChange={e => setTotalOvers(Number(e.target.value))} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary-500">
                         {[5, 6, 8, 10, 15, 20, 25, 30, 35, 40, 50].map(o => <option key={o} value={o} className="bg-gray-900">{o} overs</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-gray-400 text-xs block mb-1">Wickets</label>
+                      <select value={maxWickets} onChange={e => setMaxWickets(Number(e.target.value))} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary-500">
+                        {[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(w => <option key={w} value={w} className="bg-gray-900">{w} wickets</option>)}
                       </select>
                     </div>
                     <div>
@@ -483,7 +491,7 @@ export default function ScorerPage() {
                   team1, team2,
                   team1Players, team2Players,
                   tossWinner, tossDecision,
-                  totalOvers, venue: venue === 'custom' ? customVenue : venue,
+                  totalOvers, maxWickets, venue: venue === 'custom' ? customVenue : venue,
                   date: new Date().toISOString().split('T')[0],
                   innings1: createEmptyInnings(battingFirst, bowlingFirst),
                   innings2: createEmptyInnings(bowlingFirst, battingFirst),
@@ -643,22 +651,45 @@ export default function ScorerPage() {
               )}
 
               {/* Bowler Change Modal */}
-              {showBowlerModal && (
+              {showBowlerModal && (() => {
+                const bowlerStats: Record<string, { balls: number; runs: number; wickets: number; maidens: number; wides: number; noballs: number }> = {};
+                inn!.balls.forEach(b => {
+                  if (!b.bowler) return;
+                  if (!bowlerStats[b.bowler]) bowlerStats[b.bowler] = { balls: 0, runs: 0, wickets: 0, maidens: 0, wides: 0, noballs: 0 };
+                  bowlerStats[b.bowler].runs += b.runs + b.extras;
+                  if (b.extraType !== 'wide' && b.extraType !== 'noball') bowlerStats[b.bowler].balls++;
+                  if (b.isWicket && b.wicketType !== 'Run Out') bowlerStats[b.bowler].wickets++;
+                  if (b.extraType === 'wide') bowlerStats[b.bowler].wides++;
+                  if (b.extraType === 'noball') bowlerStats[b.bowler].noballs++;
+                });
+                return (
                 <div className="glass rounded-2xl p-6 border-2 border-accent-500/30">
                   <h3 className="text-lg font-bold text-white mb-3">Select Next Bowler</h3>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="space-y-2">
                     {(inn!.bowlingTeam === team1 ? team1Players : team2Players)
                       .filter(p => p.name !== inn!.currentBowler)
-                      .map(p => (
+                      .map(p => {
+                        const s = bowlerStats[p.name];
+                        const overs = s ? `${Math.floor(s.balls / 6)}.${s.balls % 6}` : '0';
+                        return (
                         <button key={p.id} onClick={() => {
                           const updated = { ...match!, [match!.currentInnings === 1 ? 'innings1' : 'innings2']: { ...inn!, currentBowler: p.name } };
                           setMatch(updated);
                           setShowBowlerModal(false);
-                        }} className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-400 border border-white/10 hover:bg-accent-500/20 hover:text-accent-400">{p.name}</button>
-                      ))}
+                        }} className="w-full text-left px-3 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-accent-500/20 hover:border-accent-500/30 transition-all flex justify-between items-center">
+                          <span className="text-sm text-gray-300">{p.name}</span>
+                          {s ? (
+                            <span className="text-xs text-gray-500">{overs}-{s.maidens}-{s.runs}-{s.wickets} | Wd:{s.wides} Nb:{s.noballs}</span>
+                          ) : (
+                            <span className="text-xs text-gray-600">Not bowled yet</span>
+                          )}
+                        </button>
+                        );
+                      })}
                   </div>
                 </div>
-              )}
+                );
+              })()}
 
               {/* Scoring Buttons */}
               {!showBatterSelect && !showBowlerModal && !showWicketModal && inn.currentBatter1 && inn.currentBowler && (
@@ -672,12 +703,22 @@ export default function ScorerPage() {
                     <button onClick={() => recordBall(4)} className="py-3 rounded-xl bg-primary-500/20 text-primary-400 font-bold border border-primary-500/30 hover:bg-primary-500/30 transition-all">4 FOUR</button>
                     <button onClick={() => recordBall(6)} className="py-3 rounded-xl bg-accent-500/20 text-accent-400 font-bold border border-accent-500/30 hover:bg-accent-500/30 transition-all">6 SIX</button>
                   </div>
-                  <div className="grid grid-cols-4 gap-2 mb-3">
-                    <button onClick={() => recordBall(0, 'wide')} className="py-2 rounded-lg bg-blue-500/10 text-blue-400 text-xs font-medium border border-blue-500/20">Wide</button>
-                    <button onClick={() => recordBall(0, 'noball')} className="py-2 rounded-lg bg-red-500/10 text-red-400 text-xs font-medium border border-red-500/20">No Ball</button>
+                  <div className="grid grid-cols-4 gap-2 mb-2">
+                    <button onClick={() => setShowExtrasMenu(showExtrasMenu === 'wide' ? null : 'wide')} className={`py-2 rounded-lg text-xs font-medium border transition-all ${showExtrasMenu === 'wide' ? 'bg-blue-500/20 text-blue-400 border-blue-500/50' : 'bg-blue-500/10 text-blue-400 border-blue-500/20'}`}>Wide</button>
+                    <button onClick={() => setShowExtrasMenu(showExtrasMenu === 'noball' ? null : 'noball')} className={`py-2 rounded-lg text-xs font-medium border transition-all ${showExtrasMenu === 'noball' ? 'bg-red-500/20 text-red-400 border-red-500/50' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>No Ball</button>
                     <button onClick={() => recordBall(1, 'bye')} className="py-2 rounded-lg bg-gray-500/10 text-gray-400 text-xs font-medium border border-gray-500/20">Bye</button>
                     <button onClick={() => recordBall(1, 'legbye')} className="py-2 rounded-lg bg-gray-500/10 text-gray-400 text-xs font-medium border border-gray-500/20">Leg Bye</button>
                   </div>
+                  {showExtrasMenu && (
+                    <div className="flex gap-1 mb-2 flex-wrap">
+                      {[0, 1, 2, 3, 4].map(r => (
+                        <button key={r} onClick={() => { recordBall(r, showExtrasMenu); setShowExtrasMenu(null); }}
+                          className={`px-3 py-2 rounded-lg text-xs font-bold border transition-all ${showExtrasMenu === 'wide' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30 hover:bg-blue-500/20' : 'bg-red-500/10 text-red-400 border-red-500/30 hover:bg-red-500/20'}`}>
+                          {showExtrasMenu === 'wide' ? 'Wd' : 'Nb'}{r > 0 ? `+${r}` : ''}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                   <button onClick={() => setShowWicketModal(true)} className="w-full py-3 rounded-xl bg-red-500/20 text-red-400 font-bold border border-red-500/30 hover:bg-red-500/30 transition-all">WICKET</button>
 
                   {/* This Over */}

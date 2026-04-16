@@ -56,6 +56,7 @@ export interface Match {
   tossWinner: string;
   tossDecision: 'bat' | 'bowl';
   totalOvers: number;
+  maxWickets: number;
   venue: string;
   date: string;
   innings1: Innings;
