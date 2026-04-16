@@ -65,9 +65,24 @@ export default function ScorerPage() {
     if (!session?.user?.email) return;
     setLoading(true);
     try {
-      const q = query(collection(db, 'matches'), where('createdBy', '==', session.user.email.toLowerCase()), orderBy('createdAt', 'desc'));
-      const snap = await getDocs(q);
-      setSavedMatches(snap.docs.map(d => ({ ...d.data(), id: d.id } as Match)));
+      // Load own matches
+      const q1 = query(collection(db, 'matches'), where('createdBy', '==', session.user.email.toLowerCase()), orderBy('createdAt', 'desc'));
+      const snap1 = await getDocs(q1);
+      const ownMatches = snap1.docs.map(d => ({ ...d.data(), id: d.id } as Match));
+
+      // Load all in-progress matches (for scorer takeover)
+      try {
+        const q2 = query(collection(db, 'matches'), where('status', '==', 'playing'), orderBy('createdAt', 'desc'));
+        const snap2 = await getDocs(q2);
+        const activeMatches = snap2.docs.map(d => ({ ...d.data(), id: d.id } as Match));
+
+        // Merge without duplicates
+        const allIds = new Set(ownMatches.map(m => m.id));
+        const merged = [...ownMatches, ...activeMatches.filter(m => !allIds.has(m.id))];
+        setSavedMatches(merged);
+      } catch {
+        setSavedMatches(ownMatches);
+      }
     } catch { /* index building */ }
     setLoading(false);
   }, [session]);
@@ -77,7 +92,7 @@ export default function ScorerPage() {
   }, [session, loadMatches]);
 
   const saveMatch = async (m: Match) => {
-    const data = { ...m, updatedAt: new Date().toISOString() };
+    const data = { ...m, scorer: session?.user?.email || m.scorer, updatedAt: new Date().toISOString() };
     if (matchId) {
       await updateDoc(doc(db, 'matches', matchId), data);
     } else {
@@ -318,6 +333,9 @@ export default function ScorerPage() {
                           </span>
                         </div>
                         {m.result && <p className="text-primary-400 text-xs mt-1">{m.result}</p>}
+                        {m.status !== 'completed' && m.scorer && m.scorer !== session?.user?.email && (
+                          <p className="text-gray-500 text-xs mt-1">Scorer: {m.scorer.split('@')[0]}</p>
+                        )}
                       </button>
                     ))}
                   </div>
@@ -538,6 +556,18 @@ export default function ScorerPage() {
                     </>
                   )}
                 </div>
+                {match.scorer && match.scorer !== session?.user?.email && (
+                  <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">Scorer: {match.scorer.split('@')[0]}</span>
+                    <button onClick={async () => {
+                      const updated = { ...match, scorer: session!.user!.email! };
+                      setMatch(updated);
+                      await saveMatch(updated);
+                    }} className="text-xs px-3 py-1 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30 hover:bg-accent-500/30">
+                      Take Over Scoring
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Current Players */}
