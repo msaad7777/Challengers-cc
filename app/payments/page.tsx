@@ -129,6 +129,11 @@ export default function PaymentsPage() {
                 >
                   Confirm Payment via Zeffy (0% Fees)
                 </a>
+                <div className="glass rounded-lg p-4 border border-accent-500/30">
+                  <p className="font-semibold text-sm text-center mb-2">Pay via Interac e-Transfer (0% Fees)</p>
+                  <p className="text-center text-accent-400 font-bold text-lg">payments@challengerscc.ca</p>
+                  <p className="text-center text-gray-500 text-xs mt-1">Send e-Transfer to the email above. Auto-deposited to the club account.</p>
+                </div>
                 <a
                   href={STRIPE_DONATION_LINK}
                   target="_blank"
@@ -142,7 +147,7 @@ export default function PaymentsPage() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
-                Zeffy: 100% goes to the club | Stripe: 2.2% + $0.30 fee applies
+                Zeffy &amp; e-Transfer: 100% goes to the club | Stripe: 2.2% + $0.30 fee applies
               </div>
               <div className="mt-4 pt-4 border-t border-white/10">
                 <p className="text-xs text-gray-500">
