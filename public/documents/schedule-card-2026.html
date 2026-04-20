@@ -8,12 +8,26 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: #000; font-family: 'Arial', sans-serif; display: flex; justify-content: center; padding: 20px; }
 .card {
-  width: 1080px;
+  width: 100%;
+  max-width: 1080px;
   background: linear-gradient(135deg, #0a0a0a, #1a2e1a, #0a0a0a);
   border: 3px solid #10b981;
   border-radius: 24px;
   padding: 48px;
   color: white;
+}
+@media (max-width: 768px) {
+  .card { padding: 16px; }
+  .header h1 { font-size: 22px; }
+  .header h2 { font-size: 16px; }
+  .leagues { flex-direction: column; gap: 16px; }
+  .match { font-size: 11px; padding: 5px 8px; }
+  .match-num { width: 24px; font-size: 10px; }
+  .match-date { width: 50px; font-size: 11px; }
+  .match-time { width: 55px; font-size: 11px; }
+  .match-venue { width: 70px; font-size: 10px; }
+  .stats { gap: 16px; }
+  .stat-num { font-size: 20px; }
 }
 .header { text-align: center; margin-bottom: 32px; }
 .header h1 { font-size: 36px; color: #10b981; letter-spacing: 2px; }
