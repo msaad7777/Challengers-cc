@@ -34,7 +34,7 @@ export default function ScorerPage() {
   const [maxWickets, setMaxWickets] = useState(10);
   const [venue, setVenue] = useState('');
   const [customVenue, setCustomVenue] = useState('');
-  const [showExtrasMenu, setShowExtrasMenu] = useState<'wide' | 'noball' | null>(null);
+  const [showExtrasMenu, setShowExtrasMenu] = useState<'wide' | 'noball' | 'bye' | 'legbye' | null>(null);
 
   // Toss
   const [tossFlipping, setTossFlipping] = useState(false);
@@ -736,15 +736,19 @@ export default function ScorerPage() {
                   <div className="grid grid-cols-4 gap-2 mb-2">
                     <button onClick={() => setShowExtrasMenu(showExtrasMenu === 'wide' ? null : 'wide')} className={`py-2 rounded-lg text-xs font-medium border transition-all ${showExtrasMenu === 'wide' ? 'bg-blue-500/20 text-blue-400 border-blue-500/50' : 'bg-blue-500/10 text-blue-400 border-blue-500/20'}`}>Wide</button>
                     <button onClick={() => setShowExtrasMenu(showExtrasMenu === 'noball' ? null : 'noball')} className={`py-2 rounded-lg text-xs font-medium border transition-all ${showExtrasMenu === 'noball' ? 'bg-red-500/20 text-red-400 border-red-500/50' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>No Ball</button>
-                    <button onClick={() => recordBall(1, 'bye')} className="py-2 rounded-lg bg-gray-500/10 text-gray-400 text-xs font-medium border border-gray-500/20">Bye</button>
-                    <button onClick={() => recordBall(1, 'legbye')} className="py-2 rounded-lg bg-gray-500/10 text-gray-400 text-xs font-medium border border-gray-500/20">Leg Bye</button>
+                    <button onClick={() => setShowExtrasMenu(showExtrasMenu === 'bye' ? null : 'bye')} className={`py-2 rounded-lg text-xs font-medium border transition-all ${showExtrasMenu === 'bye' ? 'bg-gray-500/20 text-gray-300 border-gray-500/50' : 'bg-gray-500/10 text-gray-400 border-gray-500/20'}`}>Bye</button>
+                    <button onClick={() => setShowExtrasMenu(showExtrasMenu === 'legbye' ? null : 'legbye')} className={`py-2 rounded-lg text-xs font-medium border transition-all ${showExtrasMenu === 'legbye' ? 'bg-gray-500/20 text-gray-300 border-gray-500/50' : 'bg-gray-500/10 text-gray-400 border-gray-500/20'}`}>Leg Bye</button>
                   </div>
                   {showExtrasMenu && (
                     <div className="flex gap-1 mb-2 flex-wrap">
-                      {[0, 1, 2, 3, 4].map(r => (
+                      {(showExtrasMenu === 'bye' || showExtrasMenu === 'legbye' ? [1, 2, 3, 4] : [0, 1, 2, 3, 4]).map(r => (
                         <button key={r} onClick={() => { recordBall(r, showExtrasMenu); setShowExtrasMenu(null); }}
-                          className={`px-3 py-2 rounded-lg text-xs font-bold border transition-all ${showExtrasMenu === 'wide' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30 hover:bg-blue-500/20' : 'bg-red-500/10 text-red-400 border-red-500/30 hover:bg-red-500/20'}`}>
-                          {showExtrasMenu === 'wide' ? 'Wd' : 'Nb'}{r > 0 ? `+${r}` : ''}
+                          className={`px-3 py-2 rounded-lg text-xs font-bold border transition-all ${
+                            showExtrasMenu === 'wide' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30 hover:bg-blue-500/20' :
+                            showExtrasMenu === 'noball' ? 'bg-red-500/10 text-red-400 border-red-500/30 hover:bg-red-500/20' :
+                            'bg-gray-500/10 text-gray-300 border-gray-500/30 hover:bg-gray-500/20'
+                          }`}>
+                          {showExtrasMenu === 'wide' ? 'Wd' : showExtrasMenu === 'noball' ? 'Nb' : showExtrasMenu === 'bye' ? 'B' : 'Lb'}{r > 0 ? `+${r}` : showExtrasMenu === 'wide' || showExtrasMenu === 'noball' ? '' : ''}
                         </button>
                       ))}
                     </div>
