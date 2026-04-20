@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 const CLASH_DATES = ['May 10, 2026', 'June 27, 2026', 'July 25, 2026', 'August 2, 2026'];
 
 interface Match {
+  league?: string;
   match: number;
   date: string;
   day: string;
@@ -33,23 +34,38 @@ const lclT30Matches: Match[] = [
   { match: 14, date: 'September 13, 2026', day: 'Sunday', time: '3:00 PM', opponent: 'Tigers Cricket Club', venue: 'Northridge Cricket Ground' },
 ];
 
+// Add league labels
+const lclLabeled = lclT30Matches.map(m => ({ ...m, league: 'LCL' }));
+const lplT30Matches: Match[] = [
+  { match: 1, date: 'May 10, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Maple Tigers', venue: 'Silverwoods Cricket Ground' },
+  { match: 2, date: 'May 24, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'London Rhinos', venue: 'North London Athletic Fields' },
+  { match: 3, date: 'May 31, 2026', day: 'Sunday', time: '2:00 PM', opponent: 'NLCC', venue: 'Thamesville' },
+  { match: 4, date: 'June 7, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Royal Tigers', venue: 'Silverwoods Cricket Ground' },
+  { match: 5, date: 'June 13, 2026', day: 'Saturday', time: '8:00 AM', opponent: 'Maple Tigers', venue: 'Northridge Cricket Ground' },
+  { match: 6, date: 'June 27, 2026', day: 'Saturday', time: '9:00 AM', opponent: 'Premier XI', venue: 'Thamesville' },
+  { match: 7, date: 'July 4, 2026', day: 'Saturday', time: '10:00 AM', opponent: 'London Stars', venue: 'Northridge Cricket Ground' },
+  { match: 8, date: 'July 18, 2026', day: 'Saturday', time: '10:00 AM', opponent: 'Premier XI', venue: 'Northridge Cricket Ground' },
+  { match: 9, date: 'July 25, 2026', day: 'Saturday', time: '9:00 AM', opponent: 'London Rhinos', venue: 'Thamesville' },
+  { match: 10, date: 'August 2, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'NLCC', venue: 'Silverwoods Cricket Ground' },
+  { match: 11, date: 'August 30, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Royal Tigers', venue: 'Silverwoods Cricket Ground' },
+  { match: 12, date: 'September 6, 2026', day: 'Sunday', time: '1:00 PM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
+];
+const lplLabeled = lplT30Matches.map(m => ({ ...m, league: 'LPL' }));
+
+// All matches sorted by date and time
+const allMatches = [...lclLabeled, ...lplLabeled].sort((a, b) => {
+  const dateA = new Date(a.date);
+  const dateB = new Date(b.date);
+  if (dateA.getTime() !== dateB.getTime()) return dateA.getTime() - dateB.getTime();
+  const toMin = (t: string) => { const [time, p] = t.split(' '); const [h, m] = time.split(':').map(Number); return ((p === 'PM' && h !== 12 ? h + 12 : p === 'AM' && h === 12 ? 0 : h) * 60) + m; };
+  return toMin(a.time) - toMin(b.time);
+});
+
 const tabs = [
-  { id: 'lcl-t30', label: 'LCL T30', matches: lclT30Matches, status: 'active' as const },
+  { id: 'all', label: 'All Matches', matches: allMatches, status: 'active' as const },
+  { id: 'lcl-t30', label: 'LCL T30', matches: lclLabeled, status: 'active' as const },
   { id: 'lcl-t20', label: 'LCL T20', matches: [] as Match[], status: 'coming-soon' as const },
-  { id: 'lpl-t30', label: 'LPL T30', matches: [
-    { match: 1, date: 'May 10, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Maple Tigers', venue: 'Silverwoods Cricket Ground' },
-    { match: 2, date: 'May 24, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'London Rhinos', venue: 'North London Athletic Fields' },
-    { match: 3, date: 'May 31, 2026', day: 'Sunday', time: '2:00 PM', opponent: 'NLCC', venue: 'Thamesville' },
-    { match: 4, date: 'June 7, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Royal Tigers', venue: 'Silverwoods Cricket Ground' },
-    { match: 5, date: 'June 13, 2026', day: 'Saturday', time: '8:00 AM', opponent: 'Maple Tigers', venue: 'Northridge Cricket Ground' },
-    { match: 6, date: 'June 27, 2026', day: 'Saturday', time: '9:00 AM', opponent: 'Premier XI', venue: 'Thamesville' },
-    { match: 7, date: 'July 4, 2026', day: 'Saturday', time: '10:00 AM', opponent: 'London Stars', venue: 'Northridge Cricket Ground' },
-    { match: 8, date: 'July 18, 2026', day: 'Saturday', time: '10:00 AM', opponent: 'Premier XI', venue: 'Northridge Cricket Ground' },
-    { match: 9, date: 'July 25, 2026', day: 'Saturday', time: '9:00 AM', opponent: 'London Rhinos', venue: 'Thamesville' },
-    { match: 10, date: 'August 2, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'NLCC', venue: 'Silverwoods Cricket Ground' },
-    { match: 11, date: 'August 30, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Royal Tigers', venue: 'Silverwoods Cricket Ground' },
-    { match: 12, date: 'September 6, 2026', day: 'Sunday', time: '1:00 PM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
-  ], status: 'active' as const },
+  { id: 'lpl-t30', label: 'LPL T30', matches: lplLabeled, status: 'active' as const },
 ];
 
 function MatchTable({ matches }: { matches: Match[] }) {
@@ -71,7 +87,7 @@ function MatchTable({ matches }: { matches: Match[] }) {
             {matches.map((m) => (
               <tr key={m.match} className={`border-b border-white/5 hover:bg-white/5 transition-colors ${CLASH_DATES.includes(m.date) ? 'bg-red-500/5' : ''}`}>
                 <td className="px-6 py-4">
-                  <span className="text-sm font-bold text-primary-400">M{m.match}</span>
+                  <span className="text-sm font-bold text-primary-400">{m.league ? `${m.league} ` : ''}M{m.match}</span>
                 </td>
                 <td className="px-6 py-4">
                   <div className="text-sm text-white font-medium flex items-center gap-1.5">{m.date}{CLASH_DATES.includes(m.date) && <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block flex-shrink-0" title="Schedule clash with other league"></span>}</div>
@@ -97,7 +113,7 @@ function MatchTable({ matches }: { matches: Match[] }) {
         {matches.map((m) => (
           <div key={m.match} className={`glass rounded-xl p-5 border-l-4 ${CLASH_DATES.includes(m.date) ? 'border-l-red-500' : 'border-l-primary-500'}`}>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-bold text-primary-400">Match {m.match}</span>
+              <span className="text-sm font-bold text-primary-400">{m.league ? `${m.league} ` : ''}Match {m.match}</span>
             </div>
             <h3 className="text-lg font-bold text-white mb-2">vs {m.opponent}</h3>
             <div className="space-y-1 text-sm text-gray-400">
@@ -129,7 +145,7 @@ function MatchTable({ matches }: { matches: Match[] }) {
 }
 
 export default function SchedulePage() {
-  const [activeTab, setActiveTab] = useState('lcl-t30');
+  const [activeTab, setActiveTab] = useState('all');
   const currentTab = tabs.find((t) => t.id === activeTab) || tabs[0];
 
   return (
