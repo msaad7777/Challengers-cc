@@ -48,6 +48,51 @@ const PLAYER_NAMES = [
   'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Makhan',
 ];
 
+// Map all emails (board + personal) to a single player name
+const EMAIL_TO_PLAYER: Record<string, string> = {
+  'contact@challengerscc.ca': 'Mohammed Saad',
+  'saad@challengerscc.ca': 'Mohammed Saad',
+  'mbadru3434@gmail.com': 'Mohammed Saad',
+  'tarek@challengerscc.ca': 'Tarek Islam',
+  'monirulislambd64@gmail.com': 'Tarek Islam',
+  'gokul@challengerscc.ca': 'Gokul Prakash',
+  'gokulprakash663@gmail.com': 'Gokul Prakash',
+  'qaiser@challengerscc.ca': 'Qaiser Mahmood',
+  'qureshiqaiser007@gmail.com': 'Qaiser Mahmood',
+  'madhu@challengerscc.ca': 'Madhu Reddy',
+  'vantarimadhu@gmail.com': 'Madhu Reddy',
+  'ankush@challengerscc.ca': 'Ankush Arora',
+  '92ankusharora@gmail.com': 'Ankush Arora',
+  'roman@challengerscc.ca': 'Roman Mahmud',
+  'romans987@gmail.com': 'Roman Mahmud',
+  'shariar@challengerscc.ca': 'Syed Shahriar',
+  'syedshahriar77@gmail.com': 'Syed Shahriar',
+  'denisondavis9@gmail.com': 'Denison Davis',
+  'judinthomas96@gmail.com': 'Judin Thomas',
+  'abhishekladva09@gmail.com': 'Abhishek Ladva',
+  'ashvak.realtor07@gmail.com': 'Ashvak Sheik',
+  'bhindadhesi18@gmail.com': 'Bhupinder Singh',
+  'sallu.ahmed8@gmail.com': 'Salman Ahmed',
+  'saiakhira@gmail.com': 'Saikrishna Goriparthi',
+  'farooqchoudhary123@gmail.com': 'Farooq Choudhary',
+  'vijayvyadav1998@gmail.com': 'Vijay Yadav',
+  'rajputshivam9558@gmail.com': 'Shivam Rajput',
+  'shabyansari0023@gmail.com': 'Shaby Ansari',
+  'manoharanukuri9@gmail.com': 'Manohar Anukuri',
+  'mohayminul13@gmail.com': 'Mohayminul',
+  'fahadakbar@gmail.com': 'Fahad Aktar',
+  'andrewjebarson18@gmail.com': 'Andrew Jebarson',
+  'tgururaga@gmail.com': 'Guru Raga',
+  '108.noman@gmail.com': 'Noman',
+  'shafiul078.aust@gmail.com': 'Shafiul',
+  'sujelahmed06@gmail.com': 'Sujel Ahmed',
+  'gmc715625@gmail.com': 'Dr. Shoab Ahmad',
+  'atik1991rah@gmail.com': 'Atik Rahman',
+  'majharulalam456@gmail.com': 'Majharul Alam',
+  'makhan4u4ever@gmail.com': 'Makhan',
+  'georgefreddy963@gmail.com': 'Fahad Aktar',
+};
+
 type AvailabilityStatus = 'available' | 'unavailable' | 'maybe' | '';
 
 interface PlayerAvailability {
@@ -70,17 +115,18 @@ export default function AvailabilityPage() {
   const isBoard = session?.user?.email?.endsWith('@challengerscc.ca');
   const playerName = (() => {
     const email = session?.user?.email?.toLowerCase() || '';
+    // First try exact email mapping (most reliable)
+    if (EMAIL_TO_PLAYER[email]) return EMAIL_TO_PLAYER[email];
+    // Then try @challengerscc.ca prefix match
+    if (email.endsWith('@challengerscc.ca')) {
+      const prefix = email.split('@')[0];
+      const found = Object.entries(EMAIL_TO_PLAYER).find(([e]) => e.startsWith(prefix));
+      if (found) return found[1];
+    }
+    // Fallback to display name
     const name = session?.user?.name?.toLowerCase() || '';
-    // Try matching by email prefix first (most reliable)
-    const emailPrefix = email.split('@')[0].replace(/[0-9]/g, '');
-    const byEmail = PLAYER_NAMES.find(n => {
-      const firstName = n.split(' ')[0].toLowerCase();
-      return emailPrefix.includes(firstName) || firstName.includes(emailPrefix);
-    });
-    if (byEmail) return byEmail;
-    // Then try matching by display name
     const byName = PLAYER_NAMES.find(n =>
-      name.includes(n.split(' ')[0].toLowerCase()) || n.split(' ')[0].toLowerCase().includes(name.split(' ')[0])
+      name.includes(n.split(' ')[0].toLowerCase())
     );
     return byName || session?.user?.name || '';
   })();
