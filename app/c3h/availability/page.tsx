@@ -108,10 +108,15 @@ export default function AvailabilityPage() {
   const [allAvailability, setAllAvailability] = useState<AllAvailability>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [squads, setSquads] = useState<Record<string, string[]>>({});
+  const [selectingSquad, setSelectingSquad] = useState<string | null>(null);
+
+  // isCaptain moved after isBoard declaration
   const [leagueFilter, setLeagueFilter] = useState<'all' | 'LCL T30' | 'LPL T30'>('all');
   const [viewMode, setViewMode] = useState<'player' | 'captain'>('player');
 
   const isBoard = session?.user?.email?.endsWith('@challengerscc.ca');
+  const isCaptain = ['syedshahriar77@gmail.com', 'shariar@challengerscc.ca', 'monirulislambd64@gmail.com', 'tarek@challengerscc.ca'].includes(session?.user?.email?.toLowerCase() || '') || isBoard;
   const playerName = (() => {
     const email = session?.user?.email?.toLowerCase() || '';
     // First try exact email mapping (most reliable)
@@ -144,12 +149,30 @@ export default function AvailabilityPage() {
       });
       setAllAvailability(data);
     } catch { /* */ }
+    // Load squads
+    try {
+      const squadSnap = await getDocs(collection(db, 'squads'));
+      const squadData: Record<string, string[]> = {};
+      squadSnap.docs.forEach(d => {
+        squadData[d.id] = (d.data().players || []) as string[];
+      });
+      setSquads(squadData);
+    } catch { /* */ }
     setLoading(false);
   }, []);
 
   useEffect(() => {
     loadAvailability();
   }, [loadAvailability]);
+
+  const toggleSquadPlayer = async (matchId: string, playerN: string) => {
+    const current = squads[matchId] || [];
+    const updated = current.includes(playerN)
+      ? current.filter(p => p !== playerN)
+      : current.length < 12 ? [...current, playerN] : current;
+    await setDoc(doc(db, 'squads', matchId), { players: updated, updatedBy: session?.user?.email, updatedAt: new Date().toISOString() });
+    setSquads(prev => ({ ...prev, [matchId]: updated }));
+  };
 
   const updateAvailability = async (name: string, matchId: string, newStatus: AvailabilityStatus) => {
     // Players can update their own, board/captains can update anyone
@@ -260,6 +283,11 @@ export default function AvailabilityPage() {
                         </button>
                       ))}
                     </div>
+                    {(squads[m.id] || []).includes(playerName) && (
+                      <div className="mt-2 pt-2 border-t border-primary-500/20 text-center">
+                        <span className="text-xs font-bold text-primary-400">🏏 You are selected for this match!</span>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -332,6 +360,50 @@ export default function AvailabilityPage() {
                           </div>
                         ) : null;
                       })()}
+
+                      {/* Squad Selection — Captains Only */}
+                      {isCaptain && (
+                        <div className="mt-3 pt-3 border-t border-white/10">
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="text-white text-xs font-bold">Playing 12 ({(squads[m.id] || []).length}/12)</p>
+                            <button onClick={() => setSelectingSquad(selectingSquad === m.id ? null : m.id)} className="text-xs px-3 py-1 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30 hover:bg-primary-500/30">
+                              {selectingSquad === m.id ? 'Done' : 'Select Squad'}
+                            </button>
+                          </div>
+                          {(squads[m.id] || []).length > 0 && (
+                            <div className="flex flex-wrap gap-1 mb-2">
+                              {(squads[m.id] || []).map((n, i) => (
+                                <span key={n} className="text-xs px-2 py-0.5 rounded bg-primary-500/20 text-primary-400 border border-primary-500/30">
+                                  {i + 1}. {n.split(' ')[0]}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                          {selectingSquad === m.id && (
+                            <div className="glass rounded-xl p-3 border border-primary-500/20 mt-2">
+                              <p className="text-gray-500 text-xs mb-2">Tap to select/deselect (max 12):</p>
+                              <div className="flex flex-wrap gap-1">
+                                {available.map(n => {
+                                  const selected = (squads[m.id] || []).includes(n);
+                                  return (
+                                    <button key={n} onClick={() => toggleSquadPlayer(m.id, n)} className={`text-xs px-2 py-1 rounded border transition-all ${selected ? 'bg-primary-500/30 text-primary-400 border-primary-500/50 font-bold' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'}`}>
+                                      {selected ? '✓ ' : ''}{n.split(' ')[0]}
+                                    </button>
+                                  );
+                                })}
+                                {maybe.map(n => {
+                                  const selected = (squads[m.id] || []).includes(n);
+                                  return (
+                                    <button key={n} onClick={() => toggleSquadPlayer(m.id, n)} className={`text-xs px-2 py-1 rounded border transition-all ${selected ? 'bg-accent-500/30 text-accent-400 border-accent-500/50 font-bold' : 'bg-white/5 text-gray-500 border-white/10 hover:bg-white/10'}`}>
+                                      {selected ? '✓ ' : ''}{n.split(' ')[0]} ❓
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
