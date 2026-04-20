@@ -145,6 +145,7 @@ function MatchTable({ matches }: { matches: Match[] }) {
 }
 
 export default function SchedulePage() {
+  // v2 - fixed tab data
   const [activeTab, setActiveTab] = useState('all');
   const currentTab = tabs.find((t) => t.id === activeTab) || tabs[0];
 
