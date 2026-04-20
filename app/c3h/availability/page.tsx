@@ -45,7 +45,7 @@ const PLAYER_NAMES = [
   'Fahad Aktar', 'Denison Davis', 'Abhishek Ladva', 'Ashvak Sheik', 'Bhupinder Singh',
   'Salman Ahmed', 'Farooq Choudhary', 'Vijay Yadav', 'Shivam Rajput', 'Shaby Ansari',
   'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
-  'Shafiul', 'Sujel Ahmed', 'Shahriar', 'Atik Rahman', 'Majharul Alam', 'Makhan',
+  'Shafiul', 'Sujel Ahmed', 'Shariar Hussain', 'Atik Rahman', 'Majharul Alam', 'Makhan',
 ];
 
 type AvailabilityStatus = 'available' | 'unavailable' | 'maybe' | '';
@@ -68,9 +68,22 @@ export default function AvailabilityPage() {
   const [viewMode, setViewMode] = useState<'player' | 'captain'>('player');
 
   const isBoard = session?.user?.email?.endsWith('@challengerscc.ca');
-  const playerName = PLAYER_NAMES.find(n =>
-    session?.user?.name?.toLowerCase().includes(n.split(' ')[0].toLowerCase())
-  ) || session?.user?.name || '';
+  const playerName = (() => {
+    const email = session?.user?.email?.toLowerCase() || '';
+    const name = session?.user?.name?.toLowerCase() || '';
+    // Try matching by email prefix first (most reliable)
+    const emailPrefix = email.split('@')[0].replace(/[0-9]/g, '');
+    const byEmail = PLAYER_NAMES.find(n => {
+      const firstName = n.split(' ')[0].toLowerCase();
+      return emailPrefix.includes(firstName) || firstName.includes(emailPrefix);
+    });
+    if (byEmail) return byEmail;
+    // Then try matching by display name
+    const byName = PLAYER_NAMES.find(n =>
+      name.includes(n.split(' ')[0].toLowerCase()) || n.split(' ')[0].toLowerCase().includes(name.split(' ')[0])
+    );
+    return byName || session?.user?.name || '';
+  })();
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/c3h/login');
