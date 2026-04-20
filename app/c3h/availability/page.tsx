@@ -42,7 +42,7 @@ const ALL_MATCHES = [
 const PLAYER_NAMES = [
   'Mohammed Saad', 'Tarek Islam', 'Gokul Prakash', 'Qaiser Mahmood', 'Madhu Reddy',
   'Ankush Arora', 'Roman Mahmud', 'Judin Thomas', 'Saikrishna Goriparthi', 'Shoeb Ahmad',
-  'Fahad Aktar', 'Denison Davis', 'Abhishek Ladva', 'Ashvak Sheik', 'Bhupinder Singh',
+  'Fahad Aktar', 'Denison Davis', 'Abhishek Ladva',
   'Salman Ahmed', 'Farooq Choudhary', 'Vijay Yadav', 'Shivam Rajput',
   'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
   'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Makhan', 'Siva Sriram', 'Rajath Shetty',
