@@ -398,6 +398,7 @@ export default function ScorerPage() {
                         <option value="North London Athletic Fields" className="bg-gray-900">North London Athletic Fields</option>
                         <option value="Silverwoods Cricket Ground" className="bg-gray-900">Silverwoods Cricket Ground</option>
                         <option value="Mike Vier Park, Sarnia" className="bg-gray-900">Mike Vier Park, Sarnia</option>
+                        <option value="Thamesville" className="bg-gray-900">Thamesville</option>
                         <option value="Kover Drive Sports (Indoor)" className="bg-gray-900">Kover Drive Sports (Indoor)</option>
                         <option value="custom" className="bg-gray-900">Other — Enter manually</option>
                       </select>

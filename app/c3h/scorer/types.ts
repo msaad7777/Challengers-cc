@@ -130,6 +130,13 @@ export const LCL_TEAMS = [
   'London Eagle Predators',
   'Inferno Spartans',
   'Tigers Cricket Club',
+  // LPL Teams
+  'Maple Tigers',
+  'London Rhinos',
+  'NLCC',
+  'Royal Tigers',
+  'Premier XI',
+  'London Stars',
 ];
 
 export function createEmptyInnings(battingTeam: string, bowlingTeam: string): Innings {
