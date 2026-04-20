@@ -122,8 +122,20 @@ export default function AvailabilityPage() {
     return '—';
   };
 
-  const getMatchAvailableCount = (matchId: string) => {
-    return Object.values(allAvailability).filter(a => a[matchId] === 'available').length;
+  const getPlayerStatus = (name: string, matchId: string): AvailabilityStatus => {
+    const status = (allAvailability[name] || {})[matchId];
+    return status || 'available'; // default is available
+  };
+
+  const getMatchCounts = (matchId: string) => {
+    let available = 0, maybe = 0, unavailable = 0;
+    PLAYER_NAMES.forEach(n => {
+      const s = getPlayerStatus(n, matchId);
+      if (s === 'available') available++;
+      else if (s === 'maybe') maybe++;
+      else if (s === 'unavailable') unavailable++;
+    });
+    return { available, maybe, unavailable, total: PLAYER_NAMES.length };
   };
 
   return (
@@ -158,8 +170,8 @@ export default function AvailabilityPage() {
           {viewMode === 'player' && (
             <div className="space-y-3">
               {filteredMatches.map(m => {
-                const myStatus = (allAvailability[playerName] || {})[m.id] || '';
-                const availCount = getMatchAvailableCount(m.id);
+                const myStatus = getPlayerStatus(playerName, m.id);
+                const counts = getMatchCounts(m.id);
                 return (
                   <div key={m.id} className={`glass rounded-xl p-4 border ${m.clash ? 'border-red-500/30' : 'border-white/10'}`}>
                     <div className="flex items-center justify-between mb-2">
@@ -170,7 +182,11 @@ export default function AvailabilityPage() {
                         <p className="text-gray-500 text-xs">{m.date} | {m.time} | {m.venue}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs text-gray-500">{availCount} available</p>
+                        <div className="flex gap-2 text-xs">
+                          <span className="text-primary-400">✅{counts.available}</span>
+                          <span className="text-accent-400">❓{counts.maybe}</span>
+                          <span className="text-red-400">❌{counts.unavailable}</span>
+                        </div>
                       </div>
                     </div>
                     <div className="flex gap-2">
@@ -190,10 +206,9 @@ export default function AvailabilityPage() {
           {viewMode === 'captain' && isBoard && (
             <div className="space-y-4">
               {filteredMatches.map(m => {
-                const available = PLAYER_NAMES.filter(n => (allAvailability[n] || {})[m.id] === 'available');
-                const maybe = PLAYER_NAMES.filter(n => (allAvailability[n] || {})[m.id] === 'maybe');
-                const unavailable = PLAYER_NAMES.filter(n => (allAvailability[n] || {})[m.id] === 'unavailable');
-                const noResponse = PLAYER_NAMES.filter(n => !(allAvailability[n] || {})[m.id]);
+                const available = PLAYER_NAMES.filter(n => getPlayerStatus(n, m.id) === 'available');
+                const maybe = PLAYER_NAMES.filter(n => getPlayerStatus(n, m.id) === 'maybe');
+                const unavailable = PLAYER_NAMES.filter(n => getPlayerStatus(n, m.id) === 'unavailable');
                 return (
                   <div key={m.id} className={`glass rounded-2xl p-5 border ${m.clash ? 'border-red-500/30' : 'border-white/10'}`}>
                     <div className="flex items-center justify-between mb-3">
@@ -230,14 +245,6 @@ export default function AvailabilityPage() {
                           <p className="text-red-400 text-xs font-bold mb-1">❌ Unavailable ({unavailable.length})</p>
                           <div className="flex flex-wrap gap-1">{unavailable.map(n => (
                             <span key={n} className="text-xs px-2 py-0.5 rounded bg-red-500/10 text-red-400">{n.split(' ')[0]}</span>
-                          ))}</div>
-                        </div>
-                      )}
-                      {noResponse.length > 0 && (
-                        <div>
-                          <p className="text-gray-500 text-xs font-bold mb-1">No Response ({noResponse.length})</p>
-                          <div className="flex flex-wrap gap-1">{noResponse.map(n => (
-                            <span key={n} className="text-xs px-2 py-0.5 rounded bg-white/5 text-gray-600">{n.split(' ')[0]}</span>
                           ))}</div>
                         </div>
                       )}
