@@ -33,7 +33,20 @@ const lclT30Matches: Match[] = [
 const tabs = [
   { id: 'lcl-t30', label: 'LCL T30', matches: lclT30Matches, status: 'active' as const },
   { id: 'lcl-t20', label: 'LCL T20', matches: [] as Match[], status: 'coming-soon' as const },
-  { id: 'lpl-t30', label: 'LPL T30', matches: [] as Match[], status: 'coming-soon' as const },
+  { id: 'lpl-t30', label: 'LPL T30', matches: [
+    { match: 1, date: 'May 10, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Maple Tigers', venue: 'Silverwoods Cricket Ground' },
+    { match: 2, date: 'May 24, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'London Rhinos', venue: 'North London Athletic Fields' },
+    { match: 3, date: 'May 31, 2026', day: 'Sunday', time: '2:00 PM', opponent: 'NLCC', venue: 'Thamesville' },
+    { match: 4, date: 'June 7, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Royal Tigers', venue: 'Silverwoods Cricket Ground' },
+    { match: 5, date: 'June 13, 2026', day: 'Saturday', time: '8:00 AM', opponent: 'Maple Tigers', venue: 'Northridge Cricket Ground' },
+    { match: 6, date: 'June 27, 2026', day: 'Saturday', time: '9:00 AM', opponent: 'Premier XI', venue: 'Thamesville' },
+    { match: 7, date: 'July 4, 2026', day: 'Saturday', time: '10:00 AM', opponent: 'London Stars', venue: 'Northridge Cricket Ground' },
+    { match: 8, date: 'July 18, 2026', day: 'Saturday', time: '10:00 AM', opponent: 'Premier XI', venue: 'Northridge Cricket Ground' },
+    { match: 9, date: 'July 25, 2026', day: 'Saturday', time: '9:00 AM', opponent: 'London Rhinos', venue: 'Thamesville' },
+    { match: 10, date: 'August 2, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'NLCC', venue: 'Silverwoods Cricket Ground' },
+    { match: 11, date: 'August 30, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Royal Tigers', venue: 'Silverwoods Cricket Ground' },
+    { match: 12, date: 'September 6, 2026', day: 'Sunday', time: '1:00 PM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
+  ], status: 'active' as const },
 ];
 
 function MatchTable({ matches }: { matches: Match[] }) {
@@ -143,7 +156,7 @@ export default function SchedulePage() {
             <div className="max-w-3xl mx-auto glass rounded-2xl p-6 mt-8">
               <div className="grid grid-cols-3 gap-6">
                 <div className="text-center">
-                  <div className="text-3xl font-bold gradient-text mb-2">14+</div>
+                  <div className="text-3xl font-bold gradient-text mb-2">26+</div>
                   <div className="text-sm text-gray-400">Matches</div>
                 </div>
                 <div className="text-center">
@@ -245,6 +258,13 @@ export default function SchedulePage() {
                 <div>
                   <div className="text-white font-medium">Mike Vier Park</div>
                   <div className="text-gray-500">Sarnia, ON</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-primary-400 mt-0.5">&#9679;</span>
+                <div>
+                  <div className="text-white font-medium">Thamesville</div>
+                  <div className="text-gray-500">Thamesville, ON (LPL)</div>
                 </div>
               </div>
             </div>
