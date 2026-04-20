@@ -68,8 +68,8 @@ export default function SponsorshipBanner() {
                 <div className="text-sm text-gray-400">Now Active</div>
               </div>
               <div className="glass rounded-xl p-6 text-center">
-                <div className="text-3xl font-bold gradient-text mb-2">3+</div>
-                <div className="text-sm text-gray-400">Teams & Programs</div>
+                <div className="text-3xl font-bold gradient-text mb-2">2</div>
+                <div className="text-sm text-gray-400">Leagues</div>
               </div>
               <div className="glass rounded-xl p-6 text-center">
                 <div className="text-3xl font-bold gradient-text mb-2">100%</div>
