@@ -98,8 +98,6 @@ export const C3H_PLAYERS: Player[] = [
   { id: '11', name: 'Fahad Aktar', isC3H: true },
   { id: '12', name: 'Denison Davis', isC3H: true },
   { id: '13', name: 'Abhishek Ladva', isC3H: true },
-  { id: '14', name: 'Ashvak Sheik', isC3H: true },
-  { id: '15', name: 'Bhupinder Singh', isC3H: true },
   { id: '16', name: 'Salman Ahmed', isC3H: true },
   { id: '17', name: 'Farooq Choudhary', isC3H: true },
   { id: '18', name: 'Vijay Yadav', isC3H: true },
