@@ -48,6 +48,13 @@ const PLAYER_NAMES = [
   'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Makhan',
 ];
 
+// Short display names — use last name or nickname where first name is ambiguous
+const SHORT_NAMES: Record<string, string> = {
+  'Mohammed Saad': 'Saad',
+  'Syed Shahriar': 'Shahriar',
+};
+const shortName = (fullName: string) => SHORT_NAMES[fullName] || fullName.split(' ')[0];
+
 // Map all emails (board + personal) to a single player name
 const EMAIL_TO_PLAYER: Record<string, string> = {
   'contact@challengerscc.ca': 'Mohammed Saad',
@@ -389,7 +396,7 @@ export default function AvailabilityPage() {
                           <div className="flex flex-wrap gap-1">{available.map(n => {
                             const inSquad = (squads[m.id] || []).includes(n);
                             return (
-                              <button key={n} onClick={() => setPlayerMenu({ matchId: m.id, player: n })} className={`text-xs px-2 py-0.5 rounded transition-all ${inSquad ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold' : 'bg-primary-500/10 text-primary-400 hover:bg-primary-500/20'}`}>{inSquad ? '🏏 ' : ''}{n.split(' ')[0]}</button>
+                              <button key={n} onClick={() => setPlayerMenu({ matchId: m.id, player: n })} className={`text-xs px-2 py-0.5 rounded transition-all ${inSquad ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold' : 'bg-primary-500/10 text-primary-400 hover:bg-primary-500/20'}`}>{inSquad ? '🏏 ' : ''}{shortName(n)}</button>
                             );
                           })}</div>
                         </div>
@@ -400,7 +407,7 @@ export default function AvailabilityPage() {
                           <div className="flex flex-wrap gap-1">{maybe.map(n => {
                             const inSquad = (squads[m.id] || []).includes(n);
                             return (
-                              <button key={n} onClick={() => setPlayerMenu({ matchId: m.id, player: n })} className={`text-xs px-2 py-0.5 rounded transition-all ${inSquad ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold' : 'bg-accent-500/10 text-accent-400 hover:bg-accent-500/20'}`}>{inSquad ? '🏏 ' : ''}{n.split(' ')[0]}</button>
+                              <button key={n} onClick={() => setPlayerMenu({ matchId: m.id, player: n })} className={`text-xs px-2 py-0.5 rounded transition-all ${inSquad ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold' : 'bg-accent-500/10 text-accent-400 hover:bg-accent-500/20'}`}>{inSquad ? '🏏 ' : ''}{shortName(n)}</button>
                             );
                           })}</div>
                         </div>
@@ -409,7 +416,7 @@ export default function AvailabilityPage() {
                         <div>
                           <p className="text-red-400 text-xs font-bold mb-1">❌ Unavailable ({unavailable.length})</p>
                           <div className="flex flex-wrap gap-1">{unavailable.map(n => (
-                            <button key={n} onClick={() => setPlayerMenu({ matchId: m.id, player: n })} className="text-xs px-2 py-0.5 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all">{n.split(' ')[0]}</button>
+                            <button key={n} onClick={() => setPlayerMenu({ matchId: m.id, player: n })} className="text-xs px-2 py-0.5 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all">{shortName(n)}</button>
                           ))}</div>
                         </div>
                       )}
@@ -419,7 +426,7 @@ export default function AvailabilityPage() {
                           <div>
                             <p className="text-gray-500 text-xs font-bold mb-1">No Response ({noResp.length})</p>
                             <div className="flex flex-wrap gap-1">{noResp.map(n => (
-                              <button key={n} onClick={() => setPlayerMenu({ matchId: m.id, player: n })} className="text-xs px-2 py-0.5 rounded bg-white/5 text-gray-600 hover:bg-primary-500/20 hover:text-primary-400 transition-all">{n.split(' ')[0]}</button>
+                              <button key={n} onClick={() => setPlayerMenu({ matchId: m.id, player: n })} className="text-xs px-2 py-0.5 rounded bg-white/5 text-gray-600 hover:bg-primary-500/20 hover:text-primary-400 transition-all">{shortName(n)}</button>
                             ))}</div>
                           </div>
                         ) : null;
@@ -481,7 +488,7 @@ export default function AvailabilityPage() {
                                 return (
                                   <div key={n} className="flex items-center gap-2">
                                     <span className={`text-xs px-2 py-0.5 rounded ${roleColor(role)}`}>
-                                      {i + 1}. {n.split(' ')[0]}{roleLabel(role)}
+                                      {i + 1}. {shortName(n)}{roleLabel(role)}
                                     </span>
                                     {selectingSquad === m.id && (
                                       <div className="flex gap-1">
@@ -538,7 +545,7 @@ export default function AvailabilityPage() {
                                   const selected = (squads[m.id] || []).includes(n);
                                   return (
                                     <button key={n} onClick={() => toggleSquadPlayer(m.id, n)} className={`text-xs px-2 py-1 rounded border transition-all ${selected ? 'bg-primary-500/30 text-primary-400 border-primary-500/50 font-bold' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'}`}>
-                                      {selected ? '✓ ' : ''}{n.split(' ')[0]}
+                                      {selected ? '✓ ' : ''}{shortName(n)}
                                     </button>
                                   );
                                 })}
@@ -546,7 +553,7 @@ export default function AvailabilityPage() {
                                   const selected = (squads[m.id] || []).includes(n);
                                   return (
                                     <button key={n} onClick={() => toggleSquadPlayer(m.id, n)} className={`text-xs px-2 py-1 rounded border transition-all ${selected ? 'bg-accent-500/30 text-accent-400 border-accent-500/50 font-bold' : 'bg-white/5 text-gray-500 border-white/10 hover:bg-white/10'}`}>
-                                      {selected ? '✓ ' : ''}{n.split(' ')[0]} ❓
+                                      {selected ? '✓ ' : ''}{shortName(n)} ❓
                                     </button>
                                   );
                                 })}
