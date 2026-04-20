@@ -124,18 +124,19 @@ export default function AvailabilityPage() {
 
   const getPlayerStatus = (name: string, matchId: string): AvailabilityStatus => {
     const status = (allAvailability[name] || {})[matchId];
-    return status || 'available'; // default is available
+    return status || ''; // no default — only show what players have marked
   };
 
   const getMatchCounts = (matchId: string) => {
-    let available = 0, maybe = 0, unavailable = 0;
+    let available = 0, maybe = 0, unavailable = 0, noResponse = 0;
     PLAYER_NAMES.forEach(n => {
       const s = getPlayerStatus(n, matchId);
       if (s === 'available') available++;
       else if (s === 'maybe') maybe++;
       else if (s === 'unavailable') unavailable++;
+      else noResponse++;
     });
-    return { available, maybe, unavailable, total: PLAYER_NAMES.length };
+    return { available, maybe, unavailable, noResponse, total: PLAYER_NAMES.length };
   };
 
   return (
@@ -186,6 +187,7 @@ export default function AvailabilityPage() {
                           <span className="text-primary-400">✅{counts.available}</span>
                           <span className="text-accent-400">❓{counts.maybe}</span>
                           <span className="text-red-400">❌{counts.unavailable}</span>
+                          {counts.noResponse > 0 && <span className="text-gray-500">—{counts.noResponse}</span>}
                         </div>
                       </div>
                     </div>
@@ -248,6 +250,17 @@ export default function AvailabilityPage() {
                           ))}</div>
                         </div>
                       )}
+                      {(() => {
+                        const noResp = PLAYER_NAMES.filter(n => !getPlayerStatus(n, m.id));
+                        return noResp.length > 0 ? (
+                          <div>
+                            <p className="text-gray-500 text-xs font-bold mb-1">No Response ({noResp.length})</p>
+                            <div className="flex flex-wrap gap-1">{noResp.map(n => (
+                              <span key={n} className="text-xs px-2 py-0.5 rounded bg-white/5 text-gray-600">{n.split(' ')[0]}</span>
+                            ))}</div>
+                          </div>
+                        ) : null;
+                      })()}
                     </div>
                   </div>
                 );
