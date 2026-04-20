@@ -41,9 +41,9 @@ const ALL_MATCHES = [
 
 const PLAYER_NAMES = [
   'Mohammed Saad', 'Tarek Islam', 'Gokul Prakash', 'Qaiser Mahmood', 'Madhu Reddy',
-  'Ankush Arora', 'Roman Mahmud', 'Judin Thomas', 'Saikrishna Goriparthi', 'Dr. Shoab Ahmad',
+  'Ankush Arora', 'Roman Mahmud', 'Judin Thomas', 'Saikrishna Goriparthi', 'Shoeb Ahmad',
   'Fahad Aktar', 'Denison Davis', 'Abhishek Ladva', 'Ashvak Sheik', 'Bhupinder Singh',
-  'Salman Ahmed', 'Farooq Choudhary', 'Vijay Yadav', 'Shivam Rajput', 'Shaby Ansari',
+  'Salman Ahmed', 'Farooq Choudhary', 'Vijay Yadav', 'Shivam Rajput',
   'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
   'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Makhan',
 ];
@@ -77,7 +77,7 @@ const EMAIL_TO_PLAYER: Record<string, string> = {
   'farooqchoudhary123@gmail.com': 'Farooq Choudhary',
   'vijayvyadav1998@gmail.com': 'Vijay Yadav',
   'rajputshivam9558@gmail.com': 'Shivam Rajput',
-  'shabyansari0023@gmail.com': 'Shaby Ansari',
+  'shabyansari0023@gmail.com': 'Shoeb Ahmad',
   'manoharanukuri9@gmail.com': 'Manohar Anukuri',
   'mohayminul13@gmail.com': 'Mohayminul',
   'fahadakbar@gmail.com': 'Fahad Aktar',
@@ -86,7 +86,6 @@ const EMAIL_TO_PLAYER: Record<string, string> = {
   '108.noman@gmail.com': 'Noman',
   'shafiul078.aust@gmail.com': 'Shafiul',
   'sujelahmed06@gmail.com': 'Sujel Ahmed',
-  'gmc715625@gmail.com': 'Dr. Shoab Ahmad',
   'atik1991rah@gmail.com': 'Atik Rahman',
   'majharulalam456@gmail.com': 'Majharul Alam',
   'makhan4u4ever@gmail.com': 'Makhan',
