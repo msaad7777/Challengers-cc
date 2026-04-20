@@ -1,26 +1,34 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 
-// Board members get full access (all 4 modules)
+// Board members & captains get full access (all 4 modules)
+// Includes both @challengerscc.ca and personal Gmail
 const BOARD_EMAILS = [
   'contact@challengerscc.ca',
+  'saad@challengerscc.ca',
   'tarek@challengerscc.ca',
   'gokul@challengerscc.ca',
   'qaiser@challengerscc.ca',
   'madhu@challengerscc.ca',
   'ankush@challengerscc.ca',
   'roman@challengerscc.ca',
-];
-
-// Whitelisted player Gmail accounts
-const PLAYER_EMAILS: string[] = [
-  'denisondavis9@gmail.com',
+  'shariar@challengerscc.ca',
+  // Personal Gmails of board members & captains
+  'mbadru3434@gmail.com',
+  'monirulislambd64@gmail.com',
+  'gokulprakash663@gmail.com',
   'qureshiqaiser007@gmail.com',
   'vantarimadhu@gmail.com',
-  'mbadru3434@gmail.com',
+  '92ankusharora@gmail.com',
+  'romans987@gmail.com',
+  'syedshahriar77@gmail.com',
+];
+
+// Whitelisted player Gmail accounts (non-board players only)
+const PLAYER_EMAILS: string[] = [
+  'denisondavis9@gmail.com',
   'judinthomas96@gmail.com',
   'abhishekladva09@gmail.com',
-  'monirulislambd64@gmail.com',
   'ashvak.realtor07@gmail.com',
   'bhindadhesi18@gmail.com',
   'sallu.ahmed8@gmail.com',
@@ -31,10 +39,7 @@ const PLAYER_EMAILS: string[] = [
   'shabyansari0023@gmail.com',
   'manoharanukuri9@gmail.com',
   'mohayminul13@gmail.com',
-  'romans987@gmail.com',
   'fahadakbar@gmail.com',
-  'gokulprakash663@gmail.com',
-  '92ankusharora@gmail.com',
   'georgefreddy963@gmail.com',
   'andrewjebarson18@gmail.com',
   'tgururaga@gmail.com',

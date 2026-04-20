@@ -94,7 +94,7 @@ export const C3H_PLAYERS: Player[] = [
   { id: '7', name: 'Roman Mahmud', isC3H: true },
   { id: '8', name: 'Judin Thomas', isC3H: true },
   { id: '9', name: 'Saikrishna Goriparthi', isC3H: true },
-  { id: '10', name: 'Dr. Shoab Ahmad', isC3H: true },
+  { id: '10', name: 'Shoeb Ahmad', isC3H: true },
   { id: '11', name: 'Fahad Aktar', isC3H: true },
   { id: '12', name: 'Denison Davis', isC3H: true },
   { id: '13', name: 'Abhishek Ladva', isC3H: true },
