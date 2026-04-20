@@ -112,7 +112,7 @@ export const C3H_PLAYERS: Player[] = [
   { id: '25', name: 'Noman', isC3H: true },
   { id: '26', name: 'Shafiul', isC3H: true },
   { id: '27', name: 'Sujel Ahmed', isC3H: true },
-  { id: '28', name: 'Shariar Hussain', isC3H: true },
+  { id: '28', name: 'Syed Shahriar', isC3H: true },
   { id: '29', name: 'Atik Rahman', isC3H: true },
   { id: '30', name: 'Majharul Alam', isC3H: true },
   { id: '31', name: 'Makhan', isC3H: true },
