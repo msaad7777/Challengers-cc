@@ -447,19 +447,49 @@ export default function AvailabilityPage() {
                               </button>
                             </div>
                           </div>
-                          {(squads[m.id] || []).length > 0 && (
+                          {(squads[m.id] || []).length > 0 && (() => {
+                            const roles = squadRoles[m.id] || {};
+                            // Auto-assign defaults if not set
+                            const getDisplayRole = (name: string) => {
+                              if (roles[name]) return roles[name];
+                              if (name === 'Syed Shahriar') return 'captain';
+                              if (name === 'Ankush Arora') return 'vc';
+                              if (name === 'Mohammed Saad') return 'wk';
+                              return '';
+                            };
+                            const roleLabel = (r: string) => {
+                              if (r === 'captain') return ' (c)';
+                              if (r === 'vc') return ' (vc)';
+                              if (r === 'wk') return ' (wk)';
+                              if (r === 'bat-sub') return ' (Bat Sub)';
+                              if (r === 'bowl-sub') return ' (Bowl Sub)';
+                              return '';
+                            };
+                            const roleColor = (r: string) => {
+                              if (r === 'captain') return 'bg-accent-500/20 text-accent-400';
+                              if (r === 'vc') return 'bg-purple-500/20 text-purple-400';
+                              if (r === 'wk') return 'bg-blue-500/20 text-blue-400';
+                              if (r === 'bat-sub') return 'bg-accent-500/20 text-accent-400';
+                              if (r === 'bowl-sub') return 'bg-blue-500/20 text-blue-400';
+                              return 'bg-primary-500/20 text-primary-400';
+                            };
+                            const WK_ELIGIBLE = ['Mohammed Saad', 'Denison Davis', 'Atik Rahman', 'Qaiser Mahmood'];
+                            return (
                             <div className="space-y-1 mb-2">
                               {(squads[m.id] || []).map((n, i) => {
-                                const role = (squadRoles[m.id] || {})[n];
+                                const role = getDisplayRole(n);
                                 return (
                                   <div key={n} className="flex items-center gap-2">
-                                    <span className={`text-xs px-2 py-0.5 rounded ${role === 'bat-sub' ? 'bg-accent-500/20 text-accent-400' : role === 'bowl-sub' ? 'bg-blue-500/20 text-blue-400' : 'bg-primary-500/20 text-primary-400'}`}>
-                                      {i + 1}. {n.split(' ')[0]}{role === 'bat-sub' ? ' (Bat Sub)' : role === 'bowl-sub' ? ' (Bowl Sub)' : ''}
+                                    <span className={`text-xs px-2 py-0.5 rounded ${roleColor(role)}`}>
+                                      {i + 1}. {n.split(' ')[0]}{roleLabel(role)}
                                     </span>
                                     {selectingSquad === m.id && (
                                       <div className="flex gap-1">
-                                        <button onClick={() => toggleRole(m.id, n, 'bat-sub')} className={`text-xs px-1.5 py-0.5 rounded ${role === 'bat-sub' ? 'bg-accent-500/30 text-accent-400' : 'bg-white/5 text-gray-600 hover:bg-white/10'}`}>B</button>
-                                        <button onClick={() => toggleRole(m.id, n, 'bowl-sub')} className={`text-xs px-1.5 py-0.5 rounded ${role === 'bowl-sub' ? 'bg-blue-500/30 text-blue-400' : 'bg-white/5 text-gray-600 hover:bg-white/10'}`}>W</button>
+                                        <button onClick={() => toggleRole(m.id, n, 'bat-sub')} className={`text-xs px-1.5 py-0.5 rounded ${roles[n] === 'bat-sub' ? 'bg-accent-500/30 text-accent-400' : 'bg-white/5 text-gray-600 hover:bg-white/10'}`}>B</button>
+                                        <button onClick={() => toggleRole(m.id, n, 'bowl-sub')} className={`text-xs px-1.5 py-0.5 rounded ${roles[n] === 'bowl-sub' ? 'bg-blue-500/30 text-blue-400' : 'bg-white/5 text-gray-600 hover:bg-white/10'}`}>W</button>
+                                        {WK_ELIGIBLE.includes(n) && n !== 'Mohammed Saad' && (
+                                          <button onClick={() => toggleRole(m.id, n, 'wk')} className={`text-xs px-1.5 py-0.5 rounded ${roles[n] === 'wk' ? 'bg-blue-500/30 text-blue-400' : 'bg-white/5 text-gray-600 hover:bg-white/10'}`}>WK</button>
+                                        )}
                                       </div>
                                     )}
                                   </div>
@@ -471,7 +501,8 @@ export default function AvailabilityPage() {
                                 </button>
                               )}
                             </div>
-                          )}
+                            );
+                          })()}
                           {/* Squad Card for Screenshot */}
                           {showSquadCard === m.id && (squads[m.id] || []).length === 12 && (
                             <div id={`squad-card-${m.id}`} className="rounded-2xl p-6 mb-3" style={{ background: 'linear-gradient(135deg, #0a0a0a, #1a2e1a)', border: '2px solid #10b981' }}>
@@ -482,11 +513,14 @@ export default function AvailabilityPage() {
                               </div>
                               <div className="space-y-1">
                                 {(squads[m.id] || []).map((n, i) => {
-                                  const role = (squadRoles[m.id] || {})[n];
+                                  const savedRole = (squadRoles[m.id] || {})[n];
+                                  const displayRole = savedRole || (n === 'Syed Shahriar' ? 'captain' : n === 'Ankush Arora' ? 'vc' : n === 'Mohammed Saad' ? 'wk' : '');
+                                  const roleText = displayRole === 'captain' ? '(c)' : displayRole === 'vc' ? '(vc)' : displayRole === 'wk' ? '(wk)' : displayRole === 'bat-sub' ? 'BAT SUB' : displayRole === 'bowl-sub' ? 'BOWL SUB' : '';
+                                  const roleColor = displayRole === 'captain' ? 'text-accent-400' : displayRole === 'vc' ? 'text-purple-400' : displayRole === 'wk' ? 'text-blue-400' : displayRole === 'bat-sub' ? 'text-accent-400' : 'text-blue-400';
                                   return (
-                                    <div key={n} className={`flex items-center justify-between px-3 py-1.5 rounded ${role ? 'bg-white/5' : i % 2 === 0 ? 'bg-white/3' : ''}`}>
+                                    <div key={n} className={`flex items-center justify-between px-3 py-1.5 rounded ${displayRole ? 'bg-white/5' : i % 2 === 0 ? 'bg-white/3' : ''}`}>
                                       <span className="text-white text-sm">{i + 1}. {n}</span>
-                                      {role && <span className={`text-xs font-bold ${role === 'bat-sub' ? 'text-accent-400' : 'text-blue-400'}`}>{role === 'bat-sub' ? 'BAT SUB' : 'BOWL SUB'}</span>}
+                                      {roleText && <span className={`text-xs font-bold ${roleColor}`}>{roleText}</span>}
                                     </div>
                                   );
                                 })}
