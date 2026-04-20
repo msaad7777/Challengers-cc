@@ -93,10 +93,12 @@ export default function AvailabilityPage() {
     loadAvailability();
   }, [loadAvailability]);
 
-  const updateAvailability = async (name: string, matchId: string, status: AvailabilityStatus) => {
+  const updateAvailability = async (name: string, matchId: string, newStatus: AvailabilityStatus) => {
+    // Only allow updating your own availability
+    if (name !== playerName) return;
     setSaving(true);
     const current = allAvailability[name] || {};
-    const updated = { ...current, [matchId]: status };
+    const updated = { ...current, [matchId]: newStatus, _email: session?.user?.email, _updatedAt: new Date().toISOString() };
     await setDoc(doc(db, 'availability', name), updated);
     setAllAvailability(prev => ({ ...prev, [name]: updated }));
     setSaving(false);
