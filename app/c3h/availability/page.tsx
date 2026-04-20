@@ -489,7 +489,7 @@ export default function AvailabilityPage() {
                               if (r === 'bowl-sub') return 'bg-blue-500/20 text-blue-400';
                               return 'bg-primary-500/20 text-primary-400';
                             };
-                            const WK_ELIGIBLE = ['Mohammed Saad', 'Denison Davis', 'Atik Rahman', 'Qaiser Mahmood'];
+                            const WK_ELIGIBLE = ['Mohammed Saad', 'Denison Davis', 'Atik Rahman', 'Qaiser Mahmood', 'Rajath Shetty'];
                             return (
                             <div className="space-y-1 mb-2">
                               {(squads[m.id] || []).map((n, i) => {
