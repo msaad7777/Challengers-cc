@@ -118,7 +118,12 @@ export default function AvailabilityPage() {
   const [viewMode, setViewMode] = useState<'player' | 'captain'>('player');
 
   const isBoard = session?.user?.email?.endsWith('@challengerscc.ca');
-  const isCaptain = ['syedshahriar77@gmail.com', 'shariar@challengerscc.ca', 'monirulislambd64@gmail.com', 'tarek@challengerscc.ca'].includes(session?.user?.email?.toLowerCase() || '') || isBoard;
+  const CAPTAIN_EMAILS = [
+    'syedshahriar77@gmail.com', 'shariar@challengerscc.ca',
+    'monirulislambd64@gmail.com', 'tarek@challengerscc.ca',
+    'contact@challengerscc.ca', 'saad@challengerscc.ca', 'mbadru3434@gmail.com',
+  ];
+  const isCaptain = CAPTAIN_EMAILS.includes(session?.user?.email?.toLowerCase() || '');
   const playerName = (() => {
     const email = session?.user?.email?.toLowerCase() || '';
     // First try exact email mapping (most reliable)
@@ -306,11 +311,16 @@ export default function AvailabilityPage() {
                         </button>
                       ))}
                     </div>
-                    {(squads[m.id] || []).includes(playerName) && (
-                      <div className="mt-2 pt-2 border-t border-primary-500/20 text-center">
-                        <span className="text-xs font-bold text-primary-400">🏏 You are selected for this match!</span>
-                      </div>
-                    )}
+                    {(squads[m.id] || []).includes(playerName) && (() => {
+                      const matchDate = new Date(m.fullDate);
+                      const today = new Date();
+                      const daysUntil = Math.ceil((matchDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                      return daysUntil <= 2 ? (
+                        <div className="mt-2 pt-2 border-t border-primary-500/20 text-center">
+                          <span className="text-xs font-bold text-primary-400">🏏 You are selected for this match!</span>
+                        </div>
+                      ) : null;
+                    })()}
                   </div>
                 );
               })}
@@ -387,11 +397,24 @@ export default function AvailabilityPage() {
                       {/* Squad Selection — Captains Only */}
                       {isCaptain && (
                         <div className="mt-3 pt-3 border-t border-white/10">
-                          <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center justify-between mb-2 gap-2">
                             <p className="text-white text-xs font-bold">Playing 12 ({(squads[m.id] || []).length}/12)</p>
-                            <button onClick={() => setSelectingSquad(selectingSquad === m.id ? null : m.id)} className="text-xs px-3 py-1 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30 hover:bg-primary-500/30">
-                              {selectingSquad === m.id ? 'Done' : 'Select Squad'}
-                            </button>
+                            <div className="flex gap-1">
+                              {(squads[m.id] || []).length > 0 && selectingSquad === m.id && (
+                                <button onClick={async () => {
+                                  if (confirm('Clear entire squad for this match?')) {
+                                    await setDoc(doc(db, 'squads', m.id), { players: [], roles: {}, updatedBy: session?.user?.email, updatedAt: new Date().toISOString() });
+                                    setSquads(prev => ({ ...prev, [m.id]: [] }));
+                                    setSquadRoles(prev => ({ ...prev, [m.id]: {} }));
+                                  }
+                                }} className="text-xs px-3 py-1 rounded-lg bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30">
+                                  Clear
+                                </button>
+                              )}
+                              <button onClick={() => setSelectingSquad(selectingSquad === m.id ? null : m.id)} className="text-xs px-3 py-1 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30 hover:bg-primary-500/30">
+                                {selectingSquad === m.id ? 'Done' : 'Select Squad'}
+                              </button>
+                            </div>
                           </div>
                           {(squads[m.id] || []).length > 0 && (
                             <div className="space-y-1 mb-2">
