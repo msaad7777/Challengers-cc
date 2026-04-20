@@ -34,8 +34,6 @@ const lclT30Matches: Match[] = [
   { match: 14, date: 'September 13, 2026', day: 'Sunday', time: '3:00 PM', opponent: 'Tigers Cricket Club', venue: 'Northridge Cricket Ground' },
 ];
 
-// Add league labels
-const lclLabeled = lclT30Matches.map(m => ({ ...m, league: 'LCL' }));
 const lplT30Matches: Match[] = [
   { match: 1, date: 'May 10, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Maple Tigers', venue: 'Silverwoods Cricket Ground' },
   { match: 2, date: 'May 24, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'London Rhinos', venue: 'North London Athletic Fields' },
@@ -50,22 +48,31 @@ const lplT30Matches: Match[] = [
   { match: 11, date: 'August 30, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Royal Tigers', venue: 'Silverwoods Cricket Ground' },
   { match: 12, date: 'September 6, 2026', day: 'Sunday', time: '1:00 PM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
 ];
-const lplLabeled = lplT30Matches.map(m => ({ ...m, league: 'LPL' }));
 
-// All matches sorted by date and time
-const allMatches = [...lclLabeled, ...lplLabeled].sort((a, b) => {
-  const dateA = new Date(a.date);
-  const dateB = new Date(b.date);
-  if (dateA.getTime() !== dateB.getTime()) return dateA.getTime() - dateB.getTime();
-  const toMin = (t: string) => { const [time, p] = t.split(' '); const [h, m] = time.split(':').map(Number); return ((p === 'PM' && h !== 12 ? h + 12 : p === 'AM' && h === 12 ? 0 : h) * 60) + m; };
-  return toMin(a.time) - toMin(b.time);
-});
+// Sort helper
+const sortByDateTime = (matches: Match[]) => {
+  return [...matches].sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    if (dateA.getTime() !== dateB.getTime()) return dateA.getTime() - dateB.getTime();
+    const toMin = (t: string) => { const [time, p] = t.split(' '); const [h, m] = time.split(':').map(Number); return ((p === 'PM' && h !== 12 ? h + 12 : p === 'AM' && h === 12 ? 0 : h) * 60) + m; };
+    return toMin(a.time) - toMin(b.time);
+  });
+};
+
+// Create separate arrays for each tab
+const lclOnly: Match[] = lclT30Matches.map(m => ({ ...m, league: 'LCL' }));
+const lplOnly: Match[] = lplT30Matches.map(m => ({ ...m, league: 'LPL' }));
+const allMatches: Match[] = sortByDateTime([
+  ...lclT30Matches.map(m => ({ ...m, league: 'LCL' })),
+  ...lplT30Matches.map(m => ({ ...m, league: 'LPL' })),
+]);
 
 const tabs = [
   { id: 'all', label: 'All Matches', matches: allMatches, status: 'active' as const },
-  { id: 'lcl-t30', label: 'LCL T30', matches: lclLabeled, status: 'active' as const },
+  { id: 'lcl-t30', label: 'LCL T30', matches: lclOnly, status: 'active' as const },
   { id: 'lcl-t20', label: 'LCL T20', matches: [] as Match[], status: 'coming-soon' as const },
-  { id: 'lpl-t30', label: 'LPL T30', matches: lplLabeled, status: 'active' as const },
+  { id: 'lpl-t30', label: 'LPL T30', matches: lplOnly, status: 'active' as const },
 ];
 
 function MatchTable({ matches }: { matches: Match[] }) {
