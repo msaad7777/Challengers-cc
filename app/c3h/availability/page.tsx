@@ -219,7 +219,20 @@ export default function AvailabilityPage() {
   }
 
   const filteredMatches = (leagueFilter === 'all' ? ALL_MATCHES : ALL_MATCHES.filter(m => m.league === leagueFilter))
-    .sort((a, b) => a.fullDate.localeCompare(b.fullDate));
+    .sort((a, b) => {
+      const dateCompare = a.fullDate.localeCompare(b.fullDate);
+      if (dateCompare !== 0) return dateCompare;
+      // Same date — sort by time (convert to 24hr for comparison)
+      const toMinutes = (t: string) => {
+        const [time, period] = t.split(' ');
+        const parts = time.split(':').map(Number);
+        let hours = parts[0];
+        if (period === 'PM' && hours !== 12) hours += 12;
+        if (period === 'AM' && hours === 12) hours = 0;
+        return hours * 60 + parts[1];
+      };
+      return toMinutes(a.time) - toMinutes(b.time);
+    });
 
   const getStatusColor = (s: AvailabilityStatus) => {
     if (s === 'available') return 'bg-primary-500/20 text-primary-400 border-primary-500/50';
