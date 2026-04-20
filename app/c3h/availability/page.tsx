@@ -45,7 +45,7 @@ const PLAYER_NAMES = [
   'Fahad Aktar', 'Denison Davis', 'Abhishek Ladva', 'Ashvak Sheik', 'Bhupinder Singh',
   'Salman Ahmed', 'Farooq Choudhary', 'Vijay Yadav', 'Shivam Rajput',
   'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
-  'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Makhan',
+  'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Makhan', 'Siva Sriram',
 ];
 
 // Short display names — use last name or nickname where first name is ambiguous
@@ -97,6 +97,7 @@ const EMAIL_TO_PLAYER: Record<string, string> = {
   'majharulalam456@gmail.com': 'Majharul Alam',
   'makhan4u4ever@gmail.com': 'Makhan',
   'georgefreddy963@gmail.com': 'Fahad Aktar',
+  'siva4593@gmail.com': 'Siva Sriram',
 };
 
 type AvailabilityStatus = 'available' | 'unavailable' | 'maybe' | '';
