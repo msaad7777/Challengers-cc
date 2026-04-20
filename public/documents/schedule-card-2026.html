@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Challengers CC 2026 Schedule</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #000; font-family: 'Arial', sans-serif; display: flex; justify-content: center; padding: 20px; }
+.card {
+  width: 1080px;
+  background: linear-gradient(135deg, #0a0a0a, #1a2e1a, #0a0a0a);
+  border: 3px solid #10b981;
+  border-radius: 24px;
+  padding: 48px;
+  color: white;
+}
+.header { text-align: center; margin-bottom: 32px; }
+.header h1 { font-size: 36px; color: #10b981; letter-spacing: 2px; }
+.header h2 { font-size: 20px; color: #eab308; margin-top: 8px; }
+.header p { font-size: 14px; color: #9ca3af; margin-top: 4px; }
+.divider { height: 2px; background: linear-gradient(to right, transparent, #10b981, #eab308, transparent); margin: 24px 0; }
+.leagues { display: flex; gap: 24px; }
+.league { flex: 1; }
+.league-title { font-size: 16px; font-weight: bold; padding: 8px 16px; border-radius: 12px; text-align: center; margin-bottom: 12px; }
+.lcl-title { background: rgba(16,185,129,0.2); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+.lpl-title { background: rgba(234,179,8,0.2); color: #eab308; border: 1px solid rgba(234,179,8,0.3); }
+.match { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; border-radius: 8px; margin-bottom: 4px; font-size: 12px; }
+.match:nth-child(odd) { background: rgba(255,255,255,0.03); }
+.match-num { color: #10b981; font-weight: bold; width: 30px; }
+.match-date { color: #9ca3af; width: 65px; }
+.match-time { color: #eab308; width: 65px; }
+.match-vs { color: white; flex: 1; }
+.match-venue { color: #6b7280; font-size: 11px; width: 90px; text-align: right; }
+.clash { background: rgba(239,68,68,0.1) !important; border-left: 2px solid #ef4444; }
+.footer { text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); }
+.footer p { color: #6b7280; font-size: 12px; }
+.footer .url { color: #10b981; font-weight: bold; font-size: 14px; }
+.stats { display: flex; justify-content: center; gap: 32px; margin-top: 16px; }
+.stat { text-align: center; }
+.stat-num { font-size: 28px; font-weight: bold; background: linear-gradient(to right, #10b981, #eab308); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.stat-label { font-size: 11px; color: #6b7280; }
+.legend { display: flex; justify-content: center; gap: 16px; margin-top: 12px; font-size: 11px; }
+.legend span { display: flex; align-items: center; gap: 4px; color: #9ca3af; }
+.legend .dot { width: 8px; height: 8px; border-radius: 50%; }
+.btn { display: inline-block; margin-top: 16px; padding: 8px 24px; background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #9ca3af; font-size: 12px; cursor: pointer; }
+@media print { .btn { display: none; } }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <h1>CHALLENGERS CRICKET CLUB</h1>
+    <h2>2026 Season Schedule</h2>
+    <p>London, Ontario | Ontario NFP Corporation #1746974-8</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num">26</div><div class="stat-label">Matches</div></div>
+    <div class="stat"><div class="stat-num">2</div><div class="stat-label">Leagues</div></div>
+    <div class="stat"><div class="stat-num">5</div><div class="stat-label">Venues</div></div>
+    <div class="stat"><div class="stat-num">May-Sep</div><div class="stat-label">Season</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="leagues">
+    <div class="league">
+      <div class="league-title lcl-title">LCL T30 — 14 Matches</div>
+      <div class="match clash"><span class="match-num">M1</span><span class="match-date">May 10</span><span class="match-time">1:00 PM</span><span class="match-vs">vs London Predators</span><span class="match-venue">Northridge</span></div>
+      <div class="match"><span class="match-num">M2</span><span class="match-date">May 18</span><span class="match-time">8:00 AM</span><span class="match-vs">vs Forest City</span><span class="match-venue">NLAF</span></div>
+      <div class="match"><span class="match-num">M3</span><span class="match-date">Jun 14</span><span class="match-time">10:00 AM</span><span class="match-vs">vs Sarnia Spartans</span><span class="match-venue">Sarnia</span></div>
+      <div class="match clash"><span class="match-num">M4</span><span class="match-date">Jun 27</span><span class="match-time">8:00 AM</span><span class="match-vs">vs Western CA B</span><span class="match-venue">Silverwoods</span></div>
+      <div class="match"><span class="match-num">M5</span><span class="match-date">Jul 1</span><span class="match-time">8:00 AM</span><span class="match-vs">vs Rising Stars</span><span class="match-venue">NLAF</span></div>
+      <div class="match"><span class="match-num">M6</span><span class="match-date">Jul 11</span><span class="match-time">8:00 AM</span><span class="match-vs">vs LCC Maple Stars</span><span class="match-venue">Northridge</span></div>
+      <div class="match clash"><span class="match-num">M7</span><span class="match-date">Jul 25</span><span class="match-time">1:00 PM</span><span class="match-vs">vs LCC Mavericks</span><span class="match-venue">NLAF</span></div>
+      <div class="match"><span class="match-num">M8</span><span class="match-date">Jul 26</span><span class="match-time">1:00 PM</span><span class="match-vs">vs Rising Stars</span><span class="match-venue">NLAF</span></div>
+      <div class="match clash"><span class="match-num">M9</span><span class="match-date">Aug 2</span><span class="match-time">8:00 AM</span><span class="match-vs">vs Western CA B</span><span class="match-venue">Northridge</span></div>
+      <div class="match"><span class="match-num">M10</span><span class="match-date">Aug 8</span><span class="match-time">1:00 PM</span><span class="match-vs">vs Forest City</span><span class="match-venue">NLAF</span></div>
+      <div class="match"><span class="match-num">M11</span><span class="match-date">Aug 23</span><span class="match-time">1:00 PM</span><span class="match-vs">vs Sarnia Spartans</span><span class="match-venue">Northridge</span></div>
+      <div class="match"><span class="match-num">M12</span><span class="match-date">Sep 5</span><span class="match-time">3:00 PM</span><span class="match-vs">vs Eagle Predators</span><span class="match-venue">Silverwoods</span></div>
+      <div class="match"><span class="match-num">M13</span><span class="match-date">Sep 12</span><span class="match-time">1:00 PM</span><span class="match-vs">vs Inferno Spartans</span><span class="match-venue">NLAF</span></div>
+      <div class="match"><span class="match-num">M14</span><span class="match-date">Sep 13</span><span class="match-time">3:00 PM</span><span class="match-vs">vs Tigers CC</span><span class="match-venue">Northridge</span></div>
+    </div>
+    <div class="league">
+      <div class="league-title lpl-title">LPL T30 — 12 Matches</div>
+      <div class="match clash"><span class="match-num">M1</span><span class="match-date">May 10</span><span class="match-time">10:00 AM</span><span class="match-vs">vs Maple Tigers</span><span class="match-venue">Silverwoods</span></div>
+      <div class="match"><span class="match-num">M2</span><span class="match-date">May 24</span><span class="match-time">10:00 AM</span><span class="match-vs">vs London Rhinos</span><span class="match-venue">NLAF</span></div>
+      <div class="match"><span class="match-num">M3</span><span class="match-date">May 31</span><span class="match-time">2:00 PM</span><span class="match-vs">vs NLCC</span><span class="match-venue">Thamesville</span></div>
+      <div class="match"><span class="match-num">M4</span><span class="match-date">Jun 7</span><span class="match-time">10:00 AM</span><span class="match-vs">vs Royal Tigers</span><span class="match-venue">Silverwoods</span></div>
+      <div class="match"><span class="match-num">M5</span><span class="match-date">Jun 13</span><span class="match-time">8:00 AM</span><span class="match-vs">vs Maple Tigers</span><span class="match-venue">Northridge</span></div>
+      <div class="match clash"><span class="match-num">M6</span><span class="match-date">Jun 27</span><span class="match-time">9:00 AM</span><span class="match-vs">vs Premier XI</span><span class="match-venue">Thamesville</span></div>
+      <div class="match"><span class="match-num">M7</span><span class="match-date">Jul 4</span><span class="match-time">10:00 AM</span><span class="match-vs">vs London Stars</span><span class="match-venue">Northridge</span></div>
+      <div class="match"><span class="match-num">M8</span><span class="match-date">Jul 18</span><span class="match-time">10:00 AM</span><span class="match-vs">vs Premier XI</span><span class="match-venue">Northridge</span></div>
+      <div class="match clash"><span class="match-num">M9</span><span class="match-date">Jul 25</span><span class="match-time">9:00 AM</span><span class="match-vs">vs London Rhinos</span><span class="match-venue">Thamesville</span></div>
+      <div class="match clash"><span class="match-num">M10</span><span class="match-date">Aug 2</span><span class="match-time">10:00 AM</span><span class="match-vs">vs NLCC</span><span class="match-venue">Silverwoods</span></div>
+      <div class="match"><span class="match-num">M11</span><span class="match-date">Aug 30</span><span class="match-time">10:00 AM</span><span class="match-vs">vs Royal Tigers</span><span class="match-venue">Silverwoods</span></div>
+      <div class="match"><span class="match-num">M12</span><span class="match-date">Sep 6</span><span class="match-time">1:00 PM</span><span class="match-vs">vs London Stars</span><span class="match-venue">NLAF</span></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><div class="dot" style="background:#ef4444"></div> Clashing dates (both leagues)</span>
+    <span><div class="dot" style="background:#10b981"></div> LCL T30</span>
+    <span><div class="dot" style="background:#eab308"></div> LPL T30</span>
+  </div>
+
+  <div class="footer">
+    <p class="url">challengerscc.ca/schedule</p>
+    <p>Follow us @challengers.cc | Ontario NFP #1746974-8</p>
+  </div>
+</div>
+</body>
+</html>

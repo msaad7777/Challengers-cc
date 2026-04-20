@@ -891,6 +891,63 @@ export const blogPosts: BlogPost[] = [
     featured: true,
   },
   {
+    slug: '2026-full-schedule',
+    title: '2026 Full Season Schedule — 26 Matches Across LCL & LPL',
+    excerpt:
+      'The complete 2026 season schedule for Challengers Cricket Club is here. 14 LCL T30 matches and 12 LPL T30 matches from May to September. View the full fixture list.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        The 2026 season is officially loaded! Challengers Cricket Club will play <strong class="text-white">26 matches</strong>
+        across two leagues — the London Cricket League (LCL T30) and the London Premier League (LPL T30) — running
+        from May through September.
+      </p>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0;">
+        <div style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 12px; padding: 16px; text-align: center;">
+          <div class="text-2xl font-bold text-primary-400">26</div>
+          <div class="text-xs text-gray-400">Matches</div>
+        </div>
+        <div style="background: rgba(234,179,8,0.1); border: 1px solid rgba(234,179,8,0.3); border-radius: 12px; padding: 16px; text-align: center;">
+          <div class="text-2xl font-bold text-accent-400">2</div>
+          <div class="text-xs text-gray-400">Leagues</div>
+        </div>
+        <div style="background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3); border-radius: 12px; padding: 16px; text-align: center;">
+          <div class="text-2xl font-bold text-blue-400">5</div>
+          <div class="text-xs text-gray-400">Venues</div>
+        </div>
+        <div style="background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.3); border-radius: 12px; padding: 16px; text-align: center;">
+          <div class="text-2xl font-bold text-purple-400">May-Sep</div>
+          <div class="text-xs text-gray-400">Season</div>
+        </div>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">4 Clashing Dates to Watch</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        On four dates, we have both LCL and LPL matches on the same day. This means we need to manage
+        two squads and plan availability carefully.
+      </p>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc list-inside space-y-2">
+        <li><strong class="text-red-400">May 10</strong> — LPL vs Maple Tigers (10 AM) + LCL vs London Predators (1 PM)</li>
+        <li><strong class="text-red-400">June 27</strong> — LPL vs Premier XI (9 AM) + LCL vs Western CA B (8 AM)</li>
+        <li><strong class="text-red-400">July 25</strong> — LPL vs London Rhinos (9 AM) + LCL vs LCC Mavericks (1 PM)</li>
+        <li><strong class="text-red-400">August 2</strong> — LPL vs NLCC (10 AM) + LCL vs Western CA B (8 AM)</li>
+      </ul>
+      <div style="text-align: center; margin: 24px 0;">
+        <a href="/schedule" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: linear-gradient(to right, #10b981, #059669); color: white; font-weight: 600; border-radius: 8px; text-decoration: none; font-size: 16px;">
+          View Full Schedule
+        </a>
+      </div>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Players can mark their availability for each match through the C3H portal. Captains will announce
+        the playing 12 two days before each match. Let's have a great season!
+      </p>
+    `,
+    category: 'Club News',
+    author: 'Challengers CC',
+    date: '2026-04-20',
+    image: null,
+    video: null,
+    featured: true,
+  },
+  {
     slug: 'lcl-t30-schedule-2026',
     title: 'LCL T30 Schedule Is Out! 14 Matches Across London & Sarnia',
     excerpt:
