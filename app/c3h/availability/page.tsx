@@ -112,6 +112,7 @@ export default function AvailabilityPage() {
   const [squadRoles, setSquadRoles] = useState<Record<string, Record<string, string>>>({});
   const [showSquadCard, setShowSquadCard] = useState<string | null>(null);
   const [selectingSquad, setSelectingSquad] = useState<string | null>(null);
+  const [playerMenu, setPlayerMenu] = useState<{ matchId: string; player: string } | null>(null);
 
   // isCaptain moved after isBoard declaration
   const [leagueFilter, setLeagueFilter] = useState<'all' | 'LCL T30' | 'LPL T30'>('all');
@@ -362,36 +363,53 @@ export default function AvailabilityPage() {
                       </div>
                     </div>
                     <div className="space-y-2">
+                      {/* Player Menu Popup */}
+                      {playerMenu && playerMenu.matchId === m.id && (
+                        <div className="glass rounded-xl p-3 border-2 border-primary-500/30 mb-2">
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="text-white text-xs font-bold">{playerMenu.player}</p>
+                            <button onClick={() => setPlayerMenu(null)} className="text-gray-500 text-xs">&times;</button>
+                          </div>
+                          <div className="flex gap-1 flex-wrap">
+                            <button onClick={() => { updateAvailability(playerMenu.player, m.id, 'available'); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30">✅ Available</button>
+                            <button onClick={() => { updateAvailability(playerMenu.player, m.id, 'maybe'); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30">❓ Maybe</button>
+                            <button onClick={() => { updateAvailability(playerMenu.player, m.id, 'unavailable'); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-red-500/20 text-red-400 border border-red-500/30">❌ Unavailable</button>
+                            {isCaptain && !(squads[m.id] || []).includes(playerMenu.player) && (squads[m.id] || []).length < 12 && (
+                              <button onClick={() => { toggleSquadPlayer(m.id, playerMenu.player); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30">🏏 Select</button>
+                            )}
+                            {isCaptain && (squads[m.id] || []).includes(playerMenu.player) && (
+                              <button onClick={() => { toggleSquadPlayer(m.id, playerMenu.player); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-gray-500/20 text-gray-400 border border-gray-500/30">Remove from Squad</button>
+                            )}
+                          </div>
+                        </div>
+                      )}
                       {available.length > 0 && (
                         <div>
                           <p className="text-primary-400 text-xs font-bold mb-1">✅ Available ({available.length})</p>
-                          <div className="flex flex-wrap gap-1">{available.map(n => (
-                            <button key={n} onClick={() => {
-                              const next: AvailabilityStatus = 'maybe';
-                              updateAvailability(n, m.id, next);
-                            }} className="text-xs px-2 py-0.5 rounded bg-primary-500/10 text-primary-400 hover:bg-primary-500/20 transition-all" title="Click to change">{n.split(' ')[0]}</button>
-                          ))}</div>
+                          <div className="flex flex-wrap gap-1">{available.map(n => {
+                            const inSquad = (squads[m.id] || []).includes(n);
+                            return (
+                              <button key={n} onClick={() => setPlayerMenu({ matchId: m.id, player: n })} className={`text-xs px-2 py-0.5 rounded transition-all ${inSquad ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold' : 'bg-primary-500/10 text-primary-400 hover:bg-primary-500/20'}`}>{inSquad ? '🏏 ' : ''}{n.split(' ')[0]}</button>
+                            );
+                          })}</div>
                         </div>
                       )}
                       {maybe.length > 0 && (
                         <div>
                           <p className="text-accent-400 text-xs font-bold mb-1">❓ Maybe ({maybe.length})</p>
-                          <div className="flex flex-wrap gap-1">{maybe.map(n => (
-                            <button key={n} onClick={() => {
-                              const next: AvailabilityStatus = 'unavailable';
-                              updateAvailability(n, m.id, next);
-                            }} className="text-xs px-2 py-0.5 rounded bg-accent-500/10 text-accent-400 hover:bg-accent-500/20 transition-all" title="Click to change">{n.split(' ')[0]}</button>
-                          ))}</div>
+                          <div className="flex flex-wrap gap-1">{maybe.map(n => {
+                            const inSquad = (squads[m.id] || []).includes(n);
+                            return (
+                              <button key={n} onClick={() => setPlayerMenu({ matchId: m.id, player: n })} className={`text-xs px-2 py-0.5 rounded transition-all ${inSquad ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold' : 'bg-accent-500/10 text-accent-400 hover:bg-accent-500/20'}`}>{inSquad ? '🏏 ' : ''}{n.split(' ')[0]}</button>
+                            );
+                          })}</div>
                         </div>
                       )}
                       {unavailable.length > 0 && (
                         <div>
                           <p className="text-red-400 text-xs font-bold mb-1">❌ Unavailable ({unavailable.length})</p>
                           <div className="flex flex-wrap gap-1">{unavailable.map(n => (
-                            <button key={n} onClick={() => {
-                              const next: AvailabilityStatus = 'available';
-                              updateAvailability(n, m.id, next);
-                            }} className="text-xs px-2 py-0.5 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all" title="Click to change">{n.split(' ')[0]}</button>
+                            <button key={n} onClick={() => setPlayerMenu({ matchId: m.id, player: n })} className="text-xs px-2 py-0.5 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all">{n.split(' ')[0]}</button>
                           ))}</div>
                         </div>
                       )}
@@ -401,7 +419,7 @@ export default function AvailabilityPage() {
                           <div>
                             <p className="text-gray-500 text-xs font-bold mb-1">No Response ({noResp.length})</p>
                             <div className="flex flex-wrap gap-1">{noResp.map(n => (
-                              <button key={n} onClick={() => updateAvailability(n, m.id, 'available')} className="text-xs px-2 py-0.5 rounded bg-white/5 text-gray-600 hover:bg-primary-500/20 hover:text-primary-400 transition-all" title="Click to mark available">{n.split(' ')[0]}</button>
+                              <button key={n} onClick={() => setPlayerMenu({ matchId: m.id, player: n })} className="text-xs px-2 py-0.5 rounded bg-white/5 text-gray-600 hover:bg-primary-500/20 hover:text-primary-400 transition-all">{n.split(' ')[0]}</button>
                             ))}</div>
                           </div>
                         ) : null;
