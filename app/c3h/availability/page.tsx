@@ -98,8 +98,9 @@ export default function AvailabilityPage() {
     if (name !== playerName) return;
     setSaving(true);
     const current = allAvailability[name] || {};
-    const updated = { ...current, [matchId]: newStatus, _email: session?.user?.email, _updatedAt: new Date().toISOString() };
-    await setDoc(doc(db, 'availability', name), updated);
+    const updated: PlayerAvailability = { ...current, [matchId]: newStatus };
+    const saveData = { ...updated, _email: session?.user?.email || '', _updatedAt: new Date().toISOString() };
+    await setDoc(doc(db, 'availability', name), saveData);
     setAllAvailability(prev => ({ ...prev, [name]: updated }));
     setSaving(false);
   };
