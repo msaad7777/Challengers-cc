@@ -9,7 +9,7 @@ const ZEFFY_DONATION_LINK = 'https://www.zeffy.com/en-CA/donation-form/challenge
 
 const PAYMENT_OPTIONS = [
   { name: 'Club Registration', description: '2026 Season membership (includes indoor & outdoor practice)', price: '$100', icon: '🏏' },
-  { name: 'LCL + LPL League Fee', description: 'London Cricket League & London Premier League combined', price: '$200', icon: '⚡' },
+  { name: 'Season Fee', description: '2026 League fees (covers all leagues for the season)', price: '$200', icon: '⚡' },
 ];
 
 const SPONSORSHIP_TIERS = [
