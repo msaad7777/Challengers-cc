@@ -11,6 +11,7 @@ interface Match {
   league?: string;
   match: number;
   date: string;
+  sortKey: string; // YYYY-MM-DD-HHMM for reliable sorting
   day: string;
   time: string;
   opponent: string;
@@ -18,55 +19,44 @@ interface Match {
 }
 
 const lclT30Matches: Match[] = [
-  { match: 1, date: 'May 10, 2026', day: 'Saturday', time: '1:00 PM', opponent: 'London Predators', venue: 'Northridge Cricket Ground' },
-  { match: 2, date: 'May 18, 2026', day: 'Sunday', time: '8:00 AM', opponent: 'Forest City Cricketers', venue: 'North London Athletic Fields' },
-  { match: 3, date: 'June 14, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Sarnia Spartans', venue: 'Mike Vier Park, Sarnia' },
-  { match: 4, date: 'June 27, 2026', day: 'Saturday', time: '8:00 AM', opponent: 'Western Cricket Academy B', venue: 'Silverwoods Cricket Ground' },
-  { match: 5, date: 'July 1, 2026', day: 'Wednesday', time: '8:00 AM', opponent: 'London Rising Stars', venue: 'North London Athletic Fields' },
-  { match: 6, date: 'July 11, 2026', day: 'Saturday', time: '8:00 AM', opponent: 'LCC - Maple Stars', venue: 'Northridge Cricket Ground' },
-  { match: 7, date: 'July 25, 2026', day: 'Saturday', time: '1:00 PM', opponent: 'LCC Mavericks', venue: 'North London Athletic Fields' },
-  { match: 8, date: 'July 26, 2026', day: 'Sunday', time: '1:00 PM', opponent: 'London Rising Stars', venue: 'North London Athletic Fields' },
-  { match: 9, date: 'August 2, 2026', day: 'Sunday', time: '8:00 AM', opponent: 'Western Cricket Academy B', venue: 'Northridge Cricket Ground' },
-  { match: 10, date: 'August 8, 2026', day: 'Saturday', time: '1:00 PM', opponent: 'Forest City Cricketers', venue: 'North London Athletic Fields' },
-  { match: 11, date: 'August 23, 2026', day: 'Sunday', time: '1:00 PM', opponent: 'Sarnia Spartans', venue: 'Northridge Cricket Ground' },
-  { match: 12, date: 'September 5, 2026', day: 'Saturday', time: '3:00 PM', opponent: 'London Eagle Predators', venue: 'Silverwoods Cricket Ground' },
-  { match: 13, date: 'September 12, 2026', day: 'Saturday', time: '1:00 PM', opponent: 'Inferno Spartans', venue: 'North London Athletic Fields' },
-  { match: 14, date: 'September 13, 2026', day: 'Sunday', time: '3:00 PM', opponent: 'Tigers Cricket Club', venue: 'Northridge Cricket Ground' },
+  { match: 1, date: 'May 10, 2026', sortKey: '2026-05-10-1300', day: 'Saturday', time: '1:00 PM', opponent: 'London Predators', venue: 'Northridge Cricket Ground' },
+  { match: 2, date: 'May 18, 2026', sortKey: '2026-05-18-0800', day: 'Sunday', time: '8:00 AM', opponent: 'Forest City Cricketers', venue: 'North London Athletic Fields' },
+  { match: 3, date: 'June 14, 2026', sortKey: '2026-06-14-1000', day: 'Sunday', time: '10:00 AM', opponent: 'Sarnia Spartans', venue: 'Mike Vier Park, Sarnia' },
+  { match: 4, date: 'June 27, 2026', sortKey: '2026-06-27-0800', day: 'Saturday', time: '8:00 AM', opponent: 'Western Cricket Academy B', venue: 'Silverwoods Cricket Ground' },
+  { match: 5, date: 'July 1, 2026', sortKey: '2026-07-01-0800', day: 'Wednesday', time: '8:00 AM', opponent: 'London Rising Stars', venue: 'North London Athletic Fields' },
+  { match: 6, date: 'July 11, 2026', sortKey: '2026-07-11-0800', day: 'Saturday', time: '8:00 AM', opponent: 'LCC - Maple Stars', venue: 'Northridge Cricket Ground' },
+  { match: 7, date: 'July 25, 2026', sortKey: '2026-07-25-1300', day: 'Saturday', time: '1:00 PM', opponent: 'LCC Mavericks', venue: 'North London Athletic Fields' },
+  { match: 8, date: 'July 26, 2026', sortKey: '2026-07-26-1300', day: 'Sunday', time: '1:00 PM', opponent: 'London Rising Stars', venue: 'North London Athletic Fields' },
+  { match: 9, date: 'August 2, 2026', sortKey: '2026-08-02-0800', day: 'Sunday', time: '8:00 AM', opponent: 'Western Cricket Academy B', venue: 'Northridge Cricket Ground' },
+  { match: 10, date: 'August 8, 2026', sortKey: '2026-08-08-1300', day: 'Saturday', time: '1:00 PM', opponent: 'Forest City Cricketers', venue: 'North London Athletic Fields' },
+  { match: 11, date: 'August 23, 2026', sortKey: '2026-08-23-1300', day: 'Sunday', time: '1:00 PM', opponent: 'Sarnia Spartans', venue: 'Northridge Cricket Ground' },
+  { match: 12, date: 'September 5, 2026', sortKey: '2026-09-05-1500', day: 'Saturday', time: '3:00 PM', opponent: 'London Eagle Predators', venue: 'Silverwoods Cricket Ground' },
+  { match: 13, date: 'September 12, 2026', sortKey: '2026-09-12-1300', day: 'Saturday', time: '1:00 PM', opponent: 'Inferno Spartans', venue: 'North London Athletic Fields' },
+  { match: 14, date: 'September 13, 2026', sortKey: '2026-09-13-1500', day: 'Sunday', time: '3:00 PM', opponent: 'Tigers Cricket Club', venue: 'Northridge Cricket Ground' },
 ];
 
 const lplT30Matches: Match[] = [
-  { match: 1, date: 'May 10, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Maple Tigers', venue: 'Silverwoods Cricket Ground' },
-  { match: 2, date: 'May 24, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'London Rhinos', venue: 'North London Athletic Fields' },
-  { match: 3, date: 'May 31, 2026', day: 'Sunday', time: '2:00 PM', opponent: 'NLCC', venue: 'Thamesville' },
-  { match: 4, date: 'June 7, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Royal Tigers', venue: 'Silverwoods Cricket Ground' },
-  { match: 5, date: 'June 13, 2026', day: 'Saturday', time: '8:00 AM', opponent: 'Maple Tigers', venue: 'Northridge Cricket Ground' },
-  { match: 6, date: 'June 27, 2026', day: 'Saturday', time: '9:00 AM', opponent: 'Premier XI', venue: 'Thamesville' },
-  { match: 7, date: 'July 4, 2026', day: 'Saturday', time: '10:00 AM', opponent: 'London Stars', venue: 'Northridge Cricket Ground' },
-  { match: 8, date: 'July 18, 2026', day: 'Saturday', time: '10:00 AM', opponent: 'Premier XI', venue: 'Northridge Cricket Ground' },
-  { match: 9, date: 'July 25, 2026', day: 'Saturday', time: '9:00 AM', opponent: 'London Rhinos', venue: 'Thamesville' },
-  { match: 10, date: 'August 2, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'NLCC', venue: 'Silverwoods Cricket Ground' },
-  { match: 11, date: 'August 30, 2026', day: 'Sunday', time: '10:00 AM', opponent: 'Royal Tigers', venue: 'Silverwoods Cricket Ground' },
-  { match: 12, date: 'September 6, 2026', day: 'Sunday', time: '1:00 PM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
+  { match: 1, date: 'May 10, 2026', sortKey: '2026-05-10-1000', day: 'Sunday', time: '10:00 AM', opponent: 'Maple Tigers', venue: 'Silverwoods Cricket Ground' },
+  { match: 2, date: 'May 24, 2026', sortKey: '2026-05-24-1000', day: 'Sunday', time: '10:00 AM', opponent: 'London Rhinos', venue: 'North London Athletic Fields' },
+  { match: 3, date: 'May 31, 2026', sortKey: '2026-05-31-1400', day: 'Sunday', time: '2:00 PM', opponent: 'NLCC', venue: 'Thamesville' },
+  { match: 4, date: 'June 7, 2026', sortKey: '2026-06-07-1000', day: 'Sunday', time: '10:00 AM', opponent: 'Royal Tigers', venue: 'Silverwoods Cricket Ground' },
+  { match: 5, date: 'June 13, 2026', sortKey: '2026-06-13-0800', day: 'Saturday', time: '8:00 AM', opponent: 'Maple Tigers', venue: 'Northridge Cricket Ground' },
+  { match: 6, date: 'June 27, 2026', sortKey: '2026-06-27-0900', day: 'Saturday', time: '9:00 AM', opponent: 'Premier XI', venue: 'Thamesville' },
+  { match: 7, date: 'July 4, 2026', sortKey: '2026-07-04-1000', day: 'Saturday', time: '10:00 AM', opponent: 'London Stars', venue: 'Northridge Cricket Ground' },
+  { match: 8, date: 'July 18, 2026', sortKey: '2026-07-18-1000', day: 'Saturday', time: '10:00 AM', opponent: 'Premier XI', venue: 'Northridge Cricket Ground' },
+  { match: 9, date: 'July 25, 2026', sortKey: '2026-07-25-0900', day: 'Saturday', time: '9:00 AM', opponent: 'London Rhinos', venue: 'Thamesville' },
+  { match: 10, date: 'August 2, 2026', sortKey: '2026-08-02-1000', day: 'Sunday', time: '10:00 AM', opponent: 'NLCC', venue: 'Silverwoods Cricket Ground' },
+  { match: 11, date: 'August 30, 2026', sortKey: '2026-08-30-1000', day: 'Sunday', time: '10:00 AM', opponent: 'Royal Tigers', venue: 'Silverwoods Cricket Ground' },
+  { match: 12, date: 'September 6, 2026', sortKey: '2026-09-06-1300', day: 'Sunday', time: '1:00 PM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
 ];
 
-// Sort helper
-const sortByDateTime = (matches: Match[]) => {
-  return [...matches].sort((a, b) => {
-    const dateA = new Date(a.date);
-    const dateB = new Date(b.date);
-    if (dateA.getTime() !== dateB.getTime()) return dateA.getTime() - dateB.getTime();
-    const toMin = (t: string) => { const [time, p] = t.split(' '); const [h, m] = time.split(':').map(Number); return ((p === 'PM' && h !== 12 ? h + 12 : p === 'AM' && h === 12 ? 0 : h) * 60) + m; };
-    return toMin(a.time) - toMin(b.time);
-  });
-};
-
-// Create separate arrays for each tab
+// Create separate arrays for each tab — sorted by sortKey (YYYY-MM-DD-HHMM)
 const lclOnly: Match[] = lclT30Matches.map(m => ({ ...m, league: 'LCL' }));
 const lplOnly: Match[] = lplT30Matches.map(m => ({ ...m, league: 'LPL' }));
-const allMatches: Match[] = sortByDateTime([
+const allMatches: Match[] = [
   ...lclT30Matches.map(m => ({ ...m, league: 'LCL' })),
   ...lplT30Matches.map(m => ({ ...m, league: 'LPL' })),
-]);
+].sort((a, b) => a.sortKey.localeCompare(b.sortKey));
 
 const tabs = [
   { id: 'all', label: 'All Matches', matches: allMatches, status: 'active' as const },
