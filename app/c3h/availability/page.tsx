@@ -495,7 +495,7 @@ export default function AvailabilityPage() {
                                     <span className={`text-xs px-2 py-0.5 rounded ${roleColor(role)}`}>
                                       {i + 1}. {shortName(n)}{roleLabel(role)}
                                     </span>
-                                    {selectingSquad === m.id && (
+                                    {isCaptain && (
                                       <div className="flex gap-1">
                                         <button onClick={() => toggleRole(m.id, n, 'bat-sub')} className={`text-xs px-1.5 py-0.5 rounded ${roles[n] === 'bat-sub' ? 'bg-accent-500/30 text-accent-400' : 'bg-white/5 text-gray-600 hover:bg-white/10'}`}>B</button>
                                         <button onClick={() => toggleRole(m.id, n, 'bowl-sub')} className={`text-xs px-1.5 py-0.5 rounded ${roles[n] === 'bowl-sub' ? 'bg-blue-500/30 text-blue-400' : 'bg-white/5 text-gray-600 hover:bg-white/10'}`}>W</button>
@@ -507,7 +507,7 @@ export default function AvailabilityPage() {
                                   </div>
                                 );
                               })}
-                              {(squads[m.id] || []).length === 12 && !selectingSquad && (
+                              {(squads[m.id] || []).length >= 11 && isCaptain && (
                                 <button onClick={() => setShowSquadCard(showSquadCard === m.id ? null : m.id)} className="mt-2 text-xs px-3 py-1.5 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30 hover:bg-accent-500/30">
                                   {showSquadCard === m.id ? 'Hide Card' : 'View Squad Card'}
                                 </button>
