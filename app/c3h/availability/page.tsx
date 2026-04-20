@@ -109,6 +109,8 @@ export default function AvailabilityPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [squads, setSquads] = useState<Record<string, string[]>>({});
+  const [squadRoles, setSquadRoles] = useState<Record<string, Record<string, string>>>({});
+  const [showSquadCard, setShowSquadCard] = useState<string | null>(null);
   const [selectingSquad, setSelectingSquad] = useState<string | null>(null);
 
   // isCaptain moved after isBoard declaration
@@ -153,10 +155,13 @@ export default function AvailabilityPage() {
     try {
       const squadSnap = await getDocs(collection(db, 'squads'));
       const squadData: Record<string, string[]> = {};
+      const rolesData: Record<string, Record<string, string>> = {};
       squadSnap.docs.forEach(d => {
         squadData[d.id] = (d.data().players || []) as string[];
+        rolesData[d.id] = (d.data().roles || {}) as Record<string, string>;
       });
       setSquads(squadData);
+      setSquadRoles(rolesData);
     } catch { /* */ }
     setLoading(false);
   }, []);
@@ -167,11 +172,29 @@ export default function AvailabilityPage() {
 
   const toggleSquadPlayer = async (matchId: string, playerN: string) => {
     const current = squads[matchId] || [];
+    const currentRoles = squadRoles[matchId] || {};
     const updated = current.includes(playerN)
       ? current.filter(p => p !== playerN)
       : current.length < 12 ? [...current, playerN] : current;
-    await setDoc(doc(db, 'squads', matchId), { players: updated, updatedBy: session?.user?.email, updatedAt: new Date().toISOString() });
+    // Remove role if player removed
+    if (!updated.includes(playerN)) delete currentRoles[playerN];
+    await setDoc(doc(db, 'squads', matchId), { players: updated, roles: currentRoles, updatedBy: session?.user?.email, updatedAt: new Date().toISOString() });
     setSquads(prev => ({ ...prev, [matchId]: updated }));
+    setSquadRoles(prev => ({ ...prev, [matchId]: currentRoles }));
+  };
+
+  const toggleRole = async (matchId: string, playerN: string, role: string) => {
+    const currentRoles = { ...(squadRoles[matchId] || {}) };
+    // Remove role from anyone else who has it
+    Object.keys(currentRoles).forEach(k => { if (currentRoles[k] === role) delete currentRoles[k]; });
+    // Toggle for this player
+    if (currentRoles[playerN] === role) {
+      delete currentRoles[playerN];
+    } else {
+      currentRoles[playerN] = role;
+    }
+    await setDoc(doc(db, 'squads', matchId), { players: squads[matchId] || [], roles: currentRoles, updatedBy: session?.user?.email, updatedAt: new Date().toISOString() }, { merge: true });
+    setSquadRoles(prev => ({ ...prev, [matchId]: currentRoles }));
   };
 
   const updateAvailability = async (name: string, matchId: string, newStatus: AvailabilityStatus) => {
@@ -371,17 +394,57 @@ export default function AvailabilityPage() {
                             </button>
                           </div>
                           {(squads[m.id] || []).length > 0 && (
-                            <div className="flex flex-wrap gap-1 mb-2">
-                              {(squads[m.id] || []).map((n, i) => (
-                                <span key={n} className="text-xs px-2 py-0.5 rounded bg-primary-500/20 text-primary-400 border border-primary-500/30">
-                                  {i + 1}. {n.split(' ')[0]}
-                                </span>
-                              ))}
+                            <div className="space-y-1 mb-2">
+                              {(squads[m.id] || []).map((n, i) => {
+                                const role = (squadRoles[m.id] || {})[n];
+                                return (
+                                  <div key={n} className="flex items-center gap-2">
+                                    <span className={`text-xs px-2 py-0.5 rounded ${role === 'bat-sub' ? 'bg-accent-500/20 text-accent-400' : role === 'bowl-sub' ? 'bg-blue-500/20 text-blue-400' : 'bg-primary-500/20 text-primary-400'}`}>
+                                      {i + 1}. {n.split(' ')[0]}{role === 'bat-sub' ? ' (Bat Sub)' : role === 'bowl-sub' ? ' (Bowl Sub)' : ''}
+                                    </span>
+                                    {selectingSquad === m.id && (
+                                      <div className="flex gap-1">
+                                        <button onClick={() => toggleRole(m.id, n, 'bat-sub')} className={`text-xs px-1.5 py-0.5 rounded ${role === 'bat-sub' ? 'bg-accent-500/30 text-accent-400' : 'bg-white/5 text-gray-600 hover:bg-white/10'}`}>B</button>
+                                        <button onClick={() => toggleRole(m.id, n, 'bowl-sub')} className={`text-xs px-1.5 py-0.5 rounded ${role === 'bowl-sub' ? 'bg-blue-500/30 text-blue-400' : 'bg-white/5 text-gray-600 hover:bg-white/10'}`}>W</button>
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                              {(squads[m.id] || []).length === 12 && !selectingSquad && (
+                                <button onClick={() => setShowSquadCard(showSquadCard === m.id ? null : m.id)} className="mt-2 text-xs px-3 py-1.5 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30 hover:bg-accent-500/30">
+                                  {showSquadCard === m.id ? 'Hide Card' : 'View Squad Card'}
+                                </button>
+                              )}
+                            </div>
+                          )}
+                          {/* Squad Card for Screenshot */}
+                          {showSquadCard === m.id && (squads[m.id] || []).length === 12 && (
+                            <div id={`squad-card-${m.id}`} className="rounded-2xl p-6 mb-3" style={{ background: 'linear-gradient(135deg, #0a0a0a, #1a2e1a)', border: '2px solid #10b981' }}>
+                              <div className="text-center mb-4">
+                                <h3 className="text-xl font-bold text-primary-400">CHALLENGERS CC</h3>
+                                <p className="text-white font-bold text-sm">vs {m.opponent}</p>
+                                <p className="text-gray-400 text-xs">{m.league} | {m.date} | {m.time} | {m.venue}</p>
+                              </div>
+                              <div className="space-y-1">
+                                {(squads[m.id] || []).map((n, i) => {
+                                  const role = (squadRoles[m.id] || {})[n];
+                                  return (
+                                    <div key={n} className={`flex items-center justify-between px-3 py-1.5 rounded ${role ? 'bg-white/5' : i % 2 === 0 ? 'bg-white/3' : ''}`}>
+                                      <span className="text-white text-sm">{i + 1}. {n}</span>
+                                      {role && <span className={`text-xs font-bold ${role === 'bat-sub' ? 'text-accent-400' : 'text-blue-400'}`}>{role === 'bat-sub' ? 'BAT SUB' : 'BOWL SUB'}</span>}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                              <div className="text-center mt-4 pt-3 border-t border-white/10">
+                                <p className="text-gray-500 text-xs">challengerscc.ca | Ontario NFP #1746974-8</p>
+                              </div>
                             </div>
                           )}
                           {selectingSquad === m.id && (
                             <div className="glass rounded-xl p-3 border border-primary-500/20 mt-2">
-                              <p className="text-gray-500 text-xs mb-2">Tap to select/deselect (max 12):</p>
+                              <p className="text-gray-500 text-xs mb-2">Tap to select/deselect (max 12). Use B/W buttons for subs:</p>
                               <div className="flex flex-wrap gap-1">
                                 {available.map(n => {
                                   const selected = (squads[m.id] || []).includes(n);
