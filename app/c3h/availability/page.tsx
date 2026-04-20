@@ -464,7 +464,8 @@ export default function AvailabilityPage() {
                             // Auto-assign defaults if not set
                             const getDisplayRole = (name: string) => {
                               if (roles[name]) return roles[name];
-                              if (name === 'Syed Shahriar') return 'captain';
+                              if (name === 'Syed Shahriar' && m.league === 'LCL T30') return 'captain';
+                              if (name === 'Tarek Islam' && m.league === 'LPL T30') return 'captain';
                               if (name === 'Ankush Arora') return 'vc';
                               if (name === 'Mohammed Saad') return 'wk';
                               return '';
@@ -526,7 +527,7 @@ export default function AvailabilityPage() {
                               <div className="space-y-1">
                                 {(squads[m.id] || []).map((n, i) => {
                                   const savedRole = (squadRoles[m.id] || {})[n];
-                                  const displayRole = savedRole || (n === 'Syed Shahriar' ? 'captain' : n === 'Ankush Arora' ? 'vc' : n === 'Mohammed Saad' ? 'wk' : '');
+                                  const displayRole = savedRole || (n === 'Syed Shahriar' && m.league === 'LCL T30' ? 'captain' : n === 'Tarek Islam' && m.league === 'LPL T30' ? 'captain' : n === 'Ankush Arora' ? 'vc' : n === 'Mohammed Saad' ? 'wk' : '');
                                   const roleText = displayRole === 'captain' ? '(c)' : displayRole === 'vc' ? '(vc)' : displayRole === 'wk' ? '(wk)' : displayRole === 'bat-sub' ? 'BAT SUB' : displayRole === 'bowl-sub' ? 'BOWL SUB' : '';
                                   const roleColor = displayRole === 'captain' ? 'text-accent-400' : displayRole === 'vc' ? 'text-purple-400' : displayRole === 'wk' ? 'text-blue-400' : displayRole === 'bat-sub' ? 'text-accent-400' : 'text-blue-400';
                                   return (
