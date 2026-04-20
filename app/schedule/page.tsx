@@ -4,6 +4,9 @@ import { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
+// Dates where LCL T30 and LPL T30 overlap
+const CLASH_DATES = ['May 10, 2026', 'June 27, 2026', 'July 25, 2026', 'August 2, 2026'];
+
 interface Match {
   match: number;
   date: string;
@@ -66,12 +69,12 @@ function MatchTable({ matches }: { matches: Match[] }) {
           </thead>
           <tbody>
             {matches.map((m) => (
-              <tr key={m.match} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <tr key={m.match} className={`border-b border-white/5 hover:bg-white/5 transition-colors ${CLASH_DATES.includes(m.date) ? 'bg-red-500/5' : ''}`}>
                 <td className="px-6 py-4">
                   <span className="text-sm font-bold text-primary-400">M{m.match}</span>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="text-sm text-white font-medium">{m.date}</div>
+                  <div className="text-sm text-white font-medium flex items-center gap-1.5">{m.date}{CLASH_DATES.includes(m.date) && <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block flex-shrink-0" title="Schedule clash with other league"></span>}</div>
                   <div className="text-xs text-gray-500">{m.day}</div>
                 </td>
                 <td className="px-6 py-4">
@@ -92,7 +95,7 @@ function MatchTable({ matches }: { matches: Match[] }) {
       {/* Mobile Cards */}
       <div className="md:hidden space-y-4">
         {matches.map((m) => (
-          <div key={m.match} className="glass rounded-xl p-5 border-l-4 border-l-primary-500">
+          <div key={m.match} className={`glass rounded-xl p-5 border-l-4 ${CLASH_DATES.includes(m.date) ? 'border-l-red-500' : 'border-l-primary-500'}`}>
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-bold text-primary-400">Match {m.match}</span>
             </div>
@@ -102,7 +105,7 @@ function MatchTable({ matches }: { matches: Match[] }) {
                 <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                {m.date} ({m.day})
+                {m.date} ({m.day}) {CLASH_DATES.includes(m.date) && <span className="w-2 h-2 rounded-full bg-red-500 inline-block ml-1"></span>}
               </div>
               <div className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
