@@ -45,7 +45,7 @@ const PLAYER_NAMES = [
   'Fahad Aktar', 'Denison Davis', 'Abhishek Ladva', 'Ashvak Sheik', 'Bhupinder Singh',
   'Salman Ahmed', 'Farooq Choudhary', 'Vijay Yadav', 'Shivam Rajput', 'Shaby Ansari',
   'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
-  'Shafiul', 'Sujel Ahmed', 'Shariar Hussain', 'Atik Rahman', 'Majharul Alam', 'Makhan',
+  'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Makhan',
 ];
 
 type AvailabilityStatus = 'available' | 'unavailable' | 'maybe' | '';
