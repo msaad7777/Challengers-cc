@@ -700,8 +700,8 @@ export default function NetsPage() {
 
                 {/* Match Day Check-In */}
                 <div className="glass rounded-2xl p-6 border border-blue-500/20">
-                  <h3 className="text-lg font-bold text-white mb-1">How Are You Feeling Today?</h3>
-                  <p className="text-gray-500 text-xs mb-4">Pre-match body and mind check</p>
+                  <h3 className="text-lg font-bold text-white mb-1">How Were You Feeling?</h3>
+                  <p className="text-gray-500 text-xs mb-4">Match day body and mind check</p>
                   <div className="flex gap-3 justify-center mb-4">
                     {[
                       { score: 1, emoji: '😫', label: 'Rough' },
