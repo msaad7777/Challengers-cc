@@ -94,12 +94,12 @@ export default function AvailabilityPage() {
   }, [loadAvailability]);
 
   const updateAvailability = async (name: string, matchId: string, newStatus: AvailabilityStatus) => {
-    // Only allow updating your own availability
-    if (name !== playerName) return;
+    // Players can update their own, board/captains can update anyone
+    if (name !== playerName && !isBoard) return;
     setSaving(true);
     const current = allAvailability[name] || {};
     const updated: PlayerAvailability = { ...current, [matchId]: newStatus };
-    const saveData = { ...updated, _email: session?.user?.email || '', _updatedAt: new Date().toISOString() };
+    const saveData = { ...updated, _email: session?.user?.email || '', _updatedAt: new Date().toISOString(), _updatedBy: name === playerName ? 'self' : session?.user?.email || '' };
     await setDoc(doc(db, 'availability', name), saveData);
     setAllAvailability(prev => ({ ...prev, [name]: updated }));
     setSaving(false);
@@ -109,7 +109,8 @@ export default function AvailabilityPage() {
     return <div className="min-h-screen bg-black flex items-center justify-center"><div className="text-primary-400">Loading...</div></div>;
   }
 
-  const filteredMatches = leagueFilter === 'all' ? ALL_MATCHES : ALL_MATCHES.filter(m => m.league === leagueFilter);
+  const filteredMatches = (leagueFilter === 'all' ? ALL_MATCHES : ALL_MATCHES.filter(m => m.league === leagueFilter))
+    .sort((a, b) => a.fullDate.localeCompare(b.fullDate));
 
   const getStatusColor = (s: AvailabilityStatus) => {
     if (s === 'available') return 'bg-primary-500/20 text-primary-400 border-primary-500/50';
@@ -233,7 +234,10 @@ export default function AvailabilityPage() {
                         <div>
                           <p className="text-primary-400 text-xs font-bold mb-1">✅ Available ({available.length})</p>
                           <div className="flex flex-wrap gap-1">{available.map(n => (
-                            <span key={n} className="text-xs px-2 py-0.5 rounded bg-primary-500/10 text-primary-400">{n.split(' ')[0]}</span>
+                            <button key={n} onClick={() => {
+                              const next: AvailabilityStatus = 'maybe';
+                              updateAvailability(n, m.id, next);
+                            }} className="text-xs px-2 py-0.5 rounded bg-primary-500/10 text-primary-400 hover:bg-primary-500/20 transition-all" title="Click to change">{n.split(' ')[0]}</button>
                           ))}</div>
                         </div>
                       )}
@@ -241,7 +245,10 @@ export default function AvailabilityPage() {
                         <div>
                           <p className="text-accent-400 text-xs font-bold mb-1">❓ Maybe ({maybe.length})</p>
                           <div className="flex flex-wrap gap-1">{maybe.map(n => (
-                            <span key={n} className="text-xs px-2 py-0.5 rounded bg-accent-500/10 text-accent-400">{n.split(' ')[0]}</span>
+                            <button key={n} onClick={() => {
+                              const next: AvailabilityStatus = 'unavailable';
+                              updateAvailability(n, m.id, next);
+                            }} className="text-xs px-2 py-0.5 rounded bg-accent-500/10 text-accent-400 hover:bg-accent-500/20 transition-all" title="Click to change">{n.split(' ')[0]}</button>
                           ))}</div>
                         </div>
                       )}
@@ -249,7 +256,10 @@ export default function AvailabilityPage() {
                         <div>
                           <p className="text-red-400 text-xs font-bold mb-1">❌ Unavailable ({unavailable.length})</p>
                           <div className="flex flex-wrap gap-1">{unavailable.map(n => (
-                            <span key={n} className="text-xs px-2 py-0.5 rounded bg-red-500/10 text-red-400">{n.split(' ')[0]}</span>
+                            <button key={n} onClick={() => {
+                              const next: AvailabilityStatus = 'available';
+                              updateAvailability(n, m.id, next);
+                            }} className="text-xs px-2 py-0.5 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all" title="Click to change">{n.split(' ')[0]}</button>
                           ))}</div>
                         </div>
                       )}
@@ -259,7 +269,7 @@ export default function AvailabilityPage() {
                           <div>
                             <p className="text-gray-500 text-xs font-bold mb-1">No Response ({noResp.length})</p>
                             <div className="flex flex-wrap gap-1">{noResp.map(n => (
-                              <span key={n} className="text-xs px-2 py-0.5 rounded bg-white/5 text-gray-600">{n.split(' ')[0]}</span>
+                              <button key={n} onClick={() => updateAvailability(n, m.id, 'available')} className="text-xs px-2 py-0.5 rounded bg-white/5 text-gray-600 hover:bg-primary-500/20 hover:text-primary-400 transition-all" title="Click to mark available">{n.split(' ')[0]}</button>
                             ))}</div>
                           </div>
                         ) : null;
