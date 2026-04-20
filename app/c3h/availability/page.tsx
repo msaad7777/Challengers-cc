@@ -280,23 +280,26 @@ export default function AvailabilityPage() {
       <section className="section-padding pt-32 md:pt-40">
         <div className="max-w-4xl mx-auto">
 
-          <div className="mb-6">
-            <Link href="/c3h/dashboard" className="text-gray-500 text-sm hover:text-primary-400">&larr; Dashboard</Link>
-            <h1 className="text-3xl font-bold text-white mt-2">Squad <span className="gradient-text">Availability</span></h1>
+          <div className="mb-8">
+            <Link href="/c3h/dashboard" className="text-gray-500 text-sm hover:text-primary-400 mb-2 inline-block">&larr; Dashboard</Link>
+            <h1 className="text-3xl font-bold text-white">The <span className="gradient-text">Dugout</span></h1>
+            <p className="text-gray-500 text-sm mt-1">Squad availability and team selection for the 2026 season</p>
           </div>
 
           {/* Filters */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {(['all', 'LCL T30', 'LPL T30'] as const).map(f => (
-              <button key={f} onClick={() => setLeagueFilter(f)} className={`px-4 py-2 rounded-lg text-xs font-medium border transition-all ${leagueFilter === f ? 'bg-primary-500/20 text-primary-400 border-primary-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>
-                {f === 'all' ? 'All Matches' : f}
-              </button>
-            ))}
-            {isBoard && (
-              <button onClick={() => setViewMode(viewMode === 'player' ? 'captain' : 'player')} className={`px-4 py-2 rounded-lg text-xs font-medium border transition-all ml-auto ${viewMode === 'captain' ? 'bg-accent-500/20 text-accent-400 border-accent-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>
-                {viewMode === 'captain' ? 'Captain View' : 'My Availability'}
-              </button>
-            )}
+          <div className="glass rounded-2xl p-4 mb-6 border border-white/5">
+            <div className="flex flex-wrap gap-2 items-center">
+              {(['all', 'LCL T30', 'LPL T30'] as const).map(f => (
+                <button key={f} onClick={() => setLeagueFilter(f)} className={`px-4 py-2 rounded-xl text-xs font-semibold border-2 transition-all ${leagueFilter === f ? 'bg-primary-500/20 text-primary-400 border-primary-500/50 shadow-lg shadow-primary-500/10' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'}`}>
+                  {f === 'all' ? 'All (' + filteredMatches.length + ')' : f}
+                </button>
+              ))}
+              {isBoard && (
+                <button onClick={() => setViewMode(viewMode === 'player' ? 'captain' : 'player')} className={`px-4 py-2 rounded-xl text-xs font-semibold border-2 transition-all ml-auto ${viewMode === 'captain' ? 'bg-accent-500/20 text-accent-400 border-accent-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>
+                  {viewMode === 'captain' ? '👑 Captain' : '🏏 Player'}
+                </button>
+              )}
+            </div>
           </div>
 
           {saving && <p className="text-accent-400 text-xs mb-2">Saving...</p>}
@@ -308,26 +311,28 @@ export default function AvailabilityPage() {
                 const myStatus = getPlayerStatus(playerName, m.id);
                 const counts = getMatchCounts(m.id);
                 return (
-                  <div key={m.id} className={`glass rounded-xl p-4 border ${m.clash ? 'border-red-500/30' : 'border-white/10'}`}>
-                    <div className="flex items-center justify-between mb-2">
+                  <div key={m.id} className={`glass rounded-2xl p-5 border-2 transition-all hover:border-primary-500/20 ${m.clash ? 'border-red-500/30' : 'border-white/5'}`}>
+                    <div className="flex items-center justify-between mb-3">
                       <div>
-                        <span className="text-xs text-gray-500">{m.league}</span>
-                        {m.clash && <span className="ml-2 w-2 h-2 rounded-full bg-red-500 inline-block"></span>}
-                        <p className="text-white font-bold text-sm">vs {m.opponent}</p>
-                        <p className="text-gray-500 text-xs">{m.date} | {m.time} | {m.venue}</p>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${m.league === 'LCL T30' ? 'bg-primary-500/20 text-primary-400' : 'bg-accent-500/20 text-accent-400'}`}>{m.league}</span>
+                          {m.clash && <span className="w-2 h-2 rounded-full bg-red-500 inline-block animate-pulse"></span>}
+                        </div>
+                        <p className="text-white font-bold text-base">vs {m.opponent}</p>
+                        <p className="text-gray-500 text-xs mt-0.5">{m.date} &middot; {m.time} &middot; {m.venue}</p>
                       </div>
                       <div className="text-right">
-                        <div className="flex gap-2 text-xs">
+                        <div className="flex gap-3 text-sm font-bold">
                           <span className="text-primary-400">✅{counts.available}</span>
                           <span className="text-accent-400">❓{counts.maybe}</span>
                           <span className="text-red-400">❌{counts.unavailable}</span>
-                          {counts.noResponse > 0 && <span className="text-gray-500">—{counts.noResponse}</span>}
                         </div>
+                        {counts.noResponse > 0 && <p className="text-gray-600 text-xs mt-0.5">{counts.noResponse} pending</p>}
                       </div>
                     </div>
                     <div className="flex gap-2">
                       {(['available', 'maybe', 'unavailable'] as AvailabilityStatus[]).map(s => (
-                        <button key={s} onClick={() => updateAvailability(playerName, m.id, s)} className={`flex-1 py-2 rounded-lg text-xs font-medium border transition-all ${myStatus === s ? getStatusColor(s) : 'bg-white/5 text-gray-500 border-white/10 hover:bg-white/10'}`}>
+                        <button key={s} onClick={() => updateAvailability(playerName, m.id, myStatus === s ? '' as AvailabilityStatus : s)} className={`flex-1 py-2.5 rounded-xl text-xs font-semibold border-2 transition-all ${myStatus === s ? getStatusColor(s) + ' scale-105 shadow-lg' : 'bg-white/5 text-gray-500 border-white/10 hover:bg-white/10'}`}>
                           {s === 'available' ? '✅ Yes' : s === 'maybe' ? '❓ Maybe' : '❌ No'}
                         </button>
                       ))}
