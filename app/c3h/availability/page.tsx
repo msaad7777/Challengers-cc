@@ -540,30 +540,50 @@ export default function AvailabilityPage() {
                             </div>
                             );
                           })()}
-                          {/* Squad Card for Screenshot */}
-                          {showSquadCard === m.id && (squads[m.id] || []).length === 12 && (
-                            <div id={`squad-card-${m.id}`} className="rounded-2xl p-6 mb-3" style={{ background: 'linear-gradient(135deg, #0a0a0a, #1a2e1a)', border: '2px solid #10b981' }}>
-                              <div className="text-center mb-4">
-                                <h3 className="text-xl font-bold text-primary-400">CHALLENGERS CC</h3>
-                                <p className="text-white font-bold text-sm">vs {m.opponent}</p>
-                                <p className="text-gray-400 text-xs">{m.league} | {m.date} | {m.time} | {m.venue}</p>
-                              </div>
-                              <div className="space-y-1">
-                                {(squads[m.id] || []).map((n, i) => {
-                                  const savedRole = (squadRoles[m.id] || {})[n];
-                                  const displayRole = savedRole || (n === 'Syed Shahriar' && m.league === 'LCL T30' ? 'captain' : n === 'Tarek Islam' && m.league === 'LPL T30' ? 'captain' : n === 'Ankush Arora' && m.league === 'LCL T30' ? 'vc' : n === 'Judin Thomas' && m.league === 'LPL T30' ? 'vc' : n === 'Mohammed Saad' ? 'wk' : '');
-                                  const roleText = displayRole === 'captain' ? '(c)' : displayRole === 'vc' ? '(vc)' : displayRole === 'wk' ? '(wk)' : displayRole === 'bat-sub' ? 'BAT SUB' : displayRole === 'bowl-sub' ? 'BOWL SUB' : '';
-                                  const roleColor = displayRole === 'captain' ? 'text-accent-400' : displayRole === 'vc' ? 'text-purple-400' : displayRole === 'wk' ? 'text-blue-400' : displayRole === 'bat-sub' ? 'text-accent-400' : 'text-blue-400';
-                                  return (
-                                    <div key={n} className={`flex items-center justify-between px-3 py-1.5 rounded ${displayRole ? 'bg-white/5' : i % 2 === 0 ? 'bg-white/3' : ''}`}>
-                                      <span className="text-white text-sm">{i + 1}. {shortName(n)}</span>
-                                      {roleText && <span className={`text-xs font-bold ${roleColor}`}>{roleText}</span>}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                              <div className="text-center mt-4 pt-3 border-t border-white/10">
-                                <p className="text-gray-500 text-xs">challengerscc.ca | Ontario NFP #1746974-8</p>
+                          {/* Squad Card Modal */}
+                          {showSquadCard === m.id && (squads[m.id] || []).length >= 11 && (
+                            <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(12px)' }}>
+                              <div className="relative w-full max-w-md">
+                                {/* Close button */}
+                                <button onClick={() => setShowSquadCard(null)} className="absolute -top-2 -right-2 z-10 w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 text-lg">&times;</button>
+
+                                {/* Card */}
+                                <div className="rounded-2xl p-8 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a0a0a 0%, #0d2818 30%, #1a2e1a 50%, #0d2818 70%, #0a0a0a 100%)', border: '2px solid #10b981', boxShadow: '0 0 60px rgba(16,185,129,0.15)' }}>
+                                  {/* Header */}
+                                  <div className="text-center mb-6">
+                                    <div className="text-3xl mb-2">🏏</div>
+                                    <h3 className="text-2xl font-bold text-primary-400 tracking-wider">CHALLENGERS CC</h3>
+                                    <div className="w-16 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto my-3 rounded-full"></div>
+                                    <p className="text-white font-bold text-lg">vs {m.opponent}</p>
+                                    <p className="text-gray-400 text-xs mt-1">{m.league} | {m.date} | {m.time}</p>
+                                    <p className="text-gray-500 text-xs">{m.venue}</p>
+                                  </div>
+
+                                  {/* Players */}
+                                  <div className="space-y-1.5">
+                                    {(squads[m.id] || []).map((n, i) => {
+                                      const savedRole = (squadRoles[m.id] || {})[n];
+                                      const displayRole = savedRole || (n === 'Syed Shahriar' && m.league === 'LCL T30' ? 'captain' : n === 'Tarek Islam' && m.league === 'LPL T30' ? 'captain' : n === 'Ankush Arora' && m.league === 'LCL T30' ? 'vc' : n === 'Judin Thomas' && m.league === 'LPL T30' ? 'vc' : n === 'Mohammed Saad' ? 'wk' : '');
+                                      const roleText = displayRole === 'captain' ? '(c)' : displayRole === 'vc' ? '(vc)' : displayRole === 'wk' ? '(wk)' : displayRole === 'bat-sub' ? 'BAT SUB' : displayRole === 'bowl-sub' ? 'BOWL SUB' : '';
+                                      const roleColor = displayRole === 'captain' ? 'text-accent-400' : displayRole === 'vc' ? 'text-purple-400' : displayRole === 'wk' ? 'text-blue-400' : displayRole === 'bat-sub' ? 'text-accent-400' : 'text-blue-400';
+                                      return (
+                                        <div key={n} className={`flex items-center justify-between px-4 py-2 rounded-lg ${displayRole ? 'bg-white/5' : i % 2 === 0 ? 'bg-white/[0.02]' : ''}`}>
+                                          <span className="text-white text-sm font-medium">{i + 1}. {shortName(n)}</span>
+                                          {roleText && <span className={`text-xs font-bold ${roleColor}`}>{roleText}</span>}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+
+                                  {/* Footer */}
+                                  <div className="text-center mt-6 pt-4 border-t border-white/10">
+                                    <p className="text-primary-400 text-xs font-medium">challengerscc.ca</p>
+                                    <p className="text-gray-600 text-xs mt-1">Ontario NFP #1746974-8</p>
+                                  </div>
+                                </div>
+
+                                {/* Share hint */}
+                                <p className="text-center text-gray-500 text-xs mt-3">Screenshot this card to share on WhatsApp</p>
                               </div>
                             </div>
                           )}
