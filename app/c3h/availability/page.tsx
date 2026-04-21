@@ -644,12 +644,9 @@ function SquadCardModal({ match, players, roles, shortName, onClose }: {
           </div>
 
           <div className="text-center mt-6 pt-4 border-t border-white/10">
-            <p className="text-primary-400 text-xs font-medium">challengerscc.ca</p>
-            <p className="text-gray-600 text-xs mt-1">Ontario NFP #1746974-8</p>
+            <p className="text-primary-400 text-xs font-medium">Playing 12</p>
           </div>
         </div>
-
-        <p className="text-center text-gray-500 text-xs mt-3">Screenshot this card to share on WhatsApp</p>
       </div>
     </div>
   );
