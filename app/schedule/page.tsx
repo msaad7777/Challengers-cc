@@ -242,7 +242,7 @@ export default function SchedulePage() {
               </a>
             </div>
           ) : (
-            <MatchTable matches={currentTab.matches} />
+            <MatchTable key={activeTab} matches={currentTab.matches} />
           )}
 
           {/* Venues */}
