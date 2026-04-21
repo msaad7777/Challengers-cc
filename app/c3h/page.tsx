@@ -57,8 +57,8 @@ export default function C3HPage() {
             {/* The Nets */}
             <div className="glass rounded-2xl p-7 border-2 border-primary-500/20 hover:border-primary-500/50 transition-all duration-300 relative overflow-hidden">
               <div className="absolute top-4 right-4">
-                <span className="text-xs font-medium px-3 py-1 rounded-full bg-accent-500/20 text-accent-400 border border-accent-500/30">
-                  Coming Soon
+                <span className="text-xs font-medium px-3 py-1 rounded-full bg-primary-500/20 text-primary-400 border border-primary-500/30">
+                  Live
                 </span>
               </div>
               <div className="text-4xl mb-4">🏏</div>
@@ -90,8 +90,8 @@ export default function C3HPage() {
             {/* The Dugout */}
             <div className="glass rounded-2xl p-7 border-2 border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 relative overflow-hidden">
               <div className="absolute top-4 right-4">
-                <span className="text-xs font-medium px-3 py-1 rounded-full bg-accent-500/20 text-accent-400 border border-accent-500/30">
-                  Coming Soon
+                <span className="text-xs font-medium px-3 py-1 rounded-full bg-primary-500/20 text-primary-400 border border-primary-500/30">
+                  Live
                 </span>
               </div>
               <div className="text-4xl mb-4">🪖</div>
@@ -123,8 +123,8 @@ export default function C3HPage() {
             {/* The Scoreboard */}
             <div className="glass rounded-2xl p-7 border-2 border-red-500/20 hover:border-red-500/50 transition-all duration-300 relative overflow-hidden">
               <div className="absolute top-4 right-4">
-                <span className="text-xs font-medium px-3 py-1 rounded-full bg-accent-500/20 text-accent-400 border border-accent-500/30">
-                  Coming Soon
+                <span className="text-xs font-medium px-3 py-1 rounded-full bg-primary-500/20 text-primary-400 border border-primary-500/30">
+                  Live
                 </span>
               </div>
               <div className="text-4xl mb-4">📊</div>
