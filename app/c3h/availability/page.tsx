@@ -626,6 +626,7 @@ function SquadCardModal({ match, players, roles, shortName, onClose }: {
             <p className="text-white font-bold text-lg">vs {match.opponent}</p>
             <p className="text-gray-400 text-xs mt-1">{match.league} | {match.date} | {match.time}</p>
             <p className="text-gray-500 text-xs">{match.venue}</p>
+            <p className="text-white font-bold text-sm mt-3">Playing 12</p>
           </div>
 
           <div className="space-y-1.5">
@@ -644,7 +645,7 @@ function SquadCardModal({ match, players, roles, shortName, onClose }: {
           </div>
 
           <div className="text-center mt-6 pt-4 border-t border-white/10">
-            <p className="text-primary-400 text-xs font-medium">Playing 12</p>
+            <p className="text-primary-400 text-xs font-medium">challengerscc.ca</p>
           </div>
         </div>
       </div>
