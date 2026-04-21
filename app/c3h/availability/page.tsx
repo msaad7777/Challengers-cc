@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { db } from '@/lib/firebase';
 import { collection, doc, setDoc, getDocs } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
@@ -540,53 +541,7 @@ export default function AvailabilityPage() {
                             </div>
                             );
                           })()}
-                          {/* Squad Card Modal */}
-                          {showSquadCard === m.id && (squads[m.id] || []).length >= 11 && (
-                            <div className="fixed inset-0 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.95)', backdropFilter: 'blur(20px)', zIndex: 9999 }} onClick={(e) => { if (e.target === e.currentTarget) setShowSquadCard(null); }}>
-                              <div className="relative w-full max-w-md mx-4">
-                                {/* Close button */}
-                                <button onClick={() => setShowSquadCard(null)} className="absolute -top-2 -right-2 z-10 w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 text-lg">&times;</button>
-
-                                {/* Card */}
-                                <div className="rounded-2xl p-8 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a0a0a 0%, #0d2818 30%, #1a2e1a 50%, #0d2818 70%, #0a0a0a 100%)', border: '2px solid #10b981', boxShadow: '0 0 60px rgba(16,185,129,0.15)' }}>
-                                  {/* Header */}
-                                  <div className="text-center mb-6">
-                                    <div className="text-3xl mb-2">🏏</div>
-                                    <h3 className="text-2xl font-bold text-primary-400 tracking-wider">CHALLENGERS CC</h3>
-                                    <div className="w-16 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto my-3 rounded-full"></div>
-                                    <p className="text-white font-bold text-lg">vs {m.opponent}</p>
-                                    <p className="text-gray-400 text-xs mt-1">{m.league} | {m.date} | {m.time}</p>
-                                    <p className="text-gray-500 text-xs">{m.venue}</p>
-                                  </div>
-
-                                  {/* Players */}
-                                  <div className="space-y-1.5">
-                                    {(squads[m.id] || []).map((n, i) => {
-                                      const savedRole = (squadRoles[m.id] || {})[n];
-                                      const displayRole = savedRole || (n === 'Syed Shahriar' && m.league === 'LCL T30' ? 'captain' : n === 'Tarek Islam' && m.league === 'LPL T30' ? 'captain' : n === 'Ankush Arora' && m.league === 'LCL T30' ? 'vc' : n === 'Judin Thomas' && m.league === 'LPL T30' ? 'vc' : n === 'Mohammed Saad' ? 'wk' : '');
-                                      const roleText = displayRole === 'captain' ? '(c)' : displayRole === 'vc' ? '(vc)' : displayRole === 'wk' ? '(wk)' : displayRole === 'bat-sub' ? 'BAT SUB' : displayRole === 'bowl-sub' ? 'BOWL SUB' : '';
-                                      const roleColor = displayRole === 'captain' ? 'text-accent-400' : displayRole === 'vc' ? 'text-purple-400' : displayRole === 'wk' ? 'text-blue-400' : displayRole === 'bat-sub' ? 'text-accent-400' : 'text-blue-400';
-                                      return (
-                                        <div key={n} className={`flex items-center justify-between px-4 py-2 rounded-lg ${displayRole ? 'bg-white/5' : i % 2 === 0 ? 'bg-white/[0.02]' : ''}`}>
-                                          <span className="text-white text-sm font-medium">{i + 1}. {shortName(n)}</span>
-                                          {roleText && <span className={`text-xs font-bold ${roleColor}`}>{roleText}</span>}
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-
-                                  {/* Footer */}
-                                  <div className="text-center mt-6 pt-4 border-t border-white/10">
-                                    <p className="text-primary-400 text-xs font-medium">challengerscc.ca</p>
-                                    <p className="text-gray-600 text-xs mt-1">Ontario NFP #1746974-8</p>
-                                  </div>
-                                </div>
-
-                                {/* Share hint */}
-                                <p className="text-center text-gray-500 text-xs mt-3">Screenshot this card to share on WhatsApp</p>
-                              </div>
-                            </div>
-                          )}
+                          {/* Squad card rendered via portal below */}
                           {selectingSquad === m.id && (
                             <div className="glass rounded-xl p-3 border border-primary-500/20 mt-2">
                               <p className="text-gray-500 text-xs mb-2">Tap to select/deselect (max 12). Use B/W buttons for subs:</p>
@@ -621,6 +576,81 @@ export default function AvailabilityPage() {
 
         </div>
       </section>
+
+      {/* Squad Card Modal — rendered via portal to document.body */}
+      {showSquadCard && typeof document !== 'undefined' && (() => {
+        const matchData = filteredMatches.find(mm => mm.id === showSquadCard) || ALL_MATCHES.find(mm => mm.id === showSquadCard);
+        const squadPlayers = squads[showSquadCard] || [];
+        if (!matchData || squadPlayers.length < 11) return null;
+        return createPortal(
+          <SquadCardModal
+            match={matchData}
+            players={squadPlayers}
+            roles={squadRoles[showSquadCard] || {}}
+            shortName={shortName}
+            onClose={() => setShowSquadCard(null)}
+          />,
+          document.body
+        );
+      })()}
+    </div>
+  );
+}
+
+function SquadCardModal({ match, players, roles, shortName, onClose }: {
+  match: { id: string; league: string; date: string; time: string; venue: string; opponent: string };
+  players: string[];
+  roles: Record<string, string>;
+  shortName: (n: string) => string;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
+  return (
+    <div
+      className="fixed inset-0 flex items-center justify-center"
+      style={{ zIndex: 99999, backgroundColor: 'rgba(0,0,0,0.95)', backdropFilter: 'blur(20px)' }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="relative w-full max-w-md mx-4">
+        <button onClick={onClose} className="absolute -top-3 -right-3 z-10 w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 text-xl font-bold">&times;</button>
+
+        <div className="rounded-2xl p-8" style={{ background: 'linear-gradient(135deg, #0a0a0a 0%, #0d2818 30%, #1a2e1a 50%, #0d2818 70%, #0a0a0a 100%)', border: '2px solid #10b981', boxShadow: '0 0 80px rgba(16,185,129,0.2)' }}>
+          <div className="text-center mb-6">
+            <div className="text-3xl mb-2">🏏</div>
+            <h3 className="text-2xl font-bold text-primary-400 tracking-wider">CHALLENGERS CC</h3>
+            <div className="w-16 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto my-3 rounded-full"></div>
+            <p className="text-white font-bold text-lg">vs {match.opponent}</p>
+            <p className="text-gray-400 text-xs mt-1">{match.league} | {match.date} | {match.time}</p>
+            <p className="text-gray-500 text-xs">{match.venue}</p>
+          </div>
+
+          <div className="space-y-1.5">
+            {players.map((n, i) => {
+              const savedRole = roles[n];
+              const displayRole = savedRole || (n === 'Syed Shahriar' && match.league === 'LCL T30' ? 'captain' : n === 'Tarek Islam' && match.league === 'LPL T30' ? 'captain' : n === 'Ankush Arora' && match.league === 'LCL T30' ? 'vc' : n === 'Judin Thomas' && match.league === 'LPL T30' ? 'vc' : n === 'Mohammed Saad' ? 'wk' : '');
+              const roleText = displayRole === 'captain' ? '(c)' : displayRole === 'vc' ? '(vc)' : displayRole === 'wk' ? '(wk)' : displayRole === 'bat-sub' ? 'BAT SUB' : displayRole === 'bowl-sub' ? 'BOWL SUB' : '';
+              const roleColor = displayRole === 'captain' ? 'text-accent-400' : displayRole === 'vc' ? 'text-purple-400' : displayRole === 'wk' ? 'text-blue-400' : displayRole === 'bat-sub' ? 'text-accent-400' : 'text-blue-400';
+              return (
+                <div key={n} className={`flex items-center justify-between px-4 py-2 rounded-lg ${displayRole ? 'bg-white/5' : i % 2 === 0 ? 'bg-white/[0.02]' : ''}`}>
+                  <span className="text-white text-sm font-medium">{i + 1}. {shortName(n)}</span>
+                  {roleText && <span className={`text-xs font-bold ${roleColor}`}>{roleText}</span>}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-6 pt-4 border-t border-white/10">
+            <p className="text-primary-400 text-xs font-medium">challengerscc.ca</p>
+            <p className="text-gray-600 text-xs mt-1">Ontario NFP #1746974-8</p>
+          </div>
+        </div>
+
+        <p className="text-center text-gray-500 text-xs mt-3">Screenshot this card to share on WhatsApp</p>
+      </div>
     </div>
   );
 }
