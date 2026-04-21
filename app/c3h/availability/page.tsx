@@ -39,7 +39,7 @@ const ALL_MATCHES = [
   { id: 'lpl-12', league: 'LPL T30', date: 'Sep 6', fullDate: '2026-09-06', opponent: 'London Stars', time: '1:00 PM', venue: 'NLAF', clash: false },
 ];
 
-const PLAYER_NAMES = [
+const ALL_PLAYERS = [
   'Mohammed Saad', 'Tarek Islam', 'Gokul Prakash', 'Qaiser Mahmood', 'Madhu Reddy',
   'Ankush Arora', 'Roman Mahmud', 'Judin Thomas', 'Saikrishna Goriparthi', 'Shoeb Ahmad',
   'Fahad Aktar', 'Denison Davis', 'Abhishek Ladva',
@@ -47,6 +47,22 @@ const PLAYER_NAMES = [
   'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
   'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Makhan', 'Siva Sriram', 'Rajath Shetty',
 ];
+
+// Players restricted to specific leagues
+const LPL_ONLY = ['Siva Sriram', 'Rajath Shetty', 'Noman'];
+const LCL_ONLY = ['Shivam Rajput'];
+
+// Get players for a specific match based on league
+const getPlayersForMatch = (league: string) => {
+  return ALL_PLAYERS.filter(p => {
+    if (LPL_ONLY.includes(p) && league !== 'LPL T30') return false;
+    if (LCL_ONLY.includes(p) && league !== 'LCL T30') return false;
+    return true;
+  });
+};
+
+// Keep PLAYER_NAMES for backward compatibility (all players)
+const PLAYER_NAMES = ALL_PLAYERS;
 
 // Short display names — use last name or nickname where first name is ambiguous
 const SHORT_NAMES: Record<string, string> = {
@@ -263,16 +279,17 @@ export default function AvailabilityPage() {
     return status || ''; // no default — only show what players have marked
   };
 
-  const getMatchCounts = (matchId: string) => {
+  const getMatchCounts = (matchId: string, league: string) => {
+    const players = getPlayersForMatch(league);
     let available = 0, maybe = 0, unavailable = 0, noResponse = 0;
-    PLAYER_NAMES.forEach(n => {
+    players.forEach(n => {
       const s = getPlayerStatus(n, matchId);
       if (s === 'available') available++;
       else if (s === 'maybe') maybe++;
       else if (s === 'unavailable') unavailable++;
       else noResponse++;
     });
-    return { available, maybe, unavailable, noResponse, total: PLAYER_NAMES.length };
+    return { available, maybe, unavailable, noResponse, total: players.length };
   };
 
   return (
@@ -310,8 +327,11 @@ export default function AvailabilityPage() {
           {viewMode === 'player' && (
             <div className="space-y-3">
               {filteredMatches.map(m => {
+                const matchPlayers = getPlayersForMatch(m.league);
+                const isEligible = matchPlayers.includes(playerName);
                 const myStatus = getPlayerStatus(playerName, m.id);
-                const counts = getMatchCounts(m.id);
+                const counts = getMatchCounts(m.id, m.league);
+                if (!isEligible) return null;
                 return (
                   <div key={m.id} className={`glass rounded-2xl p-5 border-2 transition-all hover:border-primary-500/20 ${m.clash ? 'border-red-500/30' : 'border-white/5'}`}>
                     <div className="flex items-center justify-between mb-3">
@@ -359,9 +379,10 @@ export default function AvailabilityPage() {
           {viewMode === 'captain' && isBoard && (
             <div className="space-y-4">
               {filteredMatches.map(m => {
-                const available = PLAYER_NAMES.filter(n => getPlayerStatus(n, m.id) === 'available');
-                const maybe = PLAYER_NAMES.filter(n => getPlayerStatus(n, m.id) === 'maybe');
-                const unavailable = PLAYER_NAMES.filter(n => getPlayerStatus(n, m.id) === 'unavailable');
+                const matchPlayers = getPlayersForMatch(m.league);
+                const available = matchPlayers.filter(n => getPlayerStatus(n, m.id) === 'available');
+                const maybe = matchPlayers.filter(n => getPlayerStatus(n, m.id) === 'maybe');
+                const unavailable = matchPlayers.filter(n => getPlayerStatus(n, m.id) === 'unavailable');
                 return (
                   <div key={m.id} className={`glass rounded-2xl p-5 border ${m.clash ? 'border-red-500/30' : 'border-white/10'}`}>
                     <div className="flex items-center justify-between mb-3">
@@ -428,7 +449,7 @@ export default function AvailabilityPage() {
                         </div>
                       )}
                       {(() => {
-                        const noResp = PLAYER_NAMES.filter(n => !getPlayerStatus(n, m.id));
+                        const noResp = matchPlayers.filter(n => !getPlayerStatus(n, m.id));
                         return noResp.length > 0 ? (
                           <div>
                             <p className="text-gray-500 text-xs font-bold mb-1">No Response ({noResp.length})</p>
