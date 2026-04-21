@@ -542,8 +542,8 @@ export default function AvailabilityPage() {
                           })()}
                           {/* Squad Card Modal */}
                           {showSquadCard === m.id && (squads[m.id] || []).length >= 11 && (
-                            <div className="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto" style={{ backgroundColor: 'rgba(0,0,0,0.9)', backdropFilter: 'blur(16px)', zIndex: 9999 }} onClick={(e) => { if (e.target === e.currentTarget) setShowSquadCard(null); }}>
-                              <div className="relative w-full max-w-md">
+                            <div className="fixed inset-0 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.95)', backdropFilter: 'blur(20px)', zIndex: 9999 }} onClick={(e) => { if (e.target === e.currentTarget) setShowSquadCard(null); }}>
+                              <div className="relative w-full max-w-md mx-4">
                                 {/* Close button */}
                                 <button onClick={() => setShowSquadCard(null)} className="absolute -top-2 -right-2 z-10 w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 text-lg">&times;</button>
 
