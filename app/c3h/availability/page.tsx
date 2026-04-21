@@ -535,7 +535,7 @@ export default function AvailabilityPage() {
                                   const roleColor = displayRole === 'captain' ? 'text-accent-400' : displayRole === 'vc' ? 'text-purple-400' : displayRole === 'wk' ? 'text-blue-400' : displayRole === 'bat-sub' ? 'text-accent-400' : 'text-blue-400';
                                   return (
                                     <div key={n} className={`flex items-center justify-between px-3 py-1.5 rounded ${displayRole ? 'bg-white/5' : i % 2 === 0 ? 'bg-white/3' : ''}`}>
-                                      <span className="text-white text-sm">{i + 1}. {n}</span>
+                                      <span className="text-white text-sm">{i + 1}. {shortName(n)}</span>
                                       {roleText && <span className={`text-xs font-bold ${roleColor}`}>{roleText}</span>}
                                     </div>
                                   );
