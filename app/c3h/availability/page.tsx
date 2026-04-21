@@ -611,41 +611,41 @@ function SquadCardModal({ match, players, roles, shortName, onClose }: {
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center"
+      className="fixed inset-0 flex items-center justify-center p-2 sm:p-4"
       style={{ zIndex: 99999, backgroundColor: 'rgba(0,0,0,0.95)', backdropFilter: 'blur(20px)' }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="relative w-full max-w-md mx-4">
-        <button onClick={onClose} className="absolute -top-3 -right-3 z-10 w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 text-xl font-bold">&times;</button>
+      <div className="relative w-full max-w-sm sm:max-w-md">
+        <button onClick={onClose} className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 text-lg sm:text-xl font-bold">&times;</button>
 
-        <div className="rounded-2xl p-8" style={{ background: 'linear-gradient(135deg, #0a0a0a 0%, #0d2818 30%, #1a2e1a 50%, #0d2818 70%, #0a0a0a 100%)', border: '2px solid #10b981', boxShadow: '0 0 80px rgba(16,185,129,0.2)' }}>
-          <div className="text-center mb-6">
-            <div className="text-3xl mb-2">🏏</div>
-            <h3 className="text-2xl font-bold text-primary-400 tracking-wider">CHALLENGERS CC</h3>
-            <div className="w-16 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto my-3 rounded-full"></div>
-            <p className="text-white font-bold text-lg">vs {match.opponent}</p>
-            <p className="text-gray-400 text-xs mt-1">{match.league} | {match.date} | {match.time}</p>
-            <p className="text-gray-500 text-xs">{match.venue}</p>
-            <p className="text-white font-bold text-sm mt-3">Playing 12</p>
+        <div className="rounded-2xl p-4 sm:p-8" style={{ background: 'linear-gradient(135deg, #0a0a0a 0%, #0d2818 30%, #1a2e1a 50%, #0d2818 70%, #0a0a0a 100%)', border: '2px solid #10b981', boxShadow: '0 0 80px rgba(16,185,129,0.2)' }}>
+          <div className="text-center mb-3 sm:mb-6">
+            <div className="text-2xl sm:text-3xl mb-1 sm:mb-2">🏏</div>
+            <h3 className="text-lg sm:text-2xl font-bold text-primary-400 tracking-wider">CHALLENGERS CC</h3>
+            <div className="w-12 sm:w-16 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto my-2 sm:my-3 rounded-full"></div>
+            <p className="text-white font-bold text-sm sm:text-lg">vs {match.opponent}</p>
+            <p className="text-gray-400 text-[10px] sm:text-xs mt-1">{match.league} | {match.date} | {match.time}</p>
+            <p className="text-gray-500 text-[10px] sm:text-xs">{match.venue}</p>
+            <p className="text-white font-bold text-xs sm:text-sm mt-2 sm:mt-3">Playing 12</p>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-1 sm:space-y-1.5">
             {players.map((n, i) => {
               const savedRole = roles[n];
               const displayRole = savedRole || (n === 'Syed Shahriar' && match.league === 'LCL T30' ? 'captain' : n === 'Tarek Islam' && match.league === 'LPL T30' ? 'captain' : n === 'Ankush Arora' && match.league === 'LCL T30' ? 'vc' : n === 'Judin Thomas' && match.league === 'LPL T30' ? 'vc' : n === 'Mohammed Saad' ? 'wk' : '');
               const roleText = displayRole === 'captain' ? '(c)' : displayRole === 'vc' ? '(vc)' : displayRole === 'wk' ? '(wk)' : displayRole === 'bat-sub' ? 'BAT SUB' : displayRole === 'bowl-sub' ? 'BOWL SUB' : '';
               const roleColor = displayRole === 'captain' ? 'text-accent-400' : displayRole === 'vc' ? 'text-purple-400' : displayRole === 'wk' ? 'text-blue-400' : displayRole === 'bat-sub' ? 'text-accent-400' : 'text-blue-400';
               return (
-                <div key={n} className={`flex items-center justify-between px-4 py-2 rounded-lg ${displayRole ? 'bg-white/5' : i % 2 === 0 ? 'bg-white/[0.02]' : ''}`}>
-                  <span className="text-white text-sm font-medium">{i + 1}. {shortName(n)}</span>
-                  {roleText && <span className={`text-xs font-bold ${roleColor}`}>{roleText}</span>}
+                <div key={n} className={`flex items-center justify-between px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg ${displayRole ? 'bg-white/5' : i % 2 === 0 ? 'bg-white/[0.02]' : ''}`}>
+                  <span className="text-white text-xs sm:text-sm font-medium">{i + 1}. {shortName(n)}</span>
+                  {roleText && <span className={`text-[10px] sm:text-xs font-bold ${roleColor}`}>{roleText}</span>}
                 </div>
               );
             })}
           </div>
 
-          <div className="text-center mt-6 pt-4 border-t border-white/10">
-            <p className="text-primary-400 text-xs font-medium">challengerscc.ca</p>
+          <div className="text-center mt-3 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10">
+            <p className="text-primary-400 text-[10px] sm:text-xs font-medium">challengerscc.ca</p>
           </div>
         </div>
       </div>
