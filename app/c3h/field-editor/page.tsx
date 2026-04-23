@@ -202,8 +202,8 @@ function FieldEditorContent() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
       <Navbar />
-      <section className="pt-24 pb-8 px-4">
-        <div className="max-w-lg mx-auto">
+      <section className="pt-24 pb-8 px-3 sm:px-4">
+        <div className="max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto">
           <div className="flex items-center justify-between mb-3">
             <div>
               <Link href="/c3h/availability" className="text-gray-500 text-xs hover:text-primary-400">&larr; Dugout</Link>
@@ -260,8 +260,8 @@ function FieldEditorContent() {
               <rect x="-4" y="-36" width="8" height="3" rx="1" fill="white" opacity="0.7" />
 
               {/* Batter */}
-              <circle cx={leftHanded ? 8 : -8} cy="42" r="6" fill="#eab308" stroke="white" strokeWidth="1.5" />
-              {showNames && <text x={leftHanded ? 8 : -8} y="56" textAnchor="middle" fill="#eab308" fontSize="7" fontWeight="bold">{batterName || 'Batter'}</text>}
+              <circle cx={leftHanded ? 8 : -8} cy="42" r="8" fill="#eab308" stroke="white" strokeWidth="2" />
+              {showNames && <text x={leftHanded ? 8 : -8} y="58" textAnchor="middle" fill="#eab308" fontSize="9" fontWeight="bold">{batterName || 'Batter'}</text>}
 
               {/* Fielders */}
               {players.map((p, i) => {
@@ -277,21 +277,21 @@ function FieldEditorContent() {
                     style={{ transition: draggedIdx === i ? 'none' : 'all 0.1s' }}
                   >
                     {/* Invisible larger hit area for touch */}
-                    <circle cx={px} cy={p.y} r="18" fill="transparent" />
+                    <circle cx={px} cy={p.y} r="22" fill="transparent" />
                     {/* Visible marker */}
-                    <circle cx={px} cy={p.y} r={draggedIdx === i ? 10 : 8} fill={fill} stroke={strokeColor} strokeWidth="1.5" opacity={draggedIdx === i ? 1 : 0.9} />
+                    <circle cx={px} cy={p.y} r={draggedIdx === i ? 12 : 10} fill={fill} stroke={strokeColor} strokeWidth="2" opacity={draggedIdx === i ? 1 : 0.9} />
                     {showNames && (
                       <>
-                        <rect x={px - 22} y={p.y - 20} width="44" height="10" rx="3" fill="rgba(0,0,0,0.7)" />
-                        <text x={px} y={p.y - 12} textAnchor="middle" fill="white" fontSize="7" fontWeight="bold" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>
+                        <rect x={px - 28} y={p.y - 22} width="56" height="13" rx="4" fill="rgba(0,0,0,0.8)" />
+                        <text x={px} y={p.y - 12} textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">
                           {shortN(p.name)}
                         </text>
                       </>
                     )}
                     {showPositions && (
                       <>
-                        <rect x={px - 22} y={p.y + (showNames ? 10 : 8)} width="44" height="9" rx="3" fill="rgba(0,0,0,0.5)" />
-                        <text x={px} y={p.y + (showNames ? 17 : 15)} textAnchor="middle" fill="#d1d5db" fontSize="5.5" fontWeight="600">
+                        <rect x={px - 28} y={p.y + (showNames ? 12 : 10)} width="56" height="11" rx="4" fill="rgba(0,0,0,0.6)" />
+                        <text x={px} y={p.y + (showNames ? 21 : 19)} textAnchor="middle" fill="#e5e7eb" fontSize="7" fontWeight="600">
                           {p.position}
                         </text>
                       </>
