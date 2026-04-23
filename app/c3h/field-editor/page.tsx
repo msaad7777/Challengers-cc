@@ -17,42 +17,61 @@ interface FieldPlayer {
 }
 
 // Standard cricket positions — normalized 0-100 coordinates
-// Batter at top, bowler at bottom (standard TV view)
+// Based on Wikipedia cricket fielding positions diagram
+// Batter at top (batting end), bowler at bottom (bowling end)
+// Off side = LEFT (for right-hand batter), Leg side = RIGHT
 const POSITION_COORDS: Record<string, { x: number; y: number }> = {
-  'Wicketkeeper': { x: 50, y: 32 },
-  'Slip': { x: 38, y: 29 },
-  '2nd Slip': { x: 33, y: 26 },
-  '3rd Slip': { x: 28, y: 23 },
-  'Gully': { x: 25, y: 32 },
-  'Point': { x: 25, y: 40 },
-  'Cover': { x: 25, y: 57 },
-  'Extra Cover': { x: 30, y: 52 },
-  'Mid-off': { x: 35, y: 70 },
-  'Mid-on': { x: 65, y: 70 },
-  'Mid-wicket': { x: 75, y: 57 },
-  'Square Leg': { x: 75, y: 40 },
-  'Leg Gully': { x: 75, y: 32 },
-  'Leg Slip': { x: 62, y: 29 },
-  'Fine Leg': { x: 75, y: 12 },
-  'Third Man': { x: 25, y: 12 },
-  'Deep Point': { x: 5, y: 50 },
-  'Deep Cover': { x: 18, y: 75 },
-  'Deep Square Leg': { x: 95, y: 50 },
-  'Deep Mid-wicket': { x: 82, y: 75 },
-  'Long-off': { x: 43, y: 93 },
-  'Long-on': { x: 57, y: 93 },
-  'Long Leg': { x: 82, y: 12 },
-  'Short Leg': { x: 62, y: 38 },
-  'Silly Point': { x: 38, y: 38 },
-  'Silly Mid-on': { x: 55, y: 55 },
-  'Silly Mid-off': { x: 45, y: 55 },
+  // Behind wicket (close)
+  'Wicketkeeper': { x: 50, y: 30 },
+  '1st Slip': { x: 40, y: 27 },
+  '2nd Slip': { x: 35, y: 24 },
+  '3rd Slip': { x: 30, y: 21 },
+  'Leg Slip': { x: 60, y: 27 },
+  'Gully': { x: 27, y: 32 },
+  'Leg Gully': { x: 73, y: 32 },
+  // Close catching (off side)
+  'Silly Point': { x: 40, y: 42 },
+  'Silly Mid-off': { x: 44, y: 52 },
+  // Close catching (leg side)
+  'Short Leg': { x: 60, y: 42 },
+  'Silly Mid-on': { x: 56, y: 52 },
+  // Inner ring (off side)
+  'Point': { x: 22, y: 42 },
+  'Cover Point': { x: 20, y: 50 },
+  'Cover': { x: 22, y: 55 },
+  'Extra Cover': { x: 28, y: 60 },
+  'Mid-off': { x: 38, y: 72 },
+  // Inner ring (leg side)
+  'Square Leg': { x: 78, y: 42 },
+  'Mid-wicket': { x: 78, y: 55 },
+  'Mid-on': { x: 62, y: 72 },
+  // Inner ring (behind)
+  'Fine Leg': { x: 80, y: 18 },
+  'Third Man': { x: 20, y: 18 },
   'Backward Point': { x: 15, y: 30 },
-  'Deep Backward Square': { x: 90, y: 25 },
-  'Cow Corner': { x: 80, y: 85 },
+  'Backward Square Leg': { x: 85, y: 30 },
+  // Boundary (off side)
+  'Deep Point': { x: 7, y: 42 },
+  'Deep Cover': { x: 10, y: 62 },
+  'Deep Extra Cover': { x: 18, y: 72 },
+  'Long-off': { x: 38, y: 92 },
+  // Boundary (leg side)
+  'Deep Square Leg': { x: 93, y: 42 },
+  'Deep Mid-wicket': { x: 90, y: 62 },
+  'Long-on': { x: 62, y: 92 },
+  'Deep Fine Leg': { x: 88, y: 12 },
+  'Long Leg': { x: 85, y: 18 },
+  // Boundary (behind)
+  'Deep Third Man': { x: 12, y: 12 },
+  'Fly Slip': { x: 30, y: 12 },
+  // Special
+  'Cow Corner': { x: 82, y: 80 },
+  'Sweeper': { x: 8, y: 50 },
+  // Fixed
   'Bowler': { x: 50, y: 67 },
 };
 
-const POSITION_NAMES = Object.keys(POSITION_COORDS).filter(p => p !== 'Bowler' && p !== 'Wicketkeeper');
+const POSITION_NAMES = Object.keys(POSITION_COORDS).filter(p => p !== 'Bowler' && p !== 'Wicketkeeper').sort();
 
 // Detect nearest position based on coordinates
 function getNearestPosition(x: number, y: number): string {
@@ -66,11 +85,11 @@ function getNearestPosition(x: number, y: number): string {
   return closest;
 }
 
-// Default starting positions for 11 fielders
+// Default starting positions for 11 fielders (standard field)
 const DEFAULT_FIELD: { position: string; role: 'wk' | 'bowler' | 'fielder' }[] = [
   { position: 'Wicketkeeper', role: 'wk' },
   { position: 'Bowler', role: 'bowler' },
-  { position: 'Slip', role: 'fielder' },
+  { position: '1st Slip', role: 'fielder' },
   { position: 'Point', role: 'fielder' },
   { position: 'Cover', role: 'fielder' },
   { position: 'Mid-off', role: 'fielder' },
