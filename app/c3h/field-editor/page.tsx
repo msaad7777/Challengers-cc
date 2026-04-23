@@ -281,14 +281,20 @@ function FieldEditorContent() {
                     {/* Visible marker */}
                     <circle cx={px} cy={p.y} r={draggedIdx === i ? 10 : 8} fill={fill} stroke={strokeColor} strokeWidth="1.5" opacity={draggedIdx === i ? 1 : 0.9} />
                     {showNames && (
-                      <text x={px} y={p.y - 12} textAnchor="middle" fill="white" fontSize="6" fontWeight="bold">
-                        {shortN(p.name)}
-                      </text>
+                      <>
+                        <rect x={px - 22} y={p.y - 20} width="44" height="10" rx="3" fill="rgba(0,0,0,0.7)" />
+                        <text x={px} y={p.y - 12} textAnchor="middle" fill="white" fontSize="7" fontWeight="bold" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>
+                          {shortN(p.name)}
+                        </text>
+                      </>
                     )}
                     {showPositions && (
-                      <text x={px} y={p.y + (showNames ? 18 : 14)} textAnchor="middle" fill="#9ca3af" fontSize="5">
-                        {p.position}
-                      </text>
+                      <>
+                        <rect x={px - 22} y={p.y + (showNames ? 10 : 8)} width="44" height="9" rx="3" fill="rgba(0,0,0,0.5)" />
+                        <text x={px} y={p.y + (showNames ? 17 : 15)} textAnchor="middle" fill="#d1d5db" fontSize="5.5" fontWeight="600">
+                          {p.position}
+                        </text>
+                      </>
                     )}
                   </g>
                 );
