@@ -204,6 +204,8 @@ export default function AvailabilityPage() {
   const toggleSquadPlayer = async (matchId: string, playerN: string) => {
     const current = squads[matchId] || [];
     const currentRoles = squadRoles[matchId] || {};
+    // Block selecting unavailable players
+    if (!current.includes(playerN) && getPlayerStatus(playerN, matchId) === 'unavailable') return;
     const updated = current.includes(playerN)
       ? current.filter(p => p !== playerN)
       : current.length < 12 ? [...current, playerN] : current;
@@ -409,7 +411,7 @@ export default function AvailabilityPage() {
                             <button onClick={() => { updateAvailability(playerMenu.player, m.id, 'available'); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30">✅ Available</button>
                             <button onClick={() => { updateAvailability(playerMenu.player, m.id, 'maybe'); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30">❓ Maybe</button>
                             <button onClick={() => { updateAvailability(playerMenu.player, m.id, 'unavailable'); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-red-500/20 text-red-400 border border-red-500/30">❌ Unavailable</button>
-                            {isCaptain && !(squads[m.id] || []).includes(playerMenu.player) && (squads[m.id] || []).length < 12 && (
+                            {isCaptain && !(squads[m.id] || []).includes(playerMenu.player) && (squads[m.id] || []).length < 12 && getPlayerStatus(playerMenu.player, m.id) !== 'unavailable' && (
                               <button onClick={() => { toggleSquadPlayer(m.id, playerMenu.player); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30">🏏 Select</button>
                             )}
                             {isCaptain && (squads[m.id] || []).includes(playerMenu.player) && (
