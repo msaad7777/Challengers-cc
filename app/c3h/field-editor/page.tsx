@@ -60,7 +60,7 @@ function getPositionLabel(x: number, y: number, leftHanded: boolean): string {
 
 // Default starting positions — batter at TOP, bowler at BOTTOM
 const INITIAL_POSITIONS: { x: number; y: number; role: 'wk' | 'bowler' | 'fielder' }[] = [
-  { x: 0, y: -55, role: 'wk' },        // WK (behind batter, top)
+  { x: 0, y: -72, role: 'wk' },        // WK (behind batter, top)
   { x: 0, y: 30, role: 'bowler' },      // Bowler (bottom, running in)
   { x: 30, y: -50, role: 'fielder' },   // 1st slip
   { x: 45, y: -45, role: 'fielder' },   // 2nd slip
@@ -312,13 +312,13 @@ function FieldEditorContent() {
                     <circle cx={px} cy={p.y} r={draggedIdx === i ? 12 : 10} fill={fill} stroke={strokeColor} strokeWidth="2" opacity={draggedIdx === i ? 1 : 0.9} />
                     {showNames && (
                       <>
-                        <rect x={px - 28} y={p.y - 22} width="56" height="13" rx="4" fill="rgba(0,0,0,0.8)" />
-                        <text x={px} y={p.y - 12} textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">
-                          {shortN(p.name)}
+                        <rect x={px - 28} y={isWk ? p.y - 28 : p.y - 22} width="56" height="13" rx="4" fill="rgba(0,0,0,0.8)" />
+                        <text x={px} y={isWk ? p.y - 18 : p.y - 12} textAnchor="middle" fill={isWk ? '#93c5fd' : 'white'} fontSize="9" fontWeight="bold">
+                          {shortN(p.name)} {isWk ? '(wk)' : ''}
                         </text>
                       </>
                     )}
-                    {showPositions && (
+                    {showPositions && !isWk && (
                       <>
                         <rect x={px - 28} y={p.y + (showNames ? 12 : 10)} width="56" height="11" rx="4" fill="rgba(0,0,0,0.6)" />
                         <text x={px} y={p.y + (showNames ? 21 : 19)} textAnchor="middle" fill="#e5e7eb" fontSize="7" fontWeight="600">
