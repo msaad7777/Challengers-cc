@@ -152,13 +152,15 @@ function FieldEditorContent() {
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (draggedIdx === null) return;
+    e.preventDefault();
     const pt = getSVGPoint(e);
     if (!pt) return;
-    // Clamp to field boundary (ellipse radius ~220)
+    // Clamp to field boundary
     const dist = Math.sqrt(pt.x * pt.x + pt.y * pt.y);
     const maxR = 215;
     let nx = pt.x, ny = pt.y;
     if (dist > maxR) { nx = (pt.x / dist) * maxR; ny = (pt.y / dist) * maxR; }
+    // Store coordinates as displayed (no flip) — position label accounts for handedness
     const position = getPositionLabel(nx, ny, leftHanded);
     const updated = [...players];
     updated[draggedIdx] = { ...updated[draggedIdx], x: nx, y: ny, position };
@@ -223,7 +225,17 @@ function FieldEditorContent() {
               Positions
             </label>
             <label className="flex items-center gap-1 text-gray-400 glass px-2 py-1 rounded-lg">
-              <input type="checkbox" checked={leftHanded} onChange={e => { setLeftHanded(e.target.checked); }} className="w-3 h-3" />
+              <input type="checkbox" checked={leftHanded} onChange={e => {
+                const newLH = e.target.checked;
+                setLeftHanded(newLH);
+                // Mirror all player X positions
+                const mirrored = players.map(p => {
+                  const newX = -p.x;
+                  return { ...p, x: newX, position: getPositionLabel(newX, p.y, newLH) };
+                });
+                setPlayers(mirrored);
+                saveField(mirrored);
+              }} className="w-3 h-3" />
               LHB
             </label>
             <button onClick={resetPositions} className="text-red-400 glass px-2 py-1 rounded-lg hover:bg-red-500/10">Reset</button>
@@ -265,7 +277,7 @@ function FieldEditorContent() {
 
               {/* Fielders */}
               {players.map((p, i) => {
-                const px = leftHanded ? -p.x : p.x;
+                const px = p.x;
                 const isWk = p.role === 'wk';
                 const isBowler = p.role === 'bowler';
                 const fill = isWk ? '#3b82f6' : isBowler ? '#ef4444' : '#10b981';
