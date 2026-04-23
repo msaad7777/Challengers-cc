@@ -27,7 +27,6 @@ const POSITION_COORDS: Record<string, { x: number; y: number }> = {
   'Gully': { x: 27, y: 32 },
   'Leg Gully': { x: 73, y: 32 },
   // Close catching (off side)
-  'Silly Point': { x: 40, y: 42 },
   'Silly Mid-off': { x: 44, y: 52 },
   // Close catching (leg side)
   'Short Leg': { x: 60, y: 42 },
