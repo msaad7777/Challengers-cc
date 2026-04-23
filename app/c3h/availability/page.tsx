@@ -649,7 +649,8 @@ function SquadCardModal({ match, players, roles, shortName, onClose }: {
           </div>
 
           <div className="text-center mt-3 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10">
-            <p className="text-primary-400 text-[10px] sm:text-xs font-medium">challengerscc.ca</p>
+            <a href={`/c3h/field-editor?match=${match.id}`} className="text-blue-400 text-[10px] sm:text-xs font-medium hover:text-blue-300 underline">View Field Positions</a>
+            <p className="text-primary-400 text-[10px] sm:text-xs font-medium mt-1">challengerscc.ca</p>
           </div>
         </div>
       </div>
