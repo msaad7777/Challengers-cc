@@ -533,9 +533,14 @@ export default function AvailabilityPage() {
                                 );
                               })}
                               {(squads[m.id] || []).length >= 11 && isCaptain && (
-                                <button onClick={() => setShowSquadCard(showSquadCard === m.id ? null : m.id)} className="mt-2 text-xs px-3 py-1.5 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30 hover:bg-accent-500/30">
-                                  {showSquadCard === m.id ? 'Hide Card' : 'View Squad Card'}
-                                </button>
+                                <div className="flex gap-2 mt-2">
+                                  <button onClick={() => setShowSquadCard(showSquadCard === m.id ? null : m.id)} className="text-xs px-3 py-1.5 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30 hover:bg-accent-500/30">
+                                    {showSquadCard === m.id ? 'Hide Card' : 'View Squad Card'}
+                                  </button>
+                                  <a href={`/c3h/field-editor?match=${m.id}`} className="text-xs px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30 hover:bg-primary-500/30">
+                                    Field Editor
+                                  </a>
+                                </div>
                               )}
                             </div>
                             );
