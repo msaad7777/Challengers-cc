@@ -20,7 +20,7 @@ interface FieldPlayer {
 function getPositionLabel(x: number, y: number, leftHanded: boolean): string {
   const fx = leftHanded ? -x : x;
   const dist = Math.sqrt(fx * fx + y * y);
-  const angle = Math.atan2(fx, -y) * (180 / Math.PI); // 0=straight, +ve=offside, -ve=legside
+  const angle = Math.atan2(fx, y) * (180 / Math.PI); // 0=straight (towards bowler/bottom), +ve=offside, -ve=legside
 
   // Close positions (within 30-yard circle)
   if (dist < 60) {
@@ -40,7 +40,7 @@ function getPositionLabel(x: number, y: number, leftHanded: boolean): string {
     if (angle > -40) return 'Mid-wicket';
     if (angle > -70) return 'Square Leg';
     if (angle > -100) return 'Leg Gully';
-    if (y > 0) return angle > 0 ? 'Slip' : 'Leg Slip';
+    if (y < 0) return angle > 0 ? 'Slip' : 'Leg Slip';
     return 'Fine Leg';
   }
 
@@ -58,19 +58,19 @@ function getPositionLabel(x: number, y: number, leftHanded: boolean): string {
   return 'Fine Leg';
 }
 
-// Default random-ish starting positions for 11 fielders
+// Default starting positions — batter at TOP, bowler at BOTTOM
 const INITIAL_POSITIONS: { x: number; y: number; role: 'wk' | 'bowler' | 'fielder' }[] = [
-  { x: 0, y: 55, role: 'wk' },       // WK
-  { x: 0, y: -30, role: 'bowler' },   // Bowler
-  { x: 30, y: 50, role: 'fielder' },  // 1st slip
-  { x: 45, y: 45, role: 'fielder' },  // 2nd slip
-  { x: 100, y: 10, role: 'fielder' }, // Point
-  { x: 80, y: -50, role: 'fielder' }, // Cover
-  { x: 30, y: -110, role: 'fielder' },// Mid-off
-  { x: -30, y: -110, role: 'fielder' },// Mid-on
-  { x: -80, y: -40, role: 'fielder' },// Mid-wicket
-  { x: -60, y: 20, role: 'fielder' }, // Square leg
-  { x: -30, y: 80, role: 'fielder' }, // Fine leg
+  { x: 0, y: -55, role: 'wk' },        // WK (behind batter, top)
+  { x: 0, y: 30, role: 'bowler' },      // Bowler (bottom, running in)
+  { x: 30, y: -50, role: 'fielder' },   // 1st slip
+  { x: 45, y: -45, role: 'fielder' },   // 2nd slip
+  { x: 100, y: -10, role: 'fielder' },  // Point
+  { x: 80, y: 50, role: 'fielder' },    // Cover
+  { x: 30, y: 110, role: 'fielder' },   // Mid-off
+  { x: -30, y: 110, role: 'fielder' },  // Mid-on
+  { x: -80, y: 40, role: 'fielder' },   // Mid-wicket
+  { x: -60, y: -20, role: 'fielder' },  // Square leg
+  { x: -30, y: -80, role: 'fielder' },  // Fine leg
 ];
 
 function FieldEditorContent() {
@@ -289,9 +289,9 @@ function FieldEditorContent() {
               <rect x="-4" y="33" width="8" height="3" rx="1" fill="white" opacity="0.7" />
               <rect x="-4" y="-36" width="8" height="3" rx="1" fill="white" opacity="0.7" />
 
-              {/* Batter */}
-              <circle cx={leftHanded ? 8 : -8} cy="42" r="8" fill="#eab308" stroke="white" strokeWidth="2" />
-              {showNames && <text x={leftHanded ? 8 : -8} y="58" textAnchor="middle" fill="#eab308" fontSize="9" fontWeight="bold">{batterName || 'Batter'}</text>}
+              {/* Batter — at TOP */}
+              <circle cx={leftHanded ? 8 : -8} cy="-42" r="8" fill="#eab308" stroke="white" strokeWidth="2" />
+              {showNames && <text x={leftHanded ? 8 : -8} y="-52" textAnchor="middle" fill="#eab308" fontSize="9" fontWeight="bold">{batterName || 'Batter'}</text>}
 
               {/* Fielders */}
               {players.map((p, i) => {
