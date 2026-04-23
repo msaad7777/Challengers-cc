@@ -314,7 +314,7 @@ export default function MentalGamePage() {
           {/* C3H PORTAL CTA */}
           <div className="glass rounded-2xl p-8 mb-8 border border-blue-500/20 text-center">
             <h2 className="text-2xl font-bold text-white mb-2">Take Your Game Further</h2>
-            <p className="text-gray-400 text-sm mb-4">Registered players get access to the C3H Portal — our private members-only platform with tools built for your development.</p>
+            <p className="text-gray-400 text-sm mb-4">All registered members get free access to the C3H Portal — our player development platform, included with your season membership at no extra cost.</p>
             <div className="grid sm:grid-cols-3 gap-3 mb-6 text-left">
               <div className="glass rounded-xl p-4">
                 <h4 className="text-blue-400 font-bold text-sm mb-1">Shot Planner</h4>
@@ -330,8 +330,9 @@ export default function MentalGamePage() {
               </div>
             </div>
             <Link href="/#register" className="inline-block px-8 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-105">
-              Register to Get Access
+              Join the Club
             </Link>
+            <p className="text-gray-600 text-xs mt-3">Challengers CC is a registered Ontario nonprofit. All membership fees go directly toward league fees, equipment, and ground bookings.</p>
           </div>
 
           {/* FINAL QUOTE */}
