@@ -224,19 +224,23 @@ function FieldEditorContent() {
               Positions
             </label>
             <label className="flex items-center gap-1 text-gray-400 glass px-2 py-1 rounded-lg">
-              <input type="checkbox" checked={leftHanded} onChange={e => {
+              <input type="checkbox" checked={leftHanded} onChange={async e => {
                 const newLH = e.target.checked;
                 setLeftHanded(newLH);
-                // Mirror all player X positions
                 const mirrored = players.map(p => {
                   const newX = -p.x;
-                  return { ...p, x: newX, position: getPositionLabel(newX, p.y, newLH) };
+                  return { ...p, x: newX, position: getPositionLabel(newX, p.y, false) };
                 });
                 setPlayers(mirrored);
-                saveField(mirrored);
+                // Save directly with new leftHanded value
+                await setDoc(doc(db, 'field-positions', matchId), {
+                  players: mirrored, batterName, bowlerName, leftHanded: newLH, matchInfo,
+                  updatedBy: session?.user?.email, updatedAt: new Date().toISOString(),
+                });
               }} className="w-3 h-3" />
               LHB
             </label>
+            <button onClick={async () => { await saveField(players); alert('Field positions saved!'); }} className="text-primary-400 glass px-3 py-1 rounded-lg hover:bg-primary-500/10 font-bold">{saving ? 'Saving...' : 'Save'}</button>
             <button onClick={resetPositions} className="text-red-400 glass px-2 py-1 rounded-lg hover:bg-red-500/10">Reset</button>
           </div>
 
