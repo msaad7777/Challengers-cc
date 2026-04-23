@@ -23,9 +23,6 @@ interface FieldPlayer {
 const POSITION_COORDS: Record<string, { x: number; y: number }> = {
   // Behind wicket (close)
   'Wicketkeeper': { x: 50, y: 30 },
-  '1st Slip': { x: 40, y: 27 },
-  '2nd Slip': { x: 35, y: 24 },
-  '3rd Slip': { x: 30, y: 21 },
   'Leg Slip': { x: 60, y: 27 },
   'Gully': { x: 27, y: 32 },
   'Leg Gully': { x: 73, y: 32 },
@@ -63,7 +60,6 @@ const POSITION_COORDS: Record<string, { x: number; y: number }> = {
   'Long Leg': { x: 85, y: 18 },
   // Boundary (behind)
   'Deep Third Man': { x: 12, y: 12 },
-  'Fly Slip': { x: 30, y: 12 },
   // Special
   'Cow Corner': { x: 82, y: 80 },
   'Sweeper': { x: 8, y: 50 },
@@ -85,20 +81,36 @@ function getNearestPosition(x: number, y: number): string {
   return closest;
 }
 
-// Default starting positions for 11 fielders (standard field)
-const DEFAULT_FIELD: { position: string; role: 'wk' | 'bowler' | 'fielder' }[] = [
-  { position: 'Wicketkeeper', role: 'wk' },
-  { position: 'Bowler', role: 'bowler' },
-  { position: '1st Slip', role: 'fielder' },
-  { position: 'Point', role: 'fielder' },
-  { position: 'Cover', role: 'fielder' },
-  { position: 'Mid-off', role: 'fielder' },
-  { position: 'Mid-on', role: 'fielder' },
-  { position: 'Mid-wicket', role: 'fielder' },
-  { position: 'Square Leg', role: 'fielder' },
-  { position: 'Fine Leg', role: 'fielder' },
-  { position: 'Third Man', role: 'fielder' },
+// Default fielding positions for 10 outfield players (index 0 = player 3 in squad, etc.)
+const FIELDER_POSITIONS = [
+  'Gully', 'Point', 'Cover', 'Extra Cover', 'Mid-off',
+  'Mid-on', 'Mid-wicket', 'Square Leg', 'Fine Leg', 'Third Man',
 ];
+
+// Build 12 field players: WK (blue, fixed) + Bowler (red, fixed) + 10 fielders (green, draggable)
+function buildFieldFromSquad(squadPlayers: string[]): FieldPlayer[] {
+  const result: FieldPlayer[] = [];
+  const players = squadPlayers.slice(0, 12);
+
+  players.forEach((name, i) => {
+    if (i === 0) {
+      // First player = Wicketkeeper (blue, fixed at batting end)
+      const c = POSITION_COORDS['Wicketkeeper'];
+      result.push({ name, x: c.x, y: c.y, position: 'Wicketkeeper', role: 'wk' });
+    } else if (i === 1) {
+      // Second player = Bowler (red, fixed at bowling end)
+      const c = POSITION_COORDS['Bowler'];
+      result.push({ name, x: c.x, y: c.y, position: 'Bowler', role: 'bowler' });
+    } else {
+      // Remaining 10 = fielders (green, draggable)
+      const pos = FIELDER_POSITIONS[i - 2] || 'Point';
+      const c = POSITION_COORDS[pos] || { x: 50, y: 50 };
+      result.push({ name, x: c.x, y: c.y, position: pos, role: 'fielder' });
+    }
+  });
+
+  return result;
+}
 
 function FieldEditorContent() {
   const { data: session, status } = useSession();
@@ -133,12 +145,7 @@ function FieldEditorContent() {
         setPlayers(fieldDoc.data().players as FieldPlayer[]);
         setLeftHanded(fieldDoc.data().leftHanded || false);
       } else if (squadPlayers.length >= 11) {
-        const initial: FieldPlayer[] = squadPlayers.slice(0, 11).map((name, i) => {
-          const def = DEFAULT_FIELD[i] || DEFAULT_FIELD[2];
-          const coords = POSITION_COORDS[def.position] || { x: 50, y: 50 };
-          return { name, x: coords.x, y: coords.y, position: def.position, role: def.role };
-        });
-        setPlayers(initial);
+        setPlayers(buildFieldFromSquad(squadPlayers));
       }
       setLoaded(true);
     };
@@ -163,14 +170,17 @@ function FieldEditorContent() {
     return { x: Math.max(3, Math.min(97, x)), y: Math.max(3, Math.min(97, y)) };
   };
 
-  const handlePointerDown = (idx: number) => setDraggedIdx(idx);
+  const handlePointerDown = (idx: number) => {
+    // WK and Bowler are fixed — not draggable
+    if (players[idx]?.role === 'wk' || players[idx]?.role === 'bowler') return;
+    setDraggedIdx(idx);
+  };
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (draggedIdx === null) return;
     e.preventDefault();
     const pt = getSVGPoint(e);
     if (!pt) return;
-    // Clamp to circle boundary
     const dx = pt.x - 50, dy = pt.y - 50;
     const dist = Math.sqrt(dx * dx + dy * dy);
     const maxR = 46;
@@ -189,18 +199,44 @@ function FieldEditorContent() {
 
   const resetPositions = () => {
     if (squad.length < 11) return;
-    const initial: FieldPlayer[] = squad.slice(0, 11).map((name, i) => {
-      const def = DEFAULT_FIELD[i] || DEFAULT_FIELD[2];
-      const coords = POSITION_COORDS[def.position] || { x: 50, y: 50 };
-      return { name, x: coords.x, y: coords.y, position: def.position, role: def.role };
-    });
+    const initial = buildFieldFromSquad(squad);
     setPlayers(initial);
     saveField(initial);
   };
 
+  // Swap a player into the WK or Bowler role
+  const swapRole = (playerIdx: number, targetRole: 'wk' | 'bowler') => {
+    const currentHolder = players.findIndex(p => p.role === targetRole);
+    if (currentHolder === -1 || currentHolder === playerIdx) return;
+
+    const updated = [...players];
+    // The current holder becomes a fielder at the swapped player's position
+    updated[currentHolder] = {
+      ...updated[currentHolder],
+      name: updated[playerIdx].name,
+      role: 'fielder',
+      // keep existing fielder position/coords
+      x: updated[playerIdx].x,
+      y: updated[playerIdx].y,
+      position: updated[playerIdx].position,
+    };
+    // The clicked player takes the fixed role
+    const fixedPos = targetRole === 'wk' ? 'Wicketkeeper' : 'Bowler';
+    const c = POSITION_COORDS[fixedPos];
+    updated[playerIdx] = {
+      ...updated[playerIdx],
+      name: players[currentHolder].name,
+      role: targetRole,
+      x: c.x, y: c.y,
+      position: fixedPos,
+    };
+    setPlayers(updated);
+    saveField(updated);
+  };
+
   const mirrorField = () => {
     const mirrored = players.map(p => ({
-      ...p, x: 100 - p.x, position: getNearestPosition(100 - p.x, p.y)
+      ...p, x: 100 - p.x, position: p.role === 'wk' || p.role === 'bowler' ? p.position : getNearestPosition(100 - p.x, p.y)
     }));
     setPlayers(mirrored);
     setLeftHanded(!leftHanded);
@@ -301,20 +337,20 @@ function FieldEditorContent() {
                 const isBowler = p.role === 'bowler';
                 const fill = isWk ? '#3b82f6' : isBowler ? '#ef4444' : '#10b981';
                 const stroke = isWk ? '#93c5fd' : isBowler ? '#fca5a5' : '#6ee7b7';
-                const r = draggedIdx === i ? 2.8 : 2.2;
+                const r = draggedIdx === i ? 1.8 : 1.1;
                 return (
                   <g key={i}
                     onPointerDown={() => !screenshotMode && handlePointerDown(i)}
-                    className={screenshotMode ? '' : 'cursor-grab active:cursor-grabbing'}
+                    className={screenshotMode ? '' : (isWk || isBowler) ? 'cursor-default' : 'cursor-grab active:cursor-grabbing'}
                     style={{ transition: draggedIdx === i ? 'none' : 'all 0.15s' }}
                   >
                     <circle cx={p.x} cy={p.y} r="5" fill="transparent" />
                     <circle cx={p.x} cy={p.y} r={r} fill={fill} stroke={stroke} strokeWidth="0.5" />
                     {showNames && (
                       <>
-                        <rect x={p.x - 7} y={isWk ? p.y - 5.5 : p.y - 5} width="14" height="3" rx="1" fill="rgba(0,0,0,0.85)" />
-                        <text x={p.x} y={isWk ? p.y - 3.2 : p.y - 2.7} textAnchor="middle" fill={isWk ? '#93c5fd' : isBowler ? '#fca5a5' : 'white'} fontSize="2" fontWeight="bold">
-                          {shortN(p.name)}{isWk ? ' (wk)' : ''}
+                        <rect x={p.x - 7} y={p.y - 5} width="14" height="3" rx="1" fill="rgba(0,0,0,0.85)" />
+                        <text x={p.x} y={p.y - 2.7} textAnchor="middle" fill={isWk ? '#93c5fd' : isBowler ? '#fca5a5' : 'white'} fontSize="2" fontWeight="bold">
+                          {shortN(p.name)}{isWk ? ' (wk)' : isBowler ? ' (bowl)' : ''}
                         </text>
                       </>
                     )}
@@ -336,29 +372,38 @@ function FieldEditorContent() {
           {!screenshotMode && (
             <div className="glass rounded-xl p-3 mt-3">
               <h3 className="text-white font-bold text-xs mb-2">Players & Positions</h3>
-              <div className="grid grid-cols-2 gap-1">
+              <div className="grid grid-cols-1 gap-1">
                 {players.map((p, i) => (
-                  <div key={i} className="flex items-center justify-between px-2 py-1 rounded text-[10px]">
-                    <div className="flex items-center gap-1">
-                      <span className={`w-2 h-2 rounded-full ${p.role === 'wk' ? 'bg-blue-500' : p.role === 'bowler' ? 'bg-red-500' : 'bg-primary-500'}`}></span>
-                      <span className="text-white">{shortN(p.name)}</span>
+                  <div key={i} className="flex items-center justify-between px-2 py-1.5 rounded glass-hover text-[11px]">
+                    <div className="flex items-center gap-1.5">
+                      <span className={`w-2.5 h-2.5 rounded-full ${p.role === 'wk' ? 'bg-blue-500' : p.role === 'bowler' ? 'bg-red-500' : 'bg-primary-500'}`}></span>
+                      <span className="text-white font-medium">{shortN(p.name)}</span>
                     </div>
-                    {!screenshotMode && p.role === 'fielder' && (
-                      <select value={p.position} onChange={e => {
-                        const pos = e.target.value;
-                        const coords = POSITION_COORDS[pos];
-                        if (!coords) return;
-                        const updated = [...players];
-                        updated[i] = { ...updated[i], position: pos, x: coords.x, y: coords.y };
-                        setPlayers(updated);
-                        saveField(updated);
-                      }} className="bg-transparent text-gray-500 text-[9px] border-none outline-none w-24">
-                        {POSITION_NAMES.map(pos => <option key={pos} value={pos} className="bg-gray-900 text-white">{pos}</option>)}
-                      </select>
-                    )}
-                    {(p.role === 'wk' || p.role === 'bowler') && (
-                      <span className="text-gray-600 text-[9px]">{p.role === 'wk' ? 'Keeper' : 'Bowler'}</span>
-                    )}
+                    <div className="flex items-center gap-1.5">
+                      {p.role === 'fielder' && (
+                        <>
+                          <select value={p.position} onChange={e => {
+                            const pos = e.target.value;
+                            const coords = POSITION_COORDS[pos];
+                            if (!coords) return;
+                            const updated = [...players];
+                            updated[i] = { ...updated[i], position: pos, x: coords.x, y: coords.y };
+                            setPlayers(updated);
+                            saveField(updated);
+                          }} className="bg-white/5 text-gray-400 text-[10px] border border-white/10 rounded px-1 py-0.5 outline-none w-28">
+                            {POSITION_NAMES.map(pos => <option key={pos} value={pos} className="bg-gray-900 text-white">{pos}</option>)}
+                          </select>
+                          <button onClick={() => swapRole(i, 'wk')} className="text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded text-[9px] hover:bg-blue-500/20">WK</button>
+                          <button onClick={() => swapRole(i, 'bowler')} className="text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded text-[9px] hover:bg-red-500/20">Bowl</button>
+                        </>
+                      )}
+                      {p.role === 'wk' && (
+                        <span className="text-blue-400 text-[10px] font-bold">Wicketkeeper</span>
+                      )}
+                      {p.role === 'bowler' && (
+                        <span className="text-red-400 text-[10px] font-bold">Bowler</span>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
