@@ -466,7 +466,7 @@ export default function AvailabilityPage() {
                           <div className="flex items-center justify-between mb-2 gap-2">
                             <p className="text-white text-xs font-bold">Playing 12 ({(squads[m.id] || []).length}/12)</p>
                             <div className="flex gap-1">
-                              {(squads[m.id] || []).length > 0 && selectingSquad === m.id && (
+                              {(squads[m.id] || []).length > 0 && isCaptain && (
                                 <button onClick={async () => {
                                   if (confirm('Clear entire squad for this match?')) {
                                     await setDoc(doc(db, 'squads', m.id), { players: [], roles: {}, updatedBy: session?.user?.email, updatedAt: new Date().toISOString() });
