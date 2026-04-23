@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, query, where, orderBy, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, query, where, orderBy, getDocs, getDoc, setDoc, deleteDoc, doc } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
@@ -76,6 +76,76 @@ const WHAT_WENT_WRONG_OPTIONS = [
   'Defensive mindset', 'Did not rotate strike', 'Fatigue or distraction',
 ];
 
+// ── Shot Planner Data ──
+interface CricketShot {
+  name: string;
+  category: 'front-foot' | 'back-foot' | 'unorthodox';
+  region: number; // wagon wheel region 1-8
+  description: string;
+}
+
+const CRICKET_SHOTS: CricketShot[] = [
+  // Front foot shots
+  { name: 'Straight Drive', category: 'front-foot', region: 1, description: 'Played along the ground straight past the bowler' },
+  { name: 'Off Drive', category: 'front-foot', region: 2, description: 'Driven through the off side between mid-off and cover' },
+  { name: 'Cover Drive', category: 'front-foot', region: 3, description: 'Classic shot through the covers, front foot forward' },
+  { name: 'Square Drive', category: 'front-foot', region: 4, description: 'Driven square on the off side through point' },
+  { name: 'On Drive', category: 'front-foot', region: 8, description: 'Driven through the on side between mid-on and mid-wicket' },
+  { name: 'Flick', category: 'front-foot', region: 7, description: 'Wristy flick off the pads through mid-wicket' },
+  { name: 'Sweep', category: 'front-foot', region: 6, description: 'Down on one knee, sweeping spin to fine leg' },
+  { name: 'Forward Defence', category: 'front-foot', region: 0, description: 'Soft hands, dead bat, blocking with front foot forward' },
+  { name: 'Lofted Drive', category: 'front-foot', region: 1, description: 'Driving over the top for a six — straight or over mid-on/off' },
+  // Back foot shots
+  { name: 'Back Foot Defence', category: 'back-foot', region: 0, description: 'Getting back and across to block on the back foot' },
+  { name: 'Cut', category: 'back-foot', region: 4, description: 'Short and wide ball cut square through point' },
+  { name: 'Late Cut', category: 'back-foot', region: 5, description: 'Delicate cut played late behind square on the off side' },
+  { name: 'Pull', category: 'back-foot', region: 7, description: 'Short ball pulled through mid-wicket on the leg side' },
+  { name: 'Hook', category: 'back-foot', region: 6, description: 'Short bouncer hooked behind square on the leg side' },
+  { name: 'Back Foot Punch', category: 'back-foot', region: 3, description: 'Short ball punched through covers off the back foot' },
+  { name: 'Leg Glance', category: 'back-foot', region: 6, description: 'Gentle deflection off the pads towards fine leg' },
+  { name: 'Upper Cut', category: 'back-foot', region: 5, description: 'Short ball guided over the slips/third man area' },
+  // Unorthodox shots
+  { name: 'Reverse Sweep', category: 'unorthodox', region: 5, description: 'Switching grip to sweep spin to the off side' },
+  { name: 'Switch Hit', category: 'unorthodox', region: 3, description: 'Switching stance completely to hit to the other side' },
+  { name: 'Scoop / Ramp', category: 'unorthodox', region: 5, description: 'Getting under the ball and scooping it over the keeper' },
+  { name: 'Paddle Sweep', category: 'unorthodox', region: 6, description: 'Fine sweep played with a paddle motion to fine leg' },
+  { name: 'Slog Sweep', category: 'unorthodox', region: 7, description: 'Aggressive sweep over mid-wicket for a big hit' },
+  { name: 'Dilscoop', category: 'unorthodox', region: 5, description: 'Getting under a full ball and flicking it over the keeper' },
+  { name: 'Inside Out', category: 'unorthodox', region: 2, description: 'Making room and lofting over cover against spin' },
+];
+
+// Wagon wheel regions (1-8, clockwise from straight ahead)
+// 0 = defensive (no region), 1 = straight, 2 = mid-off, 3 = cover, 4 = point,
+// 5 = third man/behind off, 6 = fine leg/behind leg, 7 = mid-wicket, 8 = mid-on
+const WAGON_REGIONS: { id: number; label: string; angle: number }[] = [
+  { id: 1, label: 'Straight', angle: 0 },
+  { id: 2, label: 'Mid-off', angle: -30 },
+  { id: 3, label: 'Cover', angle: -60 },
+  { id: 4, label: 'Point', angle: -90 },
+  { id: 5, label: 'Third Man', angle: -135 },
+  { id: 6, label: 'Fine Leg', angle: 135 },
+  { id: 7, label: 'Mid-wicket', angle: 60 },
+  { id: 8, label: 'Mid-on', angle: 30 },
+];
+
+const BOWLER_TYPES = [
+  'Fast (140+)',
+  'Fast-Medium (130-140)',
+  'Medium (120-130)',
+  'Off Spin',
+  'Leg Spin',
+  'Left-arm Spin',
+  'Left-arm Seam',
+];
+
+type ShotConfidence = 'strong' | 'working' | 'avoid';
+
+interface ShotPlan {
+  shotConfidence: Record<string, ShotConfidence>; // shot name → confidence
+  bowlerPlans: Record<string, string[]>; // bowler type → planned shots
+  notes: string;
+};
+
 const MATCHES = [
   // LCL T30
   { label: 'LCL M1 — vs London Predators (May 10)', index: 1, date: '2026-05-10' },
@@ -119,7 +189,7 @@ function isMatchAvailable(matchDate: string): boolean {
 export default function NetsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns'>('list');
+  const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner'>('list');
   const [reflections, setReflections] = useState<Reflection[]>([]);
   const [selectedReflection, setSelectedReflection] = useState<Reflection | null>(null);
   const [loading, setLoading] = useState(true);
@@ -140,6 +210,13 @@ export default function NetsPage() {
   const [intentScore, setIntentScore] = useState(3);
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
+
+  // Shot planner state
+  const [shotPlan, setShotPlan] = useState<ShotPlan>({ shotConfidence: {}, bowlerPlans: {}, notes: '' });
+  const [plannerBowlerType, setPlannerBowlerType] = useState('');
+  const [plannerSaving, setPlannerSaving] = useState(false);
+  const [plannerLoaded, setPlannerLoaded] = useState(false);
+  const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/c3h/login');
@@ -168,6 +245,43 @@ export default function NetsPage() {
     const kept = [...matchReflections.slice(0, 3), ...practiceReflections.slice(0, 3)];
     setReflections(kept);
     setLoading(false);
+  };
+
+  const loadShotPlan = async () => {
+    if (!session?.user?.email) return;
+    const planDoc = await getDoc(doc(db, 'shot-plans', session.user.email.toLowerCase()));
+    if (planDoc.exists()) {
+      const data = planDoc.data() as ShotPlan;
+      setShotPlan({ shotConfidence: data.shotConfidence || {}, bowlerPlans: data.bowlerPlans || {}, notes: data.notes || '' });
+    }
+    setPlannerLoaded(true);
+  };
+
+  const saveShotPlan = async (updated: ShotPlan) => {
+    if (!session?.user?.email) return;
+    setPlannerSaving(true);
+    await setDoc(doc(db, 'shot-plans', session.user.email.toLowerCase()), {
+      ...updated,
+      email: session.user.email.toLowerCase(),
+      updatedAt: new Date().toISOString(),
+    });
+    setTimeout(() => setPlannerSaving(false), 500);
+  };
+
+  const toggleShotConfidence = (shotName: string) => {
+    const current = shotPlan.shotConfidence[shotName];
+    const next: ShotConfidence = !current ? 'strong' : current === 'strong' ? 'working' : current === 'working' ? 'avoid' : 'strong';
+    const updated = { ...shotPlan, shotConfidence: { ...shotPlan.shotConfidence, [shotName]: next } };
+    setShotPlan(updated);
+    saveShotPlan(updated);
+  };
+
+  const toggleBowlerShot = (bowlerType: string, shotName: string) => {
+    const current = shotPlan.bowlerPlans[bowlerType] || [];
+    const next = current.includes(shotName) ? current.filter(s => s !== shotName) : [...current, shotName];
+    const updated = { ...shotPlan, bowlerPlans: { ...shotPlan.bowlerPlans, [bowlerType]: next } };
+    setShotPlan(updated);
+    saveShotPlan(updated);
   };
 
   useEffect(() => {
@@ -377,7 +491,15 @@ export default function NetsPage() {
               <Link href="/c3h/dashboard" className="text-gray-500 text-sm hover:text-primary-400 transition-colors mb-2 inline-block">&larr; Dashboard</Link>
               <h1 className="text-3xl font-bold text-white">The <span className="gradient-text">Nets</span></h1>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
+              <button
+                onClick={() => { if (view !== 'planner') { setView('planner'); if (!plannerLoaded) loadShotPlan(); } else setView('list'); }}
+                className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
+                  view === 'planner' ? 'bg-blue-500/20 text-blue-400 border-blue-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
+                }`}
+              >
+                Shot Planner
+              </button>
               {patterns && (
                 <button
                   onClick={() => setView(view === 'patterns' ? 'list' : 'patterns')}
@@ -388,7 +510,7 @@ export default function NetsPage() {
                   My Patterns
                 </button>
               )}
-              {view !== 'new' && (
+              {view !== 'new' && view !== 'planner' && (
                 <button
                   onClick={() => setView('new')}
                   className="px-4 py-2 rounded-lg bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium text-sm shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-105"
@@ -679,6 +801,222 @@ export default function NetsPage() {
                 </button>
               </div>
             </>
+          )}
+
+          {/* SHOT PLANNER VIEW */}
+          {view === 'planner' && (
+            <div className="space-y-6">
+              <button onClick={() => setView('list')} className="text-gray-500 text-sm hover:text-primary-400">&larr; Back to reflections</button>
+
+              {/* Wagon Wheel */}
+              <div className="glass rounded-2xl p-6 border border-blue-500/20">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-white">My Wagon Wheel</h3>
+                    <p className="text-gray-500 text-xs">Tap a zone to see shots that go there</p>
+                  </div>
+                  {plannerSaving && <span className="text-accent-400 text-xs">Saving...</span>}
+                </div>
+                <div className="flex justify-center">
+                  <svg viewBox="0 0 200 200" className="w-64 h-64 sm:w-72 sm:h-72">
+                    {/* Field circle */}
+                    <circle cx="100" cy="100" r="95" fill="#0d3318" stroke="#3d8b4f" strokeWidth="1" />
+                    <circle cx="100" cy="100" r="55" fill="none" stroke="white" strokeWidth="0.5" strokeDasharray="3,2" opacity="0.2" />
+                    {/* Pitch */}
+                    <rect x="96" y="70" width="8" height="40" rx="1" fill="#c4a265" opacity="0.5" />
+                    {/* Batter marker */}
+                    <circle cx="100" cy="105" r="3" fill="#3b82f6" stroke="#93c5fd" strokeWidth="0.5" />
+                    {/* Region segments */}
+                    {WAGON_REGIONS.map(r => {
+                      const angleRad = (r.angle - 90) * Math.PI / 180;
+                      const halfSector = (360 / 8 / 2) * Math.PI / 180;
+                      const innerR = 20;
+                      const outerR = 90;
+                      const x1 = 100 + Math.cos(angleRad - halfSector) * outerR;
+                      const y1 = 100 + Math.sin(angleRad - halfSector) * outerR;
+                      const x2 = 100 + Math.cos(angleRad + halfSector) * outerR;
+                      const y2 = 100 + Math.sin(angleRad + halfSector) * outerR;
+                      const x3 = 100 + Math.cos(angleRad + halfSector) * innerR;
+                      const y3 = 100 + Math.sin(angleRad + halfSector) * innerR;
+                      const x4 = 100 + Math.cos(angleRad - halfSector) * innerR;
+                      const y4 = 100 + Math.sin(angleRad - halfSector) * innerR;
+
+                      const shotsInRegion = CRICKET_SHOTS.filter(s => s.region === r.id);
+                      const strongCount = shotsInRegion.filter(s => shotPlan.shotConfidence[s.name] === 'strong').length;
+                      const avoidCount = shotsInRegion.filter(s => shotPlan.shotConfidence[s.name] === 'avoid').length;
+                      const fillColor = selectedRegion === r.id ? 'rgba(59,130,246,0.4)' : strongCount > 0 ? `rgba(16,185,129,${0.15 + strongCount * 0.1})` : avoidCount > 0 ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.03)';
+
+                      const labelR = 65;
+                      const lx = 100 + Math.cos(angleRad) * labelR;
+                      const ly = 100 + Math.sin(angleRad) * labelR;
+
+                      return (
+                        <g key={r.id} onClick={() => setSelectedRegion(selectedRegion === r.id ? null : r.id)} className="cursor-pointer">
+                          <path
+                            d={`M${x4},${y4} L${x1},${y1} A${outerR},${outerR} 0 0,1 ${x2},${y2} L${x3},${y3} A${innerR},${innerR} 0 0,0 ${x4},${y4}`}
+                            fill={fillColor}
+                            stroke="rgba(255,255,255,0.15)"
+                            strokeWidth="0.5"
+                          />
+                          <text x={lx} y={ly} textAnchor="middle" dominantBaseline="middle" fill={selectedRegion === r.id ? '#93c5fd' : '#9ca3af'} fontSize="7" fontWeight="bold">
+                            {r.label}
+                          </text>
+                        </g>
+                      );
+                    })}
+                  </svg>
+                </div>
+                {/* Legend */}
+                <div className="flex justify-center gap-4 mt-3 text-[10px]">
+                  <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-primary-500/40"></span> Strong</span>
+                  <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-accent-500/40"></span> Working on</span>
+                  <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-red-500/40"></span> Avoid</span>
+                </div>
+              </div>
+
+              {/* Shots in selected region */}
+              {selectedRegion && (
+                <div className="glass rounded-2xl p-6 border border-blue-500/20">
+                  <h3 className="text-lg font-bold text-white mb-1">
+                    {WAGON_REGIONS.find(r => r.id === selectedRegion)?.label} Shots
+                  </h3>
+                  <p className="text-gray-500 text-xs mb-4">Tap to rate: Strong → Working on → Avoid</p>
+                  <div className="space-y-2">
+                    {CRICKET_SHOTS.filter(s => s.region === selectedRegion).map(shot => {
+                      const conf = shotPlan.shotConfidence[shot.name];
+                      const bg = conf === 'strong' ? 'bg-primary-500/20 border-primary-500/50' : conf === 'working' ? 'bg-accent-500/20 border-accent-500/50' : conf === 'avoid' ? 'bg-red-500/20 border-red-500/50' : 'bg-white/5 border-white/10';
+                      const badge = conf === 'strong' ? 'text-primary-400' : conf === 'working' ? 'text-accent-400' : conf === 'avoid' ? 'text-red-400' : 'text-gray-600';
+                      return (
+                        <button key={shot.name} onClick={() => toggleShotConfidence(shot.name)}
+                          className={`w-full text-left px-4 py-3 rounded-xl border transition-all ${bg} hover:scale-[1.01]`}>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <span className="text-white font-medium text-sm">{shot.name}</span>
+                              <span className="text-gray-500 text-xs ml-2">({shot.category.replace('-', ' ')})</span>
+                            </div>
+                            <span className={`text-xs font-bold uppercase ${badge}`}>{conf || 'Not rated'}</span>
+                          </div>
+                          <p className="text-gray-500 text-xs mt-1">{shot.description}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* All shots by category */}
+              {!selectedRegion && (
+                <div className="space-y-4">
+                  {(['front-foot', 'back-foot', 'unorthodox'] as const).map(cat => (
+                    <div key={cat} className="glass rounded-2xl p-6 border border-white/10">
+                      <h3 className="text-lg font-bold text-white mb-1 capitalize">{cat.replace('-', ' ')} Shots</h3>
+                      <p className="text-gray-500 text-xs mb-4">Tap to rate: Strong → Working on → Avoid</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {CRICKET_SHOTS.filter(s => s.category === cat).map(shot => {
+                          const conf = shotPlan.shotConfidence[shot.name];
+                          const bg = conf === 'strong' ? 'bg-primary-500/20 border-primary-500/50' : conf === 'working' ? 'bg-accent-500/20 border-accent-500/50' : conf === 'avoid' ? 'bg-red-500/20 border-red-500/50' : 'bg-white/5 border-white/10';
+                          const badge = conf === 'strong' ? 'text-primary-400' : conf === 'working' ? 'text-accent-400' : conf === 'avoid' ? 'text-red-400' : 'text-gray-600';
+                          const region = WAGON_REGIONS.find(r => r.id === shot.region);
+                          return (
+                            <button key={shot.name} onClick={() => toggleShotConfidence(shot.name)}
+                              className={`text-left px-4 py-3 rounded-xl border transition-all ${bg} hover:scale-[1.01]`}>
+                              <div className="flex items-center justify-between">
+                                <span className="text-white font-medium text-sm">{shot.name}</span>
+                                <span className={`text-[10px] font-bold uppercase ${badge}`}>{conf || '—'}</span>
+                              </div>
+                              <p className="text-gray-500 text-xs mt-1">{shot.description}</p>
+                              {region && shot.region > 0 && <p className="text-gray-600 text-[10px] mt-0.5">→ {region.label}</p>}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Bowler Game Plan */}
+              <div className="glass rounded-2xl p-6 border border-accent-500/20">
+                <h3 className="text-lg font-bold text-white mb-1">Game Plan vs Bowler</h3>
+                <p className="text-gray-500 text-xs mb-4">Select a bowler type and pick your planned shots</p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {BOWLER_TYPES.map(bt => (
+                    <button key={bt} onClick={() => setPlannerBowlerType(plannerBowlerType === bt ? '' : bt)}
+                      className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${plannerBowlerType === bt ? 'bg-accent-500/20 text-accent-400 border-accent-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'}`}>
+                      {bt}
+                    </button>
+                  ))}
+                </div>
+                {plannerBowlerType && (
+                  <div className="space-y-2">
+                    <p className="text-white text-sm font-medium mb-2">My shots vs {plannerBowlerType}:</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {CRICKET_SHOTS.filter(s => s.region > 0).map(shot => {
+                        const isSelected = (shotPlan.bowlerPlans[plannerBowlerType] || []).includes(shot.name);
+                        const conf = shotPlan.shotConfidence[shot.name];
+                        const confDot = conf === 'strong' ? 'bg-primary-500' : conf === 'working' ? 'bg-accent-500' : conf === 'avoid' ? 'bg-red-500' : 'bg-gray-700';
+                        return (
+                          <button key={shot.name} onClick={() => toggleBowlerShot(plannerBowlerType, shot.name)}
+                            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium border transition-all ${isSelected ? 'bg-accent-500/20 text-accent-400 border-accent-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'}`}>
+                            <span className={`w-2 h-2 rounded-full ${confDot}`}></span>
+                            {isSelected ? '✓ ' : ''}{shot.name}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Personal Notes */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-3">Batting Journal</h3>
+                <p className="text-gray-500 text-xs mb-2">Your personal notes — straight bat reminders, things to work on</p>
+                <textarea
+                  value={shotPlan.notes}
+                  onChange={e => {
+                    const updated = { ...shotPlan, notes: e.target.value };
+                    setShotPlan(updated);
+                  }}
+                  onBlur={() => saveShotPlan(shotPlan)}
+                  rows={4}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 text-white text-sm placeholder-gray-600 resize-none"
+                  placeholder="e.g. Work on playing spin with soft hands. Keep my head still on the pull shot. Against fast bowling, get back and across early..."
+                />
+              </div>
+
+              {/* Shot Summary */}
+              {Object.keys(shotPlan.shotConfidence).length > 0 && (
+                <div className="glass rounded-2xl p-6 border border-primary-500/20">
+                  <h3 className="text-lg font-bold text-white mb-4">My Shot Summary</h3>
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                      <p className="text-2xl font-bold text-primary-400">{Object.values(shotPlan.shotConfidence).filter(v => v === 'strong').length}</p>
+                      <p className="text-gray-500 text-xs">Strong</p>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-accent-400">{Object.values(shotPlan.shotConfidence).filter(v => v === 'working').length}</p>
+                      <p className="text-gray-500 text-xs">Working on</p>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-red-400">{Object.values(shotPlan.shotConfidence).filter(v => v === 'avoid').length}</p>
+                      <p className="text-gray-500 text-xs">Avoid</p>
+                    </div>
+                  </div>
+                  {Object.entries(shotPlan.bowlerPlans).filter(([, shots]) => shots.length > 0).length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-white/10">
+                      <h4 className="text-sm font-bold text-white mb-2">Game Plans Set</h4>
+                      {Object.entries(shotPlan.bowlerPlans).filter(([, shots]) => shots.length > 0).map(([bt, shots]) => (
+                        <div key={bt} className="mb-2">
+                          <span className="text-accent-400 text-xs font-bold">{bt}:</span>
+                          <span className="text-gray-400 text-xs ml-2">{shots.join(', ')}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           )}
 
           {/* NEW REFLECTION FORM */}
