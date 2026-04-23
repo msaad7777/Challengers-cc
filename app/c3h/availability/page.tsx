@@ -46,7 +46,7 @@ const ALL_PLAYERS = [
   'Fahad Aktar', 'Denison Davis', 'Abhishek Ladva',
   'Salman Ahmed', 'Farooq Choudhary', 'Vijay Yadav', 'Shivam Rajput',
   'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
-  'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Makhan', 'Siva Sriram', 'Rajath Shetty',
+  'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Siva Sriram', 'Rajath Shetty',
 ];
 
 // Players restricted to specific leagues
@@ -112,7 +112,6 @@ const EMAIL_TO_PLAYER: Record<string, string> = {
   'sujelahmed06@gmail.com': 'Sujel Ahmed',
   'atik1991rah@gmail.com': 'Atik Rahman',
   'majharulalam456@gmail.com': 'Majharul Alam',
-  'makhan4u4ever@gmail.com': 'Makhan',
   'georgefreddy963@gmail.com': 'Fahad Aktar',
   'siva4593@gmail.com': 'Siva Sriram',
   'rajath.s.shetty@gmail.com': 'Rajath Shetty',
