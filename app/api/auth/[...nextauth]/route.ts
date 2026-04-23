@@ -50,7 +50,6 @@ const PLAYER_EMAILS: string[] = [
   'gmc715625@gmail.com',
   'atik1991rah@gmail.com',
   'majharulalam456@gmail.com',
-  'makhan4u4ever@gmail.com',
   'siva4593@gmail.com',
   'rajath.s.shetty@gmail.com',
 ];
