@@ -88,6 +88,7 @@ function FieldEditorContent() {
   const [leftHanded, setLeftHanded] = useState(false);
   const [batterName, setBatterName] = useState('');
   const [bowlerName, setBowlerName] = useState('');
+  const [screenshotMode, setScreenshotMode] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [matchInfo, setMatchInfo] = useState('');
@@ -205,50 +206,64 @@ function FieldEditorContent() {
       <Navbar />
       <section className="pt-24 pb-8 px-3 sm:px-4">
         <div className="max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <Link href="/c3h/availability" className="text-gray-500 text-xs hover:text-primary-400">&larr; Dugout</Link>
-              <h1 className="text-xl font-bold text-white">Field <span className="gradient-text">Editor</span></h1>
+          {!screenshotMode && (
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <Link href="/c3h/availability" className="text-gray-500 text-xs hover:text-primary-400">&larr; Dugout</Link>
+                <h1 className="text-xl font-bold text-white">Field <span className="gradient-text">Editor</span></h1>
+              </div>
+              {saving && <span className="text-accent-400 text-xs">Saving...</span>}
             </div>
-            {saving && <span className="text-accent-400 text-xs">Saving...</span>}
-          </div>
+          )}
 
-          {/* Controls */}
-          <div className="flex flex-wrap gap-2 mb-3 text-[10px]">
-            <label className="flex items-center gap-1 text-gray-400 glass px-2 py-1 rounded-lg">
-              <input type="checkbox" checked={showNames} onChange={e => setShowNames(e.target.checked)} className="w-3 h-3" />
-              Names
-            </label>
-            <label className="flex items-center gap-1 text-gray-400 glass px-2 py-1 rounded-lg">
-              <input type="checkbox" checked={showPositions} onChange={e => setShowPositions(e.target.checked)} className="w-3 h-3" />
-              Positions
-            </label>
-            <label className="flex items-center gap-1 text-gray-400 glass px-2 py-1 rounded-lg">
-              <input type="checkbox" checked={leftHanded} onChange={async e => {
-                const newLH = e.target.checked;
-                setLeftHanded(newLH);
-                const mirrored = players.map(p => {
-                  const newX = -p.x;
-                  return { ...p, x: newX, position: getPositionLabel(newX, p.y, false) };
-                });
-                setPlayers(mirrored);
-                // Save directly with new leftHanded value
-                await setDoc(doc(db, 'field-positions', matchId), {
-                  players: mirrored, batterName, bowlerName, leftHanded: newLH, matchInfo,
-                  updatedBy: session?.user?.email, updatedAt: new Date().toISOString(),
-                });
-              }} className="w-3 h-3" />
-              LHB
-            </label>
-            <button onClick={async () => { await saveField(players); alert('Field positions saved!'); }} className="text-primary-400 glass px-3 py-1 rounded-lg hover:bg-primary-500/10 font-bold">{saving ? 'Saving...' : 'Save'}</button>
-            <button onClick={resetPositions} className="text-red-400 glass px-2 py-1 rounded-lg hover:bg-red-500/10">Reset</button>
-          </div>
+          {/* Screenshot mode header */}
+          {screenshotMode && (
+            <div className="text-center mb-3">
+              <h2 className="text-lg sm:text-xl font-bold text-primary-400">CHALLENGERS CC</h2>
+              <p className="text-white text-xs font-bold">Field Positions</p>
+              <button onClick={() => setScreenshotMode(false)} className="text-gray-500 text-[10px] mt-1 underline">Back to Editor</button>
+            </div>
+          )}
 
-          {/* Batter/Bowler Names */}
-          <div className="flex gap-2 mb-3">
-            <input value={batterName} onChange={e => setBatterName(e.target.value)} onBlur={() => saveField(players)} placeholder="Batter name" className="flex-1 px-2 py-1.5 bg-white/5 border border-white/10 rounded-lg text-white text-xs" />
-            <input value={bowlerName} onChange={e => setBowlerName(e.target.value)} onBlur={() => saveField(players)} placeholder="Bowler name" className="flex-1 px-2 py-1.5 bg-white/5 border border-white/10 rounded-lg text-white text-xs" />
-          </div>
+          {/* Controls — hidden in screenshot mode */}
+          {!screenshotMode && (
+            <>
+              <div className="flex flex-wrap gap-2 mb-3 text-[10px]">
+                <label className="flex items-center gap-1 text-gray-400 glass px-2 py-1 rounded-lg">
+                  <input type="checkbox" checked={showNames} onChange={e => setShowNames(e.target.checked)} className="w-3 h-3" />
+                  Names
+                </label>
+                <label className="flex items-center gap-1 text-gray-400 glass px-2 py-1 rounded-lg">
+                  <input type="checkbox" checked={showPositions} onChange={e => setShowPositions(e.target.checked)} className="w-3 h-3" />
+                  Positions
+                </label>
+                <label className="flex items-center gap-1 text-gray-400 glass px-2 py-1 rounded-lg">
+                  <input type="checkbox" checked={leftHanded} onChange={async e => {
+                    const newLH = e.target.checked;
+                    setLeftHanded(newLH);
+                    const mirrored = players.map(p => {
+                      const newX = -p.x;
+                      return { ...p, x: newX, position: getPositionLabel(newX, p.y, false) };
+                    });
+                    setPlayers(mirrored);
+                    await setDoc(doc(db, 'field-positions', matchId), {
+                      players: mirrored, batterName, bowlerName, leftHanded: newLH, matchInfo,
+                      updatedBy: session?.user?.email, updatedAt: new Date().toISOString(),
+                    });
+                  }} className="w-3 h-3" />
+                  LHB
+                </label>
+                <button onClick={async () => { await saveField(players); alert('Field positions saved!'); }} className="text-primary-400 glass px-3 py-1 rounded-lg hover:bg-primary-500/10 font-bold">{saving ? 'Saving...' : 'Save'}</button>
+                <button onClick={resetPositions} className="text-red-400 glass px-2 py-1 rounded-lg hover:bg-red-500/10">Reset</button>
+                <button onClick={() => { setShowNames(true); setShowPositions(true); setScreenshotMode(true); }} className="text-accent-400 glass px-2 py-1 rounded-lg hover:bg-accent-500/10">Share</button>
+              </div>
+
+              <div className="flex gap-2 mb-3">
+                <input value={batterName} onChange={e => setBatterName(e.target.value)} onBlur={() => saveField(players)} placeholder="Batter name" className="flex-1 px-2 py-1.5 bg-white/5 border border-white/10 rounded-lg text-white text-xs" />
+                <input value={bowlerName} onChange={e => setBowlerName(e.target.value)} onBlur={() => saveField(players)} placeholder="Bowler name" className="flex-1 px-2 py-1.5 bg-white/5 border border-white/10 rounded-lg text-white text-xs" />
+              </div>
+            </>
+          )}
 
           {/* SVG Cricket Field */}
           <div className="relative">
@@ -317,8 +332,8 @@ function FieldEditorContent() {
             </svg>
           </div>
 
-          {/* Player List */}
-          <div className="glass rounded-xl p-3 mt-3">
+          {/* Player List — hidden in screenshot mode */}
+          <div className={`glass rounded-xl p-3 mt-3 ${screenshotMode ? 'hidden' : ''}`}>
             <h3 className="text-white font-bold text-xs mb-2">Players & Positions</h3>
             <div className="grid grid-cols-2 gap-1">
               {players.map((p, i) => (
