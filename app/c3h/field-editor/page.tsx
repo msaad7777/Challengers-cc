@@ -160,8 +160,7 @@ function FieldEditorContent() {
     const maxR = 215;
     let nx = pt.x, ny = pt.y;
     if (dist > maxR) { nx = (pt.x / dist) * maxR; ny = (pt.y / dist) * maxR; }
-    // Store coordinates as displayed (no flip) — position label accounts for handedness
-    const position = getPositionLabel(nx, ny, leftHanded);
+    const position = getPositionLabel(nx, ny, false);
     const updated = [...players];
     updated[draggedIdx] = { ...updated[draggedIdx], x: nx, y: ny, position };
     setPlayers(updated);
