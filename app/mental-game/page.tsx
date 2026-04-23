@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import Link from 'next/link';
 
 export const metadata = {
   title: 'The Mental Game — Bounce Back Routine | Challengers Cricket Club',
@@ -308,6 +309,29 @@ export default function MentalGamePage() {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* C3H PORTAL CTA */}
+          <div className="glass rounded-2xl p-8 mb-8 border border-blue-500/20 text-center">
+            <h2 className="text-2xl font-bold text-white mb-2">Take Your Game Further</h2>
+            <p className="text-gray-400 text-sm mb-4">Registered players get access to the C3H Portal — our private members-only platform with tools built for your development.</p>
+            <div className="grid sm:grid-cols-3 gap-3 mb-6 text-left">
+              <div className="glass rounded-xl p-4">
+                <h4 className="text-blue-400 font-bold text-sm mb-1">Shot Planner</h4>
+                <p className="text-gray-500 text-xs">Rate your shots, build game plans vs different bowler types, and track your wagon wheel confidence.</p>
+              </div>
+              <div className="glass rounded-xl p-4">
+                <h4 className="text-primary-400 font-bold text-sm mb-1">Match Reflections</h4>
+                <p className="text-gray-500 text-xs">Log how you felt, how you got out, and get personalized coaching tips based on your patterns.</p>
+              </div>
+              <div className="glass rounded-xl p-4">
+                <h4 className="text-accent-400 font-bold text-sm mb-1">Growth Tracking</h4>
+                <p className="text-gray-500 text-xs">Intent score trends, recurring mistake alerts, and a personal batting journal that grows with you.</p>
+              </div>
+            </div>
+            <Link href="/#register" className="inline-block px-8 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-105">
+              Register to Get Access
+            </Link>
           </div>
 
           {/* FINAL QUOTE */}
