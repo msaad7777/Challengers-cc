@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { matchDetailsToEvent, googleCalendarUrl, generateICS } from '@/app/events/data';
 
 // Dates where LCL T30 and LPL T30 overlap
 const CLASH_DATES = ['May 10, 2026', 'June 27, 2026', 'July 25, 2026', 'August 2, 2026'];
@@ -65,6 +66,31 @@ const tabs = [
   { id: 'lpl-t30', label: 'LPL T30', matches: lplOnly, status: 'active' as const },
 ];
 
+function matchToCalEvent(m: Match) {
+  return matchDetailsToEvent({
+    league: m.league,
+    matchNumber: m.match,
+    date: m.date,
+    time: m.time,
+    opponent: m.opponent,
+    venue: m.venue,
+  });
+}
+
+function downloadMatchICS(m: Match) {
+  const event = matchToCalEvent(m);
+  const ics = generateICS(event);
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${event.id}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 function MatchTable({ matches }: { matches: Match[] }) {
   return (
     <>
@@ -78,11 +104,12 @@ function MatchTable({ matches }: { matches: Match[] }) {
               <th className="text-left px-6 py-4 text-sm font-semibold text-gray-400">Time</th>
               <th className="text-left px-6 py-4 text-sm font-semibold text-gray-400">Opponent</th>
               <th className="text-left px-6 py-4 text-sm font-semibold text-gray-400">Venue</th>
+              <th className="text-right px-6 py-4 text-sm font-semibold text-gray-400">Calendar</th>
             </tr>
           </thead>
           <tbody>
             {matches.map((m) => (
-              <tr key={m.match} className={`border-b border-white/5 hover:bg-white/5 transition-colors ${CLASH_DATES.includes(m.date) ? 'bg-red-500/5' : ''}`}>
+              <tr key={`${m.league ?? ''}-${m.match}`} className={`border-b border-white/5 hover:bg-white/5 transition-colors ${CLASH_DATES.includes(m.date) ? 'bg-red-500/5' : ''}`}>
                 <td className="px-6 py-4">
                   <span className="text-sm font-bold text-primary-400">{m.league ? `${m.league} ` : ''}M{m.match}</span>
                 </td>
@@ -99,6 +126,32 @@ function MatchTable({ matches }: { matches: Match[] }) {
                 <td className="px-6 py-4">
                   <span className="text-sm text-gray-400">{m.venue}</span>
                 </td>
+                <td className="px-6 py-4">
+                  <div className="flex justify-end gap-1.5">
+                    <a
+                      href={googleCalendarUrl(matchToCalEvent(m))}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Add to Google Calendar"
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-primary-500/20 border border-primary-500/30 hover:bg-primary-500/30 hover:border-primary-500/50 rounded-md text-xs font-semibold text-primary-300 transition-all"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      Google
+                    </a>
+                    <button
+                      onClick={() => downloadMatchICS(m)}
+                      title="Download .ics (Apple Calendar / Outlook)"
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary-500/50 rounded-md text-xs font-semibold text-gray-300 transition-all"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      .ics
+                    </button>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -108,7 +161,7 @@ function MatchTable({ matches }: { matches: Match[] }) {
       {/* Mobile Cards */}
       <div className="md:hidden space-y-4">
         {matches.map((m) => (
-          <div key={m.match} className={`glass rounded-xl p-5 border-l-4 ${CLASH_DATES.includes(m.date) ? 'border-l-red-500' : 'border-l-primary-500'}`}>
+          <div key={`${m.league ?? ''}-${m.match}`} className={`glass rounded-xl p-5 border-l-4 ${CLASH_DATES.includes(m.date) ? 'border-l-red-500' : 'border-l-primary-500'}`}>
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-bold text-primary-400">{m.league ? `${m.league} ` : ''}Match {m.match}</span>
             </div>
@@ -133,6 +186,28 @@ function MatchTable({ matches }: { matches: Match[] }) {
                 </svg>
                 {m.venue}
               </div>
+            </div>
+            <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap gap-2">
+              <a
+                href={googleCalendarUrl(matchToCalEvent(m))}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-primary-500/20 border border-primary-500/30 hover:bg-primary-500/30 rounded-md text-xs font-semibold text-primary-300 transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Add to Google Calendar
+              </a>
+              <button
+                onClick={() => downloadMatchICS(m)}
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-white/5 border border-white/10 hover:bg-white/10 rounded-md text-xs font-semibold text-gray-300 transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                .ics
+              </button>
             </div>
           </div>
         ))}
