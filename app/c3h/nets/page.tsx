@@ -117,17 +117,18 @@ const CRICKET_SHOTS: CricketShot[] = [
 // Wagon wheel regions (1-8, clockwise from straight ahead)
 // 0 = defensive (no region), 1 = straight, 2 = mid-off, 3 = cover, 4 = point,
 // 5 = third man/behind off, 6 = fine leg/behind leg, 7 = mid-wicket, 8 = mid-on
-// Angles: batter at TOP, bowler at BOTTOM. 0° = down (straight drive towards bowler).
-// Right-handed batter: off side = LEFT, leg side = RIGHT
+// Angles: batter at TOP, bowler at BOTTOM.
+// RHB: off side = LEFT, leg side = RIGHT
+// Rotated 90° CCW from standard math angles
 const WAGON_REGIONS: { id: number; label: string; angle: number }[] = [
-  { id: 1, label: 'Straight', angle: 180 },
-  { id: 2, label: 'Mid-off', angle: 210 },
-  { id: 3, label: 'Cover', angle: 240 },
-  { id: 4, label: 'Point', angle: 270 },
-  { id: 5, label: 'Third Man', angle: 315 },
-  { id: 6, label: 'Fine Leg', angle: 45 },
-  { id: 7, label: 'Mid-wicket', angle: 120 },
-  { id: 8, label: 'Mid-on', angle: 150 },
+  { id: 1, label: 'Straight', angle: 90 },
+  { id: 2, label: 'Mid-off', angle: 120 },
+  { id: 3, label: 'Cover', angle: 150 },
+  { id: 4, label: 'Point', angle: 180 },
+  { id: 5, label: 'Third Man', angle: 225 },
+  { id: 6, label: 'Fine Leg', angle: 315 },
+  { id: 7, label: 'Mid-wicket', angle: 30 },
+  { id: 8, label: 'Mid-on', angle: 60 },
 ];
 
 const BOWLER_TYPES = [
@@ -537,6 +538,7 @@ export default function NetsPage() {
   const [plannerSaving, setPlannerSaving] = useState(false);
   const [plannerLoaded, setPlannerLoaded] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
+  const [wagonLHB, setWagonLHB] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/c3h/login');
@@ -1263,7 +1265,12 @@ export default function NetsPage() {
                     <h3 className="text-lg font-bold text-white">My Wagon Wheel</h3>
                     <p className="text-gray-500 text-xs">Tap a zone to see shots that go there</p>
                   </div>
-                  {plannerSaving && <span className="text-accent-400 text-xs">Saving...</span>}
+                  <div className="flex items-center gap-2">
+                    {plannerSaving && <span className="text-accent-400 text-xs">Saving...</span>}
+                    <button onClick={() => setWagonLHB(!wagonLHB)} className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${wagonLHB ? 'bg-blue-500/20 text-blue-400 border-blue-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'}`}>
+                      {wagonLHB ? 'LHB' : 'RHB'}
+                    </button>
+                  </div>
                 </div>
                 <div className="flex justify-center">
                   <svg viewBox="0 0 200 200" className="w-64 h-64 sm:w-72 sm:h-72">
@@ -1284,7 +1291,9 @@ export default function NetsPage() {
                     <text x="100" y="128" textAnchor="middle" fill="#fca5a5" fontSize="5" opacity="0.4">Bowler</text>
                     {/* Region segments */}
                     {WAGON_REGIONS.map(r => {
-                      const angleRad = (r.angle) * Math.PI / 180;
+                      // LHB mirrors horizontally: reflect angle across vertical axis
+                      const rawAngle = wagonLHB ? (180 - r.angle) : r.angle;
+                      const angleRad = rawAngle * Math.PI / 180;
                       const halfSector = (360 / 8 / 2) * Math.PI / 180;
                       const innerR = 20;
                       const outerR = 90;
@@ -1322,8 +1331,13 @@ export default function NetsPage() {
                     })}
                   </svg>
                 </div>
+                {/* Side labels */}
+                <div className="flex justify-between px-8 mt-1 text-[9px] text-gray-600">
+                  <span>{wagonLHB ? 'Leg Side' : 'Off Side'}</span>
+                  <span>{wagonLHB ? 'Off Side' : 'Leg Side'}</span>
+                </div>
                 {/* Legend */}
-                <div className="flex justify-center gap-4 mt-3 text-[10px]">
+                <div className="flex justify-center gap-4 mt-2 text-[10px]">
                   <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-primary-500/40"></span> Strong</span>
                   <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-accent-500/40"></span> Working on</span>
                   <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-red-500/40"></span> Avoid</span>
