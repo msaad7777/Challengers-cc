@@ -34,10 +34,16 @@ export default function EventsPage() {
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
               Events &amp; <span className="gradient-text">Calendar</span>
             </h1>
-            <p className="text-gray-300 text-lg max-w-2xl mx-auto mb-8">
-              Upcoming matches, training, BBQs, fundraisers, and community events. Add any event to
-              your Google Calendar with one click — or download the full club calendar to stay in
-              sync all season.
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto mb-4">
+              Training sessions and confirmed club events. Add any event to your Google Calendar with
+              one click — or download the full club calendar to stay in sync all season.
+            </p>
+            <p className="text-gray-400 text-sm max-w-2xl mx-auto mb-8">
+              Looking for match dates? Visit our{' '}
+              <Link href="/schedule" className="text-primary-400 hover:text-primary-300 underline">
+                match schedule
+              </Link>
+              {' '}— every match can also be added to your calendar directly from there.
             </p>
             <div className="flex justify-center">
               <SubscribeAll />
@@ -102,8 +108,9 @@ export default function EventsPage() {
               Never miss an <span className="gradient-text">event</span>
             </h2>
             <p className="text-gray-300 mb-6 max-w-xl mx-auto">
-              Registered players: all club events — matches, training, socials — live on this page.
-              Add the full calendar to your phone or Google account so you never miss a match or BBQ.
+              Registered players: confirmed club events live on this page. Add the calendar to your
+              phone or Google account so you never miss a session. More events will appear here as
+              they&apos;re confirmed through the season.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <SubscribeAll />
