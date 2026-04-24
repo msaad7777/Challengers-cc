@@ -331,6 +331,7 @@ const TRAINING_PROGRAMS: TrainingProgram[] = [
       { title: 'Hand Speed Drills', url: 'https://www.youtube.com/watch?v=ZVCdJXVJLwU&t' },
       { title: 'Timing & Hand-Eye', url: 'https://www.youtube.com/watch?v=QCwSaXEJI2w' },
       { title: 'Step-Out Technique — TPG Academy', url: 'https://www.youtube.com/watch?v=_2jVVb0f7Yo' },
+      { title: 'Smooth Bat Flow ~ Effortless Power — TPG Academy', url: 'https://www.youtube.com/watch?v=K_MBc62q7gY' },
     ],
     sessions: [
       {
