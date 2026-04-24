@@ -32,19 +32,6 @@ export interface ClubEvent {
 // -05:00 (EST) outside of it. Ontario DST in 2026: Mar 8 → Nov 1.
 export const events: ClubEvent[] = [
   {
-    id: 'match-opening-day-2026',
-    title: 'Opening Day — Challengers CC vs TBD',
-    type: 'match',
-    startDate: '2026-05-10T10:00:00-04:00',
-    endDate: '2026-05-10T15:00:00-04:00',
-    venue: 'Thames Valley Golf Course Cricket Grounds',
-    address: '850 Sunninghill Ave, London, ON N6H 3E6',
-    description:
-      'First match of the 2026 season! Come support the team as we kick off our season. Livestream on YouTube — @Challengersccldn. Families and supporters welcome.',
-    league: 'LCL',
-    featured: true,
-  },
-  {
     id: 'training-weekly-wednesday',
     title: 'Weekly Training — Wednesdays',
     type: 'training',
@@ -55,52 +42,6 @@ export const events: ClubEvent[] = [
     description:
       'Weekly team training — every Wednesday, 7:00 PM to 8:30 PM at Silverwoods Cricket Ground. Running through the end of August 2026. Open to all registered players — bring your kit. Coaching-led sessions covering batting, bowling, and fielding.',
     recurrenceRule: 'FREQ=WEEKLY;BYDAY=WE;UNTIL=20260831T235959Z',
-  },
-  {
-    id: 'midseason-bbq-2026',
-    title: 'Challengers CC Mid-Season BBQ',
-    type: 'social',
-    startDate: '2026-07-12T13:00:00-04:00',
-    endDate: '2026-07-12T18:00:00-04:00',
-    venue: 'Thames Valley Cricket Grounds',
-    address: '850 Sunninghill Ave, London, ON N6H 3E6',
-    description:
-      'Our mid-season BBQ — families, players, sponsors, and friends welcome. Food, cricket, kids activities, and community. Bring your family. Halal and vegetarian options available. Free entry — RSVP so we can plan food.',
-    rsvpRequired: true,
-    featured: true,
-  },
-  {
-    id: 'youth-fundraiser-2026',
-    title: 'Youth Cricket Fundraiser',
-    type: 'fundraiser',
-    startDate: '2026-08-09T11:00:00-04:00',
-    endDate: '2026-08-09T16:00:00-04:00',
-    venue: 'Thames Valley Cricket Grounds',
-    address: '850 Sunninghill Ave, London, ON N6H 3E6',
-    description:
-      'Fundraising tournament to support youth cricket development. Community teams welcome to enter. Food, games, silent auction, and prizes. All proceeds support Challengers CC youth programs and equipment.',
-    featured: true,
-  },
-  {
-    id: 'awards-dinner-2026',
-    title: 'End-of-Season Awards Dinner',
-    type: 'awards',
-    startDate: '2026-09-20T18:00:00-04:00',
-    endDate: '2026-09-20T22:00:00-04:00',
-    venue: 'TBD — Scarborough',
-    description:
-      'Celebrate the 2026 season with team awards, player of the year, sponsor recognition, and community thank-yous. Dinner + program. Open to players, families, sponsors, and supporters. Ticket details closer to date.',
-    featured: true,
-  },
-  {
-    id: 'agm-2026',
-    title: 'Annual General Meeting (AGM)',
-    type: 'meeting',
-    startDate: '2026-11-15T18:00:00-05:00',
-    endDate: '2026-11-15T20:00:00-05:00',
-    venue: 'Virtual (Google Meet)',
-    description:
-      'Annual General Meeting — open to all registered members. Review of 2026 season, financials, board elections, 2027 planning. Link shared closer to date.',
   },
 ];
 
