@@ -1085,6 +1085,132 @@ export const blogPosts: BlogPost[] = [
     video: null,
     featured: true,
   },
+  {
+    slug: 'c3h-player-portal-benefits',
+    title: 'What Every Registered Player Gets: The C3H Portal',
+    excerpt:
+      'Your membership includes free access to C3H — our private player development portal with shot planning, training programs, match reflections, squad tools, live scoring, and more.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        When you register with Challengers Cricket Club, you don't just get a spot on the team. You get free access to
+        <strong class="text-white">C3H</strong> — our private members-only player development portal, built specifically
+        for Challengers players. No extra cost. No subscriptions. It's included with your season membership.
+      </p>
+
+      <div style="background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(16,185,129,0.15)); border: 2px solid rgba(59,130,246,0.3); border-radius: 16px; padding: 24px; margin: 24px 0; text-align: center;">
+        <h3 class="text-2xl font-bold text-white mb-2">7 Features. All Free. All Yours.</h3>
+        <p class="text-gray-300">Sign in with your registered Gmail at <a href="https://www.challengerscc.ca/c3h" class="text-primary-400 hover:text-primary-300 underline">challengerscc.ca/c3h</a></p>
+      </div>
+
+      <h3 class="text-2xl font-bold text-white mb-4">1. The Nets — Match Reflections</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        After every match, log how you felt, how you got out, what went right, and what went wrong. The system
+        tracks your patterns over time and gives you <strong class="text-white">personalized coaching tips</strong>
+        based on your data. If you keep getting caught at slips, the system notices and tells you exactly what
+        to work on. It's like having a coach in your pocket.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">2. Shot Planner & Wagon Wheel</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        An interactive wagon wheel where you can tap each zone to see which shots go there. Rate every shot as
+        <span class="text-primary-400 font-bold">Strong</span>,
+        <span class="text-accent-400 font-bold">Working On</span>, or
+        <span class="text-red-400 font-bold">Avoid</span>.
+        Then build <strong class="text-white">game plans vs specific bowler types</strong> — fast, medium, off spin,
+        leg spin, left-arm. Know exactly which shots you will play before you walk out to bat. Switch between
+        right-handed and left-handed batter views.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">3. Training Programs & Drills</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Four structured 2-week training programs with <strong class="text-white">35+ YouTube video guides</strong>
+        linked at exact timestamps. Each program has 4 sessions with specific drills and reps:
+      </p>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc list-inside space-y-2">
+        <li><strong class="text-white">Drive Mastery</strong> — Straight drive, cover drive, on drive, lofted drive</li>
+        <li><strong class="text-white">Leg Spin Bowling</strong> — Grip, wrist action, top spinner, slider, googly</li>
+        <li><strong class="text-white">Power Hitting</strong> — Hand speed, timing, swing path, attacking spin</li>
+        <li><strong class="text-white">Strike Rotation</strong> — Rotating vs spin and seam bowling</li>
+      </ul>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Plus the AB de Villiers 360 Batting Masterclass playlist and TPG Cricket Academy coaching videos.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">4. The Dugout — Availability & Squad Selection</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        See every match for the season. Mark yourself as Available, Maybe, or Unavailable for each match.
+        Captains can then select the playing 12, assign roles (captain, vice-captain, keeper, subs), and
+        set the <strong class="text-white">batting order</strong> by moving players up and down. No more
+        WhatsApp confusion — everything is in one place.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">5. Field Position Editor</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        A full cricket ground SVG where captains can <strong class="text-white">drag fielders to any position</strong>.
+        The system auto-detects the nearest standard fielding position (Cover, Point, Mid-wicket, etc.).
+        Wicketkeeper and bowler are fixed at their ends. Mirror the field for left-hand batters. Save and
+        share a clean screenshot with the team before match day.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">6. The Scorer — Live Ball-by-Ball Scoring</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Full match scoring with coin toss, player selection, and ball-by-ball entry. Track runs, extras
+        (wides, no balls, byes, leg byes), wickets with dismissal types, and fielder credits. Live batting
+        stats (runs, balls, fours, sixes, strike rate) and bowling figures (overs, maidens, runs, wickets,
+        economy). Auto-saves to the cloud so anyone can take over scoring mid-match.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">7. Mental Game Guide</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        A dedicated <a href="/mental-game" class="text-primary-400 hover:text-primary-300 underline">Mental Game page</a>
+        with the 3-Step Bounce Back routine, pre-match mental scripts, the LOOK-BREATHE-SAY pre-ball routine,
+        a 3-Phase Innings Plan, performance tracking KPIs, shot maps, pro quotes for inspiration, and
+        training videos. Everything a batter needs to prepare mentally before stepping onto the field.
+      </p>
+
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(234,179,8,0.15)); border: 2px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <h3 class="text-2xl font-bold text-white mb-4">Additional Resources Included</h3>
+        <ul class="text-gray-300 text-lg leading-relaxed space-y-3">
+          <li><strong class="text-white">Full Season Schedule</strong> — All 26 matches (LCL T30 + LPL T30) with dates, venues, and times on our <a href="/schedule" class="text-primary-400 hover:text-primary-300 underline">Schedule page</a></li>
+          <li><strong class="text-white">Indoor Practice at Kover Drive</strong> — Access to London's premier indoor cricket facility through our community partnership</li>
+          <li><strong class="text-white">Coaching by TPG Cricket Academy</strong> — Professional coaching sessions with Coach Manish Giri</li>
+          <li><strong class="text-white">Community Partners</strong> — Discounts and perks from our sponsor partners</li>
+          <li><strong class="text-white">Club Communication</strong> — Direct access to board members and captains through the portal</li>
+          <li><strong class="text-white">Season Merchandise</strong> — Official Challengers CC jerseys and team gear</li>
+        </ul>
+      </div>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Coming Soon</h3>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc list-inside space-y-2">
+        <li><strong class="text-white">Season Stats & Leaderboards</strong> — Track your season averages, top performers, and match history</li>
+        <li><strong class="text-white">The Pavilion</strong> — Board governance tools for resolutions, voting, and meeting records</li>
+      </ul>
+
+      <h3 class="text-2xl font-bold text-white mb-4">How to Access</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        All registered players already have access. Just go to
+        <a href="https://www.challengerscc.ca/c3h" class="text-primary-400 hover:text-primary-300 underline">challengerscc.ca/c3h</a>
+        and sign in with the Gmail address you registered with. If you're having trouble logging in,
+        reach out at <a href="mailto:contact@challengerscc.ca" class="text-primary-400 hover:text-primary-300 underline">contact@challengerscc.ca</a>.
+      </p>
+
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Challengers CC is a registered Ontario nonprofit. All membership fees go directly toward league fees,
+        equipment, ground bookings, and player development. C3H is a free member benefit — not a paid product.
+      </p>
+
+      <p class="text-gray-300 text-lg leading-relaxed">
+        This is what sets Challengers apart. We don't just play cricket — we invest in our players' growth,
+        on and off the field. Welcome to C3H.
+      </p>
+    `,
+    category: 'Club News',
+    author: 'Challengers CC',
+    date: '2026-04-24',
+    image: null,
+    video: null,
+    featured: true,
+  },
 ];
 
 export const categories = ['All', 'Sponsor Spotlight', 'Player Profile', 'Club News'] as const;
