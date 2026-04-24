@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { SessionProvider, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -420,9 +420,5 @@ function SchedulePageContent() {
 }
 
 export default function SchedulePage() {
-  return (
-    <SessionProvider>
-      <SchedulePageContent />
-    </SessionProvider>
-  );
+  return <SchedulePageContent />;
 }
