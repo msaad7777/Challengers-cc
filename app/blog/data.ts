@@ -1136,21 +1136,22 @@ export const blogPosts: BlogPost[] = [
         Plus the AB de Villiers 360 Batting Masterclass playlist and TPG Cricket Academy coaching videos.
       </p>
 
-      <h3 class="text-2xl font-bold text-white mb-4">4. The Dugout — Availability & Squad Selection</h3>
+      <h3 class="text-2xl font-bold text-white mb-4">4. The Dugout — Match Availability</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        See every match for the season. Mark yourself as Available, Maybe, or Unavailable for each match.
-        Captains can then select the playing 12, assign roles (captain, vice-captain, keeper, subs), and
-        set the <strong class="text-white">batting order</strong> by moving players up and down. No more
-        WhatsApp confusion — everything is in one place.
+        See every match for the season. Mark yourself as Available, Maybe, or Unavailable for each match
+        so the captain knows who's in. No more WhatsApp confusion — everything is in one place.
       </p>
 
-      <h3 class="text-2xl font-bold text-white mb-4">5. Field Position Editor</h3>
+      <h3 class="text-2xl font-bold text-white mb-4">5. The Dugout — Squad & Field (Captains Only)</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        A full cricket ground SVG where captains can <strong class="text-white">drag fielders to any position</strong>.
-        The system auto-detects the nearest standard fielding position (Cover, Point, Mid-wicket, etc.).
-        Wicketkeeper and bowler are fixed at their ends. Mirror the field for left-hand batters. Save and
-        share a clean screenshot with the team before match day.
+        Captains get additional tools to manage the team:
       </p>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc list-inside space-y-2">
+        <li><strong class="text-white">Squad Selection</strong> — Pick the playing 12, assign roles (captain, vice-captain, keeper, batting sub, bowling sub)</li>
+        <li><strong class="text-white">Batting Order</strong> — Drag players up and down to set the batting lineup</li>
+        <li><strong class="text-white">Field Position Editor</strong> — Drag fielders on a full cricket ground, auto-detect positions (Cover, Point, Mid-wicket, etc.), mirror for left-hand batters, and share a clean screenshot with the team</li>
+        <li><strong class="text-white">Squad Card</strong> — Generate a match-day squad card to share in the group</li>
+      </ul>
 
       <h3 class="text-2xl font-bold text-white mb-4">6. The Scorer — Live Ball-by-Ball Scoring</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
