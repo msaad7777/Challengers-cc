@@ -117,15 +117,17 @@ const CRICKET_SHOTS: CricketShot[] = [
 // Wagon wheel regions (1-8, clockwise from straight ahead)
 // 0 = defensive (no region), 1 = straight, 2 = mid-off, 3 = cover, 4 = point,
 // 5 = third man/behind off, 6 = fine leg/behind leg, 7 = mid-wicket, 8 = mid-on
+// Angles: batter at TOP, bowler at BOTTOM. 0° = down (straight drive towards bowler).
+// Right-handed batter: off side = LEFT, leg side = RIGHT
 const WAGON_REGIONS: { id: number; label: string; angle: number }[] = [
-  { id: 1, label: 'Straight', angle: 0 },
-  { id: 2, label: 'Mid-off', angle: -30 },
-  { id: 3, label: 'Cover', angle: -60 },
-  { id: 4, label: 'Point', angle: -90 },
-  { id: 5, label: 'Third Man', angle: -135 },
-  { id: 6, label: 'Fine Leg', angle: 135 },
-  { id: 7, label: 'Mid-wicket', angle: 60 },
-  { id: 8, label: 'Mid-on', angle: 30 },
+  { id: 1, label: 'Straight', angle: 180 },
+  { id: 2, label: 'Mid-off', angle: 210 },
+  { id: 3, label: 'Cover', angle: 240 },
+  { id: 4, label: 'Point', angle: 270 },
+  { id: 5, label: 'Third Man', angle: 315 },
+  { id: 6, label: 'Fine Leg', angle: 45 },
+  { id: 7, label: 'Mid-wicket', angle: 120 },
+  { id: 8, label: 'Mid-on', angle: 150 },
 ];
 
 const BOWLER_TYPES = [
@@ -1269,12 +1271,20 @@ export default function NetsPage() {
                     <circle cx="100" cy="100" r="95" fill="#0d3318" stroke="#3d8b4f" strokeWidth="1" />
                     <circle cx="100" cy="100" r="55" fill="none" stroke="white" strokeWidth="0.5" strokeDasharray="3,2" opacity="0.2" />
                     {/* Pitch */}
-                    <rect x="96" y="70" width="8" height="40" rx="1" fill="#c4a265" opacity="0.5" />
-                    {/* Batter marker */}
-                    <circle cx="100" cy="105" r="3" fill="#3b82f6" stroke="#93c5fd" strokeWidth="0.5" />
+                    <rect x="96" y="60" width="8" height="60" rx="1" fill="#c4a265" opacity="0.4" />
+                    {/* Stumps — batting end (top) */}
+                    <rect x="97.5" y="68" width="5" height="3" rx="0.5" fill="white" opacity="0.5" />
+                    {/* Stumps — bowling end (bottom) */}
+                    <rect x="97.5" y="110" width="5" height="3" rx="0.5" fill="white" opacity="0.5" />
+                    {/* Batter marker (top — batting end) */}
+                    <circle cx="100" cy="75" r="3" fill="#3b82f6" stroke="#93c5fd" strokeWidth="0.5" />
+                    <text x="100" y="65" textAnchor="middle" fill="#93c5fd" fontSize="5" opacity="0.6">Batter</text>
+                    {/* Bowler marker (bottom — bowling end) */}
+                    <circle cx="100" cy="118" r="2" fill="#ef4444" stroke="#fca5a5" strokeWidth="0.5" opacity="0.5" />
+                    <text x="100" y="128" textAnchor="middle" fill="#fca5a5" fontSize="5" opacity="0.4">Bowler</text>
                     {/* Region segments */}
                     {WAGON_REGIONS.map(r => {
-                      const angleRad = (r.angle - 90) * Math.PI / 180;
+                      const angleRad = (r.angle) * Math.PI / 180;
                       const halfSector = (360 / 8 / 2) * Math.PI / 180;
                       const innerR = 20;
                       const outerR = 90;
