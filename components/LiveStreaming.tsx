@@ -83,10 +83,6 @@ export default function LiveStreaming() {
                   Subscribe
                 </a>
               </div>
-
-              <p className="text-xs text-gray-500 mt-4">
-                Help us reach <span className="text-red-400 font-semibold">50 subscribers</span> to unlock mobile livestreaming features for match days.
-              </p>
             </div>
 
             {/* Right: Video Player Mockup */}

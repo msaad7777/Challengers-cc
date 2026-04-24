@@ -365,6 +365,100 @@ export const blogPosts: BlogPost[] = [
     featured: false,
   },
   {
+    slug: 'curry-culture-community-partner',
+    title: 'Sponsor Spotlight: Curry Culture Bistro — Authentic Indian Flavours in Kitchener',
+    excerpt:
+      'Curry Culture Bistro joins Challengers Cricket Club as a Community Partner, bringing authentic North Indian cuisine, Indo-Chinese favourites, and late-night hospitality to our players, families, and supporters across Ontario.',
+    content: `
+      <h3 class="text-2xl font-bold text-white mb-4">Watch Our Partner Intro</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Check out our official partner introduction video featuring Curry Culture Bistro and Challengers Cricket Club.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Challengers Cricket Club is proud to welcome <strong class="text-white">Curry Culture Bistro</strong>,
+        located at <strong class="text-white">29 King St E #5, Kitchener, ON</strong>, as our newest Community
+        Partner for the 2026 season. Curry Culture Bistro serves authentic North Indian cuisine and Indo-Chinese
+        favourites in a modern, welcoming bistro setting — bringing traditional spices, fresh ingredients, and
+        warm hospitality to Kitchener-Waterloo.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">A Definite Stop on Match Day Trips</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Our players and families regularly travel through Kitchener-Waterloo on the way to and from matches across
+        Ontario. <strong class="text-white">If you're travelling to or from Kitchener, Curry Culture Bistro is a
+        definite stop for every Challenger.</strong> Whether it's a pre-game fuel-up, a celebratory team meal after
+        a win, or a late-night plate on the road home — make the detour. You won't regret it.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">Open When You Need It — Even After a Late Match</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Cricket matches run long, and the drive home gets even longer. Curry Culture Bistro's hours are
+        custom-made for match days:
+      </p>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc list-inside space-y-2">
+        <li><strong class="text-white">Monday – Saturday:</strong> 7:30 AM – 4:00 AM</li>
+        <li><strong class="text-white">Sunday:</strong> 10:00 AM – 12:00 AM</li>
+      </ul>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Open well past midnight most nights — perfect for teams heading home after a long day at the ground.
+      </p>
+      <h3 class="text-2xl font-bold text-white mb-4">Signature Dishes to Order</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-4">
+        A few highlights from the Curry Culture Bistro menu:
+      </p>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc list-inside space-y-2">
+        <li><strong class="text-white">Butter Chicken</strong> — a Canadian Indian-food classic, done right</li>
+        <li><strong class="text-white">Dal Makhani</strong> — slow-cooked black lentils in butter and cream</li>
+        <li><strong class="text-white">Paneer Tikka Masala</strong> — rich, fragrant, full-flavoured</li>
+        <li><strong class="text-white">Hyderabadi Dum Biryani</strong> — aromatic, layered, unmistakable</li>
+        <li><strong class="text-white">Chole Bhatura</strong> — the comfort-food favourite</li>
+        <li><strong class="text-white">Street food specials</strong> — Pani Puri, Samosa Chaat, Pav Bhaji</li>
+        <li><strong class="text-white">Indo-Chinese & Hakka</strong> — noodles, Manchurian, and fusion classics</li>
+      </ul>
+      <h3 class="text-2xl font-bold text-white mb-4">What People Are Saying</h3>
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic mb-4">
+          "Best Indian food I've ever eaten. Top-notch service."
+        </p>
+        <cite class="text-gray-400 block">— Jess M</cite>
+      </blockquote>
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic mb-4">
+          "Most delicious food ever. Home taste."
+        </p>
+        <cite class="text-gray-400 block">— Jaspreet Kaur</cite>
+      </blockquote>
+      <h3 class="text-2xl font-bold text-white mb-4">Visit Curry Culture Bistro</h3>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-none space-y-2">
+        <li>📍 <strong class="text-white">Address:</strong> 29 King St E #5, Kitchener, ON N2G 2K4</li>
+        <li>📞 <strong class="text-white">Phone:</strong> (548) 889-5779</li>
+        <li>✉️ <strong class="text-white">Email:</strong> info@curryculturebistro.ca</li>
+        <li>🌐 <strong class="text-white">Website:</strong> <a href="https://curryculturebistro.ca/" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">curryculturebistro.ca</a></li>
+        <li>📸 <strong class="text-white">Instagram:</strong> @curryculturebistro</li>
+        <li>🚗 <strong class="text-white">Available on:</strong> DoorDash, takeout, dine-in, catering, private dining</li>
+      </ul>
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic">
+          "Food brings people together, and so does cricket. We are proud to support Challengers Cricket Club
+          and the inclusive, growing community they are building across Ontario."
+        </p>
+        <cite class="text-gray-400 mt-2 block">Curry Culture Bistro, Kitchener</cite>
+      </blockquote>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        📍 <strong class="text-white">Travelling through KW for a match?</strong> Plan your stop at Curry Culture
+        Bistro and tell them Challengers CC sent you.
+      </p>
+      <p class="text-gray-400 text-sm italic">
+        Curry Culture Bistro is a Community Partner of Challengers Cricket Club. Supporting our partners means
+        supporting the club. Mention Challengers CC when you visit!
+      </p>
+    `,
+    category: 'Sponsor Spotlight',
+    author: 'Challengers CC',
+    date: '2026-04-24',
+    image: '/curry-culture-sponsor.png',
+    video: '/videos/curry-culture-sponsor.mp4',
+    featured: false,
+  },
+  {
     slug: 'kover-drive-community-partner',
     title: 'Sponsor Spotlight: Kover Drive — Our Home for Indoor Practice',
     excerpt:
