@@ -252,58 +252,94 @@ export default function C3HPage() {
           <div className="mt-8 glass rounded-2xl p-8 border border-primary-500/20">
             <h3 className="text-xl font-bold text-white mb-6 text-center">Build Roadmap</h3>
             <div className="space-y-3 max-w-lg mx-auto">
+              {/* 1. Google Auth — LIVE */}
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
                 </div>
                 <div>
                   <p className="text-white text-sm font-medium">Google Auth + Player Login</p>
-                  <p className="text-primary-400 text-xs">Live</p>
+                  <p className="text-primary-400 text-xs">Live — Board & player email whitelisting, JWT sessions</p>
                 </div>
               </div>
+              {/* 2. The Nets — LIVE */}
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-medium">The Nets — Reflections, Patterns & Coaching Tips</p>
+                  <p className="text-primary-400 text-xs">Live — Match reflections, pattern alerts, smart coaching engine</p>
+                </div>
+              </div>
+              {/* 3. Shot Planner — LIVE */}
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-medium">The Nets — Shot Planner & Wagon Wheel</p>
+                  <p className="text-primary-400 text-xs">Live — Rate shots, game plans vs bowler types, batting journal</p>
+                </div>
+              </div>
+              {/* 4. Training — LIVE */}
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-medium">The Nets — Training Programs & Drills</p>
+                  <p className="text-primary-400 text-xs">Live — Drive mastery, leg spin, power hitting, strike rotation with video guides</p>
+                </div>
+              </div>
+              {/* 5. The Dugout — LIVE */}
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-medium">The Dugout — Availability, Squad & Batting Order</p>
+                  <p className="text-primary-400 text-xs">Live — Player availability, captain squad selection, batting order, roles</p>
+                </div>
+              </div>
+              {/* 6. Field Editor — LIVE */}
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-medium">The Dugout — Field Position Editor</p>
+                  <p className="text-primary-400 text-xs">Live — Drag-and-drop fielding positions, auto-detect, LHB mirror, share</p>
+                </div>
+              </div>
+              {/* 7. The Scorer — LIVE */}
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-medium">The Scorer — Ball-by-Ball Live Scoring</p>
+                  <p className="text-primary-400 text-xs">Live — Coin toss, full scoring, extras, wickets, batting & bowling stats</p>
+                </div>
+              </div>
+              {/* 8. Season Stats — COMING SOON */}
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-accent-500 flex items-center justify-center flex-shrink-0">
-                  <span className="text-xs font-bold text-white">2</span>
+                  <span className="text-xs font-bold text-white">8</span>
                 </div>
                 <div>
-                  <p className="text-white text-sm font-medium">The Nets — Reflection Cards & Mindset Tools</p>
-                  <p className="text-accent-400 text-xs">In Progress — Reflection cards live, pattern tracker live</p>
+                  <p className="text-white text-sm font-medium">Season Stats & Leaderboards</p>
+                  <p className="text-accent-400 text-xs">Coming Soon — Season averages, top performers, match history</p>
                 </div>
               </div>
+              {/* 9. The Pavilion — COMING SOON */}
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 flex-shrink-0">
-                  <span className="text-xs font-bold text-gray-400">3</span>
-                </div>
-                <div>
-                  <p className="text-white text-sm font-medium">The Nets — Practice Match Scorer</p>
-                  <p className="text-gray-500 text-xs">Coin toss, add players, live scoring, results linked to reflections</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 flex-shrink-0">
-                  <span className="text-xs font-bold text-gray-400">4</span>
-                </div>
-                <div>
-                  <p className="text-white text-sm font-medium">The Scoreboard — Match KPIs & Season Stats</p>
-                  <p className="text-gray-500 text-xs">Score entry, batting/bowling stats, contribution tracking</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 flex-shrink-0">
-                  <span className="text-xs font-bold text-gray-400">5</span>
-                </div>
-                <div>
-                  <p className="text-white text-sm font-medium">The Dugout — Squad Selection</p>
-                  <p className="text-gray-500 text-xs">Captain picks team, players confirm availability</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 flex-shrink-0">
-                  <span className="text-xs font-bold text-gray-400">6</span>
+                  <span className="text-xs font-bold text-gray-400">9</span>
                 </div>
                 <div>
                   <p className="text-white text-sm font-medium">The Pavilion — Board Governance</p>
-                  <p className="text-gray-500 text-xs">Resolutions, voting, e-sign, meeting records</p>
+                  <p className="text-gray-500 text-xs">Planned — Resolutions, voting, e-sign, meeting records</p>
                 </div>
               </div>
             </div>
