@@ -216,6 +216,16 @@ export default function AvailabilityPage() {
     setSquadRoles(prev => ({ ...prev, [matchId]: currentRoles }));
   };
 
+  const movePlayer = async (matchId: string, fromIdx: number, toIdx: number) => {
+    const current = [...(squads[matchId] || [])];
+    if (fromIdx < 0 || fromIdx >= current.length || toIdx < 0 || toIdx >= current.length) return;
+    const [player] = current.splice(fromIdx, 1);
+    current.splice(toIdx, 0, player);
+    const currentRoles = squadRoles[matchId] || {};
+    await setDoc(doc(db, 'squads', matchId), { players: current, roles: currentRoles, updatedBy: session?.user?.email, updatedAt: new Date().toISOString() });
+    setSquads(prev => ({ ...prev, [matchId]: current }));
+  };
+
   const toggleRole = async (matchId: string, playerN: string, role: string) => {
     const currentRoles = { ...(squadRoles[matchId] || {}) };
     // Remove role from anyone else who has it
@@ -519,6 +529,12 @@ export default function AvailabilityPage() {
                                 const role = getDisplayRole(n);
                                 return (
                                   <div key={n} className="flex items-center gap-2">
+                                    {isCaptain && (
+                                      <div className="flex flex-col">
+                                        <button onClick={() => movePlayer(m.id, i, i - 1)} disabled={i === 0} className={`text-[10px] leading-none px-1 ${i === 0 ? 'text-gray-700' : 'text-gray-400 hover:text-white'}`}>▲</button>
+                                        <button onClick={() => movePlayer(m.id, i, i + 1)} disabled={i === (squads[m.id] || []).length - 1} className={`text-[10px] leading-none px-1 ${i === (squads[m.id] || []).length - 1 ? 'text-gray-700' : 'text-gray-400 hover:text-white'}`}>▼</button>
+                                      </div>
+                                    )}
                                     <span className={`text-xs px-2 py-0.5 rounded ${roleColor(role)}`}>
                                       {i + 1}. {shortName(n)}{roleLabel(role)}
                                     </span>
