@@ -67,6 +67,20 @@ export default function DashboardPage() {
           {/* Modules Grid */}
           <div className="grid sm:grid-cols-2 gap-6">
 
+            {/* Events & Calendar */}
+            <a href="/c3h/events" className="glass rounded-2xl p-6 border-2 border-accent-500/20 hover:border-accent-500/50 transition-all duration-300 block">
+              <div className="text-3xl mb-3">📅</div>
+              <h2 className="text-xl font-bold text-white mb-1">Events &amp; Calendar</h2>
+              <p className="text-accent-400 text-xs font-medium mb-3">Training, Matches &amp; Club Events</p>
+              <p className="text-gray-400 text-sm mb-4">
+                View all confirmed club events and add them to your Google Calendar, Apple Calendar,
+                or Outlook with one click.
+              </p>
+              <span className="text-xs px-3 py-1 rounded-full bg-accent-500/20 text-accent-400 border border-accent-500/30">
+                Open
+              </span>
+            </a>
+
             {/* The Nets */}
             <a href="/c3h/nets" className="glass rounded-2xl p-6 border-2 border-primary-500/20 hover:border-primary-500/50 transition-all duration-300 block">
               <div className="text-3xl mb-3">🏏</div>
