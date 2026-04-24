@@ -330,6 +330,7 @@ const TRAINING_PROGRAMS: TrainingProgram[] = [
       { title: 'Optimal Swing Path Drills', url: 'https://www.youtube.com/watch?v=nE8mt-X5kxI&t' },
       { title: 'Hand Speed Drills', url: 'https://www.youtube.com/watch?v=ZVCdJXVJLwU&t' },
       { title: 'Timing & Hand-Eye', url: 'https://www.youtube.com/watch?v=QCwSaXEJI2w' },
+      { title: 'Step-Out Technique — TPG Academy', url: 'https://www.youtube.com/watch?v=_2jVVb0f7Yo' },
     ],
     sessions: [
       {
@@ -369,6 +370,7 @@ const TRAINING_PROGRAMS: TrainingProgram[] = [
         title: 'Session 3 — Attacking Spin',
         description: 'Build confidence playing powerful boundary shots against spin bowling.',
         drills: [
+          { name: 'Step-Out Technique (TPG Academy)', reps: '12 dropdowns + 12 underarms + 24 over arms', video: 'https://www.youtube.com/watch?v=_2jVVb0f7Yo' },
           { name: 'Double step attacking spin', reps: '12 dropdowns + 12 underarms + 24 over arms', video: 'https://youtu.be/p7GzCC7V3-4' },
           { name: 'Hitting straight over the top', reps: '12 + 18 + 24 balls', video: 'https://youtu.be/QKJO2e1gHvU' },
           { name: 'Slog Sweep', reps: '12 dropdowns + 12 underarms + 24 slow + 24 match intensity', video: 'https://youtu.be/KYdy-eUZwP0' },
