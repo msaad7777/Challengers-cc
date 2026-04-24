@@ -446,6 +446,10 @@ export const blogPosts: BlogPost[] = [
         📍 <strong class="text-white">Travelling through KW for a match?</strong> Plan your stop at Curry Culture
         Bistro and tell them Challengers CC sent you.
       </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        👉 <a href="/partners/curry-culture-bistro" class="text-primary-400 hover:text-primary-300 underline font-semibold">Visit our partner page for Curry Culture Bistro</a>
+        — quick links to order online, view the menu, make a reservation, or get directions.
+      </p>
       <p class="text-gray-400 text-sm italic">
         Curry Culture Bistro is a Community Partner of Challengers Cricket Club. Supporting our partners means
         supporting the club. Mention Challengers CC when you visit!
