@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Partners() {
   return (
@@ -255,20 +256,23 @@ export default function Partners() {
                 <p className="text-xs text-primary-400 font-medium">Authentic Thai Cuisine</p>
                 <p className="text-xs text-gray-500">London, ON</p>
               </div>
-              <div className="flex flex-col items-center">
-                <div className="w-28 h-28 rounded-xl overflow-hidden mb-3 bg-white flex items-center justify-center p-2">
+              <Link
+                href="/partners/curry-culture-bistro"
+                className="flex flex-col items-center group"
+              >
+                <div className="w-28 h-28 rounded-xl overflow-hidden mb-3 bg-white flex items-center justify-center p-2 group-hover:ring-2 group-hover:ring-primary-500/50 transition-all">
                   <Image
                     src="/curry-culture-logo.webp"
-                    alt="Curry Culture - Authentic Indian Cuisine"
+                    alt="Curry Culture Bistro - Authentic Indian Cuisine"
                     width={112}
                     height={112}
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <h3 className="text-sm font-bold text-white mb-1">Curry Culture Bistro</h3>
+                <h3 className="text-sm font-bold text-white mb-1 group-hover:text-primary-400 transition-colors">Curry Culture Bistro</h3>
                 <p className="text-xs text-primary-400 font-medium">Authentic Indian Cuisine</p>
                 <p className="text-xs text-gray-500">Kitchener, ON</p>
-              </div>
+              </Link>
             </div>
           </div>
         </div>
