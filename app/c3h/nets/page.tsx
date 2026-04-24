@@ -146,6 +146,322 @@ interface ShotPlan {
   notes: string;
 };
 
+// ── Training Programs Data ──
+interface Drill {
+  name: string;
+  reps: string;
+  video?: string;
+}
+
+interface TrainingSession {
+  title: string;
+  description: string;
+  drills: Drill[];
+}
+
+interface TrainingProgram {
+  id: string;
+  title: string;
+  icon: string;
+  color: string;
+  period: string;
+  description: string;
+  introVideos: { title: string; url: string }[];
+  sessions: TrainingSession[];
+}
+
+const TRAINING_PROGRAMS: TrainingProgram[] = [
+  {
+    id: 'drives',
+    title: 'Drive Mastery',
+    icon: '🏏',
+    color: 'primary',
+    period: '2 weeks / 4 sessions',
+    description: 'Master straight drive, cover drive, on drive, and lofted drive. Correct common mistakes and build muscle memory.',
+    introVideos: [
+      { title: 'Playing the Drive — Basics', url: 'https://www.youtube.com/watch?v=TSxJVw57jqs' },
+      { title: 'Common Drive Mistakes', url: 'https://www.youtube.com/watch?v=xzlubATqwaU' },
+    ],
+    sessions: [
+      {
+        title: 'Session 1 — Straight & Cover Drive',
+        description: 'Focus on straight drive and cover drive as a singular shot — the technique is extremely similar.',
+        drills: [
+          { name: 'Swing Focus: Double ball throws', reps: '12x reps', video: 'https://youtu.be/CQeXXrZfsvE?t=20' },
+          { name: 'Drill 1: Stationary position — Dropdowns', reps: '12x reps', video: 'https://youtu.be/xzlubATqwaU?t=35' },
+          { name: 'Drill 2: Single handed top hand drives', reps: '12x reps', video: 'https://youtu.be/xzlubATqwaU?t=137' },
+          { name: 'Drill 3: Stationary position — Over arms', reps: '36x reps', video: 'https://youtu.be/xzlubATqwaU?t=171' },
+          { name: 'Movement: Weight transfer', reps: '24x reps', video: 'https://youtu.be/xzlubATqwaU?t=61' },
+          { name: 'Movement: Head over Cone', reps: '12x reps', video: 'https://youtu.be/xzlubATqwaU?t=76' },
+          { name: 'Hitting stationaries', reps: '4x sets of 5 balls', video: 'https://youtu.be/TSxJVw57jqs?t=96' },
+          { name: 'Rapid fire stepping drives', reps: '24x reps', video: 'https://youtu.be/xzlubATqwaU?t=229' },
+          { name: 'Straight & Cover Drives — increasing pace', reps: '18x each: underarms, slow, medium, high speed' },
+          { name: 'Mixed set of over arms', reps: '36x balls' },
+        ],
+      },
+      {
+        title: 'Session 2 — Lofted Drive',
+        description: 'Revise straight/cover drive then learn lofted drives — same technique but hit in front of eye line instead of underneath.',
+        drills: [
+          { name: 'Warm-up: Stationary over arms', reps: '24x reps', video: 'https://youtu.be/xzlubATqwaU?t=171' },
+          { name: 'Weight transfer warm-up', reps: '12x reps', video: 'https://youtu.be/xzlubATqwaU?t=61' },
+          { name: 'Lofted Drive intro video', reps: 'Watch first', video: 'https://youtu.be/KzvZnEqBU6Q' },
+          { name: 'Lofted drive: Dropdowns', reps: '24x reps' },
+          { name: 'Lofted drive: Underarms', reps: '36x reps' },
+          { name: 'Lofted drive: Medium paced over arms', reps: '36x reps' },
+          { name: 'Match intensity lofted drives', reps: '36x balls — keep score' },
+          { name: 'Mixed set: drive + lofted drive', reps: '36x balls' },
+        ],
+      },
+      {
+        title: 'Session 3 — On Drive',
+        description: 'The most difficult of our drives — the on drive. Focus on initial small stride movement.',
+        drills: [
+          { name: 'On Drive intro video', reps: 'Watch first', video: 'https://youtu.be/KLfmgX-0LtI' },
+          { name: 'Swing: Stationary dropdowns', reps: '12x reps', video: 'https://youtu.be/KLfmgX-0LtI?t=94' },
+          { name: 'Swing: Stationary under arms', reps: '18x reps', video: 'https://youtu.be/KLfmgX-0LtI?t=121' },
+          { name: 'Movement: Hitting stationaries', reps: '6x sets of 3', video: 'https://youtu.be/KLfmgX-0LtI?t=152' },
+          { name: 'Standard dropdowns', reps: '12x reps', video: 'https://youtu.be/KLfmgX-0LtI?t=197' },
+          { name: 'Under arms with line', reps: '18x reps', video: 'https://youtu.be/KLfmgX-0LtI?t=222' },
+          { name: 'On Drives — increasing pace', reps: '18x each: underarms, slow, medium, high speed' },
+          { name: 'Challenge set: match intensity', reps: '30x balls — target 24/30 successful' },
+        ],
+      },
+      {
+        title: 'Session 4 — All Drives Combined',
+        description: 'Combine all drives at match intensity. Mixed throws — play the right drive for each delivery.',
+        drills: [
+          { name: 'Warm-up: Weight transfer', reps: '12x reps', video: 'https://youtu.be/xzlubATqwaU?t=61' },
+          { name: 'Straight drives', reps: '18x balls' },
+          { name: 'Cover drives', reps: '18x balls' },
+          { name: 'On drives', reps: '18x balls' },
+          { name: 'Lofted drives', reps: '18x balls' },
+          { name: 'Mixed drive set — match intensity', reps: '36x balls — play the right shot' },
+          { name: 'Challenge: score out of 36', reps: '36x balls — record your score' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'legspin',
+    title: 'Leg Spin Bowling',
+    icon: '🎯',
+    color: 'accent',
+    period: '2 weeks / 4 sessions',
+    description: 'Master leg spin grip, wrist action, line and length consistency. Learn variations: top spinner, slider, and googly.',
+    introVideos: [
+      { title: 'Introduction to Leg Spin', url: 'https://www.youtube.com/watch?v=Cn9htU88o0Q' },
+    ],
+    sessions: [
+      {
+        title: 'Session 1 — Grip & Wrist Action',
+        description: 'Learn the grip and practice wrist action. Build muscle memory with repetitive basics.',
+        drills: [
+          { name: 'Gripping the ball', reps: 'Study & practice', video: 'https://youtu.be/Cn9htU88o0Q?t=14' },
+          { name: 'Wrist action practice', reps: 'Study & practice', video: 'https://youtu.be/PFdoXREvjHE?t=7' },
+          { name: 'Flicks hand to hand', reps: '20x reps', video: 'https://youtu.be/Cn9htU88o0Q?t=50' },
+          { name: 'Resistance band wrist strengthening', reps: '2x 20 reps', video: 'https://youtu.be/PFdoXREvjHE?t=28' },
+          { name: 'Wrist flick set', reps: '2x 20 reps', video: 'https://youtu.be/PFdoXREvjHE?t=56' },
+          { name: 'Underarm throws', reps: '3x 12 reps', video: 'https://youtu.be/PFdoXREvjHE?t=72' },
+          { name: 'Kneeling and throwing', reps: '3x 12 reps', video: 'https://youtu.be/PFdoXREvjHE?t=94' },
+          { name: 'Stationary position delivery', reps: '2x 12 reps', video: 'https://youtu.be/aU_OF3xqPI4?t=76' },
+          { name: 'Single jump delivery', reps: '2x 12 reps', video: 'https://youtu.be/aU_OF3xqPI4?t=98' },
+          { name: 'Bowling 3 overs', reps: '3x 6 reps', video: 'https://youtu.be/PFdoXREvjHE?t=117' },
+        ],
+      },
+      {
+        title: 'Session 2 — Line, Length & Top Spinner',
+        description: 'Improve line and length consistency. Learn the top spinner variation.',
+        drills: [
+          { name: 'Flicks warm-up', reps: '20x reps', video: 'https://youtu.be/Cn9htU88o0Q?t=50' },
+          { name: 'Resistance band', reps: '2x 20 reps', video: 'https://youtu.be/PFdoXREvjHE?t=28' },
+          { name: 'Alignment within crease', reps: '2x 20 reps', video: 'https://youtu.be/xgSLPf-1ZHQ?t=39' },
+          { name: 'Through crease to target', reps: '2x 20 reps', video: 'https://youtu.be/xgSLPf-1ZHQ?t=67' },
+          { name: 'Follow through — leg spin only', reps: '4x 6 reps', video: 'https://youtu.be/xgSLPf-1ZHQ?t=106' },
+          { name: 'Consistency checks', reps: '4x 6 reps (4 overs)', video: 'https://youtu.be/xgSLPf-1ZHQ?t=137' },
+          { name: 'Variation: Top Spinner', reps: '4x 6 reps (4 overs)', video: 'https://youtu.be/cV4CUBl3VYg?t=55' },
+        ],
+      },
+      {
+        title: 'Session 3 — Slider Variation',
+        description: 'Repeat warmup drills then learn back/front foot landings and the slider variation.',
+        drills: [
+          { name: 'Flicks warm-up', reps: '20x reps', video: 'https://youtu.be/Cn9htU88o0Q?t=50' },
+          { name: 'Resistance band', reps: '2x 20 reps', video: 'https://youtu.be/PFdoXREvjHE?t=28' },
+          { name: 'Back foot landing', reps: '3x 6 reps', video: 'https://youtu.be/aU_OF3xqPI4?t=141' },
+          { name: 'Front foot landing', reps: '3x 6 reps', video: 'https://youtu.be/aU_OF3xqPI4?t=191' },
+          { name: 'Height in action + front leg snap', reps: '4x 6 reps', video: 'https://youtu.be/aU_OF3xqPI4?t=230' },
+          { name: 'Slider: Flicks', reps: '1x 20 reps', video: 'https://youtu.be/mrq15Ofqi3o?t=38' },
+          { name: 'Slider: Release', reps: '1x 20 reps', video: 'https://youtu.be/mrq15Ofqi3o?t=60' },
+          { name: 'Slider: ¾ pitch length', reps: '4x 6 reps', video: 'https://youtu.be/mrq15Ofqi3o?t=87' },
+          { name: 'Slider: Full pitch length', reps: '4x 6 reps', video: 'https://youtu.be/mrq15Ofqi3o?t=116' },
+        ],
+      },
+      {
+        title: 'Session 4 — Googly Variation',
+        description: 'Reinforce leg spin actions and learn the googly. Plan your bowling spell.',
+        drills: [
+          { name: 'Flicks warm-up', reps: '20x reps', video: 'https://youtu.be/Cn9htU88o0Q?t=50' },
+          { name: 'Resistance band', reps: '2x 20 reps', video: 'https://youtu.be/PFdoXREvjHE?t=28' },
+          { name: 'Underarm throws', reps: '5x 6 reps', video: 'https://youtu.be/PFdoXREvjHE?t=72' },
+          { name: 'Kneeling and throwing', reps: '5x 6 reps', video: 'https://youtu.be/PFdoXREvjHE?t=94' },
+          { name: 'Bowling', reps: '4x 6 reps (3 overs)', video: 'https://youtu.be/PFdoXREvjHE?t=117' },
+          { name: 'Googly: Flicks', reps: '1x 20 reps', video: 'https://youtu.be/C64WcUceFTo?t=40' },
+          { name: 'Googly: Bowling from knee height', reps: '4x 6 reps', video: 'https://youtu.be/C64WcUceFTo?t=75' },
+          { name: 'Googly: Standing into side net', reps: '4x 6 reps', video: 'https://youtu.be/C64WcUceFTo?t=110' },
+          { name: 'Googly: Full action bowling', reps: '4x 6 reps', video: 'https://youtu.be/C64WcUceFTo?t=139' },
+          { name: 'Planning your spell', reps: 'Watch & study', video: 'https://www.youtube.com/watch?v=6KHJourO0b4' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'power',
+    title: 'Power Hitting',
+    icon: '💥',
+    color: 'red',
+    period: '2 weeks / 4 sessions',
+    description: 'Improve hand speed, timing, swing path, and body mechanics to hit boundaries with less risk.',
+    introVideos: [
+      { title: 'Power Hitting & Swing Paths', url: 'https://www.youtube.com/watch?v=fXO6VzDlSZQ' },
+      { title: 'Optimal Swing Path Drills', url: 'https://www.youtube.com/watch?v=nE8mt-X5kxI&t' },
+      { title: 'Hand Speed Drills', url: 'https://www.youtube.com/watch?v=ZVCdJXVJLwU&t' },
+      { title: 'Timing & Hand-Eye', url: 'https://www.youtube.com/watch?v=QCwSaXEJI2w' },
+    ],
+    sessions: [
+      {
+        title: 'Session 1 — Swing Path & Hand Speed',
+        description: 'Focus on hand speed, timing, swing path, and body mechanics for power hitting.',
+        drills: [
+          { name: 'Fault 1 — Drill 2', reps: '1x 18 reps', video: 'https://www.youtube.com/watch?v=nE8mt-X5kxI&t' },
+          { name: 'Fault 1 — Drill 2 Progression', reps: '1x 18 reps', video: 'https://www.youtube.com/watch?v=nE8mt-X5kxI&t' },
+          { name: 'Fault 2 — The golf swing', reps: '1x 24 reps', video: 'https://www.youtube.com/watch?v=nE8mt-X5kxI&t' },
+          { name: 'Hand Speed: Drill 1 (no 10)', reps: '1x 12 reps', video: 'https://www.youtube.com/watch?v=ZVCdJXVJLwU&t' },
+          { name: 'Hand Speed: Drill 3 (no 8) ball drops', reps: '4x 6 balls', video: 'https://www.youtube.com/watch?v=ZVCdJXVJLwU&t' },
+          { name: 'Hand Speed: Drill 4 (no 7) ball drops', reps: '12x 2 balls', video: 'https://www.youtube.com/watch?v=ZVCdJXVJLwU&t' },
+          { name: 'Juggling for hand-eye coordination', reps: '2 minutes' },
+          { name: 'Timing drill', reps: '36 balls', video: 'https://www.youtube.com/watch?v=QCwSaXEJI2w' },
+          { name: 'Power hitting: 3 zones', reps: '24 balls each zone', video: 'https://www.youtube.com/watch?v=fXO6VzDlSZQ' },
+          { name: 'Mixed throwdowns', reps: '36 balls' },
+        ],
+      },
+      {
+        title: 'Session 2 — Swing Faults & Timing',
+        description: 'Fix swing faults and improve timing. More hand speed drills at higher intensity.',
+        drills: [
+          { name: 'Fault 2 — Drill no 1', reps: '1x 18 reps', video: 'https://www.youtube.com/watch?v=nE8mt-X5kxI&t' },
+          { name: 'Fault 2 — Drill no 2', reps: '1x 12 reps', video: 'https://www.youtube.com/watch?v=nE8mt-X5kxI&t' },
+          { name: 'Fault 3 — Drill no 2', reps: '1x 18 reps', video: 'https://www.youtube.com/watch?v=nE8mt-X5kxI&t' },
+          { name: 'Hand Speed: Drill 6 (no 5)', reps: '6x 2 ball reps', video: 'https://www.youtube.com/watch?v=ZVCdJXVJLwU&t' },
+          { name: 'Hand Speed: Drill 7 (no 4)', reps: '6x 2 ball reps', video: 'https://www.youtube.com/watch?v=ZVCdJXVJLwU&t' },
+          { name: 'Hand Speed: Drill 8 (no 3)', reps: '4x 5 ball reps', video: 'https://www.youtube.com/watch?v=ZVCdJXVJLwU&t' },
+          { name: 'Hand Speed: Drill 10 (no 1)', reps: '4x 3 ball reps', video: 'https://www.youtube.com/watch?v=ZVCdJXVJLwU&t' },
+          { name: 'Juggling warm-up', reps: '2 minutes' },
+          { name: 'Timing drill', reps: '30 balls', video: 'https://www.youtube.com/watch?v=QCwSaXEJI2w' },
+          { name: 'Mixed medium speed boundary hitting', reps: '36 balls' },
+          { name: 'Mixed throwdowns', reps: '36 balls' },
+        ],
+      },
+      {
+        title: 'Session 3 — Attacking Spin',
+        description: 'Build confidence playing powerful boundary shots against spin bowling.',
+        drills: [
+          { name: 'Double step attacking spin', reps: '12 dropdowns + 12 underarms + 24 over arms', video: 'https://youtu.be/p7GzCC7V3-4' },
+          { name: 'Hitting straight over the top', reps: '12 + 18 + 24 balls', video: 'https://youtu.be/QKJO2e1gHvU' },
+          { name: 'Slog Sweep', reps: '12 dropdowns + 12 underarms + 24 slow + 24 match intensity', video: 'https://youtu.be/KYdy-eUZwP0' },
+          { name: 'Challenge: match intensity vs off spin', reps: '36 balls — hit boundaries' },
+        ],
+      },
+      {
+        title: 'Session 4 — Match Intensity Power',
+        description: 'Full match intensity power hitting. Combine all techniques at speed.',
+        drills: [
+          { name: 'Juggling warm-up', reps: '2 minutes' },
+          { name: 'Zone hitting: all 3 zones', reps: '24 balls each', video: 'https://www.youtube.com/watch?v=fXO6VzDlSZQ' },
+          { name: 'Mixed medium speed throwdowns', reps: '36 balls' },
+          { name: 'Match intensity: hit boundaries', reps: '36 balls — keep score' },
+          { name: 'Challenge: 36 balls — score as many as possible', reps: '36 balls' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'rotation',
+    title: 'Strike Rotation',
+    icon: '🔄',
+    color: 'blue',
+    period: '2 weeks / 4 sessions',
+    description: 'Stop getting bogged down. Week 1: rotate vs spin bowling. Week 2: rotate vs seam bowling.',
+    introVideos: [
+      { title: 'Strike Rotation vs Spin', url: 'https://youtu.be/Nx7gcnTT_Nw' },
+      { title: 'Sweep & Reverse Sweep', url: 'https://www.youtube.com/watch?v=2il-iAlFtKA&t' },
+      { title: 'Strike Rotation vs Seam', url: 'https://www.youtube.com/watch?v=Gy_MjikAnhw&t' },
+      { title: 'Third Man Gap Drills', url: 'https://youtu.be/8M5ObWLjL6c' },
+    ],
+    sessions: [
+      {
+        title: 'Session 1 — Rotating vs Spin (Basics)',
+        description: 'Learn to rotate strike against spin bowling. Front foot and back foot options to all areas.',
+        drills: [
+          { name: 'Rotating square — leg side, front foot', reps: '18 clean reps: slow seam up', video: 'https://youtu.be/Nx7gcnTT_Nw' },
+          { name: 'Rotating square — leg side, back foot', reps: '18 clean reps' },
+          { name: 'Rotating square — off side, front foot', reps: '18 clean reps' },
+          { name: 'Rotating square — off side, back foot', reps: '18 clean reps' },
+          { name: 'Punching to long-on: front foot', reps: '18 clean reps' },
+          { name: 'Punching to long-on: back foot', reps: '18 clean reps' },
+          { name: 'Punching to long-off: front foot', reps: '18 clean reps' },
+          { name: 'Punching to long-off: back foot', reps: '18 clean reps' },
+          { name: 'Mixed off spin throws — 100% strike rate', reps: '30 balls — score every ball' },
+        ],
+      },
+      {
+        title: 'Session 2 — Rotating vs Spin (Sweep & Reverse)',
+        description: 'Add sweep and reverse sweep to your rotation arsenal against spin.',
+        drills: [
+          { name: 'Rotating square — all 8 options', reps: '12 reps each: off spin throws' },
+          { name: 'Sweep', reps: '24 clean reps', video: 'https://www.youtube.com/watch?v=2il-iAlFtKA&t' },
+          { name: 'Reverse Sweep', reps: '24 clean reps', video: 'https://www.youtube.com/watch?v=2il-iAlFtKA&t' },
+          { name: 'Mixed off spin — 36 ball assessment', reps: '36 balls' },
+          { name: 'Challenge: 100% strike rate, 30 balls', reps: '30 balls — beat your previous score' },
+        ],
+      },
+      {
+        title: 'Session 3 — Rotating vs Seam',
+        description: 'Strike rotation against seam bowling. Seven options to rotate — front foot and back foot.',
+        drills: [
+          { name: 'Study seam rotation options video', reps: 'Watch first', video: 'https://www.youtube.com/watch?v=Gy_MjikAnhw&t' },
+          { name: 'Option 1: back foot', reps: '12 balls' },
+          { name: 'Option 1: front foot', reps: '12 balls' },
+          { name: 'Option 3: front foot', reps: '24 balls' },
+          { name: 'Option 5: back foot + front foot', reps: '12 + 12 balls' },
+          { name: 'Option 6b: Hitting third man', reps: '24 balls' },
+          { name: 'Third man gap drills (if struggling)', reps: 'As needed', video: 'https://youtu.be/8M5ObWLjL6c' },
+          { name: 'Mixed medium speed — rotate every ball', reps: '36 balls' },
+          { name: 'Challenge: 4/6 rotations per over x 7 overs', reps: '42 deliveries' },
+          { name: 'Challenge: 36 balls at match intensity', reps: '36 balls — 100% strike rate' },
+        ],
+      },
+      {
+        title: 'Session 4 — Combined Rotation',
+        description: 'Mix spin and seam rotation. Match simulation — rotate under pressure.',
+        drills: [
+          { name: 'Warm-up: all rotation options', reps: '6 reps each' },
+          { name: 'Mixed spin throws — rotate every ball', reps: '24 balls' },
+          { name: 'Mixed seam throws — rotate every ball', reps: '24 balls' },
+          { name: 'Match simulation: 30 runs needed, 36 balls', reps: '36 balls — keep score' },
+          { name: 'Final challenge: mixed throws, match intensity', reps: '36 balls — 100% strike rate target' },
+        ],
+      },
+    ],
+  },
+];
+
+const EXTRA_VIDEOS = [
+  { title: 'AB de Villiers 360 Batting Masterclass', url: 'https://www.youtube.com/watch?v=Q8WXoX2p3Ac&list=PLj52RzS-mgRDWdyleqi1rOzoqpIqUBOyW', description: '7 videos on batting technique, shot selection, and match awareness' },
+  { title: 'TPG Cricket Academy — Our Coaching Partner', url: 'https://www.youtube.com/@tpgcricket6843/videos', description: 'Coaching drills, batting tips, and training sessions from Coach Manish Giri' },
+  { title: 'Planning a Leg Spin Spell', url: 'https://www.youtube.com/watch?v=6KHJourO0b4', description: 'How to approach a spell of leg spin bowling in a match' },
+];
+
 const MATCHES = [
   // LCL T30
   { label: 'LCL M1 — vs London Predators (May 10)', index: 1, date: '2026-05-10' },
@@ -189,7 +505,9 @@ function isMatchAvailable(matchDate: string): boolean {
 export default function NetsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner'>('list');
+  const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner' | 'training'>('list');
+  const [expandedProgram, setExpandedProgram] = useState<string | null>(null);
+  const [expandedSession, setExpandedSession] = useState<string | null>(null);
   const [reflections, setReflections] = useState<Reflection[]>([]);
   const [selectedReflection, setSelectedReflection] = useState<Reflection | null>(null);
   const [loading, setLoading] = useState(true);
@@ -492,6 +810,14 @@ export default function NetsPage() {
               <h1 className="text-3xl font-bold text-white">The <span className="gradient-text">Nets</span></h1>
             </div>
             <div className="flex gap-2 flex-wrap">
+              <button
+                onClick={() => setView(view === 'training' ? 'list' : 'training')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
+                  view === 'training' ? 'bg-red-500/20 text-red-400 border-red-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
+                }`}
+              >
+                Training
+              </button>
               <button
                 onClick={() => { if (view !== 'planner') { setView('planner'); if (!plannerLoaded) loadShotPlan(); } else setView('list'); }}
                 className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
@@ -801,6 +1127,126 @@ export default function NetsPage() {
                 </button>
               </div>
             </>
+          )}
+
+          {/* TRAINING VIEW */}
+          {view === 'training' && (
+            <div className="space-y-6">
+              <button onClick={() => setView('list')} className="text-gray-500 text-sm hover:text-primary-400">&larr; Back to reflections</button>
+
+              <div className="text-center mb-2">
+                <h2 className="text-2xl font-bold text-white">Training <span className="gradient-text">Programs</span></h2>
+                <p className="text-gray-500 text-sm">Structured drills with free YouTube coaching videos</p>
+              </div>
+
+              {/* Program Cards */}
+              {TRAINING_PROGRAMS.map(prog => {
+                const isExpanded = expandedProgram === prog.id;
+                const colorMap: Record<string, string> = { primary: 'primary', accent: 'accent', red: 'red', blue: 'blue' };
+                const c = colorMap[prog.color] || 'primary';
+                return (
+                  <div key={prog.id} className={`glass rounded-2xl border transition-all ${isExpanded ? `border-${c}-500/50` : 'border-white/10'}`}>
+                    <button onClick={() => { setExpandedProgram(isExpanded ? null : prog.id); setExpandedSession(null); }} className="w-full text-left p-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl">{prog.icon}</span>
+                          <div>
+                            <h3 className="text-lg font-bold text-white">{prog.title}</h3>
+                            <p className="text-gray-500 text-xs">{prog.period}</p>
+                          </div>
+                        </div>
+                        <span className="text-gray-500 text-lg">{isExpanded ? '−' : '+'}</span>
+                      </div>
+                      <p className="text-gray-400 text-sm mt-2">{prog.description}</p>
+                    </button>
+
+                    {isExpanded && (
+                      <div className="px-6 pb-6 space-y-4">
+                        {/* Intro Videos */}
+                        {prog.introVideos.length > 0 && (
+                          <div>
+                            <p className="text-white text-sm font-bold mb-2">Watch Before Starting:</p>
+                            <div className="space-y-2">
+                              {prog.introVideos.map((v, vi) => (
+                                <a key={vi} href={v.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 glass rounded-xl p-3 border border-white/10 hover:border-primary-500/30 transition-all">
+                                  <span className="text-xl">▶️</span>
+                                  <span className="text-white text-sm">{v.title}</span>
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Sessions */}
+                        <div className="space-y-2">
+                          {prog.sessions.map((sess, si) => {
+                            const sessKey = `${prog.id}-${si}`;
+                            const sessExpanded = expandedSession === sessKey;
+                            return (
+                              <div key={si} className="glass rounded-xl border border-white/10">
+                                <button onClick={() => setExpandedSession(sessExpanded ? null : sessKey)} className="w-full text-left px-4 py-3 flex items-center justify-between">
+                                  <div>
+                                    <span className={`text-${c}-400 font-bold text-sm`}>{sess.title}</span>
+                                    <p className="text-gray-500 text-xs mt-0.5">{sess.description}</p>
+                                  </div>
+                                  <span className="text-gray-500 text-sm">{sessExpanded ? '−' : '+'}</span>
+                                </button>
+
+                                {sessExpanded && (
+                                  <div className="px-4 pb-4 space-y-1.5">
+                                    {sess.drills.map((drill, di) => (
+                                      <div key={di} className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/5 text-sm">
+                                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                                          {drill.video ? (
+                                            <a href={drill.video} target="_blank" rel="noopener noreferrer" className="text-primary-400 hover:text-primary-300 shrink-0">▶</a>
+                                          ) : (
+                                            <span className="text-gray-600 shrink-0">•</span>
+                                          )}
+                                          <span className="text-white text-xs truncate">{drill.name}</span>
+                                        </div>
+                                        <span className="text-gray-500 text-xs shrink-0 ml-2">{drill.reps}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* Extra Videos */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4">Additional Training Videos</h3>
+                <div className="space-y-3">
+                  {EXTRA_VIDEOS.map((v, i) => (
+                    <a key={i} href={v.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 glass rounded-xl p-4 border border-white/10 hover:border-primary-500/30 transition-all">
+                      <span className="text-2xl shrink-0">▶️</span>
+                      <div>
+                        <span className="text-white font-bold text-sm">{v.title}</span>
+                        <p className="text-gray-500 text-xs mt-1">{v.description}</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* Mental Game PDF Reference */}
+              <div className="glass rounded-2xl p-6 border border-accent-500/20">
+                <h3 className="text-lg font-bold text-white mb-2">Mental Preparation Guide</h3>
+                <p className="text-gray-400 text-sm mb-3">Mastering the Mind — visualization, goal setting, breathing techniques, resilience, and managing fear of failure.</p>
+                <a href="/mental-game" className="inline-block px-4 py-2 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30 text-sm font-medium hover:bg-accent-500/30 transition-all">
+                  Read Mental Game Guide
+                </a>
+              </div>
+
+              {/* Credits */}
+              <p className="text-center text-gray-600 text-xs">Curated training drills with free YouTube coaching videos</p>
+            </div>
           )}
 
           {/* SHOT PLANNER VIEW */}
