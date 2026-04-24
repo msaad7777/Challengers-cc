@@ -156,32 +156,6 @@ export default function MentalGamePage() {
             </div>
           </div>
 
-          {/* KEY EXECUTION CUE */}
-          <div className="glass rounded-2xl p-8 mb-8 border-2 border-red-500/30 bg-gradient-to-r from-red-500/5 to-accent-500/5">
-            <div className="flex items-start gap-4">
-              <div className="text-4xl flex-shrink-0">💥</div>
-              <div>
-                <h2 className="text-2xl font-bold text-white mb-2">Key Execution Cue — Power Hitting</h2>
-                <p className="text-gray-400 text-sm mb-4">Body-awareness prompt for boundary shots. Repeat it before every attacking delivery.</p>
-                <div className="glass rounded-xl p-6 border border-red-500/20">
-                  <p className="text-xl md:text-2xl font-bold text-white mb-3">
-                    Front foot and shoulder <span className="text-red-400">AWAY</span> from the line of the ball.
-                  </p>
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    To generate power without jamming the bat, your front foot and front shoulder
-                    must clear the line — not stay in it. This creates the swing arc, frees the arms,
-                    and lets the bat come through cleanly. Staying in line chokes the shot and gets
-                    you out.
-                  </p>
-                </div>
-                <p className="text-gray-500 text-xs italic mt-4">
-                  Tip: pair this with your SAY phrase. When you say &quot;Score now&quot; or
-                  &quot;See it, hit it&quot;, visualise clearing your line.
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* 3 PHASE INNINGS */}
           <div className="glass rounded-2xl p-8 mb-8">
             <h2 className="text-2xl font-bold text-white mb-2">The 3-Phase Innings Plan</h2>

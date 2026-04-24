@@ -171,6 +171,7 @@ interface TrainingProgram {
   description: string;
   introVideos: { title: string; url: string }[];
   sessions: TrainingSession[];
+  keyCue?: { headline: string; explanation: string };
 }
 
 const TRAINING_PROGRAMS: TrainingProgram[] = [
@@ -325,6 +326,11 @@ const TRAINING_PROGRAMS: TrainingProgram[] = [
     color: 'red',
     period: '2 weeks / 4 sessions',
     description: 'Improve hand speed, timing, swing path, and body mechanics to hit boundaries with less risk.',
+    keyCue: {
+      headline: 'Front foot and shoulder AWAY from the line of the ball.',
+      explanation:
+        'To generate power without jamming the bat, your front foot and front shoulder must clear the line — not stay in it. This creates the swing arc, frees the arms, and lets the bat come through cleanly. Staying in line chokes the shot and gets you out.',
+    },
     introVideos: [
       { title: 'Power Hitting & Swing Paths', url: 'https://www.youtube.com/watch?v=fXO6VzDlSZQ' },
       { title: 'Optimal Swing Path Drills', url: 'https://www.youtube.com/watch?v=nE8mt-X5kxI&t' },
@@ -1169,6 +1175,15 @@ export default function NetsPage() {
 
                     {isExpanded && (
                       <div className="px-6 pb-6 space-y-4">
+                        {/* Key Cue */}
+                        {prog.keyCue && (
+                          <div className="glass rounded-xl p-4 border-2 border-red-500/30 bg-gradient-to-r from-red-500/5 to-accent-500/5">
+                            <p className="text-xs font-bold text-red-400 uppercase tracking-wider mb-2">Key Execution Cue</p>
+                            <p className="text-base md:text-lg font-bold text-white mb-2">{prog.keyCue.headline}</p>
+                            <p className="text-gray-300 text-sm leading-relaxed">{prog.keyCue.explanation}</p>
+                          </div>
+                        )}
+
                         {/* Intro Videos */}
                         {prog.introVideos.length > 0 && (
                           <div>
