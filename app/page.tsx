@@ -4,6 +4,7 @@ import About from '@/components/About';
 import VerifiedBanner from '@/components/VerifiedBanner';
 import SponsorshipBanner from '@/components/SponsorshipBanner';
 import Programs from '@/components/Programs';
+import LiveStreaming from '@/components/LiveStreaming';
 import Partners from '@/components/Partners';
 import BoardMembers from '@/components/BoardMembers';
 import Registration from '@/components/Registration';
@@ -20,6 +21,7 @@ export default function Home() {
       <VerifiedBanner />
       <SponsorshipBanner />
       <Programs />
+      <LiveStreaming />
       <Partners />
       <BoardMembers />
       <Registration />
