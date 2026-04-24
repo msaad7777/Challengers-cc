@@ -212,7 +212,7 @@ export default function Partners() {
               </div>
             </div>
 
-            <div className="grid sm:grid-cols-3 gap-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               <div className="flex flex-col items-center">
                 <div className="w-28 h-28 rounded-xl overflow-hidden mb-3 bg-white flex items-center justify-center p-2">
                   <Image
@@ -254,6 +254,20 @@ export default function Partners() {
                 <h3 className="text-sm font-bold text-white mb-1">Sai Thai Chef</h3>
                 <p className="text-xs text-primary-400 font-medium">Authentic Thai Cuisine</p>
                 <p className="text-xs text-gray-500">London, ON</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="w-28 h-28 rounded-xl overflow-hidden mb-3 bg-white flex items-center justify-center p-2">
+                  <Image
+                    src="/curry-culture-logo.webp"
+                    alt="Curry Culture - Authentic Indian Cuisine"
+                    width={112}
+                    height={112}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <h3 className="text-sm font-bold text-white mb-1">Curry Culture Bistro</h3>
+                <p className="text-xs text-primary-400 font-medium">Authentic Indian Cuisine</p>
+                <p className="text-xs text-gray-500">Kitchener, ON</p>
               </div>
             </div>
           </div>
