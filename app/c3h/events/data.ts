@@ -35,13 +35,13 @@ export const events: ClubEvent[] = [
     id: 'training-weekly-wednesday',
     title: 'Weekly Training — Wednesdays',
     type: 'training',
-    startDate: '2026-04-29T19:00:00-04:00',
-    endDate: '2026-04-29T20:30:00-04:00',
+    startDate: '2026-05-13T19:00:00-04:00',
+    endDate: '2026-05-13T20:30:00-04:00',
     venue: 'Silverwoods Cricket Ground',
     address: 'Silverwoods Cricket Ground, London, ON',
     description:
-      'Weekly team training — every Wednesday, 7:00 PM to 8:30 PM at Silverwoods Cricket Ground. Running through the end of August 2026. Open to all registered players — bring your kit. Coaching-led sessions covering batting, bowling, and fielding.',
-    recurrenceRule: 'FREQ=WEEKLY;BYDAY=WE;UNTIL=20260831T235959Z',
+      'Weekly team training — every Wednesday, 7:00 PM to 8:30 PM at Silverwoods Cricket Ground. Running from May 13 through August 26, 2026 (16 sessions). Open to all registered players — bring your kit. Coaching-led sessions covering batting, bowling, and fielding.',
+    recurrenceRule: 'FREQ=WEEKLY;BYDAY=WE;UNTIL=20260826T235959Z',
   },
 ];
 
