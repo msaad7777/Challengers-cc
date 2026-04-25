@@ -517,7 +517,7 @@ function isMatchAvailable(matchDate: string): boolean {
 export default function NetsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner' | 'training'>('list');
+  const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner' | 'training' | 'principles'>('list');
   const [expandedProgram, setExpandedProgram] = useState<string | null>(null);
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
   const [reflections, setReflections] = useState<Reflection[]>([]);
@@ -832,6 +832,14 @@ export default function NetsPage() {
                 Training
               </button>
               <button
+                onClick={() => setView(view === 'principles' ? 'list' : 'principles')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
+                  view === 'principles' ? 'bg-accent-500/20 text-accent-400 border-accent-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
+                }`}
+              >
+                Batting Principles
+              </button>
+              <button
                 onClick={() => { if (view !== 'planner') { setView('planner'); if (!plannerLoaded) loadShotPlan(); } else setView('list'); }}
                 className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
                   view === 'planner' ? 'bg-blue-500/20 text-blue-400 border-blue-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
@@ -849,7 +857,7 @@ export default function NetsPage() {
                   My Patterns
                 </button>
               )}
-              {view !== 'new' && view !== 'planner' && (
+              {view !== 'new' && view !== 'planner' && view !== 'principles' && (
                 <button
                   onClick={() => setView('new')}
                   className="px-4 py-2 rounded-lg bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium text-sm shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-105"
@@ -1140,6 +1148,148 @@ export default function NetsPage() {
                 </button>
               </div>
             </>
+          )}
+
+          {/* PRINCIPLES VIEW */}
+          {view === 'principles' && (
+            <div className="space-y-6">
+              <button onClick={() => setView('list')} className="text-gray-500 text-sm hover:text-primary-400">&larr; Back to reflections</button>
+
+              <div className="text-center mb-2">
+                <h2 className="text-2xl font-bold text-white">Batting <span className="gradient-text">Principles</span></h2>
+                <p className="text-gray-500 text-sm">Read these before every innings. Recall during your reflection.</p>
+              </div>
+
+              {/* Shot selection by line */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🎯</span>
+                  Shot Selection by Line
+                </h3>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex gap-3">
+                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
+                    <span>Balls coming inside off stump or inside leg stump should be played within the <strong className="text-white">V</strong> — between mid-on and mid-off.</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
+                    <span>Outside off stump → <strong className="text-white">square drive</strong> or <strong className="text-white">cover drive</strong>.</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
+                    <span>Outside leg stump → <strong className="text-white">leg side, square</strong>.</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
+                    <span>Wide outside off (5th stump) → <strong className="text-white">leave once in a while</strong>. Watch the ball, build trust with your judgment.</span>
+                  </li>
+                </ul>
+                <div className="mt-4 p-4 rounded-xl bg-accent-500/10 border border-accent-500/20">
+                  <p className="text-sm text-accent-300 font-semibold mb-1">⚠️ When the field is packed</p>
+                  <p className="text-sm text-gray-300">If they pack the V on you — the cover drive, square drive, and leg-side options become your scoring zones. Don&apos;t keep hitting straight into traffic. Find the gaps the field has left open.</p>
+                </div>
+              </div>
+
+              {/* Stance & setup */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🏏</span>
+                  Stance &amp; Setup
+                </h3>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex gap-3">
+                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
+                    <span>Your bat should always be <strong className="text-white">lifted away</strong>.</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
+                    <span>Bat tap should land near your <strong className="text-white">back foot toe</strong>. Always.</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Watching the ball */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">👁️</span>
+                  Watching the Ball
+                </h3>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex gap-3">
+                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
+                    <span>Pre-delivery, focus on the bowler&apos;s <strong className="text-white">left eye</strong> (for right-arm bowlers).</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
+                    <span>As they enter their action, switch to the <strong className="text-white">release point</strong>.</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
+                    <span>Then judge <strong className="text-white">where the ball is landing</strong> and react.</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Body position */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🛡️</span>
+                  Body Position
+                </h3>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex gap-3">
+                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
+                    <span>Always play <strong className="text-white">close to the body</strong> — eliminates the gap between bat and pad.</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
+                    <span>If you play in the <strong className="text-white">second line</strong> (inside the line of the ball), there will never be a gap between bat and pad.</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Vs left-arm spinners */}
+              <div className="glass rounded-2xl p-6 border-2 border-red-500/30 bg-gradient-to-r from-red-500/5 to-transparent">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🌀</span>
+                  Against Left-Arm Spinners
+                </h3>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex gap-3">
+                    <span className="text-red-400 font-bold flex-shrink-0">→</span>
+                    <span><strong className="text-white">Never throw away your front leg.</strong></span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-red-400 font-bold flex-shrink-0">→</span>
+                    <span>Always play <strong className="text-white">under your head</strong>.</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Universal */}
+              <div className="glass rounded-2xl p-6 border-2 border-primary-500/30 bg-gradient-to-r from-primary-500/5 to-transparent">
+                <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                  <span className="text-2xl">⭐</span>
+                  Above All
+                </h3>
+                <p className="text-lg md:text-xl font-bold text-white">
+                  Head should always be in the <span className="gradient-text">line of the ball</span>.
+                </p>
+              </div>
+
+              {/* CTA back to reflection */}
+              <div className="text-center pt-4">
+                <button
+                  onClick={() => setView('new')}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-105"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  Reflect on Today&apos;s Innings
+                </button>
+              </div>
+            </div>
           )}
 
           {/* TRAINING VIEW */}
@@ -1511,6 +1661,19 @@ export default function NetsPage() {
           {view === 'new' && (
             <>
               <button onClick={() => setView('list')} className="text-gray-500 text-sm hover:text-primary-400 mb-4 inline-block">&larr; Cancel</button>
+              <div className="mb-5 glass rounded-xl p-4 border border-accent-500/20 bg-gradient-to-r from-accent-500/5 to-transparent">
+                <p className="text-xs uppercase tracking-wider text-accent-400 font-bold mb-1">Before you reflect</p>
+                <p className="text-sm text-gray-300">
+                  Review your{' '}
+                  <button
+                    onClick={() => setView('principles')}
+                    className="text-accent-300 hover:text-accent-200 underline font-semibold"
+                  >
+                    Batting Principles
+                  </button>
+                  {' '}— shot selection, stance, watching the ball, body position. Self-evaluate against them as you fill out today&apos;s reflection.
+                </p>
+              </div>
               <div className="space-y-5">
                 <div className="glass rounded-2xl p-6 border border-white/10">
                   <h3 className="text-lg font-bold text-white mb-3">Match</h3>
