@@ -74,7 +74,52 @@ const WHAT_WENT_WRONG_OPTIONS = [
   'No clear plan', 'Froze under pressure', 'Chased a wide delivery', 'Forgot my routine',
   'Overthinking', 'Lost concentration', 'Poor footwork', 'Tried to hit too hard',
   'Defensive mindset', 'Did not rotate strike', 'Fatigue or distraction',
+  'Bat-pad gap', 'Head fell over', 'Threw front leg to spin', 'Wrong shot to ball line',
 ];
+
+// Maps reflection mistakes to relevant Batting Principles for "Recommended for You"
+const MISTAKE_TO_PRINCIPLE: Record<string, { principle: string; tip: string }> = {
+  'Poor shot selection': {
+    principle: 'Shot Selection by Line',
+    tip: "Match the shot to the ball line — V for inside-stump balls, square or cover drive for outside off, leg square for outside leg. Don't play the wrong shot to the wrong delivery.",
+  },
+  'Wrong shot to ball line': {
+    principle: 'Shot Selection by Line',
+    tip: "Inside off / inside leg → V. Outside off → square / cover drive. Outside leg → leg square. If they pack the V, look for the gaps the field has left open.",
+  },
+  'Chased a wide delivery': {
+    principle: 'Shot Selection by Line',
+    tip: "Wide outside off (5th stump) — leave once in a while. Don't even move the bat. Build trust with your judgment and force the bowler to come to you.",
+  },
+  'Played too early': {
+    principle: 'Watching the Ball',
+    tip: "Focus on the bowler's left eye pre-delivery (right-arm bowlers). Switch to the release point as they enter their action. Then judge where it lands. Playing early = guessing.",
+  },
+  'Played too late': {
+    principle: 'Watching the Ball',
+    tip: "Lock onto the bowler's left eye, then the release point, then the landing zone. Playing late means the eyes haven't fully transitioned — work on the sequence in nets.",
+  },
+  'Poor footwork': {
+    principle: 'Body Position',
+    tip: "Play close to the body, in the second line. This eliminates the bat-pad gap. Decide forward or back — never half-forward.",
+  },
+  'Bat-pad gap': {
+    principle: 'Body Position',
+    tip: "Play in the second line — inside the line of the ball. Keep bat next to pad through the shot. The gap is what gets you bowled or LBW.",
+  },
+  'Head fell over': {
+    principle: 'Above All — Head in Line',
+    tip: "Head should always stay in the line of the ball. If your head moves off line, your weight follows and you can't watch the ball onto the bat. Drill: shadow batting in front of a mirror, head still through the swing.",
+  },
+  'Threw front leg to spin': {
+    principle: 'Against Left-Arm Spinners',
+    tip: "Never throw your front leg away. Always play under your head. If your front leg goes wide, your head falls and the ball turns past your bat.",
+  },
+  'Tried to hit too hard': {
+    principle: 'Stance & Setup',
+    tip: "Bat lifted away. Tap near back foot toe. Power comes from timing, not muscle. Watch TPG Academy's \"Smooth Bat Flow ~ Effortless Power\" in the Power Hitting section.",
+  },
+};
 
 // ── Shot Planner Data ──
 interface CricketShot {
@@ -1001,6 +1046,56 @@ export default function NetsPage() {
           {/* LIST VIEW */}
           {view === 'list' && (
             <>
+              {/* Recommended Principles (based on past reflections) */}
+              {patterns && patterns.topMistakes.length > 0 && (() => {
+                const recs: { mistake: string; count: number; principle: string; tip: string }[] = [];
+                const seen = new Set<string>();
+                for (const [mistake, count] of patterns.topMistakes) {
+                  const m = MISTAKE_TO_PRINCIPLE[mistake];
+                  if (m && !seen.has(m.principle)) {
+                    recs.push({ mistake, count, principle: m.principle, tip: m.tip });
+                    seen.add(m.principle);
+                  }
+                  if (recs.length >= 3) break;
+                }
+                if (recs.length === 0) return null;
+                return (
+                  <div className="mb-6 glass rounded-2xl p-6 border-2 border-accent-500/30 bg-gradient-to-r from-accent-500/5 to-primary-500/5">
+                    <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                      <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                        <span className="text-2xl">🎯</span>
+                        Recommended for You
+                      </h3>
+                      <button
+                        onClick={() => setView('principles')}
+                        className="text-xs text-accent-400 hover:text-accent-300 underline"
+                      >
+                        View all principles →
+                      </button>
+                    </div>
+                    <p className="text-sm text-gray-400 mb-4">
+                      Based on your last {patterns.matchRefs.length} reflection{patterns.matchRefs.length === 1 ? '' : 's'}, focus on these principles before your next innings:
+                    </p>
+                    <div className="space-y-3">
+                      {recs.map((rec, i) => (
+                        <div key={i} className="glass rounded-xl p-4 border border-white/10">
+                          <div className="flex items-start justify-between gap-4 mb-2 flex-wrap">
+                            <h4 className="text-white font-semibold text-sm flex items-center gap-2">
+                              <span className="text-accent-400">#{i + 1}</span>
+                              {rec.principle}
+                            </h4>
+                            <span className="text-xs text-gray-500 whitespace-nowrap">
+                              {rec.mistake} ({rec.count}×)
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-300 leading-relaxed">{rec.tip}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+
               {loading ? (
                 <div className="text-center py-12"><span className="text-gray-500">Loading reflections...</span></div>
               ) : reflections.length === 0 ? (
