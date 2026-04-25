@@ -28,7 +28,7 @@ export default function Navbar() {
     { label: 'About', href: isHomePage ? '#about' : '/#about', isPage: false },
     { label: 'Schedule', href: '/schedule', isPage: true },
     { label: 'Events', href: '/c3h/events', isPage: true },
-    { label: 'Watch', href: '/watch', isPage: true },
+    { label: 'Watch', href: '/c3h/watch', isPage: true },
     { label: 'Mental Game', href: '/mental-game', isPage: true },
     { label: 'Blog', href: '/blog', isPage: true },
     { label: 'Sponsorship', href: '/sponsorship', isPage: true },

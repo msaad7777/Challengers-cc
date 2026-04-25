@@ -63,13 +63,13 @@ export default function LiveStreaming() {
 
               <div className="flex flex-wrap gap-3">
                 <Link
-                  href="/watch"
+                  href="/c3h/watch"
                   className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-red-600 to-red-500 rounded-lg font-semibold shadow-xl hover:shadow-red-500/50 transition-all duration-300 hover:scale-105"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
                   </svg>
-                  Watch Live
+                  Watch Live (Members)
                 </Link>
                 <a
                   href="https://www.youtube.com/channel/UCtoiAMFhqTeQ-uPN46BJo5Q?sub_confirmation=1"

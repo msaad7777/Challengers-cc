@@ -81,6 +81,20 @@ export default function DashboardPage() {
               </span>
             </a>
 
+            {/* Watch Live */}
+            <a href="/c3h/watch" className="glass rounded-2xl p-6 border-2 border-red-500/20 hover:border-red-500/50 transition-all duration-300 block">
+              <div className="text-3xl mb-3">📺</div>
+              <h2 className="text-xl font-bold text-white mb-1">Watch Live</h2>
+              <p className="text-red-400 text-xs font-medium mb-3">Match Streams &amp; Video Archive</p>
+              <p className="text-gray-400 text-sm mb-4">
+                Live match streams on YouTube and the full Challengers CC video archive. Members-only
+                access to all match-day content.
+              </p>
+              <span className="text-xs px-3 py-1 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">
+                Open
+              </span>
+            </a>
+
             {/* The Nets */}
             <a href="/c3h/nets" className="glass rounded-2xl p-6 border-2 border-primary-500/20 hover:border-primary-500/50 transition-all duration-300 block">
               <div className="text-3xl mb-3">🏏</div>
