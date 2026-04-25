@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import UserMenu, { MobileUserCard } from './UserMenu';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -71,7 +72,7 @@ export default function Navbar() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     pathname === item.href
                       ? 'text-primary-400 bg-primary-500/10'
                       : 'text-gray-300 hover:text-white hover:bg-white/5'
@@ -80,6 +81,9 @@ export default function Navbar() {
                   {item.label}
                 </Link>
               ))}
+              <div className="ml-2 pl-2 border-l border-white/10">
+                <UserMenu />
+              </div>
             </div>
 
             {/* Hamburger Button */}
@@ -131,8 +135,13 @@ export default function Navbar() {
             </button>
           </div>
 
+          {/* Member card / sign-in CTA */}
+          <div className="pt-4">
+            <MobileUserCard onClose={closeMenu} />
+          </div>
+
           {/* Menu Items */}
-          <div className="flex-1 overflow-y-auto py-4">
+          <div className="flex-1 overflow-y-auto pb-4">
             {menuItems.map((item) => (
               <Link
                 key={item.label}
