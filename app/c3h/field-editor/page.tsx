@@ -87,6 +87,40 @@ const FIELDER_POSITIONS = [
 ];
 
 // Build 12 field players: WK (blue, fixed) + Bowler (red, fixed) + 10 fielders (green, draggable)
+// Reconcile a saved field with the current squad:
+// - players still in the squad keep their exact position
+// - new squad players take over the slots of dropped players (preserves
+//   roles like WK and Bowler if those players were swapped out)
+// - if more players were added than dropped, leftover squad members are
+//   placed at the next available default fielder position
+function reconcileFieldWithSquad(savedField: FieldPlayer[], squadPlayers: string[]): FieldPlayer[] {
+  if (squadPlayers.length === 0) return [];
+
+  const squadSet = new Set(squadPlayers);
+  const stillInSquad = savedField.filter((fp) => squadSet.has(fp.name));
+  const droppedSlots = savedField.filter((fp) => !squadSet.has(fp.name));
+
+  const namesOnField = new Set(stillInSquad.map((fp) => fp.name));
+  const newPlayers = squadPlayers.filter((n) => !namesOnField.has(n));
+
+  const reconciled: FieldPlayer[] = [...stillInSquad];
+
+  newPlayers.forEach((name, i) => {
+    if (i < droppedSlots.length) {
+      const slot = droppedSlots[i];
+      reconciled.push({ name, x: slot.x, y: slot.y, position: slot.position, role: slot.role });
+    } else {
+      const usedPositions = new Set(reconciled.map((fp) => fp.position));
+      const availablePos =
+        FIELDER_POSITIONS.find((p) => !usedPositions.has(p)) || 'Point';
+      const c = POSITION_COORDS[availablePos] || { x: 50, y: 50 };
+      reconciled.push({ name, x: c.x, y: c.y, position: availablePos, role: 'fielder' });
+    }
+  });
+
+  return reconciled;
+}
+
 function buildFieldFromSquad(squadPlayers: string[]): FieldPlayer[] {
   const result: FieldPlayer[] = [];
   const players = squadPlayers.slice(0, 12);
@@ -141,7 +175,11 @@ function FieldEditorContent() {
 
       const fieldDoc = await getDoc(doc(db, 'field-positions', matchId));
       if (fieldDoc.exists()) {
-        setPlayers(fieldDoc.data().players as FieldPlayer[]);
+        const savedField = fieldDoc.data().players as FieldPlayer[];
+        // Reconcile saved field with current squad — players who are no
+        // longer in the squad get removed; new squad members take over
+        // their slots. Captain can still hit "Reset" to rebuild defaults.
+        setPlayers(reconcileFieldWithSquad(savedField, squadPlayers));
         setLeftHanded(fieldDoc.data().leftHanded || false);
       } else if (squadPlayers.length >= 11) {
         setPlayers(buildFieldFromSquad(squadPlayers));
