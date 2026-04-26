@@ -1,14 +1,33 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-export const metadata = {
-  title: 'C3H — Members Portal | Challengers Cricket Club',
-  description: 'C3H is the private members portal for Challengers Cricket Club. The Nets, The Dugout, The Scoreboard, and The Pavilion.',
-};
-
-const checkIcon = (color: string) => `<svg class="w-4 h-4 ${color} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>`;
-
 export default function C3HPage() {
+  const { status } = useSession();
+  const router = useRouter();
+
+  // Auto-redirect signed-in members straight to the dashboard.
+  // The /c3h landing page is a public marketing/intro view for
+  // non-members. Members shouldn't see "Coming Soon" branding —
+  // they're already in.
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.replace('/c3h/dashboard');
+    }
+  }, [status, router]);
+
+  if (status === 'loading' || status === 'authenticated') {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-primary-400 text-xl">Loading…</div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
       <Navbar />
