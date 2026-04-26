@@ -546,7 +546,7 @@ export default function AvailabilityPage() {
                               if (name === 'Syed Shahriar' && m.league === 'LCL T30') return 'captain';
                               if (name === 'Tarek Islam' && m.league === 'LPL T30') return 'captain';
                               if (name === 'Ankush Arora' && m.league === 'LCL T30') return 'vc';
-                              if (name === 'Judin Thomas' && m.league === 'LPL T30') return 'vc';
+                              if (name === 'Mohammed Saad' && m.league === 'LPL T30') return 'vc';
                               if (name === 'Mohammed Saad') return 'wk';
                               return '';
                             };
@@ -698,7 +698,7 @@ function SquadCardModal({ match, players, roles, shortName, onClose }: {
           <div className="space-y-1 sm:space-y-1.5">
             {players.map((n, i) => {
               const savedRole = roles[n];
-              const displayRole = savedRole || (n === 'Syed Shahriar' && match.league === 'LCL T30' ? 'captain' : n === 'Tarek Islam' && match.league === 'LPL T30' ? 'captain' : n === 'Ankush Arora' && match.league === 'LCL T30' ? 'vc' : n === 'Judin Thomas' && match.league === 'LPL T30' ? 'vc' : n === 'Mohammed Saad' ? 'wk' : '');
+              const displayRole = savedRole || (n === 'Syed Shahriar' && match.league === 'LCL T30' ? 'captain' : n === 'Tarek Islam' && match.league === 'LPL T30' ? 'captain' : n === 'Ankush Arora' && match.league === 'LCL T30' ? 'vc' : n === 'Mohammed Saad' && match.league === 'LPL T30' ? 'vc' : n === 'Mohammed Saad' ? 'wk' : '');
               const roleText = displayRole === 'captain' ? '(c)' : displayRole === 'vc' ? '(vc)' : displayRole === 'wk' ? '(wk)' : displayRole === 'bat-sub' ? 'BAT SUB' : displayRole === 'bowl-sub' ? 'BOWL SUB' : '';
               const roleColor = displayRole === 'captain' ? 'text-accent-400' : displayRole === 'vc' ? 'text-purple-400' : displayRole === 'wk' ? 'text-blue-400' : displayRole === 'bat-sub' ? 'text-accent-400' : 'text-blue-400';
               return (
