@@ -135,6 +135,7 @@ export default function AvailabilityPage() {
   const [saving, setSaving] = useState(false);
   const [squads, setSquads] = useState<Record<string, string[]>>({});
   const [squadRoles, setSquadRoles] = useState<Record<string, Record<string, string>>>({});
+  const [squadMeta, setSquadMeta] = useState<Record<string, { updatedBy?: string; updatedAt?: string }>>({});
   const [showSquadCard, setShowSquadCard] = useState<string | null>(null);
   const [selectingSquad, setSelectingSquad] = useState<string | null>(null);
   const [playerMenu, setPlayerMenu] = useState<{ matchId: string; player: string } | null>(null);
@@ -187,12 +188,19 @@ export default function AvailabilityPage() {
       const squadSnap = await getDocs(collection(db, 'squads'));
       const squadData: Record<string, string[]> = {};
       const rolesData: Record<string, Record<string, string>> = {};
+      const metaData: Record<string, { updatedBy?: string; updatedAt?: string }> = {};
       squadSnap.docs.forEach(d => {
-        squadData[d.id] = (d.data().players || []) as string[];
-        rolesData[d.id] = (d.data().roles || {}) as Record<string, string>;
+        const docData = d.data();
+        squadData[d.id] = (docData.players || []) as string[];
+        rolesData[d.id] = (docData.roles || {}) as Record<string, string>;
+        metaData[d.id] = {
+          updatedBy: docData.updatedBy as string | undefined,
+          updatedAt: docData.updatedAt as string | undefined,
+        };
       });
       setSquads(squadData);
       setSquadRoles(rolesData);
+      setSquadMeta(metaData);
     } catch { /* */ }
     setLoading(false);
   }, []);
@@ -211,9 +219,12 @@ export default function AvailabilityPage() {
       : current.length < 12 ? [...current, playerN] : current;
     // Remove role if player removed
     if (!updated.includes(playerN)) delete currentRoles[playerN];
-    await setDoc(doc(db, 'squads', matchId), { players: updated, roles: currentRoles, updatedBy: session?.user?.email, updatedAt: new Date().toISOString() });
+    const stamp = new Date().toISOString();
+    const editor = session?.user?.email || '';
+    await setDoc(doc(db, 'squads', matchId), { players: updated, roles: currentRoles, updatedBy: editor, updatedAt: stamp });
     setSquads(prev => ({ ...prev, [matchId]: updated }));
     setSquadRoles(prev => ({ ...prev, [matchId]: currentRoles }));
+    setSquadMeta(prev => ({ ...prev, [matchId]: { updatedBy: editor, updatedAt: stamp } }));
   };
 
   const movePlayer = async (matchId: string, fromIdx: number, toIdx: number) => {
@@ -222,8 +233,11 @@ export default function AvailabilityPage() {
     const [player] = current.splice(fromIdx, 1);
     current.splice(toIdx, 0, player);
     const currentRoles = squadRoles[matchId] || {};
-    await setDoc(doc(db, 'squads', matchId), { players: current, roles: currentRoles, updatedBy: session?.user?.email, updatedAt: new Date().toISOString() });
+    const stamp = new Date().toISOString();
+    const editor = session?.user?.email || '';
+    await setDoc(doc(db, 'squads', matchId), { players: current, roles: currentRoles, updatedBy: editor, updatedAt: stamp });
     setSquads(prev => ({ ...prev, [matchId]: current }));
+    setSquadMeta(prev => ({ ...prev, [matchId]: { updatedBy: editor, updatedAt: stamp } }));
   };
 
   const toggleRole = async (matchId: string, playerN: string, role: string) => {
@@ -236,8 +250,11 @@ export default function AvailabilityPage() {
     } else {
       currentRoles[playerN] = role;
     }
-    await setDoc(doc(db, 'squads', matchId), { players: squads[matchId] || [], roles: currentRoles, updatedBy: session?.user?.email, updatedAt: new Date().toISOString() }, { merge: true });
+    const stamp = new Date().toISOString();
+    const editor = session?.user?.email || '';
+    await setDoc(doc(db, 'squads', matchId), { players: squads[matchId] || [], roles: currentRoles, updatedBy: editor, updatedAt: stamp }, { merge: true });
     setSquadRoles(prev => ({ ...prev, [matchId]: currentRoles }));
+    setSquadMeta(prev => ({ ...prev, [matchId]: { updatedBy: editor, updatedAt: stamp } }));
   };
 
   const updateAvailability = async (name: string, matchId: string, newStatus: AvailabilityStatus) => {
@@ -481,9 +498,12 @@ export default function AvailabilityPage() {
                               {(squads[m.id] || []).length > 0 && isCaptain && (
                                 <button onClick={async () => {
                                   if (confirm('Clear entire squad for this match?')) {
-                                    await setDoc(doc(db, 'squads', m.id), { players: [], roles: {}, updatedBy: session?.user?.email, updatedAt: new Date().toISOString() });
+                                    const stamp = new Date().toISOString();
+                                    const editor = session?.user?.email || '';
+                                    await setDoc(doc(db, 'squads', m.id), { players: [], roles: {}, updatedBy: editor, updatedAt: stamp });
                                     setSquads(prev => ({ ...prev, [m.id]: [] }));
                                     setSquadRoles(prev => ({ ...prev, [m.id]: {} }));
+                                    setSquadMeta(prev => ({ ...prev, [m.id]: { updatedBy: editor, updatedAt: stamp } }));
                                   }
                                 }} className="text-xs px-3 py-1 rounded-lg bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30">
                                   Clear
@@ -494,6 +514,30 @@ export default function AvailabilityPage() {
                               </button>
                             </div>
                           </div>
+
+                          {/* Last edited by — visible to captains + board */}
+                          {(isCaptain || isBoard) && squadMeta[m.id]?.updatedBy && (
+                            <div className="mb-3 flex items-center gap-2 text-xs text-gray-500">
+                              <svg className="w-3.5 h-3.5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                              </svg>
+                              <span>
+                                Last saved by <span className="text-gray-300 font-semibold">{squadMeta[m.id].updatedBy}</span>
+                                {squadMeta[m.id].updatedAt && (
+                                  <span className="text-gray-600">
+                                    {' · '}
+                                    {new Date(squadMeta[m.id].updatedAt!).toLocaleString('en-CA', {
+                                      month: 'short',
+                                      day: 'numeric',
+                                      hour: 'numeric',
+                                      minute: '2-digit',
+                                      hour12: true,
+                                    })}
+                                  </span>
+                                )}
+                              </span>
+                            </div>
+                          )}
                           {(squads[m.id] || []).length > 0 && (() => {
                             const roles = squadRoles[m.id] || {};
                             // Auto-assign defaults if not set
