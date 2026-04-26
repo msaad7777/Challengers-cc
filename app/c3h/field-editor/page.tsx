@@ -170,19 +170,29 @@ function FieldEditorContent() {
     if (!matchId || !session?.user?.email) return;
     const load = async () => {
       const squadDoc = await getDoc(doc(db, 'squads', matchId));
-      const squadPlayers = squadDoc.exists() ? (squadDoc.data().players || []) as string[] : [];
-      setSquad(squadPlayers);
+      const fullSquad = squadDoc.exists() ? (squadDoc.data().players || []) as string[] : [];
+      const squadRoles = squadDoc.exists()
+        ? ((squadDoc.data().roles || {}) as Record<string, string>)
+        : {};
+
+      // Only the playing 11 take the field — exclude batting / bowling subs.
+      // Subs come on only as substitute fielders if someone is injured;
+      // they are not part of the standard fielding setup.
+      const fielding11 = fullSquad.filter(
+        (name) => squadRoles[name] !== 'bat-sub' && squadRoles[name] !== 'bowl-sub',
+      );
+      setSquad(fielding11);
 
       const fieldDoc = await getDoc(doc(db, 'field-positions', matchId));
       if (fieldDoc.exists()) {
         const savedField = fieldDoc.data().players as FieldPlayer[];
-        // Reconcile saved field with current squad — players who are no
-        // longer in the squad get removed; new squad members take over
-        // their slots. Captain can still hit "Reset" to rebuild defaults.
-        setPlayers(reconcileFieldWithSquad(savedField, squadPlayers));
+        // Reconcile saved field with current playing 11 — drops any subs
+        // that may have been on field, removes players no longer in squad,
+        // and adds any new squad members at default positions.
+        setPlayers(reconcileFieldWithSquad(savedField, fielding11));
         setLeftHanded(fieldDoc.data().leftHanded || false);
-      } else if (squadPlayers.length >= 11) {
-        setPlayers(buildFieldFromSquad(squadPlayers));
+      } else if (fielding11.length >= 11) {
+        setPlayers(buildFieldFromSquad(fielding11));
       }
       setLoaded(true);
     };
