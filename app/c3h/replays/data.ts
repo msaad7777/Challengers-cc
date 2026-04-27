@@ -1,7 +1,35 @@
 export interface MatchInnings {
   name: string;
   runs?: number;
+  balls?: number;
+  fours?: number;
+  sixes?: number;
+  howOut?: string; // e.g., "b Vishal", "c Fateh b Arund", "not out", "run out"
   notes?: string;
+}
+
+export interface BowlingFigures {
+  name: string;
+  overs: string; // e.g., "6.0", "5.3"
+  maidens?: number;
+  runs: number;
+  wickets: number;
+}
+
+export interface FallOfWicket {
+  wicket: number;
+  score: number;
+  player: string;
+  over?: string;
+}
+
+export interface Extras {
+  byes?: number;
+  legByes?: number;
+  wides?: number;
+  noBalls?: number;
+  penalty?: number;
+  total?: number;
 }
 
 export interface TeamTotal {
@@ -27,6 +55,13 @@ export interface MatchReplay {
   oppTotal?: TeamTotal;
   ourBatting?: MatchInnings[];
   oppBatting?: MatchInnings[];
+  ourBowling?: BowlingFigures[]; // bowlers we used (we bowled while they batted)
+  oppBowling?: BowlingFigures[]; // their bowlers (they bowled while we batted)
+  ourExtras?: Extras;
+  oppExtras?: Extras;
+  fallOfOurWickets?: FallOfWicket[];
+  fallOfOppWickets?: FallOfWicket[];
+  scorebookPhotos?: string[]; // /public paths, e.g. ['/scorebooks/sarnia-page-1.jpg']
   reflectionPrompt?: string;
 }
 

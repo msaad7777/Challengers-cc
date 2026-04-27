@@ -177,7 +177,7 @@ export default function ReplaysPage() {
                     <p className="text-gray-300 leading-relaxed mb-6">{m.summary}</p>
                   )}
 
-                  {/* Top performers */}
+                  {/* Top performers — batting */}
                   <div className="grid md:grid-cols-2 gap-4 mb-6">
                     {m.ourBatting && m.ourBatting.length > 0 && (
                       <div className="glass rounded-xl p-5 border border-primary-500/20">
@@ -186,9 +186,23 @@ export default function ReplaysPage() {
                         </h3>
                         <ul className="space-y-2">
                           {m.ourBatting.map((b, i) => (
-                            <li key={i} className="flex items-center justify-between text-sm">
-                              <span className="text-white font-medium">{b.name}</span>
-                              <span className="text-primary-300 font-bold">{b.runs} runs</span>
+                            <li key={i} className="text-sm">
+                              <div className="flex items-center justify-between">
+                                <span className="text-white font-medium">{b.name}</span>
+                                <span className="text-primary-300 font-bold">
+                                  {b.runs}
+                                  {b.balls != null && <span className="text-gray-500 font-normal"> ({b.balls})</span>}
+                                </span>
+                              </div>
+                              {(b.howOut || b.fours != null || b.sixes != null) && (
+                                <p className="text-xs text-gray-500 mt-0.5">
+                                  {b.howOut && <span>{b.howOut}</span>}
+                                  {b.howOut && (b.fours != null || b.sixes != null) && ' · '}
+                                  {b.fours != null && <span>{b.fours}×4s</span>}
+                                  {b.fours != null && b.sixes != null && ' '}
+                                  {b.sixes != null && <span>{b.sixes}×6s</span>}
+                                </p>
+                              )}
                             </li>
                           ))}
                         </ul>
@@ -202,15 +216,97 @@ export default function ReplaysPage() {
                         </h3>
                         <ul className="space-y-2">
                           {m.oppBatting.map((b, i) => (
-                            <li key={i} className="flex items-center justify-between text-sm">
-                              <span className="text-white font-medium">{b.name}</span>
-                              <span className="text-blue-300 font-bold">{b.runs} runs</span>
+                            <li key={i} className="text-sm">
+                              <div className="flex items-center justify-between">
+                                <span className="text-white font-medium">{b.name}</span>
+                                <span className="text-blue-300 font-bold">
+                                  {b.runs}
+                                  {b.balls != null && <span className="text-gray-500 font-normal"> ({b.balls})</span>}
+                                </span>
+                              </div>
+                              {(b.howOut || b.fours != null || b.sixes != null) && (
+                                <p className="text-xs text-gray-500 mt-0.5">
+                                  {b.howOut && <span>{b.howOut}</span>}
+                                  {b.howOut && (b.fours != null || b.sixes != null) && ' · '}
+                                  {b.fours != null && <span>{b.fours}×4s</span>}
+                                  {b.fours != null && b.sixes != null && ' '}
+                                  {b.sixes != null && <span>{b.sixes}×6s</span>}
+                                </p>
+                              )}
                             </li>
                           ))}
                         </ul>
                       </div>
                     )}
                   </div>
+
+                  {/* Bowling figures */}
+                  {(m.ourBowling || m.oppBowling) && (
+                    <div className="grid md:grid-cols-2 gap-4 mb-6">
+                      {m.ourBowling && m.ourBowling.length > 0 && (
+                        <div className="glass rounded-xl p-5 border border-primary-500/20">
+                          <h3 className="text-sm font-bold text-primary-400 uppercase tracking-wider mb-3">
+                            🟢 Challengers CC — Bowling
+                          </h3>
+                          <ul className="space-y-1.5 text-sm">
+                            {m.ourBowling.map((b, i) => (
+                              <li key={i} className="flex items-center justify-between">
+                                <span className="text-white font-medium">{b.name}</span>
+                                <span className="text-gray-400 font-mono text-xs">
+                                  {b.overs}-{b.maidens ?? 0}-{b.runs}-{b.wickets}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {m.oppBowling && m.oppBowling.length > 0 && (
+                        <div className="glass rounded-xl p-5 border border-blue-500/20">
+                          <h3 className="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3">
+                            🔵 {m.opponent} — Bowling
+                          </h3>
+                          <ul className="space-y-1.5 text-sm">
+                            {m.oppBowling.map((b, i) => (
+                              <li key={i} className="flex items-center justify-between">
+                                <span className="text-white font-medium">{b.name}</span>
+                                <span className="text-gray-400 font-mono text-xs">
+                                  {b.overs}-{b.maidens ?? 0}-{b.runs}-{b.wickets}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Scorebook photos */}
+                  {m.scorebookPhotos && m.scorebookPhotos.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">
+                        📓 Scorebook Pages
+                      </h3>
+                      <div className="grid sm:grid-cols-2 gap-3">
+                        {m.scorebookPhotos.map((src, i) => (
+                          <a
+                            key={i}
+                            href={src}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block glass rounded-xl overflow-hidden border border-white/10 hover:border-primary-500/40 transition-all"
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={src}
+                              alt={`${m.title} — scorebook page ${i + 1}`}
+                              className="w-full h-auto"
+                            />
+                          </a>
+                        ))}
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2">Click any page to open full size.</p>
+                    </div>
+                  )}
 
                   {/* Reflection CTA */}
                   {m.reflectionPrompt && (
