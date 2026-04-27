@@ -374,6 +374,82 @@ function FieldEditorContent() {
     );
   }
 
+  // Gate the field display until the captain has designated all three
+  // role-bearing positions. Without these, the field auto-placement is
+  // ambiguous and the captain may end up with the wrong default WK or
+  // Bowler. Once squad is loaded, check for missing roles.
+  if (loaded && squad.length > 0) {
+    const hasWk = squad.some((p) => squadRoles[p] === 'wk');
+    const hasBatSub = squad.some((p) => squadRoles[p] === 'bat-sub');
+    const hasBowlSub = squad.some((p) => squadRoles[p] === 'bowl-sub');
+    const missing: { label: string; description: string }[] = [];
+    if (!hasWk) missing.push({ label: 'Wicketkeeper', description: 'click WK on a player to mark them as keeper' });
+    if (!hasBatSub) missing.push({ label: 'Batting Substitute', description: 'click B on a player to mark them as bat sub' });
+    if (!hasBowlSub) missing.push({ label: 'Bowling Substitute', description: 'click W on a player to mark them as bowl sub' });
+
+    if (missing.length > 0) {
+      return (
+        <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
+          <Navbar />
+          <section className="pt-32 pb-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-2xl mx-auto">
+              <Link
+                href={`/c3h/availability${matchId ? `?match=${matchId}` : ''}`}
+                className="text-gray-500 text-sm hover:text-primary-400 mb-6 inline-flex items-center gap-1"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to The Dugout
+              </Link>
+
+              <div className="glass rounded-2xl p-6 md:p-8 border-2 border-accent-500/40 bg-gradient-to-r from-accent-500/5 to-transparent">
+                <div className="flex items-start gap-3 mb-4">
+                  <span className="text-3xl flex-shrink-0">⚠️</span>
+                  <div>
+                    <h2 className="text-xl md:text-2xl font-bold text-white mb-2">Squad roles not yet complete</h2>
+                    <p className="text-sm text-gray-300">
+                      Before viewing field positions for this match, please designate all three role
+                      assignments in the squad. The field auto-placement depends on these.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3 mb-6">
+                  {missing.map((m) => (
+                    <div key={m.label} className="glass rounded-xl p-4 border border-red-500/20 bg-red-500/5">
+                      <p className="text-sm font-bold text-red-400 mb-1">❌ Missing: {m.label}</p>
+                      <p className="text-xs text-gray-400">In the Playing 12 panel, {m.description}.</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rounded-xl p-4 bg-primary-500/10 border border-primary-500/20 mb-6">
+                  <p className="text-xs uppercase tracking-wider text-primary-400 font-bold mb-1">Why this matters</p>
+                  <ul className="text-sm text-gray-300 space-y-1.5">
+                    <li>• <strong className="text-white">Wicketkeeper</strong> defines who stands behind the stumps on the field map</li>
+                    <li>• <strong className="text-white">Bowling Substitute</strong> appears on the field as the dedicated Bowler position</li>
+                    <li>• <strong className="text-white">Batting Substitute</strong> stays off the field map (they only sub in if a batter retires)</li>
+                  </ul>
+                </div>
+
+                <Link
+                  href={`/c3h/availability${matchId ? `?match=${matchId}` : ''}`}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-105"
+                >
+                  Open The Dugout to Set Roles
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+          </section>
+        </div>
+      );
+    }
+  }
+
   const shortN = (n: string) => {
     const SHORT: Record<string, string> = { 'Mohammed Saad': 'Saad', 'Syed Shahriar': 'Shahriar' };
     return SHORT[n] || n.split(' ')[0];
