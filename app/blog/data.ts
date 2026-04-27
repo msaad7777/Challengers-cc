@@ -3,7 +3,7 @@ export interface BlogPost {
   title: string;
   excerpt: string;
   content: string;
-  category: 'Sponsor Spotlight' | 'Player Profile' | 'Club News';
+  category: 'Sponsor Spotlight' | 'Player Profile' | 'Club News' | 'Match Reports';
   author: string;
   date: string;
   image: string | null;
@@ -126,6 +126,7 @@ export const blogPosts: BlogPost[] = [
     author: 'Challengers CC',
     date: '2026-04-26',
     image: '/ccc-logo.png',
+    video: null,
     featured: true,
   },
   {
@@ -1423,7 +1424,7 @@ export const blogPosts: BlogPost[] = [
   },
 ];
 
-export const categories = ['All', 'Sponsor Spotlight', 'Player Profile', 'Club News'] as const;
+export const categories = ['All', 'Match Reports', 'Sponsor Spotlight', 'Player Profile', 'Club News'] as const;
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((post) => post.slug === slug);

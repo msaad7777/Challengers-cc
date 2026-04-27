@@ -8,12 +8,14 @@ const categoryColors: Record<string, string> = {
   'Sponsor Spotlight': 'bg-accent-500/20 text-accent-400 border-accent-500/30',
   'Player Profile': 'bg-primary-500/20 text-primary-400 border-primary-500/30',
   'Club News': 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+  'Match Reports': 'bg-red-500/20 text-red-400 border-red-500/30',
 };
 
 const categoryIcons: Record<string, string> = {
   'Sponsor Spotlight': '🤝',
   'Player Profile': '🏏',
   'Club News': '📢',
+  'Match Reports': '📋',
 };
 
 export default function BlogGrid({ posts }: { posts: BlogPost[] }) {
