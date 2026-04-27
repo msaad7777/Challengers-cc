@@ -18,6 +18,117 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'first-practice-match-2026-vs-sarnia',
+    title: 'Season Opener — First Practice Match vs Sarnia Cricket Club',
+    excerpt:
+      'Challengers CC opened the 2026 season with a high-scoring practice match in Sarnia. Strong batting from both sides, a successful chase, and the first reflection cards filled in The Nets.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        And we&apos;re off. The 2026 season for Challengers Cricket Club opened with a practice
+        fixture against <strong class="text-white">Sarnia Cricket Club</strong> — a match that
+        gave the squad an early read on conditions, fitness, and how the new structure of the
+        team is shaping up before league play begins on May 10.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Match Summary</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-3">
+        <strong class="text-white">Toss:</strong> SCC won the toss and elected to bat.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Sarnia put together a strong total of <strong class="text-white">208 all out in 30 overs</strong>,
+        with four batters past 28 runs. Challengers responded with a focused chase, reaching the
+        target in <strong class="text-white">29.1 overs</strong>. With both sides keen to use the full
+        practice window, the innings continued for the remainder of the 30 overs — Challengers
+        finishing on <strong class="text-white">215/7</strong>.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Top Performers</h3>
+      <div class="grid sm:grid-cols-2 gap-4 mb-6">
+        <div class="glass rounded-xl p-5 border border-primary-500/20">
+          <p class="text-sm font-bold text-primary-400 uppercase tracking-wider mb-3">
+            🟢 Challengers CC
+          </p>
+          <ul class="text-gray-300 space-y-1.5 text-sm">
+            <li>Shiva — 33 runs</li>
+            <li>Madhu — 27 runs</li>
+            <li>Shivam — 23 runs</li>
+            <li>Shoaib — 23 runs</li>
+            <li>Ankush — 22 runs</li>
+            <li>Manohar — 21 runs</li>
+            <li>Qaiser — 21 runs</li>
+          </ul>
+        </div>
+        <div class="glass rounded-xl p-5 border border-blue-500/20">
+          <p class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3">
+            🔵 Sarnia Cricket Club
+          </p>
+          <ul class="text-gray-300 space-y-1.5 text-sm">
+            <li>Fateh — 35 runs</li>
+            <li>Vishal — 35 runs</li>
+            <li>Arund — 35 runs</li>
+            <li>Swaraj — 28 runs</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Watch the Full Match</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        The full match recording is up on YouTube. Players, families, and supporters — feel free
+        to dive in and study any part of the innings.
+      </p>
+      <div class="aspect-video rounded-xl overflow-hidden bg-black mb-6">
+        <iframe
+          src="https://www.youtube.com/embed/tSg-RzLFrCQ"
+          title="Challengers CC vs Sarnia Cricket Club — 2026 Season Opener"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          class="w-full h-full"
+        ></iframe>
+      </div>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Members — Reflect While It&apos;s Fresh</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Registered Challengers CC members can sign in to <strong class="text-white">C3H</strong>
+        and add a personal reflection card for this match. The system pulls up your last few
+        reflections, surfaces patterns, and recommends specific Batting Principles to focus on
+        before next training.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        👉 <a href="/c3h/replays" class="text-primary-400 hover:text-primary-300 underline font-semibold">Watch the match on C3H Match Replays</a>
+        and click <em>Reflect on this match</em> to open your reflection journal.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Looking Ahead</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Our LCL T30 season opens <strong class="text-white">May 10 vs London Predators</strong> at
+        Northridge Cricket Ground. LPL T30 follows the same day vs Maple Tigers at Silverwoods.
+        Weekly training continues every Wednesday from <strong class="text-white">May 13</strong>,
+        7:00 PM at Silverwoods.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Thank You</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Big thank you to <strong class="text-white">Sarnia Cricket Club</strong> for hosting and to
+        every Challenger who showed up and made the day work — players, drivers, and family who
+        travelled to Sarnia for the match. This is the standard we&apos;re setting for the season.
+      </p>
+
+      <p class="text-gray-400 text-sm italic">
+        Challengers Cricket Club — London, Ontario&apos;s inclusive community cricket club.
+        Registered Ontario Not-For-Profit Corporation #1746974-8. Follow us on
+        <a href="https://www.instagram.com/challengers.cc/" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">@challengers.cc</a>
+        and subscribe on
+        <a href="https://www.youtube.com/@Challengersccldn" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">YouTube</a>
+        for match livestreams and highlights all season.
+      </p>
+    `,
+    category: 'Match Reports',
+    author: 'Challengers CC',
+    date: '2026-04-26',
+    image: '/ccc-logo.png',
+    featured: true,
+  },
+  {
     slug: 'bhupinder-singh-platinum-sponsor',
     title: 'Sponsor Spotlight: Bhupinder Singh — Our Platinum Partner',
     excerpt:
