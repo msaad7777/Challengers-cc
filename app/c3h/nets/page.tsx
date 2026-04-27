@@ -230,6 +230,7 @@ const TRAINING_PROGRAMS: TrainingProgram[] = [
     introVideos: [
       { title: 'Playing the Drive — Basics', url: 'https://www.youtube.com/watch?v=TSxJVw57jqs' },
       { title: 'Common Drive Mistakes', url: 'https://www.youtube.com/watch?v=xzlubATqwaU' },
+      { title: 'Watch the Ball Like a Pro', url: 'https://www.youtube.com/watch?v=i-YbztHt1ZY' },
     ],
     sessions: [
       {
