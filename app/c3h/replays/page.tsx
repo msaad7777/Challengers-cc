@@ -99,6 +99,54 @@ export default function ReplaysPage() {
                     )}
                   </div>
 
+                  {/* Scorecard totals */}
+                  {(m.ourTotal || m.oppTotal) && (
+                    <div className="grid sm:grid-cols-2 gap-3 mb-4">
+                      {m.oppTotal && (
+                        <div className="glass rounded-xl p-4 border border-blue-500/20">
+                          <p className="text-xs uppercase tracking-wider text-blue-400 font-bold mb-1">{m.opponent}</p>
+                          <p className="text-2xl font-bold text-white">
+                            {m.oppTotal.runs}
+                            <span className="text-base text-gray-400 font-normal">
+                              {m.oppTotal.allOut ? ' all out' : `/${m.oppTotal.wickets}`}
+                            </span>
+                          </p>
+                          <p className="text-xs text-gray-500">{m.oppTotal.overs} overs</p>
+                        </div>
+                      )}
+                      {m.ourTotal && (
+                        <div className="glass rounded-xl p-4 border border-primary-500/20">
+                          <p className="text-xs uppercase tracking-wider text-primary-400 font-bold mb-1">Challengers CC</p>
+                          <p className="text-2xl font-bold text-white">
+                            {m.ourTotal.runs}
+                            <span className="text-base text-gray-400 font-normal">
+                              {m.ourTotal.allOut ? ' all out' : `/${m.ourTotal.wickets}`}
+                            </span>
+                          </p>
+                          <p className="text-xs text-gray-500">{m.ourTotal.overs} overs</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Toss + result detail */}
+                  {(m.toss || m.resultDetail) && (
+                    <div className="glass rounded-xl p-4 border border-white/10 mb-6 space-y-2">
+                      {m.toss && (
+                        <p className="text-sm text-gray-300">
+                          <span className="text-gray-500">🪙 Toss: </span>
+                          {m.toss}
+                        </p>
+                      )}
+                      {m.resultDetail && (
+                        <p className="text-sm text-gray-300">
+                          <span className="text-gray-500">📋 Result: </span>
+                          {m.resultDetail}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   {/* Video embed */}
                   {videoId ? (
                     <div className="aspect-video rounded-xl overflow-hidden bg-black mb-6">
