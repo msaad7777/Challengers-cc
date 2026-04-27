@@ -7,6 +7,31 @@ import { db } from '@/lib/firebase';
 import { collection, addDoc, query, where, orderBy, getDocs, getDoc, setDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
+import { getBattingStats, type Innings } from '../scorer/types';
+
+// Map scorer's wicket type to the reflection's HOW_GOT_OUT_OPTIONS
+function mapScorerWicketToReflection(scorerHowOut: string): string {
+  const lower = scorerHowOut.toLowerCase();
+  if (lower.startsWith('bowled')) return 'Bowled';
+  if (lower.startsWith('lbw')) return 'LBW';
+  if (lower.startsWith('run out')) return 'Run Out';
+  if (lower.startsWith('stumped')) return 'Stumped';
+  if (lower.startsWith('hit wicket')) return 'Hit Wicket';
+  // Caught variations — default to "Caught — Infield" (most common, player can edit)
+  if (lower.startsWith('caught')) return 'Caught — Infield';
+  return '';
+}
+
+interface ScorerBattingLine {
+  runs: number;
+  balls: number;
+  fours: number;
+  sixes: number;
+  isOut: boolean;
+  howOut: string;
+  matchLabel: string;
+  scoredBy: string;
+}
 
 interface Reflection {
   id: string;
@@ -575,6 +600,8 @@ export default function NetsPage() {
 
   // Form state
   const [match, setMatch] = useState('');
+  const [scorerStats, setScorerStats] = useState<ScorerBattingLine | null>(null);
+  const [scorerLoading, setScorerLoading] = useState(false);
   const [matchIndex, setMatchIndex] = useState(0);
   const [howGotOut, setHowGotOut] = useState<string[]>([]);
   const [feeling, setFeeling] = useState(3);
@@ -668,6 +695,99 @@ export default function NetsPage() {
     if (session?.user?.email) loadReflections().catch(() => setLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
+
+  // Auto-pull scorer stats when a match is selected (only on NEW reflection,
+  // not edit). Looks for any completed scorer match on the same date and finds
+  // the logged-in player's batting line.
+  useEffect(() => {
+    if (editingId) { setScorerStats(null); return; }
+    if (!match || !session?.user) { setScorerStats(null); return; }
+    const m = MATCHES.find((x) => x.label === match);
+    if (!m) { setScorerStats(null); return; }
+
+    const sessionName = session.user.name || '';
+    const sessionEmail = (session.user.email || '').toLowerCase();
+
+    let cancelled = false;
+    setScorerLoading(true);
+    (async () => {
+      try {
+        const q = query(
+          collection(db, 'matches'),
+          where('date', '==', m.date),
+        );
+        const snap = await getDocs(q);
+
+        for (const matchDoc of snap.docs) {
+          const data = matchDoc.data() as { innings1?: Innings; innings2?: Innings; matchLabel?: string; scorer?: string; status?: string };
+          if (!data.innings1 && !data.innings2) continue;
+
+          // Only pull from completed practice/league matches we actually played
+          // (status check would be ideal — fall through if missing)
+          for (const innings of [data.innings1, data.innings2]) {
+            if (!innings) continue;
+            const stats = getBattingStats(innings);
+
+            // Try to find the logged-in player by name match
+            // 1) exact match against full session name
+            // 2) substring match (first name + last name)
+            const myStat = stats.find((s) => {
+              const sn = s.name.toLowerCase();
+              if (sessionName && sn === sessionName.toLowerCase()) return true;
+              const firstName = sessionName.split(' ')[0]?.toLowerCase() ?? '';
+              const lastName = sessionName.split(' ').slice(-1)[0]?.toLowerCase() ?? '';
+              if (firstName && lastName && sn.includes(firstName) && sn.includes(lastName)) return true;
+              // also try email prefix match (e.g. saad@... → "saad")
+              const emailPrefix = sessionEmail.split('@')[0];
+              if (emailPrefix && sn.includes(emailPrefix)) return true;
+              return false;
+            });
+
+            if (myStat && !cancelled) {
+              setScorerStats({
+                runs: myStat.runs,
+                balls: myStat.balls,
+                fours: myStat.fours,
+                sixes: myStat.sixes,
+                isOut: myStat.isOut,
+                howOut: myStat.howOut,
+                matchLabel: data.matchLabel || m.label,
+                scoredBy: data.scorer || 'unknown',
+              });
+              setScorerLoading(false);
+              return;
+            }
+          }
+        }
+        if (!cancelled) {
+          setScorerStats(null);
+          setScorerLoading(false);
+        }
+      } catch {
+        if (!cancelled) {
+          setScorerStats(null);
+          setScorerLoading(false);
+        }
+      }
+    })();
+
+    return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [match, editingId, session?.user?.email]);
+
+  // When scorerStats is loaded for the first time on this match selection,
+  // auto-fill howGotOut if it's still empty
+  useEffect(() => {
+    if (!scorerStats) return;
+    if (howGotOut.length > 0) return; // don't override player's manual selection
+    if (!scorerStats.isOut) {
+      setHowGotOut(['Not out']);
+      return;
+    }
+    const mapped = mapScorerWicketToReflection(scorerStats.howOut);
+    if (mapped) setHowGotOut([mapped]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scorerStats]);
 
   if (status === 'loading' || !session) {
     return <div className="min-h-screen bg-black flex items-center justify-center"><div className="text-primary-400">Loading...</div></div>;
@@ -2032,6 +2152,53 @@ export default function NetsPage() {
                     {MATCHES.filter(m => !isMatchAvailable(m.date)).map(m => <option key={m.label} disabled className="bg-gray-900 text-gray-600">{m.label}</option>)}
                   </select>
                 </div>
+
+                {/* From the scorecard — auto-pulled from /c3h/scorer when available */}
+                {scorerLoading && match && !editingId && (
+                  <div className="glass rounded-xl p-4 border border-white/10">
+                    <p className="text-xs text-gray-500">Checking scorecard for this match…</p>
+                  </div>
+                )}
+                {scorerStats && !editingId && (
+                  <div className="glass rounded-xl p-4 border-2 border-blue-500/30 bg-gradient-to-r from-blue-500/5 to-transparent">
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div>
+                        <p className="text-xs uppercase tracking-wider text-blue-400 font-bold mb-1">📋 From the Scorecard</p>
+                        <p className="text-xs text-gray-500">Auto-pulled from C3H Scorer · scored by {scorerStats.scoredBy.split('@')[0]}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-4 gap-3 mb-3">
+                      <div className="glass rounded-lg p-2.5 text-center border border-white/5">
+                        <p className="text-2xl font-bold text-white">{scorerStats.runs}</p>
+                        <p className="text-xs text-gray-500">Runs</p>
+                      </div>
+                      <div className="glass rounded-lg p-2.5 text-center border border-white/5">
+                        <p className="text-2xl font-bold text-white">{scorerStats.balls}</p>
+                        <p className="text-xs text-gray-500">Balls</p>
+                      </div>
+                      <div className="glass rounded-lg p-2.5 text-center border border-white/5">
+                        <p className="text-2xl font-bold text-accent-400">{scorerStats.fours}</p>
+                        <p className="text-xs text-gray-500">Fours</p>
+                      </div>
+                      <div className="glass rounded-lg p-2.5 text-center border border-white/5">
+                        <p className="text-2xl font-bold text-red-400">{scorerStats.sixes}</p>
+                        <p className="text-xs text-gray-500">Sixes</p>
+                      </div>
+                    </div>
+                    {scorerStats.isOut ? (
+                      <p className="text-xs text-gray-300">
+                        <span className="text-gray-500">Dismissal: </span>
+                        {scorerStats.howOut}
+                        <span className="text-gray-500"> · pre-filled below</span>
+                      </p>
+                    ) : (
+                      <p className="text-xs text-gray-300">
+                        <span className="text-gray-500">Status: </span>
+                        Not out
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 {/* Match Day Check-In */}
                 <div className="glass rounded-2xl p-6 border border-blue-500/20">
