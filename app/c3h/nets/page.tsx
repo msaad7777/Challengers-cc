@@ -1510,7 +1510,95 @@ export default function NetsPage() {
                 </ul>
               </div>
 
-              {/* 14. Above All */}
+              {/* 14. Innings Stability Rules — Do Not Break */}
+              <div className="glass rounded-2xl p-6 border-2 border-purple-500/40 bg-gradient-to-r from-purple-500/5 to-transparent">
+                <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                  <span className="text-2xl">🧠</span>
+                  Innings Stability Rules — Do Not Break
+                </h3>
+                <p className="text-xs uppercase tracking-wider text-purple-300 font-semibold mb-4">Mid-innings protection — your system is your anchor</p>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex gap-3"><span className="text-purple-300 font-bold flex-shrink-0">→</span><span>If something is working (timing, trigger, balance) — <strong className="text-white">DO NOT change it</strong> mid-innings</span></li>
+                  <li className="flex gap-3">
+                    <span className="text-purple-300 font-bold flex-shrink-0">→</span>
+                    <div>
+                      <span>Always keep a <strong className="text-white">trigger movement</strong></span>
+                      <ul className="mt-1 ml-4 text-sm space-y-1">
+                        <li>• Can adjust size (smaller / larger)</li>
+                        <li>• Never go completely static</li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-purple-300 font-bold flex-shrink-0">→</span>
+                    <div>
+                      <span>Don&apos;t suddenly switch intent (defensive ↔ aggressive)</span>
+                      <ul className="mt-1 ml-4 text-sm space-y-1">
+                        <li>• Build gradually, not abruptly</li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-purple-300 font-bold flex-shrink-0">→</span>
+                    <div>
+                      <span><strong className="text-white">Trust your initial read</strong> of the pitch and conditions</span>
+                      <ul className="mt-1 ml-4 text-sm space-y-1">
+                        <li>• Don&apos;t second-guess after a few balls</li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-purple-300 font-bold flex-shrink-0">→</span>
+                    <div>
+                      <span>If you misjudge length once — <strong className="text-white">reset, don&apos;t overcorrect</strong></span>
+                      <ul className="mt-1 ml-4 text-sm space-y-1">
+                        <li>• Next ball: watch harder, move earlier</li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-purple-300 font-bold flex-shrink-0">→</span>
+                    <div>
+                      <span>Stay in <strong className="text-white">rhythm</strong></span>
+                      <ul className="mt-1 ml-4 text-sm space-y-1">
+                        <li>• Movement → decision → shot</li>
+                        <li>• Don&apos;t freeze at the crease</li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-purple-300 font-bold flex-shrink-0">→</span>
+                    <div>
+                      <span>If confused, <strong className="text-white">default to</strong>:</span>
+                      <ul className="mt-1 ml-4 text-sm space-y-1">
+                        <li>• Balanced trigger</li>
+                        <li>• Play late</li>
+                        <li>• Straight bat</li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-purple-300 font-bold flex-shrink-0">→</span>
+                    <div>
+                      <span>Between balls:</span>
+                      <ul className="mt-1 ml-4 text-sm space-y-1">
+                        <li>• Reset mentally (look away, refocus)</li>
+                        <li>• Recommit to your basics</li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li className="flex gap-3"><span className="text-purple-300 font-bold flex-shrink-0">→</span><span>Your <strong className="text-white">system is your anchor</strong> under pressure — stick to it unless there&apos;s a clear reason to adjust</span></li>
+                </ul>
+                <div className="mt-5 p-4 rounded-xl bg-accent-500/10 border border-accent-500/30">
+                  <p className="text-sm font-bold text-accent-300 mb-1">⭐ Golden Rule</p>
+                  <ul className="space-y-1 text-sm text-gray-300">
+                    <li>→ <strong className="text-white">Small adjustments</strong> are allowed</li>
+                    <li>→ <strong className="text-white">Big changes mid-innings</strong> = high risk of dismissal</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* 15. Above All */}
               <div className="glass rounded-2xl p-6 border-2 border-primary-500/30 bg-gradient-to-r from-primary-500/5 to-transparent">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                   <span className="text-2xl">⭐</span>
