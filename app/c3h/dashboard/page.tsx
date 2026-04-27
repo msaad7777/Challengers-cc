@@ -95,6 +95,20 @@ export default function DashboardPage() {
               </span>
             </a>
 
+            {/* Match Replays */}
+            <a href="/c3h/replays" className="glass rounded-2xl p-6 border-2 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 block">
+              <div className="text-3xl mb-3">🎬</div>
+              <h2 className="text-xl font-bold text-white mb-1">Match Replays</h2>
+              <p className="text-purple-400 text-xs font-medium mb-3">Full matches with summaries</p>
+              <p className="text-gray-400 text-sm mb-4">
+                Watch full match recordings, see top performers, and reflect on your innings.
+                New matches added after each game.
+              </p>
+              <span className="text-xs px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                Open
+              </span>
+            </a>
+
             {/* The Nets */}
             <a href="/c3h/nets" className="glass rounded-2xl p-6 border-2 border-primary-500/20 hover:border-primary-500/50 transition-all duration-300 block">
               <div className="text-3xl mb-3">🏏</div>
