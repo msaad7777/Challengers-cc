@@ -258,12 +258,16 @@ export default function AvailabilityPage() {
   };
 
   const updateAvailability = async (name: string, matchId: string, newStatus: AvailabilityStatus) => {
-    // Players can update their own, board/captains can update anyone
-    if (name !== playerName && !isBoard) return;
+    // Players can ONLY mark their own availability. Captains and board
+    // members cannot edit another player's availability — they can see
+    // who has not responded but cannot change anyone's status on their
+    // behalf. This avoids the captain accidentally marking someone
+    // available when they are not.
+    if (name !== playerName) return;
     setSaving(true);
     const current = allAvailability[name] || {};
     const updated: PlayerAvailability = { ...current, [matchId]: newStatus };
-    const saveData = { ...updated, _email: session?.user?.email || '', _updatedAt: new Date().toISOString(), _updatedBy: name === playerName ? 'self' : session?.user?.email || '' };
+    const saveData = { ...updated, _email: session?.user?.email || '', _updatedAt: new Date().toISOString(), _updatedBy: 'self' };
     await setDoc(doc(db, 'availability', name), saveData);
     setAllAvailability(prev => ({ ...prev, [name]: updated }));
     setSaving(false);
@@ -435,9 +439,20 @@ export default function AvailabilityPage() {
                             <button onClick={() => setPlayerMenu(null)} className="text-gray-500 text-xs">&times;</button>
                           </div>
                           <div className="flex gap-1 flex-wrap">
-                            <button onClick={() => { updateAvailability(playerMenu.player, m.id, 'available'); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30">✅ Available</button>
-                            <button onClick={() => { updateAvailability(playerMenu.player, m.id, 'maybe'); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30">❓ Maybe</button>
-                            <button onClick={() => { updateAvailability(playerMenu.player, m.id, 'unavailable'); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-red-500/20 text-red-400 border border-red-500/30">❌ Unavailable</button>
+                            {playerMenu.player === playerName ? (
+                              <>
+                                {/* Only the player themselves can change their own availability */}
+                                <button onClick={() => { updateAvailability(playerMenu.player, m.id, 'available'); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30">✅ Available</button>
+                                <button onClick={() => { updateAvailability(playerMenu.player, m.id, 'maybe'); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30">❓ Maybe</button>
+                                <button onClick={() => { updateAvailability(playerMenu.player, m.id, 'unavailable'); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-red-500/20 text-red-400 border border-red-500/30">❌ Unavailable</button>
+                              </>
+                            ) : (
+                              <p className="text-xs text-gray-500 italic px-1 py-1.5">
+                                {getPlayerStatus(playerMenu.player, m.id)
+                                  ? `Availability set by ${playerMenu.player.split(' ')[0]} — only they can change it.`
+                                  : `${playerMenu.player.split(' ')[0]} has not marked availability yet — only they can mark it.`}
+                              </p>
+                            )}
                             {isCaptain && !(squads[m.id] || []).includes(playerMenu.player) && (squads[m.id] || []).length < 12 && getPlayerStatus(playerMenu.player, m.id) !== 'unavailable' && (
                               <button onClick={() => { toggleSquadPlayer(m.id, playerMenu.player); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30">🏏 Select</button>
                             )}
@@ -481,7 +496,7 @@ export default function AvailabilityPage() {
                         const noResp = matchPlayers.filter(n => !getPlayerStatus(n, m.id));
                         return noResp.length > 0 ? (
                           <div>
-                            <p className="text-gray-500 text-xs font-bold mb-1">No Response ({noResp.length})</p>
+                            <p className="text-gray-500 text-xs font-bold mb-1">Did Not Mark Availability ({noResp.length})</p>
                             <div className="flex flex-wrap gap-1">{noResp.map(n => (
                               <button key={n} onClick={() => setPlayerMenu({ matchId: m.id, player: n })} className="text-xs px-2 py-0.5 rounded bg-white/5 text-gray-600 hover:bg-primary-500/20 hover:text-primary-400 transition-all">{shortName(n)}</button>
                             ))}</div>
