@@ -86,60 +86,123 @@ const FIELDER_POSITIONS = [
   'Mid-on', 'Mid-wicket', 'Square Leg', 'Fine Leg', 'Third Man',
 ];
 
-// Build 12 field players: WK (blue, fixed) + Bowler (red, fixed) + 10 fielders (green, draggable)
-// Reconcile a saved field with the current squad:
-// - players still in the squad keep their exact position
-// - new squad players take over the slots of dropped players (preserves
-//   roles like WK and Bowler if those players were swapped out)
-// - if more players were added than dropped, leftover squad members are
-//   placed at the next available default fielder position
-function reconcileFieldWithSquad(savedField: FieldPlayer[], squadPlayers: string[]): FieldPlayer[] {
+// Pick the next available default fielder position (Gully, Point, Cover, etc.)
+// — used when a player needs to be placed somewhere but their saved position
+// is taken or they have no saved position.
+function nextAvailableFielderPos(usedPositions: Set<string>): string {
+  return FIELDER_POSITIONS.find((p) => !usedPositions.has(p)) || 'Point';
+}
+
+// Reconcile a saved field with the current squad + role assignments:
+// - Players still in the squad keep their exact saved position UNLESS the
+//   role designation has changed (e.g., a different player is now the WK)
+// - WK position always belongs to the player marked role='wk' in the squad.
+//   If saved field had someone else at WK, they get bumped to a default
+//   fielder position.
+// - Bowler position always belongs to the player marked role='bowl-sub'.
+//   Same swap logic as WK.
+// - Players new to the squad fill freed slots or default fielder positions.
+function reconcileFieldWithSquad(
+  savedField: FieldPlayer[],
+  squadPlayers: string[],
+  roles: Record<string, string> = {},
+): FieldPlayer[] {
   if (squadPlayers.length === 0) return [];
 
   const squadSet = new Set(squadPlayers);
-  const stillInSquad = savedField.filter((fp) => squadSet.has(fp.name));
-  const droppedSlots = savedField.filter((fp) => !squadSet.has(fp.name));
+  const wkPlayer = squadPlayers.find((p) => roles[p] === 'wk');
+  const bowlSubPlayer = squadPlayers.find((p) => roles[p] === 'bowl-sub');
 
-  const namesOnField = new Set(stillInSquad.map((fp) => fp.name));
-  const newPlayers = squadPlayers.filter((n) => !namesOnField.has(n));
-
-  const reconciled: FieldPlayer[] = [...stillInSquad];
-
-  newPlayers.forEach((name, i) => {
-    if (i < droppedSlots.length) {
-      const slot = droppedSlots[i];
-      reconciled.push({ name, x: slot.x, y: slot.y, position: slot.position, role: slot.role });
-    } else {
-      const usedPositions = new Set(reconciled.map((fp) => fp.position));
-      const availablePos =
-        FIELDER_POSITIONS.find((p) => !usedPositions.has(p)) || 'Point';
-      const c = POSITION_COORDS[availablePos] || { x: 50, y: 50 };
-      reconciled.push({ name, x: c.x, y: c.y, position: availablePos, role: 'fielder' });
+  // Step 1: keep saved positions for players still in the squad,
+  // BUT clear out anyone occupying WK or Bowler if the role has shifted.
+  const filtered = savedField.filter((fp) => squadSet.has(fp.name));
+  const reassigned: FieldPlayer[] = filtered.map((fp) => {
+    if (fp.position === 'Wicketkeeper' && wkPlayer && fp.name !== wkPlayer) {
+      return { ...fp, position: '__pending__', role: 'fielder' as const };
     }
+    if (fp.position === 'Bowler' && bowlSubPlayer && fp.name !== bowlSubPlayer) {
+      return { ...fp, position: '__pending__', role: 'fielder' as const };
+    }
+    return fp;
   });
+
+  // Step 2: place WK and Bowler from role assignments
+  const reconciled: FieldPlayer[] = [];
+  if (wkPlayer && squadSet.has(wkPlayer)) {
+    const c = POSITION_COORDS['Wicketkeeper'];
+    reconciled.push({ name: wkPlayer, x: c.x, y: c.y, position: 'Wicketkeeper', role: 'wk' });
+  }
+  if (bowlSubPlayer && squadSet.has(bowlSubPlayer) && bowlSubPlayer !== wkPlayer) {
+    const c = POSITION_COORDS['Bowler'];
+    reconciled.push({ name: bowlSubPlayer, x: c.x, y: c.y, position: 'Bowler', role: 'bowler' });
+  }
+
+  // Step 3: place all other reassigned players (already in squad), preserving
+  // their saved fielder positions. Skip anyone whose position got cleared
+  // (those are handled in Step 4) and skip anyone we already placed (WK/Bowler).
+  const placed = new Set(reconciled.map((fp) => fp.name));
+  for (const fp of reassigned) {
+    if (placed.has(fp.name)) continue;
+    if (fp.position === '__pending__') continue;
+    reconciled.push(fp);
+    placed.add(fp.name);
+  }
+
+  // Step 4: place players whose position was cleared (got bumped from WK/Bowler)
+  // at the next available default fielder position.
+  for (const fp of reassigned) {
+    if (placed.has(fp.name)) continue;
+    if (fp.position !== '__pending__') continue;
+    const usedPositions = new Set(reconciled.map((p) => p.position));
+    const pos = nextAvailableFielderPos(usedPositions);
+    const c = POSITION_COORDS[pos] || { x: 50, y: 50 };
+    reconciled.push({ name: fp.name, x: c.x, y: c.y, position: pos, role: 'fielder' });
+    placed.add(fp.name);
+  }
+
+  // Step 5: place new squad members (not yet on field) at default fielder spots
+  for (const name of squadPlayers) {
+    if (placed.has(name)) continue;
+    const usedPositions = new Set(reconciled.map((p) => p.position));
+    const pos = nextAvailableFielderPos(usedPositions);
+    const c = POSITION_COORDS[pos] || { x: 50, y: 50 };
+    reconciled.push({ name, x: c.x, y: c.y, position: pos, role: 'fielder' });
+    placed.add(name);
+  }
 
   return reconciled;
 }
 
-function buildFieldFromSquad(squadPlayers: string[]): FieldPlayer[] {
+// Build a fresh field from a squad — uses role assignments (wk, bowl-sub) when
+// present; falls back to squad order (index 0 = WK, index 1 = Bowler) otherwise.
+function buildFieldFromSquad(
+  squadPlayers: string[],
+  roles: Record<string, string> = {},
+): FieldPlayer[] {
   const result: FieldPlayer[] = [];
-  const players = squadPlayers.slice(0, 12);
+  if (squadPlayers.length === 0) return result;
 
-  players.forEach((name, i) => {
-    if (i === 0) {
-      // First player = Wicketkeeper (blue, fixed at batting end)
-      const c = POSITION_COORDS['Wicketkeeper'];
-      result.push({ name, x: c.x, y: c.y, position: 'Wicketkeeper', role: 'wk' });
-    } else if (i === 1) {
-      // Second player = Bowler (red, fixed at bowling end)
-      const c = POSITION_COORDS['Bowler'];
-      result.push({ name, x: c.x, y: c.y, position: 'Bowler', role: 'bowler' });
-    } else {
-      // Remaining 10 = fielders (green, draggable)
-      const pos = FIELDER_POSITIONS[i - 2] || 'Point';
-      const c = POSITION_COORDS[pos] || { x: 50, y: 50 };
-      result.push({ name, x: c.x, y: c.y, position: pos, role: 'fielder' });
-    }
+  const wkPlayer = squadPlayers.find((p) => roles[p] === 'wk') || squadPlayers[0];
+  const bowlSubPlayer =
+    squadPlayers.find((p) => roles[p] === 'bowl-sub') ||
+    squadPlayers.find((p) => p !== wkPlayer);
+
+  if (wkPlayer) {
+    const c = POSITION_COORDS['Wicketkeeper'];
+    result.push({ name: wkPlayer, x: c.x, y: c.y, position: 'Wicketkeeper', role: 'wk' });
+  }
+  if (bowlSubPlayer && bowlSubPlayer !== wkPlayer) {
+    const c = POSITION_COORDS['Bowler'];
+    result.push({ name: bowlSubPlayer, x: c.x, y: c.y, position: 'Bowler', role: 'bowler' });
+  }
+
+  const placed = new Set([wkPlayer, bowlSubPlayer].filter(Boolean) as string[]);
+  const remaining = squadPlayers.filter((p) => !placed.has(p));
+  remaining.forEach((name) => {
+    const usedPositions = new Set(result.map((fp) => fp.position));
+    const pos = nextAvailableFielderPos(usedPositions);
+    const c = POSITION_COORDS[pos] || { x: 50, y: 50 };
+    result.push({ name, x: c.x, y: c.y, position: pos, role: 'fielder' });
   });
 
   return result;
@@ -154,6 +217,7 @@ function FieldEditorContent() {
 
   const [players, setPlayers] = useState<FieldPlayer[]>([]);
   const [squad, setSquad] = useState<string[]>([]);
+  const [squadRoles, setSquadRoles] = useState<Record<string, string>>({});
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
   const [showNames, setShowNames] = useState(true);
   const [showPositions, setShowPositions] = useState(true);
@@ -175,24 +239,28 @@ function FieldEditorContent() {
         ? ((squadDoc.data().roles || {}) as Record<string, string>)
         : {};
 
-      // Only the playing 11 take the field — exclude batting / bowling subs.
-      // Subs come on only as substitute fielders if someone is injured;
-      // they are not part of the standard fielding setup.
-      const fielding11 = fullSquad.filter(
-        (name) => squadRoles[name] !== 'bat-sub' && squadRoles[name] !== 'bowl-sub',
+      // Only exclude the BATTING substitute (bat-sub) — they are explicitly
+      // off-field. The BOWLING substitute (bowl-sub) IS on the field as
+      // the dedicated Bowler — they replace whoever would have been the
+      // default Bowler.
+      const fieldingPlayers = fullSquad.filter(
+        (name) => squadRoles[name] !== 'bat-sub',
       );
-      setSquad(fielding11);
+      setSquad(fieldingPlayers);
+      setSquadRoles(squadRoles);
 
       const fieldDoc = await getDoc(doc(db, 'field-positions', matchId));
       if (fieldDoc.exists()) {
         const savedField = fieldDoc.data().players as FieldPlayer[];
-        // Reconcile saved field with current playing 11 — drops any subs
-        // that may have been on field, removes players no longer in squad,
-        // and adds any new squad members at default positions.
-        setPlayers(reconcileFieldWithSquad(savedField, fielding11));
+        // Reconcile saved field with current squad + role assignments. WK
+        // role and bowl-sub role take priority — if those roles change, the
+        // field's WK/Bowler positions update automatically and the displaced
+        // players move to default fielder positions. Other custom positions
+        // are preserved.
+        setPlayers(reconcileFieldWithSquad(savedField, fieldingPlayers, squadRoles));
         setLeftHanded(fieldDoc.data().leftHanded || false);
-      } else if (fielding11.length >= 11) {
-        setPlayers(buildFieldFromSquad(fielding11));
+      } else if (fieldingPlayers.length >= 11) {
+        setPlayers(buildFieldFromSquad(fieldingPlayers, squadRoles));
       }
       setLoaded(true);
     };
@@ -246,7 +314,7 @@ function FieldEditorContent() {
 
   const resetPositions = () => {
     if (squad.length < 11) return;
-    const initial = buildFieldFromSquad(squad);
+    const initial = buildFieldFromSquad(squad, squadRoles);
     setPlayers(initial);
     saveField(initial);
   };
