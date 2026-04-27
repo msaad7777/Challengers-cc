@@ -30,6 +30,7 @@ export default function ScorerPage() {
   const [team1, setTeam1] = useState('Challengers Cricket Club');
   const [team2, setTeam2] = useState('');
   const [customTeam, setCustomTeam] = useState('');
+  const [pastTeams, setPastTeams] = useState<string[]>([]);
   const [totalOvers, setTotalOvers] = useState(30);
   const [maxWickets, setMaxWickets] = useState(10);
   const [venue, setVenue] = useState('');
@@ -80,6 +81,22 @@ export default function ScorerPage() {
         const allIds = new Set(ownMatches.map(m => m.id));
         const merged = [...ownMatches, ...activeMatches.filter(m => !allIds.has(m.id))];
         setSavedMatches(merged);
+
+        // Extract unique opponent names from any past match (own + active)
+        // — feeds the Team 2 autocomplete for practice matches
+        const seen = new Set<string>();
+        const uniques: string[] = [];
+        for (const m of merged) {
+          for (const team of [m.team1, m.team2]) {
+            const t = (team || '').trim();
+            if (!t || t === 'Challengers Cricket Club') continue;
+            if (LCL_TEAMS.includes(t)) continue; // already in the canonical league list
+            if (seen.has(t)) continue;
+            seen.add(t);
+            uniques.push(t);
+          }
+        }
+        setPastTeams(uniques);
       } catch {
         setSavedMatches(ownMatches);
       }
@@ -374,7 +391,31 @@ export default function ScorerPage() {
                         {LCL_TEAMS.filter(t => t !== team1).map(t => <option key={t} value={t} className="bg-gray-900">{t}</option>)}
                       </select>
                     ) : (
-                      <input value={customTeam} onChange={e => { setCustomTeam(e.target.value); setTeam2(e.target.value); }} placeholder="Enter team name" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary-500 placeholder-gray-600" />
+                      <>
+                        <input
+                          value={customTeam}
+                          onChange={e => { setCustomTeam(e.target.value); setTeam2(e.target.value); }}
+                          placeholder="Start typing — autofill from teams we've played"
+                          list="team2-suggestions"
+                          autoComplete="off"
+                          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary-500 placeholder-gray-600"
+                        />
+                        <datalist id="team2-suggestions">
+                          {/* Past opponents we've actually scored against */}
+                          {pastTeams.filter(t => t !== team1).map(t => (
+                            <option key={`past-${t}`} value={t}>Previously played</option>
+                          ))}
+                          {/* All league teams as suggestions even in practice mode */}
+                          {LCL_TEAMS.filter(t => t !== team1 && !pastTeams.includes(t)).map(t => (
+                            <option key={`lcl-${t}`} value={t}>League team</option>
+                          ))}
+                        </datalist>
+                        {pastTeams.length > 0 && (
+                          <p className="text-xs text-gray-600 mt-1">
+                            💡 Suggestions include {pastTeams.length} team{pastTeams.length === 1 ? '' : 's'} you&apos;ve played before + all league teams
+                          </p>
+                        )}
+                      </>
                     )}
                   </div>
                   <div className="grid grid-cols-3 gap-3">
