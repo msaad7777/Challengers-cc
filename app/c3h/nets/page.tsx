@@ -1329,124 +1329,198 @@ export default function NetsPage() {
 
               <div className="text-center mb-2">
                 <h2 className="text-2xl font-bold text-white">Batting <span className="gradient-text">Principles</span></h2>
-                <p className="text-gray-500 text-sm">Read these before every innings. Recall during your reflection.</p>
+                <p className="text-gray-500 text-sm">T20 / T30 batting framework. Read before every innings. Recall during reflection.</p>
               </div>
 
-              {/* Shot selection by line */}
+              {/* 1. Shot Selection — Length First, Then Line */}
               <div className="glass rounded-2xl p-6 border border-white/10">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                   <span className="text-2xl">🎯</span>
-                  Shot Selection by Line
+                  Shot Selection — Length First, Then Line
                 </h3>
-                <ul className="space-y-3 text-gray-300">
-                  <li className="flex gap-3">
-                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
-                    <span>Balls coming inside off stump or inside leg stump should be played within the <strong className="text-white">V</strong> — between mid-on and mid-off.</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
-                    <span>Outside off stump → <strong className="text-white">square drive</strong> or <strong className="text-white">cover drive</strong>.</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
-                    <span>Outside leg stump → <strong className="text-white">leg side, square</strong>.</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
-                    <span>Wide outside off (5th stump) → <strong className="text-white">leave once in a while</strong>. Watch the ball, build trust with your judgment.</span>
-                  </li>
+                <p className="text-sm text-primary-400 font-semibold mb-2">Length decides first:</p>
+                <ul className="space-y-2 text-gray-300 mb-4">
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Full</strong> → drive (straight or cover)</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Good length</strong> → defend or play late</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Short</strong> → back foot (cut, pull)</span></li>
+                </ul>
+                <p className="text-sm text-primary-400 font-semibold mb-2">Then line:</p>
+                <ul className="space-y-2 text-gray-300">
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Inside off / leg → play within the <strong className="text-white">V</strong> (mid-on to mid-off)</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Outside off → <strong className="text-white">square drive / cover / late cut</strong></span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Outside leg → <strong className="text-white">leg side, square</strong></span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Wide outside off (5th stump) → <strong className="text-white">don&apos;t chase</strong> — guide or leave</span></li>
                 </ul>
                 <div className="mt-4 p-4 rounded-xl bg-accent-500/10 border border-accent-500/20">
                   <p className="text-sm text-accent-300 font-semibold mb-1">⚠️ When the field is packed</p>
-                  <p className="text-sm text-gray-300">If they pack the V on you — the cover drive, square drive, and leg-side options become your scoring zones. Don&apos;t keep hitting straight into traffic. Find the gaps the field has left open.</p>
+                  <p className="text-sm text-gray-300">Don&apos;t hit into traffic. Identify the gaps and adjust your scoring zones.</p>
                 </div>
               </div>
 
-              {/* Stance & setup */}
+              {/* 2. Stance & Setup */}
               <div className="glass rounded-2xl p-6 border border-white/10">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                   <span className="text-2xl">🏏</span>
                   Stance &amp; Setup
                 </h3>
                 <ul className="space-y-3 text-gray-300">
-                  <li className="flex gap-3">
-                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
-                    <span>Your bat should always be <strong className="text-white">lifted away</strong>.</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
-                    <span>Bat tap should land near your <strong className="text-white">back foot toe</strong>. Always.</span>
-                  </li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Bat <strong className="text-white">lifted and ready</strong> (not stuck behind)</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Bat tap near your <strong className="text-white">back foot toe</strong></span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Stay <strong className="text-white">relaxed and balanced</strong></span></li>
                 </ul>
               </div>
 
-              {/* Watching the ball */}
+              {/* 3. Trigger Movement */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">⚖️</span>
+                  Trigger Movement
+                </h3>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Small movement as bowler releases — <strong className="text-white">forward press</strong> or <strong className="text-white">back-and-across</strong></span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Stay balanced — <strong className="text-white">no falling over</strong></span></li>
+                </ul>
+              </div>
+
+              {/* 4. Watching the Ball */}
               <div className="glass rounded-2xl p-6 border border-white/10">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                   <span className="text-2xl">👁️</span>
                   Watching the Ball
                 </h3>
                 <ul className="space-y-3 text-gray-300">
-                  <li className="flex gap-3">
-                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
-                    <span>Pre-delivery, focus on the bowler&apos;s <strong className="text-white">left eye</strong> (for right-arm bowlers).</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
-                    <span>As they enter their action, switch to the <strong className="text-white">release point</strong>.</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
-                    <span>Then judge <strong className="text-white">where the ball is landing</strong> and react.</span>
-                  </li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Focus on the <strong className="text-white">bowler&apos;s release point</strong></span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Track the ball <strong className="text-white">early</strong> → judge length quickly</span></li>
                 </ul>
               </div>
 
-              {/* Body position */}
+              {/* 5. Body Position & Contact */}
               <div className="glass rounded-2xl p-6 border border-white/10">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                   <span className="text-2xl">🛡️</span>
-                  Body Position
+                  Body Position &amp; Contact
                 </h3>
                 <ul className="space-y-3 text-gray-300">
-                  <li className="flex gap-3">
-                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
-                    <span>Always play <strong className="text-white">close to the body</strong> — eliminates the gap between bat and pad.</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="text-primary-400 font-bold flex-shrink-0">→</span>
-                    <span>If you play in the <strong className="text-white">second line</strong> (inside the line of the ball), there will never be a gap between bat and pad.</span>
-                  </li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Play <strong className="text-white">close to the body</strong> when possible</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Reduce the <strong className="text-white">bat-pad gap</strong></span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Play <strong className="text-white">under your head</strong> for control</span></li>
                 </ul>
               </div>
 
-              {/* Vs left-arm spinners */}
+              {/* 6. Defense & Soft Hands */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🧱</span>
+                  Defense &amp; Soft Hands
+                </h3>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Use <strong className="text-white">soft hands</strong> outside off</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Drop the ball into gaps</strong> for singles</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Front foot: <strong className="text-white">head over ball</strong>, full face</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Back foot: <strong className="text-white">stay tall</strong>, play late</span></li>
+                </ul>
+              </div>
+
+              {/* 7. Strike Rotation */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🔄</span>
+                  Strike Rotation
+                </h3>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Look for <strong className="text-white">singles every over</strong></span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Use soft hands to <strong className="text-white">drop and run</strong></span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Don&apos;t get stuck</strong></span></li>
+                </ul>
+              </div>
+
+              {/* 8. Decision-Making — Every Ball */}
+              <div className="glass rounded-2xl p-6 border-2 border-accent-500/30 bg-gradient-to-r from-accent-500/5 to-transparent">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🧠</span>
+                  Decision-Making (Every Ball)
+                </h3>
+                <ol className="space-y-3 text-gray-300 list-decimal list-inside">
+                  <li><strong className="text-white">Can I attack cleanly?</strong> → Yes → Attack</li>
+                  <li>No → <strong className="text-white">Can I rotate strike?</strong> → Yes → Single</li>
+                  <li>No → <strong className="text-white">Defend safely</strong></li>
+                  <li>Only avoid / leave if <strong className="text-white">no safe option</strong> exists</li>
+                </ol>
+              </div>
+
+              {/* 9. Powerplay Approach */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🚀</span>
+                  Powerplay Approach
+                </h3>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>First <strong className="text-white">6–10 balls</strong>: assess + low-risk scoring</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Don&apos;t rush</strong> — read the pitch and the bowler</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>After settling: <strong className="text-white">expand scoring</strong>, use the gaps, punish the bad balls</span></li>
+                </ul>
+              </div>
+
+              {/* 10. Off-Stump Awareness */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🧭</span>
+                  Off-Stump Awareness
+                </h3>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Always know <strong className="text-white">where your off stump is</strong></span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Helps with judging line and shot selection</span></li>
+                </ul>
+              </div>
+
+              {/* 11. Back Foot Play */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">⚡</span>
+                  Back Foot Play
+                </h3>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Go <strong className="text-white">back quickly</strong> for short balls</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Cut for width</strong>, pull only when in control</span></li>
+                </ul>
+              </div>
+
+              {/* 12. Against Left-Arm Spin */}
               <div className="glass rounded-2xl p-6 border-2 border-red-500/30 bg-gradient-to-r from-red-500/5 to-transparent">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                   <span className="text-2xl">🌀</span>
-                  Against Left-Arm Spinners
+                  Against Left-Arm Spin
                 </h3>
                 <ul className="space-y-3 text-gray-300">
-                  <li className="flex gap-3">
-                    <span className="text-red-400 font-bold flex-shrink-0">→</span>
-                    <span><strong className="text-white">Never throw away your front leg.</strong></span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="text-red-400 font-bold flex-shrink-0">→</span>
-                    <span>Always play <strong className="text-white">under your head</strong>.</span>
-                  </li>
+                  <li className="flex gap-3"><span className="text-red-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Don&apos;t throw your front leg away</strong></span></li>
+                  <li className="flex gap-3"><span className="text-red-400 font-bold flex-shrink-0">→</span><span>Play <strong className="text-white">under your head</strong></span></li>
+                  <li className="flex gap-3"><span className="text-red-400 font-bold flex-shrink-0">→</span><span>Stay <strong className="text-white">balanced and patient</strong></span></li>
                 </ul>
               </div>
 
-              {/* Universal */}
+              {/* 13. Mental Routine */}
+              <div className="glass rounded-2xl p-6 border border-blue-500/20">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🧘</span>
+                  Mental Routine
+                </h3>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex gap-3"><span className="text-blue-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Reset after every ball</strong> — look away, refocus</span></li>
+                  <li className="flex gap-3"><span className="text-blue-400 font-bold flex-shrink-0">→</span><span>Stay present — <strong className="text-white">one ball at a time</strong></span></li>
+                </ul>
+              </div>
+
+              {/* 14. Above All */}
               <div className="glass rounded-2xl p-6 border-2 border-primary-500/30 bg-gradient-to-r from-primary-500/5 to-transparent">
-                <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                   <span className="text-2xl">⭐</span>
                   Above All
                 </h3>
-                <p className="text-lg md:text-xl font-bold text-white">
-                  Head should always be in the <span className="gradient-text">line of the ball</span>.
-                </p>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex gap-3"><span className="text-accent-400 font-bold flex-shrink-0">→</span><span>Head moves <strong className="text-white">towards the line of the ball</strong> and stays balanced</span></li>
+                  <li className="flex gap-3"><span className="text-accent-400 font-bold flex-shrink-0">→</span><span>If you can&apos;t score big, <strong className="text-white">score safely or rotate strike</strong></span></li>
+                  <li className="flex gap-3"><span className="text-accent-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Selective aggression wins T20</strong> — not reckless hitting</span></li>
+                </ul>
               </div>
 
               {/* CTA back to reflection */}
