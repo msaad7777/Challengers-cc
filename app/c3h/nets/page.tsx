@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, query, where, orderBy, getDocs, getDoc, setDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, query, where, orderBy, getDocs, getDoc, setDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
@@ -28,6 +28,8 @@ interface Reflection {
   intentScore: number;
   notes: string;
   createdAt: string;
+  updatedAt?: string;
+  editCount?: number;
 }
 
 const BODY_STATUS_OPTIONS = [
@@ -568,6 +570,7 @@ export default function NetsPage() {
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
   const [reflections, setReflections] = useState<Reflection[]>([]);
   const [selectedReflection, setSelectedReflection] = useState<Reflection | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Form state
@@ -678,9 +681,9 @@ export default function NetsPage() {
     if (!match || !session.user?.email) return;
     setSaving(true);
     const opponent = match.includes('vs') ? match.split('vs ')[1]?.split(' (')[0] || '' : '';
-    await addDoc(collection(db, 'reflections'), {
+    const now = new Date().toISOString();
+    const payload = {
       email: session.user.email.toLowerCase(),
-      date: new Date().toISOString().split('T')[0],
       matchIndex,
       match,
       opponent,
@@ -696,14 +699,53 @@ export default function NetsPage() {
       pressureResponse,
       intentScore,
       notes,
-      createdAt: new Date().toISOString(),
-    });
+      updatedAt: now,
+    };
+
+    if (editingId) {
+      // Update existing reflection — preserve original date + createdAt; bump editCount
+      const existing = reflections.find((r) => r.id === editingId);
+      await updateDoc(doc(db, 'reflections', editingId), {
+        ...payload,
+        editCount: (existing?.editCount ?? 0) + 1,
+      });
+    } else {
+      // Create new reflection
+      await addDoc(collection(db, 'reflections'), {
+        ...payload,
+        date: now.split('T')[0],
+        createdAt: now,
+        editCount: 0,
+      });
+    }
+
     try { await loadReflections(); } catch { /* index may still be building */ }
     setSaving(false);
+    setEditingId(null);
     setView('list');
     setMatch(''); setMatchIndex(0); setHowGotOut([]); setFeeling(3); setBodyStatus([]); setNutrition([]); setWhatWentRight([]);
     setWhatWentWrong([]); setMindsetWord(''); setNextInningsPlan('');
     setStrengthToBuild(''); setPressureResponse(''); setIntentScore(3); setNotes('');
+  };
+
+  // Load a saved reflection into the form for editing
+  const beginEdit = (r: Reflection) => {
+    setEditingId(r.id);
+    setMatch(r.match);
+    setMatchIndex(r.matchIndex);
+    setHowGotOut(Array.isArray(r.howGotOut) ? r.howGotOut : r.howGotOut ? [r.howGotOut] : []);
+    setFeeling(r.feeling);
+    setBodyStatus(r.bodyStatus || []);
+    setNutrition(r.nutrition || []);
+    setWhatWentRight(r.whatWentRight || []);
+    setWhatWentWrong(r.whatWentWrong || []);
+    setMindsetWord(r.mindsetWord || '');
+    setNextInningsPlan(r.nextInningsPlan || '');
+    setStrengthToBuild(r.strengthToBuild || '');
+    setPressureResponse(r.pressureResponse || '');
+    setIntentScore(r.intentScore);
+    setNotes(r.notes || '');
+    setView('new');
   };
 
   // Pattern analysis
@@ -905,7 +947,7 @@ export default function NetsPage() {
               )}
               {view !== 'new' && view !== 'planner' && view !== 'principles' && (
                 <button
-                  onClick={() => setView('new')}
+                  onClick={() => { setEditingId(null); setView('new'); }}
                   className="px-4 py-2 rounded-lg bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium text-sm shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-105"
                 >
                   + Reflection
@@ -1104,7 +1146,7 @@ export default function NetsPage() {
                   <div className="text-5xl mb-4">🏏</div>
                   <h3 className="text-xl font-bold text-white mb-2">No Reflections Yet</h3>
                   <p className="text-gray-400 mb-6">After each match or practice, create a reflection to track your growth.</p>
-                  <button onClick={() => setView('new')} className="px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-105">
+                  <button onClick={() => { setEditingId(null); setView('new'); }} className="px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-105">
                     Create Your First Reflection
                   </button>
                 </div>
@@ -1120,10 +1162,15 @@ export default function NetsPage() {
                         <span className="text-white font-bold text-sm">{r.match}</span>
                         <span className="text-gray-500 text-xs">{r.date}</span>
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-gray-400">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-400">
                         <span>Out: {Array.isArray(r.howGotOut) ? r.howGotOut.join(', ') || 'N/A' : r.howGotOut || 'N/A'}</span>
                         <span>Intent: {r.intentScore}/5</span>
                         <span className="text-primary-400">{r.mindsetWord || '—'}</span>
+                        {r.updatedAt && r.createdAt && r.updatedAt !== r.createdAt && (
+                          <span className="text-accent-400">
+                            ✏️ edited{r.editCount && r.editCount > 1 ? ` ×${r.editCount}` : ''}
+                          </span>
+                        )}
                       </div>
                     </button>
                   ))}
@@ -1152,9 +1199,38 @@ export default function NetsPage() {
             <>
               <button onClick={() => setView('list')} className="text-gray-500 text-sm hover:text-primary-400 mb-4 inline-block">&larr; Back</button>
               <div className="glass rounded-2xl p-6 border border-white/10">
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
                   <h2 className="text-lg font-bold text-white">{selectedReflection.match}</h2>
-                  <span className="text-gray-500 text-sm">{selectedReflection.date}</span>
+                  <button
+                    onClick={() => beginEdit(selectedReflection)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-300 border border-primary-500/30 text-xs font-semibold hover:bg-primary-500/30 transition-all"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Edit
+                  </button>
+                </div>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500 mb-6">
+                  <span>📅 Created {selectedReflection.date}</span>
+                  {selectedReflection.updatedAt && selectedReflection.updatedAt !== selectedReflection.createdAt && (
+                    <span className="text-primary-400">
+                      ✏️ Last saved{' '}
+                      {new Date(selectedReflection.updatedAt).toLocaleString('en-CA', {
+                        month: 'short',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: true,
+                      })}
+                      {selectedReflection.editCount && selectedReflection.editCount > 0 && (
+                        <span className="text-gray-500">
+                          {' · '}
+                          {selectedReflection.editCount} edit{selectedReflection.editCount === 1 ? '' : 's'}
+                        </span>
+                      )}
+                    </span>
+                  )}
                 </div>
                 <div className="grid grid-cols-4 gap-3 mb-6">
                   <div className="glass rounded-xl p-3 text-center">
@@ -1376,7 +1452,7 @@ export default function NetsPage() {
               {/* CTA back to reflection */}
               <div className="text-center pt-4">
                 <button
-                  onClick={() => setView('new')}
+                  onClick={() => { setEditingId(null); setView('new'); }}
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-105"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1756,20 +1832,32 @@ export default function NetsPage() {
           {/* NEW REFLECTION FORM */}
           {view === 'new' && (
             <>
-              <button onClick={() => setView('list')} className="text-gray-500 text-sm hover:text-primary-400 mb-4 inline-block">&larr; Cancel</button>
-              <div className="mb-5 glass rounded-xl p-4 border border-accent-500/20 bg-gradient-to-r from-accent-500/5 to-transparent">
-                <p className="text-xs uppercase tracking-wider text-accent-400 font-bold mb-1">Before you reflect</p>
-                <p className="text-sm text-gray-300">
-                  Review your{' '}
-                  <button
-                    onClick={() => setView('principles')}
-                    className="text-accent-300 hover:text-accent-200 underline font-semibold"
-                  >
-                    Batting Principles
-                  </button>
-                  {' '}— shot selection, stance, watching the ball, body position. Self-evaluate against them as you fill out today&apos;s reflection.
-                </p>
-              </div>
+              <button onClick={() => { setEditingId(null); setView('list'); }} className="text-gray-500 text-sm hover:text-primary-400 mb-4 inline-block">
+                &larr; {editingId ? 'Cancel Edit' : 'Cancel'}
+              </button>
+              {editingId ? (
+                <div className="mb-5 glass rounded-xl p-4 border border-primary-500/30 bg-gradient-to-r from-primary-500/10 to-transparent">
+                  <p className="text-xs uppercase tracking-wider text-primary-400 font-bold mb-1">✏️ Editing existing reflection</p>
+                  <p className="text-sm text-gray-300">
+                    You&apos;re updating a reflection you saved earlier. Original date is preserved
+                    — only the &quot;Last saved&quot; timestamp will change.
+                  </p>
+                </div>
+              ) : (
+                <div className="mb-5 glass rounded-xl p-4 border border-accent-500/20 bg-gradient-to-r from-accent-500/5 to-transparent">
+                  <p className="text-xs uppercase tracking-wider text-accent-400 font-bold mb-1">Before you reflect</p>
+                  <p className="text-sm text-gray-300">
+                    Review your{' '}
+                    <button
+                      onClick={() => setView('principles')}
+                      className="text-accent-300 hover:text-accent-200 underline font-semibold"
+                    >
+                      Batting Principles
+                    </button>
+                    {' '}— shot selection, stance, watching the ball, body position. Self-evaluate against them as you fill out today&apos;s reflection.
+                  </p>
+                </div>
+              )}
               <div className="space-y-5">
                 <div className="glass rounded-2xl p-6 border border-white/10">
                   <h3 className="text-lg font-bold text-white mb-3">Match</h3>
@@ -1875,7 +1963,7 @@ export default function NetsPage() {
                 </div>
 
                 <button onClick={handleSubmit} disabled={!match || saving} className="w-full py-4 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-[1.02] disabled:opacity-40">
-                  {saving ? 'Saving...' : 'Save Reflection'}
+                  {saving ? 'Saving...' : editingId ? 'Update Reflection' : 'Save Reflection'}
                 </button>
               </div>
             </>
