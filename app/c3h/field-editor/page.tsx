@@ -374,17 +374,16 @@ function FieldEditorContent() {
     );
   }
 
-  // Gate the field display until the captain has designated all three
-  // role-bearing positions. Without these, the field auto-placement is
-  // ambiguous and the captain may end up with the wrong default WK or
-  // Bowler. Once squad is loaded, check for missing roles.
+  // Gate the field display until the captain has designated the two roles
+  // that drive field placement: Wicketkeeper and Bowling Substitute.
+  // Batting Substitute is an off-field roster designation and doesn't
+  // affect field placement, so it's optional. Once squad is loaded,
+  // check for missing field-relevant roles.
   if (loaded && squad.length > 0) {
     const hasWk = squad.some((p) => squadRoles[p] === 'wk');
-    const hasBatSub = squad.some((p) => squadRoles[p] === 'bat-sub');
     const hasBowlSub = squad.some((p) => squadRoles[p] === 'bowl-sub');
     const missing: { label: string; description: string }[] = [];
     if (!hasWk) missing.push({ label: 'Wicketkeeper', description: 'click WK on a player to mark them as keeper' });
-    if (!hasBatSub) missing.push({ label: 'Batting Substitute', description: 'click B on a player to mark them as bat sub' });
     if (!hasBowlSub) missing.push({ label: 'Bowling Substitute', description: 'click W on a player to mark them as bowl sub' });
 
     if (missing.length > 0) {
@@ -429,8 +428,10 @@ function FieldEditorContent() {
                   <ul className="text-sm text-gray-300 space-y-1.5">
                     <li>• <strong className="text-white">Wicketkeeper</strong> defines who stands behind the stumps on the field map</li>
                     <li>• <strong className="text-white">Bowling Substitute</strong> appears on the field as the dedicated Bowler position</li>
-                    <li>• <strong className="text-white">Batting Substitute</strong> stays off the field map (they only sub in if a batter retires)</li>
                   </ul>
+                  <p className="text-xs text-gray-500 mt-2 italic">
+                    Batting Substitute is optional — it doesn&apos;t affect field placement.
+                  </p>
                 </div>
 
                 <Link
