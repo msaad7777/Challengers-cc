@@ -242,14 +242,22 @@ export default function AvailabilityPage() {
 
   const toggleRole = async (matchId: string, playerN: string, role: string) => {
     const currentRoles = { ...(squadRoles[matchId] || {}) };
-    // Remove role from anyone else who has it
-    Object.keys(currentRoles).forEach(k => { if (currentRoles[k] === role) delete currentRoles[k]; });
-    // Toggle for this player
-    if (currentRoles[playerN] === role) {
+    const playerAlreadyHasThisRole = currentRoles[playerN] === role;
+
+    if (playerAlreadyHasThisRole) {
+      // Second click on the same role for the same player — toggle OFF.
+      // Just remove this player's role assignment.
       delete currentRoles[playerN];
     } else {
+      // Assigning the role to this player. First clear any OTHER player
+      // who currently holds this role (only one bat-sub / bowl-sub / wk
+      // / captain / vc allowed at a time), then assign to this player.
+      Object.keys(currentRoles).forEach((k) => {
+        if (currentRoles[k] === role) delete currentRoles[k];
+      });
       currentRoles[playerN] = role;
     }
+
     const stamp = new Date().toISOString();
     const editor = session?.user?.email || '';
     await setDoc(doc(db, 'squads', matchId), { players: squads[matchId] || [], roles: currentRoles, updatedBy: editor, updatedAt: stamp }, { merge: true });
