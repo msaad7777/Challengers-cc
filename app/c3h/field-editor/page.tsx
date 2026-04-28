@@ -112,6 +112,29 @@ const PHASE_LIMITS: Record<MatchPhase, { max: number; label: string }> = {
   'after-pp': { max: 5, label: 'After Powerplay (max 5 outside)' },
 };
 
+// Captains plan up to four distinct field configurations per match —
+// each saved separately. The Powerplay scenario assumes PP rules (max 2
+// outside ring); the other three assume After-PP rules (max 5).
+type ScenarioId = 'powerplay' | 'after-pp' | 'pacer' | 'spin';
+
+const SCENARIO_IDS: ScenarioId[] = ['powerplay', 'after-pp', 'pacer', 'spin'];
+
+const SCENARIO_META: Record<ScenarioId, { name: string; emoji: string; phase: MatchPhase; description: string }> = {
+  'powerplay':  { name: 'Powerplay',       emoji: '⚡', phase: 'powerplay', description: 'Attacking field, max 2 outside ring' },
+  'after-pp':   { name: 'After Powerplay', emoji: '🛡️', phase: 'after-pp',  description: 'Boundary protection, 5 outside' },
+  'pacer':      { name: 'Pacer',           emoji: '🔥', phase: 'after-pp',  description: 'Pace bowling — 3 slips + gully' },
+  'spin':       { name: 'Spin',            emoji: '🌀', phase: 'after-pp',  description: 'Spin bowling — close catchers' },
+};
+
+type ScenarioMap = Record<ScenarioId, FieldPlayer[]>;
+
+const emptyScenarios = (): ScenarioMap => ({
+  'powerplay': [],
+  'after-pp': [],
+  'pacer': [],
+  'spin': [],
+});
+
 // Field presets — each preset specifies 9 fielding positions (excluding WK +
 // Bowler, which are fixed by squad roles). The captain's existing fielders
 // are reassigned to these positions in their current order.
@@ -241,6 +264,36 @@ function reconcileFieldWithSquad(
   return reconciled;
 }
 
+// Apply a preset's positions to a player list — keeps WK + Bowler in
+// place, reassigns the 9 fielders to preset positions in their current
+// order. Mirrors x for left-handed batter.
+function applyPresetToPlayers(
+  basePlayers: FieldPlayer[],
+  preset: FieldPreset,
+  leftHanded: boolean,
+): FieldPlayer[] {
+  const wk = basePlayers.find((p) => p.role === 'wk');
+  const bowler = basePlayers.find((p) => p.role === 'bowler');
+  const fielders = basePlayers.filter((p) => p.role === 'fielder');
+  if (fielders.length === 0) return basePlayers;
+
+  const newPlayers: FieldPlayer[] = [];
+  if (wk) newPlayers.push(wk);
+  if (bowler) newPlayers.push(bowler);
+
+  fielders.forEach((p, i) => {
+    const posName = preset.positions[i] || nextAvailableFielderPos(
+      new Set(newPlayers.map((np) => np.position)),
+    );
+    const c = POSITION_COORDS[posName] || { x: 50, y: 50 };
+    const x = leftHanded ? 100 - c.x : c.x;
+    const finalPos = leftHanded ? getNearestPosition(x, c.y) : posName;
+    newPlayers.push({ ...p, x, y: c.y, position: finalPos });
+  });
+
+  return newPlayers;
+}
+
 // Build a fresh field from a squad — uses role assignments (wk, bowl-sub) when
 // present; falls back to squad order (index 0 = WK, index 1 = Bowler) otherwise.
 function buildFieldFromSquad(
@@ -283,7 +336,9 @@ function FieldEditorContent() {
   const matchId = searchParams.get('match') || '';
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const [players, setPlayers] = useState<FieldPlayer[]>([]);
+  const [scenarios, setScenarios] = useState<ScenarioMap>(emptyScenarios);
+  const [activeScenario, setActiveScenario] = useState<ScenarioId>('powerplay');
+  const [viewMode, setViewMode] = useState<'edit' | 'compare'>('edit');
   const [squad, setSquad] = useState<string[]>([]);
   const [squadRoles, setSquadRoles] = useState<Record<string, string>>({});
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
@@ -293,16 +348,37 @@ function FieldEditorContent() {
   const [saving, setSaving] = useState(false);
   const [screenshotMode, setScreenshotMode] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const [matchPhase, setMatchPhase] = useState<MatchPhase>('powerplay');
+
+  // Active scenario's players — derived view, not its own state. Mutations
+  // route through `setActivePlayers` which writes back into the scenarios map.
+  const players = scenarios[activeScenario];
+  const setActivePlayers = useCallback(
+    (next: FieldPlayer[] | ((prev: FieldPlayer[]) => FieldPlayer[])) => {
+      setScenarios((prev) => {
+        const current = prev[activeScenario];
+        const newPlayers = typeof next === 'function' ? (next as (p: FieldPlayer[]) => FieldPlayer[])(current) : next;
+        return { ...prev, [activeScenario]: newPlayers };
+      });
+    },
+    [activeScenario],
+  );
+
+  // Ref for saveField to access latest scenarios without invalidating the callback
+  const scenariosRef = useRef(scenarios);
+  useEffect(() => { scenariosRef.current = scenarios; }, [scenarios]);
+  const leftHandedRef = useRef(leftHanded);
+  useEffect(() => { leftHandedRef.current = leftHanded; }, [leftHanded]);
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/c3h/login');
   }, [status, router]);
 
-  // Live subscription to squad doc — keeps field editor in sync with role
-  // changes (WK / bat-sub / bowl-sub) and Playing 12 swaps made on the Dugout
-  // page. Whenever the squad doc updates, we reconcile against the saved
-  // field positions and persist the result so disk + UI stay consistent.
+  // Live subscription to squad doc — keeps every scenario's field in sync
+  // with role changes (WK / bat-sub / bowl-sub) and Playing 12 swaps made on
+  // the Dugout page. Whenever the squad doc updates, we reconcile each of
+  // the four scenarios against the new squad and persist the merged result.
+  // Migrates legacy single-field docs ({players, leftHanded}) into the new
+  // scenarios map on first read.
   useEffect(() => {
     if (!matchId || !session?.user?.email) return;
 
@@ -314,9 +390,6 @@ function FieldEditorContent() {
         ? ((squadSnap.data().roles || {}) as Record<string, string>)
         : {};
 
-      // Only exclude the BATTING substitute (bat-sub) — they are explicitly
-      // off-field. The BOWLING substitute (bowl-sub) IS on the field as
-      // the dedicated Bowler. Players with no role are full fielders.
       const fieldingPlayers = fullSquad.filter(
         (name) => newSquadRoles[name] !== 'bat-sub',
       );
@@ -324,47 +397,50 @@ function FieldEditorContent() {
       setSquad(fieldingPlayers);
       setSquadRoles(newSquadRoles);
 
-      // Read latest field doc and reconcile against the new squad
       const fieldDoc = await getDoc(doc(db, 'field-positions', matchId));
+      const data = fieldDoc.exists() ? fieldDoc.data() : null;
 
-      if (fieldDoc.exists()) {
-        const savedField = fieldDoc.data().players as FieldPlayer[];
-        const savedLeftHanded = fieldDoc.data().leftHanded || false;
-        const reconciled = reconcileFieldWithSquad(
-          savedField,
-          fieldingPlayers,
-          newSquadRoles,
-        );
-        setPlayers(reconciled);
-        setLeftHanded(savedLeftHanded);
+      // Detect doc shape — new (scenarios map) vs legacy (single players[]).
+      const savedScenarios: Partial<ScenarioMap> = data?.scenarios
+        ? (data.scenarios as ScenarioMap)
+        : data?.players
+          // Legacy: existing field becomes the powerplay scenario
+          ? { 'powerplay': data.players as FieldPlayer[] }
+          : {};
 
-        // Persist the reconciled field if squad changes shifted anyone
-        // (e.g. new WK, bat-sub removed → player added back, bowl-sub swap).
-        const sig = (arr: FieldPlayer[]) =>
-          arr
-            .map((p) => `${p.name}:${p.position}`)
-            .sort()
-            .join('|');
-        if (reconciled.length > 0 && sig(savedField) !== sig(reconciled)) {
-          setDoc(doc(db, 'field-positions', matchId), {
-            players: reconciled,
-            leftHanded: savedLeftHanded,
-            updatedBy: session?.user?.email,
-            updatedAt: new Date().toISOString(),
-          }).catch((err) =>
-            console.error('Failed to persist reconciled field:', err),
-          );
+      const savedLeftHanded = (data?.leftHanded as boolean) || false;
+
+      // Reconcile each scenario; seed empty scenarios from their preset.
+      const reconciled = emptyScenarios();
+      let didSeedOrMigrate = !data?.scenarios; // any legacy doc needs persist
+
+      for (const id of SCENARIO_IDS) {
+        const saved = savedScenarios[id] || [];
+        if (saved.length > 0) {
+          reconciled[id] = reconcileFieldWithSquad(saved, fieldingPlayers, newSquadRoles);
+        } else if (fieldingPlayers.length >= 11) {
+          const base = buildFieldFromSquad(fieldingPlayers, newSquadRoles);
+          const preset = FIELD_PRESETS.find((p) => p.id === id);
+          reconciled[id] = preset
+            ? applyPresetToPlayers(base, preset, savedLeftHanded)
+            : base;
+          didSeedOrMigrate = true;
         }
-      } else if (fieldingPlayers.length >= 11) {
-        const built = buildFieldFromSquad(fieldingPlayers, newSquadRoles);
-        setPlayers(built);
+      }
+
+      setScenarios(reconciled);
+      setLeftHanded(savedLeftHanded);
+
+      // Persist if we migrated or seeded any scenario.
+      const allPopulated = SCENARIO_IDS.every((id) => reconciled[id].length > 0);
+      if (didSeedOrMigrate && allPopulated) {
         setDoc(doc(db, 'field-positions', matchId), {
-          players: built,
-          leftHanded: false,
+          scenarios: reconciled,
+          leftHanded: savedLeftHanded,
           updatedBy: session?.user?.email,
           updatedAt: new Date().toISOString(),
         }).catch((err) =>
-          console.error('Failed to save initial field:', err),
+          console.error('Failed to persist scenarios doc:', err),
         );
       }
 
@@ -374,15 +450,24 @@ function FieldEditorContent() {
     return () => unsub();
   }, [matchId, session]);
 
-  const saveField = useCallback(async (updatedPlayers: FieldPlayer[]) => {
+  // Save the full scenarios map. The active scenario is overwritten with
+  // `updatedActivePlayers`; the other three scenarios are read from the
+  // ref so we don't lose unsaved-but-in-state edits in other tabs.
+  const saveField = useCallback(async (updatedActivePlayers: FieldPlayer[]) => {
     if (!matchId) return;
     setSaving(true);
+    const merged: ScenarioMap = {
+      ...scenariosRef.current,
+      [activeScenario]: updatedActivePlayers,
+    };
     await setDoc(doc(db, 'field-positions', matchId), {
-      players: updatedPlayers, leftHanded,
-      updatedBy: session?.user?.email, updatedAt: new Date().toISOString(),
+      scenarios: merged,
+      leftHanded: leftHandedRef.current,
+      updatedBy: session?.user?.email,
+      updatedAt: new Date().toISOString(),
     });
     setTimeout(() => setSaving(false), 500);
-  }, [matchId, leftHanded, session]);
+  }, [matchId, session, activeScenario]);
 
   const getSVGPoint = (e: React.PointerEvent): { x: number; y: number } | null => {
     if (!svgRef.current) return null;
@@ -411,7 +496,7 @@ function FieldEditorContent() {
     const position = getNearestPosition(nx, ny);
     const updated = [...players];
     updated[draggedIdx] = { ...updated[draggedIdx], x: nx, y: ny, position };
-    setPlayers(updated);
+    setActivePlayers(updated);
   };
 
   const handlePointerUp = () => {
@@ -419,30 +504,30 @@ function FieldEditorContent() {
     setDraggedIdx(null);
   };
 
+  // Reset only the active scenario. Other scenarios are untouched.
   const resetPositions = () => {
     if (squad.length < 11) return;
-    const initial = buildFieldFromSquad(squad, squadRoles);
-    setPlayers(initial);
+    const base = buildFieldFromSquad(squad, squadRoles);
+    const preset = FIELD_PRESETS.find((p) => p.id === activeScenario);
+    const initial = preset ? applyPresetToPlayers(base, preset, leftHanded) : base;
+    setActivePlayers(initial);
     saveField(initial);
   };
 
-  // Swap a player into the WK or Bowler role
+  // Swap a player into the WK or Bowler role (active scenario only).
   const swapRole = (playerIdx: number, targetRole: 'wk' | 'bowler') => {
     const currentHolder = players.findIndex(p => p.role === targetRole);
     if (currentHolder === -1 || currentHolder === playerIdx) return;
 
     const updated = [...players];
-    // The current holder becomes a fielder at the swapped player's position
     updated[currentHolder] = {
       ...updated[currentHolder],
       name: updated[playerIdx].name,
       role: 'fielder',
-      // keep existing fielder position/coords
       x: updated[playerIdx].x,
       y: updated[playerIdx].y,
       position: updated[playerIdx].position,
     };
-    // The clicked player takes the fixed role
     const fixedPos = targetRole === 'wk' ? 'Wicketkeeper' : 'Bowler';
     const c = POSITION_COORDS[fixedPos];
     updated[playerIdx] = {
@@ -452,44 +537,50 @@ function FieldEditorContent() {
       x: c.x, y: c.y,
       position: fixedPos,
     };
-    setPlayers(updated);
+    setActivePlayers(updated);
     saveField(updated);
   };
 
-  // Load a field preset — keeps WK + Bowler fixed (they come from squad
-  // roles) and reassigns the 9 fielders to the preset's positions in their
-  // current squad order. Mirrors automatically if leftHanded is active.
+  // Load a field preset into the ACTIVE scenario only. Other scenarios
+  // are untouched, so the captain can keep their PP / Pacer / Spin
+  // configurations independently.
   const applyPreset = (preset: FieldPreset) => {
-    const wk = players.find((p) => p.role === 'wk');
-    const bowler = players.find((p) => p.role === 'bowler');
-    const fielders = players.filter((p) => p.role === 'fielder');
-    if (fielders.length === 0) return;
-
-    const newPlayers: FieldPlayer[] = [];
-    if (wk) newPlayers.push(wk);
-    if (bowler) newPlayers.push(bowler);
-
-    fielders.forEach((p, i) => {
-      const posName = preset.positions[i] || nextAvailableFielderPos(
-        new Set(newPlayers.map((np) => np.position)),
-      );
-      const c = POSITION_COORDS[posName] || { x: 50, y: 50 };
-      const x = leftHanded ? 100 - c.x : c.x;
-      const finalPos = leftHanded ? getNearestPosition(x, c.y) : posName;
-      newPlayers.push({ ...p, x, y: c.y, position: finalPos });
-    });
-
-    setPlayers(newPlayers);
+    if (players.length === 0) return;
+    const newPlayers = applyPresetToPlayers(players, preset, leftHanded);
+    setActivePlayers(newPlayers);
     saveField(newPlayers);
   };
 
+  // Mirror flips ALL four scenarios at once — leftHanded is a per-match
+  // attribute (which batter we're facing), not per-scenario.
   const mirrorField = () => {
-    const mirrored = players.map(p => ({
-      ...p, x: 100 - p.x, position: p.role === 'wk' || p.role === 'bowler' ? p.position : getNearestPosition(100 - p.x, p.y)
-    }));
-    setPlayers(mirrored);
-    setLeftHanded(!leftHanded);
-    saveField(mirrored);
+    const newLeftHanded = !leftHanded;
+    const mirrorOne = (arr: FieldPlayer[]) =>
+      arr.map((p) => ({
+        ...p,
+        x: 100 - p.x,
+        position: p.role === 'wk' || p.role === 'bowler'
+          ? p.position
+          : getNearestPosition(100 - p.x, p.y),
+      }));
+    const mirrored: ScenarioMap = {
+      'powerplay':  mirrorOne(scenarios['powerplay']),
+      'after-pp':   mirrorOne(scenarios['after-pp']),
+      'pacer':      mirrorOne(scenarios['pacer']),
+      'spin':       mirrorOne(scenarios['spin']),
+    };
+    setScenarios(mirrored);
+    setLeftHanded(newLeftHanded);
+    if (matchId) {
+      setSaving(true);
+      setDoc(doc(db, 'field-positions', matchId), {
+        scenarios: mirrored,
+        leftHanded: newLeftHanded,
+        updatedBy: session?.user?.email,
+        updatedAt: new Date().toISOString(),
+      }).then(() => setTimeout(() => setSaving(false), 500))
+        .catch((err) => { console.error('Mirror save failed:', err); setSaving(false); });
+    }
   };
 
   if (status === 'loading' || !session) {
@@ -616,6 +707,47 @@ function FieldEditorContent() {
                 {saving && <span className="text-accent-400 text-xs">Saving...</span>}
               </div>
 
+              {/* Scenario tabs — 4 separate field configs saved per match */}
+              <div className="mb-3">
+                <div className="flex items-center justify-between mb-1.5">
+                  <p className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">Field Scenario</p>
+                  <button
+                    onClick={() => setViewMode(viewMode === 'edit' ? 'compare' : 'edit')}
+                    className={`text-[10px] px-2 py-0.5 rounded-lg border transition-all ${
+                      viewMode === 'compare'
+                        ? 'bg-accent-500/20 text-accent-400 border-accent-500/40'
+                        : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
+                    }`}
+                  >
+                    {viewMode === 'compare' ? '✕ Close Compare' : '⊞ Compare All'}
+                  </button>
+                </div>
+                <div className="grid grid-cols-4 gap-1">
+                  {SCENARIO_IDS.map((id) => {
+                    const meta = SCENARIO_META[id];
+                    const isActive = id === activeScenario && viewMode === 'edit';
+                    return (
+                      <button
+                        key={id}
+                        onClick={() => { setActiveScenario(id); setViewMode('edit'); }}
+                        title={meta.description}
+                        className={`px-1 py-1.5 rounded-lg border text-center transition-all ${
+                          isActive
+                            ? 'bg-primary-500/20 border-primary-500/50 shadow-lg shadow-primary-500/10'
+                            : 'bg-white/5 border-white/10 hover:bg-white/10'
+                        }`}
+                      >
+                        <div className="text-base leading-none">{meta.emoji}</div>
+                        <div className={`text-[10px] font-bold mt-0.5 ${isActive ? 'text-primary-400' : 'text-gray-300'}`}>
+                          {meta.name}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {viewMode === 'edit' && (<>
               <div className="flex flex-wrap gap-2 mb-3 text-[10px]">
                 <label className="flex items-center gap-1 text-gray-400 glass px-2 py-1 rounded-lg">
                   <input type="checkbox" checked={showNames} onChange={e => setShowNames(e.target.checked)} className="w-3 h-3" />
@@ -652,11 +784,12 @@ function FieldEditorContent() {
                 </div>
               </div>
 
-              {/* Powerplay fielder counter */}
+              {/* Outside-ring counter — phase derived from active scenario */}
               {(() => {
                 const fielders = players.filter((p) => p.role === 'fielder');
                 const outsideCount = fielders.filter((p) => isOutsideInnerRing(p.x, p.y)).length;
-                const limit = PHASE_LIMITS[matchPhase].max;
+                const phase = SCENARIO_META[activeScenario].phase;
+                const limit = PHASE_LIMITS[phase].max;
                 const overLimit = outsideCount > limit;
                 return (
                   <div className={`glass rounded-xl px-3 py-2 mb-2 border flex items-center justify-between gap-2 ${overLimit ? 'border-red-500/40 bg-red-500/5' : 'border-white/5'}`}>
@@ -670,21 +803,73 @@ function FieldEditorContent() {
                         <span className="text-red-400 text-[10px] font-bold">⚠ Over limit</span>
                       )}
                     </div>
-                    <select
-                      value={matchPhase}
-                      onChange={(e) => setMatchPhase(e.target.value as MatchPhase)}
-                      className="bg-white/5 text-gray-300 text-[10px] border border-white/10 rounded px-1.5 py-1 outline-none"
-                    >
-                      <option value="powerplay" className="bg-gray-900">Powerplay</option>
-                      <option value="after-pp" className="bg-gray-900">After Powerplay</option>
-                    </select>
+                    <span className="text-[10px] text-gray-500">
+                      {phase === 'powerplay' ? 'Powerplay rule' : 'After-PP rule'}
+                    </span>
                   </div>
                 );
               })()}
+              </>)}
             </>
           )}
 
-          {/* SVG Cricket Field */}
+          {/* COMPARE MODE — 4 mini fields in a 2x2 grid */}
+          {viewMode === 'compare' && !screenshotMode && (
+            <div className="grid grid-cols-2 gap-2">
+              {SCENARIO_IDS.map((id) => {
+                const meta = SCENARIO_META[id];
+                const sPlayers = scenarios[id] || [];
+                const sFielders = sPlayers.filter((p) => p.role === 'fielder');
+                const sOutside = sFielders.filter((p) => isOutsideInnerRing(p.x, p.y)).length;
+                const sLimit = PHASE_LIMITS[meta.phase].max;
+                const sOver = sOutside > sLimit;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => { setActiveScenario(id); setViewMode('edit'); }}
+                    className="group relative text-left glass rounded-xl p-2 border border-white/10 hover:border-primary-500/40 transition-all"
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center gap-1">
+                        <span className="text-sm">{meta.emoji}</span>
+                        <span className="text-[11px] font-bold text-white">{meta.name}</span>
+                      </div>
+                      <span className={`text-[9px] font-bold ${sOver ? 'text-red-400' : 'text-primary-400'}`}>
+                        {sOutside}/{sLimit}
+                      </span>
+                    </div>
+                    <svg
+                      viewBox="0 0 100 100"
+                      className="w-full"
+                      style={{ background: 'radial-gradient(circle at 50% 50%, #1a5c30 0%, #0d3318 60%, #071a0d 100%)', borderRadius: '50%', border: '2px solid #2d6b3f' }}
+                    >
+                      <circle cx="50" cy="50" r="47" fill="none" stroke="#3d8b4f" strokeWidth="0.5" />
+                      <circle cx="50" cy="50" r="28" fill="none" stroke="white" strokeWidth="0.3" strokeDasharray="2,1.5" opacity="0.25" />
+                      <rect x="48" y="38" width="4" height="24" rx="0.5" fill="#c4a265" opacity="0.6" />
+                      <text x={leftHanded ? 96 : 4} y="50.7" textAnchor={leftHanded ? 'end' : 'start'} fill="white" opacity="0.35" fontSize="3" fontWeight="bold">OFF</text>
+                      <text x={leftHanded ? 4 : 96} y="50.7" textAnchor={leftHanded ? 'start' : 'end'} fill="white" opacity="0.35" fontSize="3" fontWeight="bold">LEG</text>
+                      {sPlayers.map((p, i) => {
+                        const isWk = p.role === 'wk';
+                        const isBowler = p.role === 'bowler';
+                        const fill = isWk ? '#3b82f6' : isBowler ? '#ef4444' : '#10b981';
+                        return (
+                          <g key={i}>
+                            <circle cx={p.x} cy={p.y} r="1.6" fill={fill} stroke="white" strokeWidth="0.3" opacity="0.95" />
+                          </g>
+                        );
+                      })}
+                    </svg>
+                    <p className="text-[9px] text-gray-500 mt-1.5 text-center group-hover:text-primary-400 transition-colors">
+                      Tap to edit →
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* EDIT MODE — single field SVG */}
+          {(viewMode === 'edit' || screenshotMode) && (
           <div className="relative">
             <svg
               ref={svgRef}
@@ -770,9 +955,10 @@ function FieldEditorContent() {
               })}
             </svg>
           </div>
+          )}
 
-          {/* Player List */}
-          {!screenshotMode && (
+          {/* Player List — edit mode only */}
+          {!screenshotMode && viewMode === 'edit' && (
             <div className="glass rounded-xl p-3 mt-3">
               <h3 className="text-white font-bold text-xs mb-2">Players & Positions</h3>
               <div className="grid grid-cols-1 gap-1">
@@ -791,7 +977,7 @@ function FieldEditorContent() {
                             if (!coords) return;
                             const updated = [...players];
                             updated[i] = { ...updated[i], position: pos, x: coords.x, y: coords.y };
-                            setPlayers(updated);
+                            setActivePlayers(updated);
                             saveField(updated);
                           }} className="bg-white/5 text-gray-400 text-[10px] border border-white/10 rounded px-1 py-0.5 outline-none w-28">
                             {POSITION_NAMES.map(pos => <option key={pos} value={pos} className="bg-gray-900 text-white">{pos}</option>)}
