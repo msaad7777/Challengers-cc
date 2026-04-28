@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Avatar } from '@/components/UserMenu';
+import { isC3HBoard } from '@/lib/c3h-access';
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -28,7 +29,7 @@ export default function ProfilePage() {
 
   if (!session) return null;
 
-  const isBoard = session.user?.email?.endsWith('@challengerscc.ca');
+  const isBoard = isC3HBoard(session.user?.email);
   const role = isBoard ? 'Board Member' : 'Player';
 
   return (

@@ -6,6 +6,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { db } from '@/lib/firebase';
 import { collection, doc, setDoc, getDocs } from 'firebase/firestore';
+import { isC3HBoard, isC3HCaptain } from '@/lib/c3h-access';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
@@ -146,25 +147,11 @@ export default function AvailabilityPage() {
   const [leagueFilter, setLeagueFilter] = useState<'all' | 'LCL T30' | 'LPL T30'>('all');
   const [viewMode, setViewMode] = useState<'player' | 'captain'>('player');
 
-  // Board members who are explicitly NOT involved in squad selection /
-  // captain view. They keep their board status elsewhere (Pavilion,
-  // profile badge) but don't see the all-player availability grid or
-  // squad-management controls on this page.
-  const SQUAD_ACCESS_DENY = [
-    'qaiser@challengerscc.ca',
-    'qureshiqaiser007@gmail.com',
-  ];
-  const userEmailLc = session?.user?.email?.toLowerCase() || '';
-  const isBoard = !!userEmailLc
-    && userEmailLc.endsWith('@challengerscc.ca')
-    && !SQUAD_ACCESS_DENY.includes(userEmailLc);
-  const CAPTAIN_EMAILS = [
-    'syedshahriar77@gmail.com', 'shariar@challengerscc.ca',
-    'monirulislambd64@gmail.com', 'tarek@challengerscc.ca',
-    'contact@challengerscc.ca', 'saad@challengerscc.ca', 'mbadru3434@gmail.com',
-  ];
-  const isCaptain = CAPTAIN_EMAILS.includes(userEmailLc)
-    && !SQUAD_ACCESS_DENY.includes(userEmailLc);
+  // C3H board-level access (captain view, squad management, last-saved-by)
+  // is admin + captains only — see lib/c3h-access.ts for the allowlist.
+  // Other club board members log in as regular players here.
+  const isBoard = isC3HBoard(session?.user?.email);
+  const isCaptain = isC3HCaptain(session?.user?.email);
   const playerName = (() => {
     const email = session?.user?.email?.toLowerCase() || '';
     // First try exact email mapping (most reliable)

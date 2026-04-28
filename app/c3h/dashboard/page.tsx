@@ -4,6 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
+import { isC3HBoard } from '@/lib/c3h-access';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -25,7 +26,7 @@ export default function DashboardPage() {
 
   if (!session) return null;
 
-  const isBoard = session.user?.email?.endsWith('@challengerscc.ca');
+  const isBoard = isC3HBoard(session.user?.email);
   const userName = session.user?.name || 'Player';
   const userImage = session.user?.image || '';
 
