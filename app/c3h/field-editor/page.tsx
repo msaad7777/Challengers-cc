@@ -21,12 +21,16 @@ interface FieldPlayer {
 // Batter at top (batting end), bowler at bottom (bowling end)
 // Off side = LEFT (for right-hand batter), Leg side = RIGHT
 const POSITION_COORDS: Record<string, { x: number; y: number }> = {
-  // Behind wicket (close)
+  // Behind wicket (close) — slips fan outward from WK on off side
   'Wicketkeeper': { x: 50, y: 30 },
+  '1st Slip': { x: 45, y: 28 },
+  '2nd Slip': { x: 41, y: 27 },
+  '3rd Slip': { x: 37, y: 27 },
   'Leg Slip': { x: 60, y: 27 },
   'Gully': { x: 27, y: 32 },
   'Leg Gully': { x: 73, y: 32 },
   // Close catching (off side)
+  'Silly Point': { x: 40, y: 42 },
   'Silly Mid-off': { x: 44, y: 52 },
   // Close catching (leg side)
   'Short Leg': { x: 60, y: 42 },
@@ -47,11 +51,13 @@ const POSITION_COORDS: Record<string, { x: number; y: number }> = {
   'Backward Point': { x: 15, y: 30 },
   'Backward Square Leg': { x: 85, y: 30 },
   // Boundary (off side)
+  'Deep Backward Point': { x: 5, y: 25 },
   'Deep Point': { x: 7, y: 42 },
   'Deep Cover': { x: 10, y: 62 },
   'Deep Extra Cover': { x: 18, y: 72 },
   'Long-off': { x: 38, y: 92 },
   // Boundary (leg side)
+  'Deep Backward Square Leg': { x: 95, y: 25 },
   'Deep Square Leg': { x: 93, y: 42 },
   'Deep Mid-wicket': { x: 90, y: 62 },
   'Long-on': { x: 62, y: 92 },
@@ -84,6 +90,67 @@ function getNearestPosition(x: number, y: number): string {
 const FIELDER_POSITIONS = [
   'Gully', 'Point', 'Cover', 'Extra Cover', 'Mid-off',
   'Mid-on', 'Mid-wicket', 'Square Leg', 'Fine Leg', 'Third Man',
+];
+
+// 30-yard inner ring corresponds to circle radius 28 in our 100x100 SVG
+// (boundary is r=47, inner ring r=28). Used for powerplay fielder counter.
+const INNER_RING_RADIUS = 28;
+
+const isOutsideInnerRing = (x: number, y: number) => {
+  const dx = x - 50;
+  const dy = y - 50;
+  return Math.sqrt(dx * dx + dy * dy) > INNER_RING_RADIUS;
+};
+
+// Match phase determines fielder-outside-ring limits per ICC rules.
+// T20 PP1 (1-6 overs): max 2 outside. Non-PP / death: max 5 outside.
+type MatchPhase = 'powerplay' | 'non-pp';
+
+const PHASE_LIMITS: Record<MatchPhase, { max: number; label: string }> = {
+  'powerplay': { max: 2, label: 'Powerplay (max 2 outside)' },
+  'non-pp': { max: 5, label: 'Non-Powerplay (max 5 outside)' },
+};
+
+// Field presets — each preset specifies 9 fielding positions (excluding WK +
+// Bowler, which are fixed by squad roles). The captain's existing fielders
+// are reassigned to these positions in their current order.
+type FieldPreset = {
+  id: string;
+  name: string;
+  emoji: string;
+  description: string;
+  positions: string[]; // length 9
+};
+
+const FIELD_PRESETS: FieldPreset[] = [
+  {
+    id: 't20-pp',
+    name: 'T20 Powerplay',
+    emoji: '⚡',
+    description: '2 slips + ring, max 2 outside (1-6 overs)',
+    positions: ['1st Slip', '2nd Slip', 'Gully', 'Point', 'Cover', 'Mid-off', 'Mid-on', 'Fine Leg', 'Third Man'],
+  },
+  {
+    id: 't20-death',
+    name: 'T20 Death',
+    emoji: '🛡️',
+    description: 'Boundary protection, 5 outside (16-20 overs)',
+    positions: ['Point', 'Cover Point', 'Mid-off', 'Mid-on', 'Long-off', 'Long-on', 'Deep Mid-wicket', 'Deep Square Leg', 'Deep Point'],
+  },
+  {
+    id: 'pacer-new-ball',
+    name: 'Pacer (new ball)',
+    emoji: '🔥',
+    description: '3 slips + gully, attacking pace setup',
+    positions: ['1st Slip', '2nd Slip', '3rd Slip', 'Gully', 'Point', 'Mid-off', 'Mid-on', 'Fine Leg', 'Third Man'],
+  },
+  {
+    id: 'spin-attack',
+    name: 'Spin attack',
+    emoji: '🌀',
+    description: 'Close catchers + ring, for spinners',
+    positions: ['1st Slip', 'Silly Point', 'Short Leg', 'Point', 'Mid-off', 'Mid-on', 'Square Leg', 'Long-off', 'Long-on'],
+  },
 ];
 
 // Pick the next available default fielder position (Gully, Point, Cover, etc.)
@@ -225,6 +292,7 @@ function FieldEditorContent() {
   const [saving, setSaving] = useState(false);
   const [screenshotMode, setScreenshotMode] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [matchPhase, setMatchPhase] = useState<MatchPhase>('powerplay');
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/c3h/login');
@@ -387,6 +455,33 @@ function FieldEditorContent() {
     saveField(updated);
   };
 
+  // Load a field preset — keeps WK + Bowler fixed (they come from squad
+  // roles) and reassigns the 9 fielders to the preset's positions in their
+  // current squad order. Mirrors automatically if leftHanded is active.
+  const applyPreset = (preset: FieldPreset) => {
+    const wk = players.find((p) => p.role === 'wk');
+    const bowler = players.find((p) => p.role === 'bowler');
+    const fielders = players.filter((p) => p.role === 'fielder');
+    if (fielders.length === 0) return;
+
+    const newPlayers: FieldPlayer[] = [];
+    if (wk) newPlayers.push(wk);
+    if (bowler) newPlayers.push(bowler);
+
+    fielders.forEach((p, i) => {
+      const posName = preset.positions[i] || nextAvailableFielderPos(
+        new Set(newPlayers.map((np) => np.position)),
+      );
+      const c = POSITION_COORDS[posName] || { x: 50, y: 50 };
+      const x = leftHanded ? 100 - c.x : c.x;
+      const finalPos = leftHanded ? getNearestPosition(x, c.y) : posName;
+      newPlayers.push({ ...p, x, y: c.y, position: finalPos });
+    });
+
+    setPlayers(newPlayers);
+    saveField(newPlayers);
+  };
+
   const mirrorField = () => {
     const mirrored = players.map(p => ({
       ...p, x: 100 - p.x, position: p.role === 'wk' || p.role === 'bowler' ? p.position : getNearestPosition(100 - p.x, p.y)
@@ -534,6 +629,57 @@ function FieldEditorContent() {
                 <button onClick={resetPositions} className="text-red-400 glass px-2 py-1 rounded-lg hover:bg-red-500/10">Reset</button>
                 <button onClick={() => { setShowNames(true); setShowPositions(true); setScreenshotMode(true); }} className="text-accent-400 glass px-2 py-1 rounded-lg hover:bg-accent-500/10">Share</button>
               </div>
+
+              {/* Field Presets — one-click load common setups */}
+              <div className="glass rounded-xl p-2.5 mb-2 border border-white/5">
+                <p className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1.5">Quick Setups</p>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {FIELD_PRESETS.map((preset) => (
+                    <button
+                      key={preset.id}
+                      onClick={() => applyPreset(preset)}
+                      title={preset.description}
+                      className="text-left px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-primary-500/40 hover:bg-primary-500/10 transition-all"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm">{preset.emoji}</span>
+                        <span className="text-[11px] font-bold text-white">{preset.name}</span>
+                      </div>
+                      <p className="text-[9px] text-gray-500 leading-tight mt-0.5">{preset.description}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Powerplay fielder counter */}
+              {(() => {
+                const fielders = players.filter((p) => p.role === 'fielder');
+                const outsideCount = fielders.filter((p) => isOutsideInnerRing(p.x, p.y)).length;
+                const limit = PHASE_LIMITS[matchPhase].max;
+                const overLimit = outsideCount > limit;
+                return (
+                  <div className={`glass rounded-xl px-3 py-2 mb-2 border flex items-center justify-between gap-2 ${overLimit ? 'border-red-500/40 bg-red-500/5' : 'border-white/5'}`}>
+                    <div className="flex items-center gap-2 text-[11px]">
+                      <span className="text-gray-400">Outside ring:</span>
+                      <span className={`font-bold text-base ${overLimit ? 'text-red-400' : 'text-primary-400'}`}>
+                        {outsideCount}
+                      </span>
+                      <span className="text-gray-500">/ max {limit}</span>
+                      {overLimit && (
+                        <span className="text-red-400 text-[10px] font-bold">⚠ Over limit</span>
+                      )}
+                    </div>
+                    <select
+                      value={matchPhase}
+                      onChange={(e) => setMatchPhase(e.target.value as MatchPhase)}
+                      className="bg-white/5 text-gray-300 text-[10px] border border-white/10 rounded px-1.5 py-1 outline-none"
+                    >
+                      <option value="powerplay" className="bg-gray-900">Powerplay (1-6)</option>
+                      <option value="non-pp" className="bg-gray-900">Non-PP / Death</option>
+                    </select>
+                  </div>
+                );
+              })()}
             </>
           )}
 
@@ -560,6 +706,32 @@ function FieldEditorContent() {
               {/* Stumps */}
               <rect x="49" y="41" width="2" height="1.5" rx="0.3" fill="white" opacity="0.6" />
               <rect x="49" y="57.5" width="2" height="1.5" rx="0.3" fill="white" opacity="0.6" />
+
+              {/* Off / Leg side labels — flip with LHB mirror */}
+              <text
+                x={leftHanded ? 96 : 4}
+                y="50.7"
+                textAnchor={leftHanded ? 'end' : 'start'}
+                fill="white"
+                opacity="0.35"
+                fontSize="2.4"
+                fontWeight="bold"
+                letterSpacing="0.3"
+              >
+                OFF
+              </text>
+              <text
+                x={leftHanded ? 4 : 96}
+                y="50.7"
+                textAnchor={leftHanded ? 'start' : 'end'}
+                fill="white"
+                opacity="0.35"
+                fontSize="2.4"
+                fontWeight="bold"
+                letterSpacing="0.3"
+              >
+                LEG
+              </text>
 
               {/* Fielders */}
               {players.map((p, i) => {
