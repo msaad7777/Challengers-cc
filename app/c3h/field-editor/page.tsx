@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useRef, Suspense, useCallback } from 'react';
 import { db } from '@/lib/firebase';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
@@ -230,41 +230,79 @@ function FieldEditorContent() {
     if (status === 'unauthenticated') router.push('/c3h/login');
   }, [status, router]);
 
+  // Live subscription to squad doc — keeps field editor in sync with role
+  // changes (WK / bat-sub / bowl-sub) and Playing 12 swaps made on the Dugout
+  // page. Whenever the squad doc updates, we reconcile against the saved
+  // field positions and persist the result so disk + UI stay consistent.
   useEffect(() => {
     if (!matchId || !session?.user?.email) return;
-    const load = async () => {
-      const squadDoc = await getDoc(doc(db, 'squads', matchId));
-      const fullSquad = squadDoc.exists() ? (squadDoc.data().players || []) as string[] : [];
-      const squadRoles = squadDoc.exists()
-        ? ((squadDoc.data().roles || {}) as Record<string, string>)
+
+    const unsub = onSnapshot(doc(db, 'squads', matchId), async (squadSnap) => {
+      const fullSquad = squadSnap.exists()
+        ? ((squadSnap.data().players || []) as string[])
+        : [];
+      const newSquadRoles = squadSnap.exists()
+        ? ((squadSnap.data().roles || {}) as Record<string, string>)
         : {};
 
       // Only exclude the BATTING substitute (bat-sub) — they are explicitly
       // off-field. The BOWLING substitute (bowl-sub) IS on the field as
-      // the dedicated Bowler — they replace whoever would have been the
-      // default Bowler.
+      // the dedicated Bowler. Players with no role are full fielders.
       const fieldingPlayers = fullSquad.filter(
-        (name) => squadRoles[name] !== 'bat-sub',
+        (name) => newSquadRoles[name] !== 'bat-sub',
       );
-      setSquad(fieldingPlayers);
-      setSquadRoles(squadRoles);
 
+      setSquad(fieldingPlayers);
+      setSquadRoles(newSquadRoles);
+
+      // Read latest field doc and reconcile against the new squad
       const fieldDoc = await getDoc(doc(db, 'field-positions', matchId));
+
       if (fieldDoc.exists()) {
         const savedField = fieldDoc.data().players as FieldPlayer[];
-        // Reconcile saved field with current squad + role assignments. WK
-        // role and bowl-sub role take priority — if those roles change, the
-        // field's WK/Bowler positions update automatically and the displaced
-        // players move to default fielder positions. Other custom positions
-        // are preserved.
-        setPlayers(reconcileFieldWithSquad(savedField, fieldingPlayers, squadRoles));
-        setLeftHanded(fieldDoc.data().leftHanded || false);
+        const savedLeftHanded = fieldDoc.data().leftHanded || false;
+        const reconciled = reconcileFieldWithSquad(
+          savedField,
+          fieldingPlayers,
+          newSquadRoles,
+        );
+        setPlayers(reconciled);
+        setLeftHanded(savedLeftHanded);
+
+        // Persist the reconciled field if squad changes shifted anyone
+        // (e.g. new WK, bat-sub removed → player added back, bowl-sub swap).
+        const sig = (arr: FieldPlayer[]) =>
+          arr
+            .map((p) => `${p.name}:${p.position}`)
+            .sort()
+            .join('|');
+        if (reconciled.length > 0 && sig(savedField) !== sig(reconciled)) {
+          setDoc(doc(db, 'field-positions', matchId), {
+            players: reconciled,
+            leftHanded: savedLeftHanded,
+            updatedBy: session?.user?.email,
+            updatedAt: new Date().toISOString(),
+          }).catch((err) =>
+            console.error('Failed to persist reconciled field:', err),
+          );
+        }
       } else if (fieldingPlayers.length >= 11) {
-        setPlayers(buildFieldFromSquad(fieldingPlayers, squadRoles));
+        const built = buildFieldFromSquad(fieldingPlayers, newSquadRoles);
+        setPlayers(built);
+        setDoc(doc(db, 'field-positions', matchId), {
+          players: built,
+          leftHanded: false,
+          updatedBy: session?.user?.email,
+          updatedAt: new Date().toISOString(),
+        }).catch((err) =>
+          console.error('Failed to save initial field:', err),
+        );
       }
+
       setLoaded(true);
-    };
-    load();
+    });
+
+    return () => unsub();
   }, [matchId, session]);
 
   const saveField = useCallback(async (updatedPlayers: FieldPlayer[]) => {
