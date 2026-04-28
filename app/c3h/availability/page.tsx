@@ -139,6 +139,8 @@ export default function AvailabilityPage() {
   const [showSquadCard, setShowSquadCard] = useState<string | null>(null);
   const [selectingSquad, setSelectingSquad] = useState<string | null>(null);
   const [playerMenu, setPlayerMenu] = useState<{ matchId: string; player: string } | null>(null);
+  // Per-match "Saved ✓" feedback shown briefly after an explicit save
+  const [recentlySaved, setRecentlySaved] = useState<string | null>(null);
 
   // isCaptain moved after isBoard declaration
   const [leagueFilter, setLeagueFilter] = useState<'all' | 'LCL T30' | 'LPL T30'>('all');
@@ -264,6 +266,25 @@ export default function AvailabilityPage() {
     setSquadRoles(prev => ({ ...prev, [matchId]: currentRoles }));
     setSquadMeta(prev => ({ ...prev, [matchId]: { updatedBy: editor, updatedAt: stamp } }));
   };
+
+  // Explicit "Save" — captain commits the current Playing 12 + roles to
+  // Firestore. Auto-save still happens on each click for safety, but this
+  // gate ensures the captain has reviewed the squad before opening the
+  // Field Editor (which then renders positions from this exact state).
+  const persistSquad = useCallback(async (matchId: string) => {
+    setSaving(true);
+    const players = squads[matchId] || [];
+    const roles = squadRoles[matchId] || {};
+    const stamp = new Date().toISOString();
+    const editor = session?.user?.email || '';
+    await setDoc(doc(db, 'squads', matchId), {
+      players, roles, updatedBy: editor, updatedAt: stamp,
+    });
+    setSquadMeta((prev) => ({ ...prev, [matchId]: { updatedBy: editor, updatedAt: stamp } }));
+    setRecentlySaved(matchId);
+    setSaving(false);
+    setTimeout(() => setRecentlySaved((cur) => (cur === matchId ? null : cur)), 2500);
+  }, [squads, squadRoles, session]);
 
   const updateAvailability = async (name: string, matchId: string, newStatus: AvailabilityStatus) => {
     // Players can ONLY mark their own availability. Captains and board
@@ -618,13 +639,27 @@ export default function AvailabilityPage() {
                                 );
                               })}
                               {(squads[m.id] || []).length >= 11 && isCaptain && (
-                                <div className="flex gap-2 mt-2">
+                                <div className="flex flex-wrap gap-2 mt-2 items-center">
+                                  <button onClick={() => persistSquad(m.id)} className="text-xs px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 font-bold">
+                                    💾 Save
+                                  </button>
                                   <button onClick={() => setShowSquadCard(showSquadCard === m.id ? null : m.id)} className="text-xs px-3 py-1.5 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30 hover:bg-accent-500/30">
                                     {showSquadCard === m.id ? 'Hide Card' : 'View Squad Card'}
                                   </button>
-                                  <a href={`/c3h/field-editor?match=${m.id}`} className="text-xs px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30 hover:bg-primary-500/30">
-                                    Field Editor
-                                  </a>
+                                  <button
+                                    onClick={async () => {
+                                      await persistSquad(m.id);
+                                      router.push(`/c3h/field-editor?match=${m.id}`);
+                                    }}
+                                    className="text-xs px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30 hover:bg-primary-500/30 font-bold"
+                                  >
+                                    💾 Save &amp; Field Editor →
+                                  </button>
+                                  {recentlySaved === m.id && (
+                                    <span className="text-primary-400 text-[11px] font-bold flex items-center gap-1">
+                                      ✓ Saved
+                                    </span>
+                                  )}
                                 </div>
                               )}
                             </div>
