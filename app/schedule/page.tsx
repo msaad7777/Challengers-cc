@@ -22,8 +22,8 @@ interface Match {
 }
 
 const lclT30Matches: Match[] = [
-  { match: 1, date: 'May 10, 2026', sortKey: '2026-05-10-1300', day: 'Saturday', time: '1:00 PM', opponent: 'London Predators', venue: 'Northridge Cricket Ground' },
-  { match: 2, date: 'May 18, 2026', sortKey: '2026-05-18-0800', day: 'Sunday', time: '8:00 AM', opponent: 'Forest City Cricketers', venue: 'North London Athletic Fields' },
+  { match: 1, date: 'May 10, 2026', sortKey: '2026-05-10-1300', day: 'Sunday', time: '1:00 PM', opponent: 'London Predators', venue: 'Northridge Cricket Ground' },
+  { match: 2, date: 'May 18, 2026', sortKey: '2026-05-18-0800', day: 'Monday', time: '8:00 AM', opponent: 'Forest City Cricketers', venue: 'North London Athletic Fields' },
   { match: 3, date: 'June 14, 2026', sortKey: '2026-06-14-1000', day: 'Sunday', time: '10:00 AM', opponent: 'Sarnia Spartans', venue: 'Mike Vier Park, Sarnia' },
   { match: 4, date: 'June 27, 2026', sortKey: '2026-06-27-0800', day: 'Saturday', time: '8:00 AM', opponent: 'Western Cricket Academy B', venue: 'Silverwoods Cricket Ground' },
   { match: 5, date: 'July 1, 2026', sortKey: '2026-07-01-0800', day: 'Wednesday', time: '8:00 AM', opponent: 'London Rising Stars', venue: 'North London Athletic Fields' },
