@@ -146,13 +146,25 @@ export default function AvailabilityPage() {
   const [leagueFilter, setLeagueFilter] = useState<'all' | 'LCL T30' | 'LPL T30'>('all');
   const [viewMode, setViewMode] = useState<'player' | 'captain'>('player');
 
-  const isBoard = session?.user?.email?.endsWith('@challengerscc.ca');
+  // Board members who are explicitly NOT involved in squad selection /
+  // captain view. They keep their board status elsewhere (Pavilion,
+  // profile badge) but don't see the all-player availability grid or
+  // squad-management controls on this page.
+  const SQUAD_ACCESS_DENY = [
+    'qaiser@challengerscc.ca',
+    'qureshiqaiser007@gmail.com',
+  ];
+  const userEmailLc = session?.user?.email?.toLowerCase() || '';
+  const isBoard = !!userEmailLc
+    && userEmailLc.endsWith('@challengerscc.ca')
+    && !SQUAD_ACCESS_DENY.includes(userEmailLc);
   const CAPTAIN_EMAILS = [
     'syedshahriar77@gmail.com', 'shariar@challengerscc.ca',
     'monirulislambd64@gmail.com', 'tarek@challengerscc.ca',
     'contact@challengerscc.ca', 'saad@challengerscc.ca', 'mbadru3434@gmail.com',
   ];
-  const isCaptain = CAPTAIN_EMAILS.includes(session?.user?.email?.toLowerCase() || '');
+  const isCaptain = CAPTAIN_EMAILS.includes(userEmailLc)
+    && !SQUAD_ACCESS_DENY.includes(userEmailLc);
   const playerName = (() => {
     const email = session?.user?.email?.toLowerCase() || '';
     // First try exact email mapping (most reliable)
