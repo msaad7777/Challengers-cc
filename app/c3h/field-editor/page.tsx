@@ -102,13 +102,14 @@ const isOutsideInnerRing = (x: number, y: number) => {
   return Math.sqrt(dx * dx + dy * dy) > INNER_RING_RADIUS;
 };
 
-// Match phase determines fielder-outside-ring limits per ICC rules.
-// T20 PP1 (1-6 overs): max 2 outside. Non-PP / death: max 5 outside.
-type MatchPhase = 'powerplay' | 'non-pp';
+// Match phase determines fielder-outside-ring limits.
+// Powerplay: max 2 outside. After Powerplay: max 5 outside. Format-agnostic
+// — applies to T20, T30, and other limited-overs formats we play.
+type MatchPhase = 'powerplay' | 'after-pp';
 
 const PHASE_LIMITS: Record<MatchPhase, { max: number; label: string }> = {
   'powerplay': { max: 2, label: 'Powerplay (max 2 outside)' },
-  'non-pp': { max: 5, label: 'Non-Powerplay (max 5 outside)' },
+  'after-pp': { max: 5, label: 'After Powerplay (max 5 outside)' },
 };
 
 // Field presets — each preset specifies 9 fielding positions (excluding WK +
@@ -124,17 +125,17 @@ type FieldPreset = {
 
 const FIELD_PRESETS: FieldPreset[] = [
   {
-    id: 't20-pp',
-    name: 'T20 Powerplay',
+    id: 'powerplay',
+    name: 'Powerplay',
     emoji: '⚡',
-    description: '2 slips + ring, max 2 outside (1-6 overs)',
+    description: '2 slips + ring, attacking, max 2 outside',
     positions: ['1st Slip', '2nd Slip', 'Gully', 'Point', 'Cover', 'Mid-off', 'Mid-on', 'Fine Leg', 'Third Man'],
   },
   {
-    id: 't20-death',
-    name: 'T20 Death',
+    id: 'after-pp',
+    name: 'After Powerplay',
     emoji: '🛡️',
-    description: 'Boundary protection, 5 outside (16-20 overs)',
+    description: 'Boundary protection, 5 outside',
     positions: ['Point', 'Cover Point', 'Mid-off', 'Mid-on', 'Long-off', 'Long-on', 'Deep Mid-wicket', 'Deep Square Leg', 'Deep Point'],
   },
   {
@@ -674,8 +675,8 @@ function FieldEditorContent() {
                       onChange={(e) => setMatchPhase(e.target.value as MatchPhase)}
                       className="bg-white/5 text-gray-300 text-[10px] border border-white/10 rounded px-1.5 py-1 outline-none"
                     >
-                      <option value="powerplay" className="bg-gray-900">Powerplay (1-6)</option>
-                      <option value="non-pp" className="bg-gray-900">Non-PP / Death</option>
+                      <option value="powerplay" className="bg-gray-900">Powerplay</option>
+                      <option value="after-pp" className="bg-gray-900">After Powerplay</option>
                     </select>
                   </div>
                 );
