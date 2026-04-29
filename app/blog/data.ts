@@ -32,6 +32,32 @@ export const blogPosts: BlogPost[] = [
         Saad joins 24 recipients from across London&apos;s sporting community — basketball, hockey, soccer, baseball, ringette, water polo, ultimate, and more — at a special reception on <strong class="text-white">Tuesday, May 5, 2026</strong>, from 5–8pm at <strong class="text-white">The Grove, Western Fair District</strong>.
       </p>
 
+      <h2 class="text-2xl font-bold text-white mt-8 mb-3">On the field — a wicket-keeper who plays for the team</h2>
+      <p class="text-gray-300 leading-relaxed mb-6">
+        Saad is a <strong class="text-white">Wicket-Keeper Batsman</strong> and <strong class="text-white">Vice-Captain of the LPL T30 squad</strong>. Behind the stumps for every match, his focus has never been personal milestones — it&apos;s the rhythm and tempo of the whole team. The kind of cricketer who notices when a younger player is struggling at the crease and walks down the pitch to settle them, rather than waiting for the over to end.
+      </p>
+      <p class="text-gray-300 leading-relaxed mb-6">
+        It&apos;s the same instinct that runs through everything he does at the club — whether it&apos;s recruiting newcomers, building the C3H portal, calling sponsors, or making sure the kit bag is at the ground on match day.
+      </p>
+
+      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <h3 class="text-xl font-bold text-white mb-4">Quick Facts</h3>
+        <ul class="text-gray-300 leading-relaxed list-disc list-inside space-y-2">
+          <li>Club Role: Director &amp; Co-founder, Challengers Cricket Club</li>
+          <li>Playing Role: Wicket-Keeper Batsman</li>
+          <li>Captaincy: Vice-Captain — LPL T30 squad</li>
+          <li>Profession: Information Technology</li>
+          <li>2026 Honour: London Sports Volunteer Recognition Award (City of London)</li>
+        </ul>
+      </div>
+
+      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
+        <p class="text-gray-300 text-lg italic">
+          &ldquo;I&apos;m not here to chase personal numbers. I&apos;m here to see every player on this team succeed — that&apos;s what cricket is, and that&apos;s what Challengers is.&rdquo;
+        </p>
+        <cite class="text-gray-400 mt-2 block">Mohammed Saad — Wicket-Keeper Batsman &amp; Director, Challengers Cricket Club</cite>
+      </blockquote>
+
       <h2 class="text-2xl font-bold text-white mt-8 mb-3">What this means for Challengers</h2>
       <p class="text-gray-300 leading-relaxed mb-4">
         Since incorporating as an Ontario Not-for-Profit Corporation in November 2025, Challengers has built — almost entirely on volunteer time — the infrastructure of a serious community club:
