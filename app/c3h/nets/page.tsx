@@ -1861,6 +1861,52 @@ export default function NetsPage() {
                 </ul>
               </div>
 
+              {/* THE FINAL 4 — closing summary, what to recall when the bowler runs in */}
+              <div className="rounded-2xl p-6 border-2 border-accent-500/50 bg-gradient-to-br from-accent-500/15 via-primary-500/10 to-transparent shadow-xl shadow-accent-500/10">
+                <div className="text-center mb-5">
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-accent-300 font-bold mb-1">When the bowler runs in</p>
+                  <h3 className="text-2xl font-bold text-white flex items-center justify-center gap-2">
+                    <span>💎</span> The Final 4 <span>💎</span>
+                  </h3>
+                  <p className="text-xs text-gray-400 mt-1">If you remember nothing else — remember these.</p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 p-3 rounded-xl bg-black/30 border border-accent-500/20">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-accent-500/30 text-accent-300 font-bold flex items-center justify-center text-sm">1</span>
+                    <div>
+                      <p className="text-white font-bold text-sm">Eyes wide. Don&apos;t blink.</p>
+                      <p className="text-xs text-gray-400">Watch the bowler all the way through release.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 rounded-xl bg-black/30 border border-accent-500/20">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-accent-500/30 text-accent-300 font-bold flex items-center justify-center text-sm">2</span>
+                    <div>
+                      <p className="text-white font-bold text-sm">Bat still.</p>
+                      <p className="text-xs text-gray-400">No early backswing. Stillness lets you react late.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 rounded-xl bg-black/30 border border-accent-500/20">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-accent-500/30 text-accent-300 font-bold flex items-center justify-center text-sm">3</span>
+                    <div>
+                      <p className="text-white font-bold text-sm">Adjust head to the bowler&apos;s release height — and keep it still.</p>
+                      <p className="text-xs text-gray-400">Tall bowler = head higher. Slingy / low arm = head lower. Lock it once set.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 rounded-xl bg-black/30 border border-accent-500/20">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-accent-500/30 text-accent-300 font-bold flex items-center justify-center text-sm">4</span>
+                    <div>
+                      <p className="text-white font-bold text-sm">The release point is the main event.</p>
+                      <p className="text-xs text-gray-400">Everything else (run-up, rhythm, action) is build-up. Lock onto the release point — that&apos;s where the ball becomes real.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-center text-[10px] uppercase tracking-widest text-gray-500 font-semibold mt-5">
+                  read this last · before you walk to the crease
+                </p>
+              </div>
+
               {/* CTA back to reflection */}
               <div className="text-center pt-4">
                 <button
