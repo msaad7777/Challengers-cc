@@ -24,6 +24,11 @@ export default function ScorerPage() {
   const [matchId, setMatchId] = useState('');
   const [savedMatches, setSavedMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(false);
+  // Auto-save status feedback — shows "Saving…" briefly then "Saved ✓ HH:MM"
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
+  // Takeover confirmation — set to the match the user is about to claim
+  const [takeoverPrompt, setTakeoverPrompt] = useState<Match | null>(null);
 
   // Setup state
   const [matchType, setMatchType] = useState<'league' | 'practice'>('practice');
@@ -109,12 +114,21 @@ export default function ScorerPage() {
   }, [session, loadMatches]);
 
   const saveMatch = async (m: Match) => {
-    const data = { ...m, scorer: session?.user?.email || m.scorer, updatedAt: new Date().toISOString() };
-    if (matchId) {
-      await updateDoc(doc(db, 'matches', matchId), data);
-    } else {
-      const ref = await addDoc(collection(db, 'matches'), data);
-      setMatchId(ref.id);
+    setSaveStatus('saving');
+    const stamp = new Date().toISOString();
+    const data = { ...m, scorer: session?.user?.email || m.scorer, updatedAt: stamp };
+    try {
+      if (matchId) {
+        await updateDoc(doc(db, 'matches', matchId), data);
+      } else {
+        const ref = await addDoc(collection(db, 'matches'), data);
+        setMatchId(ref.id);
+      }
+      setLastSavedAt(stamp);
+      setSaveStatus('saved');
+    } catch (err) {
+      console.error('Save failed:', err);
+      setSaveStatus('idle');
     }
   };
 
@@ -338,23 +352,40 @@ export default function ScorerPage() {
                 <div className="glass rounded-2xl p-6 border border-white/10">
                   <h3 className="text-lg font-bold text-white mb-4">Recent Matches</h3>
                   <div className="space-y-3">
-                    {savedMatches.slice(0, 5).map(m => (
-                      <button key={m.id} onClick={() => { setMatch(m); setMatchId(m.id); setView(m.status === 'completed' ? 'scorecard' : 'scoring'); }} className="w-full text-left glass rounded-xl p-4 border border-white/10 hover:border-primary-500/30 transition-all">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-white font-bold text-sm">{m.team1} vs {m.team2}</p>
-                            <p className="text-gray-500 text-xs">{m.date} | {m.totalOvers} overs</p>
+                    {savedMatches.slice(0, 5).map(m => {
+                      const isOtherScorer = m.status !== 'completed' && m.scorer && m.scorer !== session?.user?.email;
+                      const openMatch = () => {
+                        if (isOtherScorer) {
+                          // Confirm takeover before claiming the scorer slot
+                          setTakeoverPrompt(m);
+                        } else {
+                          setMatch(m);
+                          setMatchId(m.id);
+                          setLastSavedAt(m.updatedAt || null);
+                          setSaveStatus(m.updatedAt ? 'saved' : 'idle');
+                          setView(m.status === 'completed' ? 'scorecard' : 'scoring');
+                        }
+                      };
+                      return (
+                        <button key={m.id} onClick={openMatch} className="w-full text-left glass rounded-xl p-4 border border-white/10 hover:border-primary-500/30 transition-all">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-white font-bold text-sm">{m.team1} vs {m.team2}</p>
+                              <p className="text-gray-500 text-xs">{m.date} | {m.totalOvers} overs</p>
+                            </div>
+                            <span className={`text-xs px-2 py-1 rounded-full ${m.status === 'completed' ? 'bg-primary-500/20 text-primary-400' : 'bg-accent-500/20 text-accent-400'}`}>
+                              {m.status === 'completed' ? 'Completed' : 'In Progress'}
+                            </span>
                           </div>
-                          <span className={`text-xs px-2 py-1 rounded-full ${m.status === 'completed' ? 'bg-primary-500/20 text-primary-400' : 'bg-accent-500/20 text-accent-400'}`}>
-                            {m.status === 'completed' ? 'Completed' : 'In Progress'}
-                          </span>
-                        </div>
-                        {m.result && <p className="text-primary-400 text-xs mt-1">{m.result}</p>}
-                        {m.status !== 'completed' && m.scorer && m.scorer !== session?.user?.email && (
-                          <p className="text-gray-500 text-xs mt-1">Scorer: {m.scorer.split('@')[0]}</p>
-                        )}
-                      </button>
-                    ))}
+                          {m.result && <p className="text-primary-400 text-xs mt-1">{m.result}</p>}
+                          {isOtherScorer && (
+                            <p className="text-accent-400 text-xs mt-1">
+                              Currently scored by {m.scorer!.split('@')[0]} — tap to take over
+                            </p>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -608,6 +639,19 @@ export default function ScorerPage() {
                     }} className="text-xs px-3 py-1 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30 hover:bg-accent-500/30">
                       Take Over Scoring
                     </button>
+                  </div>
+                )}
+                {/* Save status — visible whenever you are the active scorer */}
+                {match.scorer && match.scorer === session?.user?.email && (
+                  <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
+                    <span className="text-gray-500">
+                      Scoring as <span className="text-gray-300">{session.user.email!.split('@')[0]}</span>
+                    </span>
+                    <span className={`font-semibold ${saveStatus === 'saving' ? 'text-accent-400' : saveStatus === 'saved' ? 'text-primary-400' : 'text-gray-500'}`}>
+                      {saveStatus === 'saving' ? 'Saving…' :
+                        saveStatus === 'saved' && lastSavedAt ? `✓ Saved · ${new Date(lastSavedAt).toLocaleTimeString('en-CA', { hour: 'numeric', minute: '2-digit', hour12: true })}` :
+                        'Ready'}
+                    </span>
                   </div>
                 )}
               </div>
@@ -959,6 +1003,62 @@ export default function ScorerPage() {
 
         </div>
       </section>
+
+      {/* Takeover confirmation modal — shown when opening a match
+          currently being scored by someone else. Confirms intent
+          before claiming the scorer slot. */}
+      {takeoverPrompt && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          style={{ backgroundColor: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)' }}
+          onClick={(e) => { if (e.target === e.currentTarget) setTakeoverPrompt(null); }}
+        >
+          <div className="glass rounded-2xl p-6 max-w-md w-full border-2 border-accent-500/40">
+            <div className="flex items-start gap-3 mb-4">
+              <span className="text-3xl">🔄</span>
+              <div>
+                <h3 className="text-lg font-bold text-white mb-1">Take over scoring?</h3>
+                <p className="text-sm text-gray-300">
+                  This match is currently being scored by{' '}
+                  <strong className="text-accent-400">{takeoverPrompt.scorer?.split('@')[0]}</strong>.
+                  Taking over hands the scoring controls to you — they will see a notice on their next save.
+                </p>
+              </div>
+            </div>
+            <div className="rounded-xl p-3 mb-4 bg-white/5 border border-white/10">
+              <p className="text-xs text-gray-500">Match</p>
+              <p className="text-sm font-bold text-white">{takeoverPrompt.team1} vs {takeoverPrompt.team2}</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Last saved: {takeoverPrompt.updatedAt
+                  ? new Date(takeoverPrompt.updatedAt).toLocaleTimeString('en-CA', { hour: 'numeric', minute: '2-digit', hour12: true })
+                  : '—'}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setTakeoverPrompt(null)}
+                className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 text-sm font-semibold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  const m = takeoverPrompt;
+                  setMatch(m);
+                  setMatchId(m.id);
+                  setLastSavedAt(m.updatedAt || null);
+                  setSaveStatus(m.updatedAt ? 'saved' : 'idle');
+                  setView(m.status === 'completed' ? 'scorecard' : 'scoring');
+                  setTakeoverPrompt(null);
+                }}
+                className="flex-1 px-4 py-2.5 rounded-xl bg-accent-500/20 text-accent-400 border border-accent-500/40 hover:bg-accent-500/30 text-sm font-bold"
+              >
+                Take Over &amp; Resume
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
