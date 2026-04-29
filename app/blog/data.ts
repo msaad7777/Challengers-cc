@@ -63,7 +63,7 @@ export const blogPosts: BlogPost[] = [
     category: 'Club News',
     author: 'Challengers Cricket Club',
     date: '2026-04-29',
-    image: null,
+    image: '/saad-pic.jpeg',
     video: null,
     featured: true,
   },
