@@ -1449,7 +1449,42 @@ export default function NetsPage() {
 
               <div className="text-center mb-2">
                 <h2 className="text-2xl font-bold text-white">Batting <span className="gradient-text">Principles</span></h2>
-                <p className="text-gray-500 text-sm">T20 / T30 batting framework. Read before every innings. Recall during reflection.</p>
+                <p className="text-gray-500 text-sm">Battle-ready framework. Read before every innings. Recall during reflection.</p>
+              </div>
+
+              {/* PRE-INNINGS CHECKLIST */}
+              <div className="rounded-2xl p-6 border-2 border-primary-500/40 bg-gradient-to-br from-primary-500/10 via-accent-500/5 to-transparent">
+                <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                  <span className="text-2xl">🪖</span>
+                  Before You Bat — Pre-Innings Checklist
+                </h3>
+                <p className="text-sm text-gray-400 mb-4">Run through this in the dugout while padding up + walking out. Five focused minutes.</p>
+
+                <p className="text-xs text-primary-400 font-semibold uppercase tracking-wider mb-2">From the dugout (last 2-3 overs before you go in)</p>
+                <ul className="space-y-2 text-gray-300 mb-5">
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">①</span><span><strong className="text-white">Watch the bowlers.</strong> Pace, action, lengths, run-up rhythm. Are they swinging it? Where is the ball pitching most?</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">②</span><span><strong className="text-white">Read the pitch.</strong> Bouncing high or staying low? Carrying or stopping? Watch how current batters are reacting.</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">③</span><span><strong className="text-white">Map the field.</strong> Where are the gaps right now? Cover open? Square leg vacant? Long-on deep or up?</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">④</span><span><strong className="text-white">Match situation.</strong> Powerplay or middle? Wickets in hand? Required run rate? Pick a tempo.</span></li>
+                </ul>
+
+                <p className="text-xs text-primary-400 font-semibold uppercase tracking-wider mb-2">At the crease (before facing your first ball)</p>
+                <ul className="space-y-2 text-gray-300 mb-5">
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">⑤</span><span><strong className="text-white">Take guard.</strong> Confirm where your off stump is. Mark your crease.</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">⑥</span><span><strong className="text-white">Set your trigger.</strong> Small forward press or back-and-across. Balanced.</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">⑦</span><span><strong className="text-white">First-ball plan.</strong> Read, don&apos;t react. Defend or leave unless it&apos;s a clear half-volley in the V.</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">⑧</span><span><strong className="text-white">Mental cue.</strong> Say it: &ldquo;present, reactive, find the gap.&rdquo;</span></li>
+                </ul>
+
+                <div className="p-3 rounded-xl bg-accent-500/10 border border-accent-500/30">
+                  <p className="text-sm text-accent-300 font-bold mb-1">⭐ The 4 things you must remember</p>
+                  <ul className="text-sm text-gray-200 space-y-1">
+                    <li>1. <strong className="text-white">Watch line + length first</strong> — then choose the shot</li>
+                    <li>2. <strong className="text-white">Stay reactive</strong> — no pre-planned shots</li>
+                    <li>3. <strong className="text-white">Find gaps, not fielders</strong> — focus = direction</li>
+                    <li>4. <strong className="text-white">Count every run</strong> — keeps you in the present</li>
+                  </ul>
+                </div>
               </div>
 
               {/* 1. Shot Selection — Length First, Then Line */}
@@ -1474,6 +1509,11 @@ export default function NetsPage() {
                 <div className="mt-4 p-4 rounded-xl bg-accent-500/10 border border-accent-500/20">
                   <p className="text-sm text-accent-300 font-semibold mb-1">⚠️ When the field is packed</p>
                   <p className="text-sm text-gray-300">Don&apos;t hit into traffic. Identify the gaps and adjust your scoring zones.</p>
+                </div>
+
+                <div className="mt-3 p-4 rounded-xl bg-accent-500/10 border border-accent-500/30">
+                  <p className="text-sm text-accent-300 font-bold mb-2">✅ Takeaway</p>
+                  <p className="text-sm text-gray-200">Length first, then line. Full → drive · Good → defend/late · Short → cut/pull. Outside off-stump width = guide or leave, never chase.</p>
                 </div>
               </div>
 
@@ -1543,16 +1583,57 @@ export default function NetsPage() {
                 </ul>
               </div>
 
-              {/* 4. Watching the Ball */}
+              {/* 4. Watching the Ball — Soft → Hard → Release */}
               <div className="glass rounded-2xl p-6 border border-white/10">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                   <span className="text-2xl">👁️</span>
-                  Watching the Ball
+                  Watching the Ball — Three-Phase Focus
                 </h3>
-                <ul className="space-y-3 text-gray-300">
-                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Focus on the <strong className="text-white">bowler&apos;s release point</strong></span></li>
-                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Track the ball <strong className="text-white">early</strong> → judge length quickly</span></li>
-                </ul>
+                <p className="text-sm text-gray-300 mb-4">
+                  Don&apos;t hard-stare at the bowler from the moment they walk back to their mark — your eyes will be tired by release. Use a <strong className="text-white">graduated focus</strong>: wide → narrow → lock.
+                </p>
+
+                <div className="space-y-3">
+                  <div className="rounded-xl p-4 bg-blue-500/5 border border-blue-500/20">
+                    <p className="text-sm text-blue-300 font-bold mb-1">Phase 1 — SOFT FOCUS <span className="text-gray-500 font-normal">(during run-up)</span></p>
+                    <p className="text-sm text-gray-300 mb-2">Wide gaze. Take in the whole bowler — body, arms, run-up, breathing.</p>
+                    <ul className="space-y-1.5 text-sm text-gray-300">
+                      <li className="flex gap-3"><span className="text-blue-400 font-bold flex-shrink-0">→</span><span>Read his <strong className="text-white">rhythm</strong> — is it the same as the last delivery, or has something shifted?</span></li>
+                      <li className="flex gap-3"><span className="text-blue-400 font-bold flex-shrink-0">→</span><span>Spot pace changes early — slower-ball telegraph, length-hidden grip change</span></li>
+                      <li className="flex gap-3"><span className="text-blue-400 font-bold flex-shrink-0">→</span><span>Stay <strong className="text-white">relaxed</strong> — no eye fatigue, no pre-tension</span></li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl p-4 bg-accent-500/5 border border-accent-500/20">
+                    <p className="text-sm text-accent-300 font-bold mb-1">Phase 2 — HARD FOCUS <span className="text-gray-500 font-normal">(approaching crease)</span></p>
+                    <p className="text-sm text-gray-300 mb-2">Narrow your gaze to the <strong className="text-white">bowling arm and hand</strong>. Right or left arm? Over or round the wicket? High arm or slingy?</p>
+                    <ul className="space-y-1.5 text-sm text-gray-300">
+                      <li className="flex gap-3"><span className="text-accent-400 font-bold flex-shrink-0">→</span><span>Lock onto the bowler&apos;s <strong className="text-white">arm path</strong></span></li>
+                      <li className="flex gap-3"><span className="text-accent-400 font-bold flex-shrink-0">→</span><span>Confirm angle — <strong className="text-white">left of stumps or right</strong>?</span></li>
+                      <li className="flex gap-3"><span className="text-accent-400 font-bold flex-shrink-0">→</span><span>Stay <strong className="text-white">still</strong> at the trigger point</span></li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl p-4 bg-primary-500/5 border border-primary-500/20">
+                    <p className="text-sm text-primary-300 font-bold mb-1">Phase 3 — RELEASE POINT <span className="text-gray-500 font-normal">(moment of release)</span></p>
+                    <p className="text-sm text-gray-300 mb-2">Eyes <strong className="text-white">lock</strong> onto the ball at the release point. Track from there — not from where it pitches.</p>
+                    <ul className="space-y-1.5 text-sm text-gray-300">
+                      <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Pick up the ball <strong className="text-white">at release</strong> — gives you 0.4 seconds to read line + length</span></li>
+                      <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Track all the way <strong className="text-white">onto the bat</strong> — don&apos;t lift your head before contact</span></li>
+                      <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>If you watch the ball onto the bat, you don&apos;t miss-time</span></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-4 p-3 rounded-xl bg-white/5 border border-white/10">
+                  <p className="text-xs uppercase tracking-wider text-primary-400 font-bold mb-1">Why graduated focus works</p>
+                  <p className="text-sm text-gray-300">Hard focus the whole time = eye fatigue, mental tightness, slow reactions. Soft → hard → lock keeps the mind <strong className="text-white">fresh and rhythm-aware</strong>. Most batters who get late on the ball have been hard-staring for 30+ seconds.</p>
+                </div>
+
+                <div className="mt-4 p-4 rounded-xl bg-accent-500/10 border border-accent-500/30">
+                  <p className="text-sm text-accent-300 font-bold mb-2">✅ Takeaway</p>
+                  <p className="text-sm text-gray-200">Soft focus on bowler&apos;s rhythm → hard focus on bowling hand → lock onto ball at release. Watch onto the bat.</p>
+                </div>
               </div>
 
               {/* 5. Body Position & Contact */}
@@ -1593,6 +1674,10 @@ export default function NetsPage() {
                   <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Use soft hands to <strong className="text-white">drop and run</strong></span></li>
                   <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Don&apos;t get stuck</strong></span></li>
                 </ul>
+                <div className="mt-4 p-4 rounded-xl bg-accent-500/10 border border-accent-500/30">
+                  <p className="text-sm text-accent-300 font-bold mb-2">✅ Takeaway</p>
+                  <p className="text-sm text-gray-200">A single off the third ball every over keeps the scoreboard moving and the bowler off-rhythm. Dot balls compound — break the cycle.</p>
+                </div>
               </div>
 
               {/* 8. Decision-Making — Every Ball */}
@@ -1607,6 +1692,10 @@ export default function NetsPage() {
                   <li>No → <strong className="text-white">Defend safely</strong></li>
                   <li>Only avoid / leave if <strong className="text-white">no safe option</strong> exists</li>
                 </ol>
+                <div className="mt-4 p-4 rounded-xl bg-accent-500/10 border border-accent-500/30">
+                  <p className="text-sm text-accent-300 font-bold mb-2">✅ Takeaway</p>
+                  <p className="text-sm text-gray-200">Attack → Rotate → Defend → Leave. In that order, every ball. The mistake is jumping to attack when rotation was on, or defending when a single was free.</p>
+                </div>
               </div>
 
               {/* 9. Powerplay Approach */}
