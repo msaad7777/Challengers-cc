@@ -32,20 +32,6 @@ export const blogPosts: BlogPost[] = [
         Saad joins 24 recipients from across London&apos;s sporting community — basketball, hockey, soccer, baseball, ringette, water polo, ultimate, and more — at a special reception on <strong class="text-white">Tuesday, May 5, 2026</strong>, from 5–8pm at <strong class="text-white">The Grove, Western Fair District</strong>.
       </p>
 
-      <h2 class="text-2xl font-bold text-white mt-8 mb-3">A milestone for London cricket</h2>
-      <p class="text-gray-300 leading-relaxed mb-4">
-        Four of the 24 recipients are from London-area cricket clubs — a quiet but unmistakable signal that cricket has earned its place alongside hockey, soccer, and football in London&apos;s sporting identity:
-      </p>
-      <ul class="space-y-2 text-gray-300 mb-6 ml-4">
-        <li>🏏 <strong class="text-white">Mohammed Saad</strong> — Challengers Cricket Club</li>
-        <li>🏏 <strong class="text-white">Qaiam Cheema</strong> — Tigers Cricket Club</li>
-        <li>🏏 <strong class="text-white">Devarsh Patel</strong> — London Legends Cricket Association</li>
-        <li>🏏 <strong class="text-white">Debanjan Roy</strong> — Middlesex London Cricket Academy</li>
-      </ul>
-      <p class="text-gray-300 leading-relaxed mb-6">
-        For a sport historically rooted in London&apos;s South Asian and Caribbean diaspora communities, this kind of city-level recognition is a watershed moment.
-      </p>
-
       <h2 class="text-2xl font-bold text-white mt-8 mb-3">What this means for Challengers</h2>
       <p class="text-gray-300 leading-relaxed mb-4">
         Since incorporating as an Ontario Not-for-Profit Corporation in November 2025, Challengers has built — almost entirely on volunteer time — the infrastructure of a serious community club:
