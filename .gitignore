@@ -25,8 +25,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
+# local env files — block ALL .env variants, only allow .env.example
+.env
+.env.*
+!.env.example
 
 # vercel
 .vercel
@@ -82,3 +84,47 @@ Challengers Cricket Club*.pdf
 # Original logo file (deployed copy is in /public)
 CCC-Logo.png
 public/ccc-logo-old.png
+
+# ==========================================================================
+# Catch-all guards — block any image / PDF / sensitive JSON at the repo
+# ROOT. Files under /public/ are unaffected (that's the right place for
+# images and document downloads we DO want shipped).
+# ==========================================================================
+
+# Block all images at the repo root (use /public/ for committed images)
+/*.jpeg
+/*.jpg
+/*.png
+/*.webp
+/*.gif
+/*.bmp
+/*.svg
+/*.heic
+/*.tiff
+
+# Block all PDFs at the repo root (use /public/documents/ for shareable PDFs)
+/*.pdf
+
+# Block n8n workflow exports + sponsor data dumps + any "previous" backups
+/*Outreach*.json
+/*Workflow*.json
+/*workflow*.json
+/*previous*.json
+/*Sponsor*.json
+/*sponsor*.json
+
+# Block Mac/IDE noise
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Block credential / key shapes regardless of name
+service-account*.json
+*-credentials*.json
+*-key.json
+*.p12
+*.pfx
+.env.production
+.env.development
+.env.staging
