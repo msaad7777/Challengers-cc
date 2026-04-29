@@ -18,6 +18,70 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'mohammed-saad-london-sports-volunteer-recognition-award-2026',
+    title: 'Mohammed Saad Honoured with 2026 London Sports Volunteer Recognition Award',
+    excerpt:
+      'Challengers Cricket Club Director Mohammed Saad has been named a recipient of the 2026 London Sports Volunteer Recognition Award by the City of London and London Sports Council, with the reception scheduled for May 5 at The Grove.',
+    content: `
+      <p class="text-lg text-gray-300 leading-relaxed mb-6">
+        We&apos;re proud to share that <strong class="text-white">Mohammed Saad</strong> — co-founder, Director, and Vice-Captain of Challengers Cricket Club — has been named a recipient of the <strong class="text-primary-400">2026 London Sports Volunteer Recognition Award</strong>, presented by the City of London and London Sports Council.
+      </p>
+
+      <h2 class="text-2xl font-bold text-white mt-8 mb-3">A reception in their honour</h2>
+      <p class="text-gray-300 leading-relaxed mb-6">
+        Saad joins 24 recipients from across London&apos;s sporting community — basketball, hockey, soccer, baseball, ringette, water polo, ultimate, and more — at a special reception on <strong class="text-white">Tuesday, May 5, 2026</strong>, from 5–8pm at <strong class="text-white">The Grove, Western Fair District</strong>.
+      </p>
+
+      <h2 class="text-2xl font-bold text-white mt-8 mb-3">A milestone for London cricket</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">
+        Four of the 24 recipients are from London-area cricket clubs — a quiet but unmistakable signal that cricket has earned its place alongside hockey, soccer, and football in London&apos;s sporting identity:
+      </p>
+      <ul class="space-y-2 text-gray-300 mb-6 ml-4">
+        <li>🏏 <strong class="text-white">Mohammed Saad</strong> — Challengers Cricket Club</li>
+        <li>🏏 <strong class="text-white">Qaiam Cheema</strong> — Tigers Cricket Club</li>
+        <li>🏏 <strong class="text-white">Devarsh Patel</strong> — London Legends Cricket Association</li>
+        <li>🏏 <strong class="text-white">Debanjan Roy</strong> — Middlesex London Cricket Academy</li>
+      </ul>
+      <p class="text-gray-300 leading-relaxed mb-6">
+        For a sport historically rooted in London&apos;s South Asian and Caribbean diaspora communities, this kind of city-level recognition is a watershed moment.
+      </p>
+
+      <h2 class="text-2xl font-bold text-white mt-8 mb-3">What this means for Challengers</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">
+        Since incorporating as an Ontario Not-for-Profit Corporation in November 2025, Challengers has built — almost entirely on volunteer time — the infrastructure of a serious community club:
+      </p>
+      <ul class="space-y-2 text-gray-300 mb-6 ml-4">
+        <li>✅ Two competitive league entries (LCL T30 + LPL T30) for the 2026 season</li>
+        <li>✅ Active coaching partnership with TPG Cricket Academy</li>
+        <li>✅ Approved status with Google for Nonprofits, Google Ad Grants, YouTube Nonprofit Program, TechSoup, and Goodstack</li>
+        <li>✅ Six confirmed sponsor partners across Platinum, Gold, and Community tiers</li>
+        <li>✅ The C3H players&apos; portal — squad selection, field editor, training reflections, match replays</li>
+        <li>✅ Community partnerships with Curry Culture Bistro and Kover Drive</li>
+      </ul>
+      <p class="text-gray-300 leading-relaxed mb-6">
+        Saad has been the engine behind much of this infrastructure. The award is recognition of the hours behind the scenes that volunteer-led grassroots sport always quietly demands.
+      </p>
+
+      <h2 class="text-2xl font-bold text-white mt-8 mb-3">A shared award</h2>
+      <p class="text-gray-300 leading-relaxed mb-6">
+        This recognition belongs to the wider Challengers community — every player who showed up to training in cold London mornings, every sponsor who took the call, every newcomer who found a place in our changing rooms. Saad will accept it on behalf of all of us.
+      </p>
+      <p class="text-gray-300 leading-relaxed mb-6">
+        Thank you to the <strong class="text-white">City of London</strong>, the <strong class="text-white">London Sports Council</strong>, and Executive Director <strong class="text-white">Dave DeKelver</strong> for seeing grassroots newcomer cricket and choosing to recognize it.
+      </p>
+
+      <p class="text-gray-400 italic text-sm mt-8">
+        Photos and a follow-up post will be published after the May 5 ceremony. Stay tuned to <a href="https://challengerscc.ca/blog" class="text-primary-400 hover:text-primary-300 underline">challengerscc.ca/blog</a>.
+      </p>
+    `,
+    category: 'Club News',
+    author: 'Challengers Cricket Club',
+    date: '2026-04-29',
+    image: null,
+    video: null,
+    featured: true,
+  },
+  {
     slug: 'first-practice-match-2026-vs-sarnia',
     title: 'Season Opener — First Practice Match vs Sarnia Cricket Club',
     excerpt:
