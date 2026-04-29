@@ -1876,7 +1876,13 @@ export default function NetsPage() {
                     <span className="flex-shrink-0 w-7 h-7 rounded-full bg-accent-500/30 text-accent-300 font-bold flex items-center justify-center text-sm">1</span>
                     <div>
                       <p className="text-white font-bold text-sm">Eyes wide. Don&apos;t blink.</p>
-                      <p className="text-xs text-gray-400">Watch the bowler all the way through release.</p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        <span className="text-blue-300 font-semibold">Soft focus</span> on the bowler&apos;s run-up &amp; rhythm
+                        <span className="text-gray-600"> → </span>
+                        <span className="text-accent-300 font-semibold">hard focus</span> on the bowling hand
+                        <span className="text-gray-600"> → </span>
+                        <span className="text-primary-300 font-semibold">lock</span> at the release point.
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3 p-3 rounded-xl bg-black/30 border border-accent-500/20">
