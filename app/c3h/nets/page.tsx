@@ -1477,6 +1477,47 @@ export default function NetsPage() {
                 </div>
               </div>
 
+              {/* Stay Reactive — No Pre-Planned Shots */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🧘</span>
+                  Stay Reactive — No Pre-Planned Shots
+                </h3>
+                <p className="text-sm text-gray-300 mb-4">
+                  The biggest cause of wrong shots is deciding what you&apos;d play <em>before</em> the ball arrived. Pre-planning a pull or a drive commits you to a shot for a delivery that hasn&apos;t happened yet — and when the ball doesn&apos;t match, you play the wrong shot for the wrong line.
+                </p>
+                <p className="text-sm text-primary-400 font-semibold mb-2">The rule:</p>
+                <ul className="space-y-2 text-gray-300 mb-4">
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Watch line, length, pace — <strong className="text-white">then</strong> respond</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Your job at the crease is to <strong className="text-white">receive</strong>, not predict</span></li>
+                </ul>
+
+                <p className="text-sm text-primary-400 font-semibold mt-5 mb-2">Count every run — stay in the present:</p>
+                <p className="text-sm text-gray-300 mb-3">
+                  Don&apos;t bat by <em>calculating runs needed</em> — that&apos;s pre-planning by another name. But great batters always know their score ball-by-ball. Ask any of them after any over and they can tell you: <em>&ldquo;27 off 19&rdquo;</em>. Not because they&apos;re chasing a number, but because counting every run keeps the mind in the present.
+                </p>
+                <ul className="space-y-2 text-gray-300 mb-4">
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Counting eliminates the <strong className="text-white">drift overs</strong> — those four overs where you scored 3 and didn&apos;t notice</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>It removes panic — you <strong className="text-white">know</strong> where you stand, you don&apos;t guess</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>You can&apos;t count and pre-plan at the same time — arithmetic anchors the mind to <em>what just happened</em></span></li>
+                </ul>
+
+                <p className="text-sm text-primary-400 font-semibold mt-5 mb-2">Look for gaps, not fielders:</p>
+                <p className="text-sm text-gray-300 mb-3">
+                  Where you focus determines where the ball goes. <em>&ldquo;Don&apos;t play to mid-off&rdquo;</em> still aims your bat at mid-off — the brain processes the <strong className="text-white">object</strong>, not the negation.
+                </p>
+                <ul className="space-y-2 text-gray-300">
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Find the gap — <strong className="text-white">hit the gap</strong></span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Fielders are coordinates; gaps are the target</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Scan gaps in the 1-second window between deliveries — not faces of fielders</span></li>
+                </ul>
+
+                <div className="mt-4 p-4 rounded-xl bg-primary-500/10 border border-primary-500/20">
+                  <p className="text-sm text-primary-300 font-semibold mb-1">🧠 The unified principle</p>
+                  <p className="text-sm text-gray-300">Reactive batting + present-moment counting + gap vision — all three are facets of the same skill: <strong className="text-white">stay in this ball</strong>. Every distraction is a future you haven&apos;t played yet.</p>
+                </div>
+              </div>
+
               {/* 2. Stance & Setup */}
               <div className="glass rounded-2xl p-6 border border-white/10">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
