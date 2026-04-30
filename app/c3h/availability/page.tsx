@@ -48,6 +48,7 @@ const ALL_PLAYERS = [
   'Salman Ahmed', 'Farooq Choudhary', 'Vijay Yadav', 'Shivam Rajput',
   'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
   'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Siva Sriram', 'Rajath Shetty', 'Murshad Azad',
+  'Aleem Quadri',
 ];
 
 // Players restricted to specific leagues
@@ -116,6 +117,7 @@ const EMAIL_TO_PLAYER: Record<string, string> = {
   'georgefreddy963@gmail.com': 'Fahad Aktar',
   'siva4593@gmail.com': 'Siva Sriram',
   'rajath.s.shetty@gmail.com': 'Rajath Shetty',
+  'maaleemq@gmail.com': 'Aleem Quadri',
 };
 
 type AvailabilityStatus = 'available' | 'unavailable' | 'maybe' | '';
