@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { db } from '@/lib/firebase';
-import { collection, doc, setDoc, getDocs } from 'firebase/firestore';
+import { collection, doc, setDoc, updateDoc, getDocs } from 'firebase/firestore';
 import { isC3HBoard, isC3HCaptain } from '@/lib/c3h-access';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
@@ -120,6 +120,50 @@ const EMAIL_TO_PLAYER: Record<string, string> = {
   'maaleemq@gmail.com': 'Aleem Quadri',
 };
 
+// Roles that can only be held by ONE player at a time per match.
+// (Captain, Vice-Captain, Wicketkeeper, Batting Sub, Bowling Sub.)
+// If legacy Firestore data has multiple players sharing one of these,
+// normalizeUniqueRoles keeps only the LAST player in iteration order
+// — matching the captain's most recent intent — and discards the rest.
+const UNIQUE_ROLES = ['wk', 'bat-sub', 'bowl-sub', 'captain', 'vc'];
+
+function normalizeUniqueRoles(
+  roles: Record<string, string>,
+): Record<string, string> {
+  // For each unique role, find the LAST player who holds it (insertion-order
+  // wins, which JS preserves for string keys). Then build a cleaned roles
+  // object that keeps only that one player per unique role; non-unique role
+  // entries pass through unchanged.
+  const lastHolder: Record<string, string> = {};
+  Object.entries(roles).forEach(([player, role]) => {
+    if (UNIQUE_ROLES.includes(role)) {
+      lastHolder[role] = player;
+    }
+  });
+
+  const cleaned: Record<string, string> = {};
+  Object.entries(roles).forEach(([player, role]) => {
+    if (UNIQUE_ROLES.includes(role)) {
+      if (lastHolder[role] === player) cleaned[player] = role;
+      // else: drop this player — they were superseded by a later assignment
+    } else {
+      cleaned[player] = role;
+    }
+  });
+  return cleaned;
+}
+
+// Returns true if `cleaned` differs from `original` — used to decide
+// whether to write the normalized version back to Firestore.
+function rolesChanged(
+  original: Record<string, string>,
+  cleaned: Record<string, string>,
+): boolean {
+  const a = Object.entries(original).sort().map(([k, v]) => `${k}:${v}`).join('|');
+  const b = Object.entries(cleaned).sort().map(([k, v]) => `${k}:${v}`).join('|');
+  return a !== b;
+}
+
 type AvailabilityStatus = 'available' | 'unavailable' | 'maybe' | '';
 
 interface PlayerAvailability {
@@ -186,24 +230,46 @@ export default function AvailabilityPage() {
       });
       setAllAvailability(data);
     } catch { /* */ }
-    // Load squads
+    // Load squads — also normalize unique-role conflicts (legacy data may
+    // have e.g. two players both marked 'bat-sub'). Normalized version is
+    // written back to Firestore so stale state self-heals on first read.
     try {
       const squadSnap = await getDocs(collection(db, 'squads'));
       const squadData: Record<string, string[]> = {};
       const rolesData: Record<string, Record<string, string>> = {};
       const metaData: Record<string, { updatedBy?: string; updatedAt?: string }> = {};
+      const cleanups: Promise<void>[] = [];
+
       squadSnap.docs.forEach(d => {
         const docData = d.data();
         squadData[d.id] = (docData.players || []) as string[];
-        rolesData[d.id] = (docData.roles || {}) as Record<string, string>;
+        const rawRoles = (docData.roles || {}) as Record<string, string>;
+        const cleanedRoles = normalizeUniqueRoles(rawRoles);
+        rolesData[d.id] = cleanedRoles;
         metaData[d.id] = {
           updatedBy: docData.updatedBy as string | undefined,
           updatedAt: docData.updatedAt as string | undefined,
         };
+        // Auto-heal Firestore if normalization changed anything.
+        // Use updateDoc (not setDoc) so we only touch the roles + meta
+        // fields — avoids overwriting concurrent changes to players[].
+        if (rolesChanged(rawRoles, cleanedRoles)) {
+          cleanups.push(
+            updateDoc(doc(db, 'squads', d.id), {
+              roles: cleanedRoles,
+              updatedBy: 'system:role-normalize',
+              updatedAt: new Date().toISOString(),
+            }).catch((err) => console.error('Failed to auto-heal squad roles:', err)),
+          );
+        }
       });
+
       setSquads(squadData);
       setSquadRoles(rolesData);
       setSquadMeta(metaData);
+
+      // Fire-and-forget the cleanup writes — they don't block the UI
+      if (cleanups.length > 0) Promise.all(cleanups).catch(() => {});
     } catch { /* */ }
     setLoading(false);
   }, []);
