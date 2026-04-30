@@ -336,7 +336,7 @@ export default function ScorerPage() {
 
           <div className="mb-6">
             <Link href="/c3h/dashboard" className="text-gray-500 text-sm hover:text-primary-400">&larr; Dashboard</Link>
-            <h1 className="text-3xl font-bold text-white mt-2">The <span className="gradient-text">Scorer</span></h1>
+            <h1 className="text-3xl font-bold text-white mt-2"><span className="gradient-text">Scorer</span></h1>
           </div>
 
           {/* HOME */}
