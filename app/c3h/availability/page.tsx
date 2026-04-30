@@ -10,6 +10,16 @@ import { isC3HBoard, isC3HCaptain } from '@/lib/c3h-access';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
+// Maps short venue codes (used in match data) to full searchable
+// addresses for Google Calendar's location field.
+const VENUE_FULL_NAME: Record<string, string> = {
+  'Silverwoods': 'Silverwoods Cricket Ground, London, Ontario',
+  'Northridge':  'Northridge Cricket Ground, London, Ontario',
+  'NLAF':        'North London Athletic Fields, London, Ontario',
+  'Thamesville': 'Thamesville Cricket Ground, Thamesville, Ontario',
+  'Sarnia':      'Mike Vier Park Cricket Ground, Sarnia, Ontario',
+};
+
 const ALL_MATCHES = [
   // LCL T30
   { id: 'lcl-1', league: 'LCL T30', date: 'May 10', fullDate: '2026-05-10', opponent: 'London Predators', time: '1:00 PM', venue: 'Northridge', clash: true },
@@ -162,6 +172,100 @@ function rolesChanged(
   const a = Object.entries(original).sort().map(([k, v]) => `${k}:${v}`).join('|');
   const b = Object.entries(cleaned).sort().map(([k, v]) => `${k}:${v}`).join('|');
   return a !== b;
+}
+
+// Reverse-lookup: given a player's display name, return their primary
+// email for calendar invitations. Prefers personal @gmail.com (the
+// inbox most players actually monitor); falls back to the
+// @challengerscc.ca org address if that's all they have.
+function getPrimaryEmailForPlayer(
+  playerName: string,
+  emailToPlayer: Record<string, string>,
+): string | null {
+  const matches = Object.entries(emailToPlayer).filter(([, name]) => name === playerName);
+  if (matches.length === 0) return null;
+  const personal = matches.find(([email]) => email.endsWith('@gmail.com'));
+  return personal ? personal[0] : matches[0][0];
+}
+
+// Convert "1:00 PM" / "10:00 AM" to "13:00" / "10:00" (24-hour).
+function to24Hour(time12: string): string {
+  const [time, period] = time12.split(' ');
+  const [hStr, mStr] = time.split(':');
+  let h = parseInt(hStr, 10);
+  const m = mStr || '00';
+  if (period === 'PM' && h !== 12) h += 12;
+  if (period === 'AM' && h === 12) h = 0;
+  return `${String(h).padStart(2, '0')}:${m}`;
+}
+
+// Format a Date as YYYYMMDDTHHMMSS (Google Calendar's local-time format).
+function fmtCalDate(d: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return (
+    `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}` +
+    `T${pad(d.getHours())}${pad(d.getMinutes())}00`
+  );
+}
+
+// Build a Google Calendar "create event" URL pre-filled with match
+// details + the 12 squad players as attendees. When the captain opens
+// it, Google Calendar shows the event ready to save — clicking Save
+// sends native calendar invitations to every attendee's Gmail.
+function buildSquadCalendarLink(args: {
+  match: { league: string; opponent: string; fullDate: string; time: string; venue: string };
+  squad: string[];
+  roles: Record<string, string>;
+  emailToPlayer: Record<string, string>;
+}): string {
+  const { match, squad, roles, emailToPlayer } = args;
+
+  // Match start (local time) — assume 4-hour duration for T30/T20 fixtures
+  const startStr = `${match.fullDate}T${to24Hour(match.time)}:00`;
+  const start = new Date(startStr);
+  const end = new Date(start.getTime() + 4 * 60 * 60 * 1000);
+
+  const dates = `${fmtCalDate(start)}/${fmtCalDate(end)}`;
+
+  // Pull primary emails for all 12 — skip any with no email on file
+  const attendeeEmails = squad
+    .map((name) => getPrimaryEmailForPlayer(name, emailToPlayer))
+    .filter((e): e is string => Boolean(e));
+
+  const roleLabel = (r: string) => {
+    if (r === 'captain') return ' (c)';
+    if (r === 'vc') return ' (vc)';
+    if (r === 'wk') return ' (wk)';
+    if (r === 'bat-sub') return ' (Bat Sub)';
+    if (r === 'bowl-sub') return ' (Bowl Sub)';
+    return '';
+  };
+
+  const squadLines = squad
+    .map((p, i) => `${i + 1}. ${p}${roleLabel(roles[p] || '')}`)
+    .join('\n');
+
+  const description = [
+    `Match: Challengers CC vs ${match.opponent}`,
+    `League: ${match.league}`,
+    `Time: ${match.time}`,
+    `Venue: ${match.venue}`,
+    '',
+    'Playing 12:',
+    squadLines,
+    '',
+    'Full match details + field positions: https://challengerscc.ca/c3h/availability',
+  ].join('\n');
+
+  const params = new URLSearchParams({
+    text: `🏏 Challengers CC vs ${match.opponent} — ${match.league}`,
+    dates,
+    location: VENUE_FULL_NAME[match.venue] || match.venue,
+    details: description,
+    add: attendeeEmails.join(','),
+  });
+
+  return `https://calendar.google.com/calendar/r/eventedit?${params.toString()}`;
 }
 
 type AvailabilityStatus = 'available' | 'unavailable' | 'maybe' | '';
@@ -722,6 +826,29 @@ export default function AvailabilityPage() {
                                   >
                                     💾 Save &amp; Field Editor →
                                   </button>
+                                  {(() => {
+                                    const calLink = buildSquadCalendarLink({
+                                      match: m,
+                                      squad: squads[m.id] || [],
+                                      roles: squadRoles[m.id] || {},
+                                      emailToPlayer: EMAIL_TO_PLAYER,
+                                    });
+                                    const attendeeCount = (squads[m.id] || [])
+                                      .map((n) => getPrimaryEmailForPlayer(n, EMAIL_TO_PLAYER))
+                                      .filter(Boolean).length;
+                                    return (
+                                      <a
+                                        href={calLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        title={`Opens Google Calendar pre-filled with match details + ${attendeeCount} player invites. Click Save in Calendar to send.`}
+                                        className="text-xs px-3 py-1.5 rounded-lg bg-purple-500/20 text-purple-400 border border-purple-500/30 hover:bg-purple-500/30 font-bold inline-flex items-center gap-1"
+                                      >
+                                        📅 Send Calendar Invites
+                                        <span className="text-[10px] opacity-70">({attendeeCount})</span>
+                                      </a>
+                                    );
+                                  })()}
                                   {recentlySaved === m.id && (
                                     <span className="text-primary-400 text-[11px] font-bold flex items-center gap-1">
                                       ✓ Saved
