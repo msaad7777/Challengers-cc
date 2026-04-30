@@ -732,6 +732,47 @@ export default function AvailabilityPage() {
                             </div>
                           </div>
 
+                          {/* Action buttons — visible at top of squad panel when 11+ */}
+                          {(squads[m.id] || []).length >= 11 && isCaptain && (
+                            <div className="flex flex-wrap gap-2 mb-3 items-center">
+                              <button onClick={() => persistSquad(m.id)} className="text-xs px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 font-bold">
+                                💾 Save
+                              </button>
+                              <button onClick={() => setShowSquadCard(showSquadCard === m.id ? null : m.id)} className="text-xs px-3 py-1.5 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30 hover:bg-accent-500/30">
+                                {showSquadCard === m.id ? 'Hide Card' : 'View Squad Card'}
+                              </button>
+                              <button
+                                onClick={async () => {
+                                  await persistSquad(m.id);
+                                  router.push(`/c3h/field-editor?match=${m.id}`);
+                                }}
+                                className="text-xs px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30 hover:bg-primary-500/30 font-bold"
+                              >
+                                💾 Save &amp; Field Editor →
+                              </button>
+                              {(() => {
+                                const attendeeCount = (squads[m.id] || [])
+                                  .map((n) => getPrimaryEmailForPlayer(n, EMAIL_TO_PLAYER))
+                                  .filter(Boolean).length;
+                                return (
+                                  <button
+                                    onClick={() => setFinalizingMatchId(m.id)}
+                                    title={`Review squad and confirm before sending ${attendeeCount} calendar invites.`}
+                                    className="text-xs px-3 py-1.5 rounded-lg bg-purple-500/20 text-purple-400 border border-purple-500/30 hover:bg-purple-500/30 font-bold inline-flex items-center gap-1"
+                                  >
+                                    🔒 Finalize &amp; Notify
+                                    <span className="text-[10px] opacity-70">({attendeeCount})</span>
+                                  </button>
+                                );
+                              })()}
+                              {recentlySaved === m.id && (
+                                <span className="text-primary-400 text-[11px] font-bold flex items-center gap-1">
+                                  ✓ Saved
+                                </span>
+                              )}
+                            </div>
+                          )}
+
                           {/* Last edited by — visible to captains + board */}
                           {(isCaptain || isBoard) && squadMeta[m.id]?.updatedBy && (
                             <div className="mb-3 flex items-center gap-2 text-xs text-gray-500">
@@ -811,45 +852,6 @@ export default function AvailabilityPage() {
                                   </div>
                                 );
                               })}
-                              {(squads[m.id] || []).length >= 11 && isCaptain && (
-                                <div className="flex flex-wrap gap-2 mt-2 items-center">
-                                  <button onClick={() => persistSquad(m.id)} className="text-xs px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 font-bold">
-                                    💾 Save
-                                  </button>
-                                  <button onClick={() => setShowSquadCard(showSquadCard === m.id ? null : m.id)} className="text-xs px-3 py-1.5 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30 hover:bg-accent-500/30">
-                                    {showSquadCard === m.id ? 'Hide Card' : 'View Squad Card'}
-                                  </button>
-                                  <button
-                                    onClick={async () => {
-                                      await persistSquad(m.id);
-                                      router.push(`/c3h/field-editor?match=${m.id}`);
-                                    }}
-                                    className="text-xs px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30 hover:bg-primary-500/30 font-bold"
-                                  >
-                                    💾 Save &amp; Field Editor →
-                                  </button>
-                                  {(() => {
-                                    const attendeeCount = (squads[m.id] || [])
-                                      .map((n) => getPrimaryEmailForPlayer(n, EMAIL_TO_PLAYER))
-                                      .filter(Boolean).length;
-                                    return (
-                                      <button
-                                        onClick={() => setFinalizingMatchId(m.id)}
-                                        title={`Review squad and confirm before sending ${attendeeCount} calendar invites.`}
-                                        className="text-xs px-3 py-1.5 rounded-lg bg-purple-500/20 text-purple-400 border border-purple-500/30 hover:bg-purple-500/30 font-bold inline-flex items-center gap-1"
-                                      >
-                                        🔒 Finalize &amp; Notify
-                                        <span className="text-[10px] opacity-70">({attendeeCount})</span>
-                                      </button>
-                                    );
-                                  })()}
-                                  {recentlySaved === m.id && (
-                                    <span className="text-primary-400 text-[11px] font-bold flex items-center gap-1">
-                                      ✓ Saved
-                                    </span>
-                                  )}
-                                </div>
-                              )}
                             </div>
                             );
                           })()}
