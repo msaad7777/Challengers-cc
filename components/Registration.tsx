@@ -63,11 +63,15 @@ export default function Registration() {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 glass px-4 py-1.5 rounded-full mb-4 border border-accent-500/30">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent-400 animate-pulse"></span>
+            <span className="text-xs font-bold uppercase tracking-wider text-accent-400">2027 Pre-Registration</span>
+          </div>
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
             Join <span className="gradient-text">Our Club</span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Become part of London&apos;s united cricket community. Fill out the form below to join us.
+            2026 squad is full — sign up now to reserve your spot for the 2027 season, get on the waitlist for any mid-season opportunities, and stay connected with the club.
           </p>
           <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto rounded-full mt-6"></div>
         </div>
@@ -88,8 +92,8 @@ export default function Registration() {
             </div>
 
             <p className="text-gray-300 mb-6">
-              Fill out the form below to join Challengers Cricket Club. Share your details,
-              cricket background, and preferences. We&apos;ll be in touch soon!
+              Fill out the form below to express interest in Challengers Cricket Club. Share your details,
+              cricket background, and preferences. We&apos;ll add you to our 2027 pre-registration list and reach out with updates.
             </p>
 
             <form
