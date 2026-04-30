@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { db } from '@/lib/firebase';
 import { collection, doc, setDoc, updateDoc, getDocs } from 'firebase/firestore';
-import { isC3HBoard, isC3HCaptain } from '@/lib/c3h-access';
+import { isC3HBoard, isC3HCaptain, isC3HSquadViewer } from '@/lib/c3h-access';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
@@ -304,6 +304,9 @@ export default function AvailabilityPage() {
   // Other club board members log in as regular players here.
   const isBoard = isC3HBoard(session?.user?.email);
   const isCaptain = isC3HCaptain(session?.user?.email);
+  // Read-only access to the captain view (squad + availability matrix).
+  // Captains have this implicitly; Qaiser (Treasurer) has it explicitly.
+  const isSquadViewer = isC3HSquadViewer(session?.user?.email);
   const playerName = (() => {
     const email = session?.user?.email?.toLowerCase() || '';
     // First try exact email mapping (most reliable)
@@ -385,6 +388,7 @@ export default function AvailabilityPage() {
   }, [loadAvailability]);
 
   const toggleSquadPlayer = async (matchId: string, playerN: string) => {
+    if (!isCaptain) return;
     const current = squads[matchId] || [];
     const currentRoles = squadRoles[matchId] || {};
     // Block selecting unavailable players
@@ -403,6 +407,7 @@ export default function AvailabilityPage() {
   };
 
   const movePlayer = async (matchId: string, fromIdx: number, toIdx: number) => {
+    if (!isCaptain) return;
     const current = [...(squads[matchId] || [])];
     if (fromIdx < 0 || fromIdx >= current.length || toIdx < 0 || toIdx >= current.length) return;
     const [player] = current.splice(fromIdx, 1);
@@ -416,6 +421,7 @@ export default function AvailabilityPage() {
   };
 
   const toggleRole = async (matchId: string, playerN: string, role: string) => {
+    if (!isCaptain) return;
     const currentRoles = { ...(squadRoles[matchId] || {}) };
     const playerAlreadyHasThisRole = currentRoles[playerN] === role;
 
@@ -445,6 +451,7 @@ export default function AvailabilityPage() {
   // gate ensures the captain has reviewed the squad before opening the
   // Field Editor (which then renders positions from this exact state).
   const persistSquad = useCallback(async (matchId: string) => {
+    if (!isCaptain) return;
     setSaving(true);
     const players = squads[matchId] || [];
     const roles = squadRoles[matchId] || {};
@@ -457,7 +464,7 @@ export default function AvailabilityPage() {
     setRecentlySaved(matchId);
     setSaving(false);
     setTimeout(() => setRecentlySaved((cur) => (cur === matchId ? null : cur)), 2500);
-  }, [squads, squadRoles, session]);
+  }, [squads, squadRoles, session, isCaptain]);
 
   const updateAvailability = async (name: string, matchId: string, newStatus: AvailabilityStatus) => {
     // Players can ONLY mark their own availability. Captains and board
@@ -548,9 +555,9 @@ export default function AvailabilityPage() {
                   {f === 'all' ? 'All (' + filteredMatches.length + ')' : f}
                 </button>
               ))}
-              {isBoard && (
+              {isSquadViewer && (
                 <button onClick={() => setViewMode(viewMode === 'player' ? 'captain' : 'player')} className={`px-4 py-2 rounded-xl text-xs font-semibold border-2 transition-all ml-auto ${viewMode === 'captain' ? 'bg-accent-500/20 text-accent-400 border-accent-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>
-                  {viewMode === 'captain' ? '👑 Captain' : '🏏 Player'}
+                  {viewMode === 'captain' ? (isCaptain ? '👑 Captain' : '👁 Squad') : '🏏 Player'}
                 </button>
               )}
             </div>
@@ -611,7 +618,7 @@ export default function AvailabilityPage() {
           )}
 
           {/* CAPTAIN VIEW — see all players */}
-          {viewMode === 'captain' && isBoard && (
+          {viewMode === 'captain' && isSquadViewer && (
             <div className="space-y-4">
               {filteredMatches.map(m => {
                 const matchPlayers = getPlayersForMatch(m.league);
