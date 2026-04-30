@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import VerifiedNonprofit from './VerifiedNonprofit';
 
 export default function Footer() {
@@ -149,13 +150,16 @@ export default function Footer() {
             <p className="text-gray-500 text-sm">
               © {currentYear} Challengers Cricket Club. Ontario NFP Corporation #1746974-8. All rights reserved.
             </p>
-            <div className="flex gap-6 text-sm">
-              <a href="/documents/privacy-policy.html" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary-400 transition-colors">
+            <div className="flex gap-6 text-sm flex-wrap justify-center md:justify-end">
+              <Link href="/legal" className="text-gray-500 hover:text-primary-400 transition-colors">
+                Governance
+              </Link>
+              <Link href="/legal/privacy" className="text-gray-500 hover:text-primary-400 transition-colors">
                 Privacy Policy
-              </a>
-              <a href="/documents/terms-of-service.html" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary-400 transition-colors">
-                Terms of Service
-              </a>
+              </Link>
+              <Link href="/legal/code-of-conduct" className="text-gray-500 hover:text-primary-400 transition-colors">
+                Code of Conduct
+              </Link>
             </div>
           </div>
         </div>
