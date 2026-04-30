@@ -115,9 +115,9 @@ export default function PaymentsPage() {
 
           {/* CTA */}
           <div className="text-center">
-            <div className="glass rounded-2xl p-8 border-2 border-primary-500/30 max-w-xl mx-auto">
-              <h3 className="text-2xl font-bold mb-3">Ready to Pay?</h3>
-              <p className="text-gray-400 mb-6">
+            <div className="glass rounded-2xl p-5 sm:p-8 border-2 border-primary-500/30 max-w-xl mx-auto">
+              <h3 className="text-xl sm:text-2xl font-bold mb-3">Ready to Pay?</h3>
+              <p className="text-sm sm:text-base text-gray-400 mb-6">
                 Your support helps us cover league registration, field rent, field insurance, unemployed members, equipment, and programs. Thank you for being a part of our community!
               </p>
               <div className="space-y-3">
@@ -125,20 +125,27 @@ export default function PaymentsPage() {
                   href={ZEFFY_DONATION_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block w-full py-4 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold text-lg shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105 text-center"
+                  className="inline-block w-full py-4 px-3 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold text-base sm:text-lg shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105 text-center"
                 >
                   Confirm Payment via Zeffy (0% Fees)
                 </a>
-                <div className="glass rounded-lg p-4 border border-accent-500/30">
-                  <p className="font-semibold text-sm text-center mb-2">Pay via Interac e-Transfer (0% Fees)</p>
-                  <p className="text-center text-accent-400 font-bold text-lg">payments@challengerscc.ca</p>
-                  <p className="text-center text-gray-500 text-xs mt-1">Send e-Transfer to the email above. Auto-deposited to the club account.</p>
+                <div className="glass rounded-lg p-3 sm:p-4 border border-accent-500/30">
+                  <p className="font-semibold text-xs sm:text-sm text-center mb-2">Pay via Interac e-Transfer (0% Fees)</p>
+                  <a
+                    href="mailto:payments@challengerscc.ca?subject=Challengers CC Payment"
+                    className="block text-center text-accent-400 font-bold text-sm sm:text-base md:text-lg break-all hover:text-accent-300 underline decoration-accent-500/40 underline-offset-4 transition-colors"
+                  >
+                    payments@challengerscc.ca
+                  </a>
+                  <p className="text-center text-gray-500 text-[11px] sm:text-xs mt-2 leading-relaxed">
+                    Send e-Transfer to the email above. Auto-deposited to the club account.
+                  </p>
                 </div>
                 <a
                   href={STRIPE_DONATION_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block w-full py-3 glass glass-hover rounded-lg font-semibold text-sm border border-white/10 hover:border-primary-500/50 transition-all duration-300 text-center"
+                  className="inline-block w-full py-3 px-3 glass glass-hover rounded-lg font-semibold text-xs sm:text-sm border border-white/10 hover:border-primary-500/50 transition-all duration-300 text-center"
                 >
                   Confirm Payment via Stripe (Credit/Debit Card)
                 </a>
@@ -150,10 +157,10 @@ export default function PaymentsPage() {
                 Zeffy &amp; e-Transfer: 100% goes to the club | Stripe: 2.2% + $0.30 fee applies
               </div>
               <div className="mt-4 pt-4 border-t border-white/10">
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 break-words">
                   <strong>Challengers Cricket Club</strong><br />
                   Ontario NFP Corporation #1746974-8<br />
-                  contact@challengerscc.ca
+                  <a href="mailto:contact@challengerscc.ca" className="break-all hover:text-gray-400">contact@challengerscc.ca</a>
                 </p>
               </div>
             </div>
@@ -222,7 +229,7 @@ export default function PaymentsPage() {
             </div>
             <div className="glass rounded-xl p-6">
               <h3 className="font-semibold mb-2">How do I know the correct amount for practice/league fees?</h3>
-              <p className="text-sm text-gray-400">Fee amounts are shared by club management via WhatsApp group. If you&apos;re unsure, please contact us at contact@challengerscc.ca before paying.</p>
+              <p className="text-sm text-gray-400">Fee amounts are shared by club management via WhatsApp group. If you&apos;re unsure, please contact us at <a href="mailto:contact@challengerscc.ca" className="text-primary-400 hover:text-primary-300 underline break-all">contact@challengerscc.ca</a> before paying.</p>
             </div>
           </div>
         </div>
