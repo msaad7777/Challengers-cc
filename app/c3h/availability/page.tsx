@@ -292,6 +292,8 @@ export default function AvailabilityPage() {
   const [playerMenu, setPlayerMenu] = useState<{ matchId: string; player: string } | null>(null);
   // Per-match "Saved ✓" feedback shown briefly after an explicit save
   const [recentlySaved, setRecentlySaved] = useState<string | null>(null);
+  // Match ID for the "Finalize squad & notify players" confirmation modal
+  const [finalizingMatchId, setFinalizingMatchId] = useState<string | null>(null);
 
   // isCaptain moved after isBoard declaration
   const [leagueFilter, setLeagueFilter] = useState<'all' | 'LCL T30' | 'LPL T30'>('all');
@@ -827,26 +829,18 @@ export default function AvailabilityPage() {
                                     💾 Save &amp; Field Editor →
                                   </button>
                                   {(() => {
-                                    const calLink = buildSquadCalendarLink({
-                                      match: m,
-                                      squad: squads[m.id] || [],
-                                      roles: squadRoles[m.id] || {},
-                                      emailToPlayer: EMAIL_TO_PLAYER,
-                                    });
                                     const attendeeCount = (squads[m.id] || [])
                                       .map((n) => getPrimaryEmailForPlayer(n, EMAIL_TO_PLAYER))
                                       .filter(Boolean).length;
                                     return (
-                                      <a
-                                        href={calLink}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        title={`Opens Google Calendar pre-filled with match details + ${attendeeCount} player invites. Click Save in Calendar to send.`}
+                                      <button
+                                        onClick={() => setFinalizingMatchId(m.id)}
+                                        title={`Review squad and confirm before sending ${attendeeCount} calendar invites.`}
                                         className="text-xs px-3 py-1.5 rounded-lg bg-purple-500/20 text-purple-400 border border-purple-500/30 hover:bg-purple-500/30 font-bold inline-flex items-center gap-1"
                                       >
-                                        📅 Send Calendar Invites
+                                        🔒 Finalize &amp; Notify
                                         <span className="text-[10px] opacity-70">({attendeeCount})</span>
-                                      </a>
+                                      </button>
                                     );
                                   })()}
                                   {recentlySaved === m.id && (
@@ -894,6 +888,108 @@ export default function AvailabilityPage() {
 
         </div>
       </section>
+
+      {/* Finalize & Notify confirmation modal — gates sending calendar
+          invites behind a deliberate confirmation. Reviews the squad +
+          shows attendee list before opening Google Calendar. */}
+      {finalizingMatchId && typeof document !== 'undefined' && (() => {
+        const matchData = ALL_MATCHES.find(mm => mm.id === finalizingMatchId);
+        const squadPlayers = squads[finalizingMatchId] || [];
+        const matchRoles = squadRoles[finalizingMatchId] || {};
+        if (!matchData || squadPlayers.length < 11) return null;
+
+        const calLink = buildSquadCalendarLink({
+          match: matchData,
+          squad: squadPlayers,
+          roles: matchRoles,
+          emailToPlayer: EMAIL_TO_PLAYER,
+        });
+        const playersWithEmail = squadPlayers
+          .map((n) => ({ name: n, email: getPrimaryEmailForPlayer(n, EMAIL_TO_PLAYER) }))
+          .filter((p): p is { name: string; email: string } => Boolean(p.email));
+        const playersWithoutEmail = squadPlayers.filter(
+          (n) => !getPrimaryEmailForPlayer(n, EMAIL_TO_PLAYER),
+        );
+
+        return createPortal(
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            style={{ backgroundColor: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)' }}
+            onClick={(e) => { if (e.target === e.currentTarget) setFinalizingMatchId(null); }}
+          >
+            <div className="glass rounded-2xl p-6 max-w-lg w-full border-2 border-purple-500/40 max-h-[90vh] overflow-y-auto">
+              <div className="flex items-start gap-3 mb-4">
+                <span className="text-3xl">🔒</span>
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-1">Finalize squad &amp; notify players?</h3>
+                  <p className="text-sm text-gray-300">
+                    Once you click <strong className="text-purple-400">Finalize &amp; Open Calendar</strong>,
+                    Google Calendar will open in a new tab with the match pre-filled.
+                    Click <strong className="text-white">Save</strong> in Calendar to send invitations to all selected players.
+                  </p>
+                </div>
+              </div>
+
+              <div className="rounded-xl p-3 mb-4 bg-white/5 border border-white/10 text-xs">
+                <p className="text-gray-500 uppercase tracking-wider font-bold mb-1.5">Match</p>
+                <p className="text-white font-bold">Challengers CC vs {matchData.opponent}</p>
+                <p className="text-gray-400 mt-0.5">{matchData.league} · {matchData.date} · {matchData.time} · {matchData.venue}</p>
+              </div>
+
+              <div className="rounded-xl p-3 mb-4 bg-primary-500/5 border border-primary-500/20">
+                <p className="text-xs uppercase tracking-wider text-primary-400 font-bold mb-2">
+                  ✓ Will be invited ({playersWithEmail.length})
+                </p>
+                <div className="text-xs text-gray-300 space-y-1 max-h-40 overflow-y-auto">
+                  {playersWithEmail.map((p) => (
+                    <div key={p.name} className="flex justify-between gap-2">
+                      <span className="font-medium">{p.name}</span>
+                      <span className="text-gray-500 text-[10px] truncate">{p.email}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {playersWithoutEmail.length > 0 && (
+                <div className="rounded-xl p-3 mb-4 bg-accent-500/5 border border-accent-500/30">
+                  <p className="text-xs uppercase tracking-wider text-accent-400 font-bold mb-2">
+                    ⚠ No email on file — won&apos;t be invited ({playersWithoutEmail.length})
+                  </p>
+                  <p className="text-xs text-gray-300">
+                    {playersWithoutEmail.join(', ')}
+                  </p>
+                  <p className="text-[10px] text-gray-500 mt-2 italic">
+                    Notify them separately via WhatsApp.
+                  </p>
+                </div>
+              )}
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setFinalizingMatchId(null)}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 text-sm font-semibold"
+                >
+                  Cancel
+                </button>
+                <a
+                  href={calLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setFinalizingMatchId(null)}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/40 hover:bg-purple-500/30 text-sm font-bold text-center"
+                >
+                  🔒 Finalize &amp; Open Calendar
+                </a>
+              </div>
+
+              <p className="text-[10px] text-gray-500 mt-3 text-center italic">
+                Reminder: invitations are not sent until you click <strong>Save</strong> inside Google Calendar.
+              </p>
+            </div>
+          </div>,
+          document.body
+        );
+      })()}
 
       {/* Squad Card Modal — rendered via portal to document.body */}
       {showSquadCard && typeof document !== 'undefined' && (() => {
