@@ -24,12 +24,14 @@ export const C3H_ADMIN_EMAILS: readonly string[] = [
 //   Shahriar — LCL T30 captain
 //   Tarek    — LPL T30 captain
 //   Ankush   — Vice-captain
+//   Shoeb    — captain-level access
 // Saad is admin and is included automatically.
 export const C3H_CAPTAIN_EMAILS: readonly string[] = [
   ...C3H_ADMIN_EMAILS,
   'shariar@challengerscc.ca', 'syedshahriar77@gmail.com',
   'tarek@challengerscc.ca', 'monirulislambd64@gmail.com',
   'ankush@challengerscc.ca', '92ankusharora@gmail.com',
+  'shoeb@challengerscc.ca', 'shabyansari0023@gmail.com',
 ];
 
 // Board-level C3H access = admin + captains.

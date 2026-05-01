@@ -62,7 +62,7 @@ const ALL_PLAYERS = [
 ];
 
 // Players restricted to specific leagues
-const LPL_ONLY = ['Siva Sriram', 'Rajath Shetty', 'Noman'];
+const LPL_ONLY = ['Siva Sriram', 'Rajath Shetty', 'Noman', 'Aleem Quadri'];
 const LCL_ONLY = ['Shivam Rajput'];
 
 // Get players for a specific match based on league
@@ -197,6 +197,21 @@ function to24Hour(time12: string): string {
   if (period === 'PM' && h !== 12) h += 12;
   if (period === 'AM' && h === 12) h = 0;
   return `${String(h).padStart(2, '0')}:${m}`;
+}
+
+// Match start as a Date (local time, Eastern — matches are in Ontario).
+function getMatchStart(fullDate: string, time: string): Date {
+  return new Date(`${fullDate}T${to24Hour(time)}:00`);
+}
+
+// Calendar invites should not fire too early — too many late drop-outs
+// before the match cause invite churn. Captains can review and edit the
+// squad freely; the Finalize & Notify button only unlocks 48 hours
+// before the match starts.
+const FINALIZE_UNLOCK_HOURS_BEFORE = 48;
+function getFinalizeUnlockTime(fullDate: string, time: string): Date {
+  const matchStart = getMatchStart(fullDate, time);
+  return new Date(matchStart.getTime() - FINALIZE_UNLOCK_HOURS_BEFORE * 60 * 60 * 1000);
 }
 
 // Format a Date as YYYYMMDDTHHMMSS (Google Calendar's local-time format).
@@ -761,13 +776,31 @@ export default function AvailabilityPage() {
                                 const attendeeCount = (squads[m.id] || [])
                                   .map((n) => getPrimaryEmailForPlayer(n, EMAIL_TO_PLAYER))
                                   .filter(Boolean).length;
+                                const unlockAt = getFinalizeUnlockTime(m.fullDate, m.time);
+                                const canFinalize = Date.now() >= unlockAt.getTime();
+                                const unlockStr = unlockAt.toLocaleString('en-CA', {
+                                  month: 'short', day: 'numeric',
+                                  hour: 'numeric', minute: '2-digit', hour12: true,
+                                });
+                                if (canFinalize) {
+                                  return (
+                                    <button
+                                      onClick={() => setFinalizingMatchId(m.id)}
+                                      title={`Review squad and confirm before sending ${attendeeCount} calendar invites.`}
+                                      className="text-xs px-3 py-1.5 rounded-lg bg-purple-500/20 text-purple-400 border border-purple-500/30 hover:bg-purple-500/30 font-bold inline-flex items-center gap-1"
+                                    >
+                                      🔒 Finalize &amp; Notify
+                                      <span className="text-[10px] opacity-70">({attendeeCount})</span>
+                                    </button>
+                                  );
+                                }
                                 return (
                                   <button
-                                    onClick={() => setFinalizingMatchId(m.id)}
-                                    title={`Review squad and confirm before sending ${attendeeCount} calendar invites.`}
-                                    className="text-xs px-3 py-1.5 rounded-lg bg-purple-500/20 text-purple-400 border border-purple-500/30 hover:bg-purple-500/30 font-bold inline-flex items-center gap-1"
+                                    disabled
+                                    title={`Calendar invites unlock ${unlockStr} (48 hours before match). Until then, build and tweak the squad freely.`}
+                                    className="text-xs px-3 py-1.5 rounded-lg bg-gray-500/10 text-gray-500 border border-gray-500/20 font-bold inline-flex items-center gap-1 cursor-not-allowed"
                                   >
-                                    🔒 Finalize &amp; Notify
+                                    🔒 Locked · Unlocks {unlockStr}
                                     <span className="text-[10px] opacity-70">({attendeeCount})</span>
                                   </button>
                                 );
