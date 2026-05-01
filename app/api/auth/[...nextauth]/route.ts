@@ -72,7 +72,10 @@ const handler = NextAuth({
   ],
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    // 24 hours — short enough that allowlist changes (captain access,
+    // player removals) propagate within a day. Users re-login daily.
+    maxAge: 24 * 60 * 60, // 24 hours
+    updateAge: 60 * 60, // refresh JWT every hour while user is active
   },
   callbacks: {
     async signIn({ user }) {
