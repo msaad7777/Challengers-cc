@@ -7,6 +7,7 @@ import { db } from '@/lib/firebase';
 import { collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
+import { isC3HAdmin } from '@/lib/c3h-access';
 import {
   Match, Player, BallEvent, Innings,
   C3H_PLAYERS, LCL_TEAMS, WICKET_TYPES,
@@ -80,23 +81,26 @@ function ScorerInner() {
     if (!session?.user?.email) return;
     setLoading(true);
     try {
-      // Load own matches — no orderBy to avoid composite-index
-      // requirement. Sort client-side by createdAt.
-      const q1 = query(
-        collection(db, 'matches'),
-        where('createdBy', '==', session.user.email.toLowerCase()),
-      );
+      const userEmail = session.user.email.toLowerCase();
+      const userIsAdmin = isC3HAdmin(userEmail);
+
+      // Admins see ALL matches across the club (helps clean up stale
+      // matches created by anyone). Non-admins see only their own.
+      const q1 = userIsAdmin
+        ? query(collection(db, 'matches'))
+        : query(collection(db, 'matches'), where('createdBy', '==', userEmail));
       const snap1 = await getDocs(q1);
       const ownMatches = snap1.docs
         .map(d => ({ ...d.data(), id: d.id } as Match))
         .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
 
-      // Load all in-progress matches (for scorer takeover) — also
-      // composite-index-free.
+      // Load ALL in-progress matches (playing + innings_break + setup
+      // + toss) — covers stale drafts AND active matches so anyone can
+      // take over or admins can clean up.
       try {
         const q2 = query(
           collection(db, 'matches'),
-          where('status', '==', 'playing'),
+          where('status', 'in', ['playing', 'innings_break', 'setup', 'toss', 'players']),
         );
         const snap2 = await getDocs(q2);
         const activeMatches = snap2.docs
@@ -429,9 +433,11 @@ function ScorerInner() {
                 <div className="glass rounded-2xl p-6 border border-white/10">
                   <h3 className="text-lg font-bold text-white mb-4">Recent Matches</h3>
                   <div className="space-y-3">
-                    {savedMatches.slice(0, 10).map(m => {
+                    {savedMatches.slice(0, 20).map(m => {
                       const isOtherScorer = m.status !== 'completed' && m.scorer && m.scorer !== session?.user?.email;
                       const isOwn = m.createdBy === session?.user?.email?.toLowerCase();
+                      const userIsAdmin = isC3HAdmin(session?.user?.email);
+                      const canDelete = isOwn || userIsAdmin;
                       const openMatch = () => {
                         if (isOtherScorer) {
                           // Confirm takeover before claiming the scorer slot
@@ -477,9 +483,11 @@ function ScorerInner() {
                             </p>
                           )}
                           </button>
-                          {/* Delete button — only shown on user's own matches.
+                          {/* Delete button — shown on user's own matches OR
+                              when current user is an admin (so admins can
+                              clean up stale drafts created by anyone).
                               Stops click propagation so it doesn't open the match. */}
-                          {isOwn && (
+                          {canDelete && (
                             <button
                               onClick={handleDelete}
                               title="Delete this match permanently"
