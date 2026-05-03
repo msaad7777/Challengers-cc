@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, query, where, orderBy, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import {
@@ -71,16 +71,28 @@ export default function ScorerPage() {
     if (!session?.user?.email) return;
     setLoading(true);
     try {
-      // Load own matches
-      const q1 = query(collection(db, 'matches'), where('createdBy', '==', session.user.email.toLowerCase()), orderBy('createdAt', 'desc'));
+      // Load own matches — no orderBy to avoid composite-index
+      // requirement. Sort client-side by createdAt.
+      const q1 = query(
+        collection(db, 'matches'),
+        where('createdBy', '==', session.user.email.toLowerCase()),
+      );
       const snap1 = await getDocs(q1);
-      const ownMatches = snap1.docs.map(d => ({ ...d.data(), id: d.id } as Match));
+      const ownMatches = snap1.docs
+        .map(d => ({ ...d.data(), id: d.id } as Match))
+        .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
 
-      // Load all in-progress matches (for scorer takeover)
+      // Load all in-progress matches (for scorer takeover) — also
+      // composite-index-free.
       try {
-        const q2 = query(collection(db, 'matches'), where('status', '==', 'playing'), orderBy('createdAt', 'desc'));
+        const q2 = query(
+          collection(db, 'matches'),
+          where('status', '==', 'playing'),
+        );
         const snap2 = await getDocs(q2);
-        const activeMatches = snap2.docs.map(d => ({ ...d.data(), id: d.id } as Match));
+        const activeMatches = snap2.docs
+          .map(d => ({ ...d.data(), id: d.id } as Match))
+          .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
 
         // Merge without duplicates
         const allIds = new Set(ownMatches.map(m => m.id));
@@ -384,8 +396,9 @@ export default function ScorerPage() {
                 <div className="glass rounded-2xl p-6 border border-white/10">
                   <h3 className="text-lg font-bold text-white mb-4">Recent Matches</h3>
                   <div className="space-y-3">
-                    {savedMatches.slice(0, 5).map(m => {
+                    {savedMatches.slice(0, 10).map(m => {
                       const isOtherScorer = m.status !== 'completed' && m.scorer && m.scorer !== session?.user?.email;
+                      const isOwn = m.createdBy === session?.user?.email?.toLowerCase();
                       const openMatch = () => {
                         if (isOtherScorer) {
                           // Confirm takeover before claiming the scorer slot
@@ -398,8 +411,23 @@ export default function ScorerPage() {
                           setView(m.status === 'completed' ? 'scorecard' : 'scoring');
                         }
                       };
+                      const handleDelete = async (e: React.MouseEvent) => {
+                        e.stopPropagation();
+                        const ok = window.confirm(
+                          `Delete this match permanently?\n\n${m.team1} vs ${m.team2}\n${m.date}\n\nThis cannot be undone.`,
+                        );
+                        if (!ok) return;
+                        try {
+                          await deleteDoc(doc(db, 'matches', m.id));
+                          setSavedMatches((prev) => prev.filter((x) => x.id !== m.id));
+                        } catch (err) {
+                          console.error('Delete failed:', err);
+                          window.alert('Could not delete the match. Check your connection and try again.');
+                        }
+                      };
                       return (
-                        <button key={m.id} onClick={openMatch} className="w-full text-left glass rounded-xl p-4 border border-white/10 hover:border-primary-500/30 transition-all">
+                        <div key={m.id} className="relative">
+                          <button onClick={openMatch} className="w-full text-left glass rounded-xl p-4 pr-12 border border-white/10 hover:border-primary-500/30 transition-all">
                           <div className="flex items-center justify-between">
                             <div>
                               <p className="text-white font-bold text-sm">{m.team1} vs {m.team2}</p>
@@ -415,7 +443,22 @@ export default function ScorerPage() {
                               Currently scored by {m.scorer!.split('@')[0]} — tap to take over
                             </p>
                           )}
-                        </button>
+                          </button>
+                          {/* Delete button — only shown on user's own matches.
+                              Stops click propagation so it doesn't open the match. */}
+                          {isOwn && (
+                            <button
+                              onClick={handleDelete}
+                              title="Delete this match permanently"
+                              aria-label="Delete match"
+                              className="absolute top-3 right-3 w-8 h-8 rounded-lg flex items-center justify-center bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-colors"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          )}
+                        </div>
                       );
                     })}
                   </div>
