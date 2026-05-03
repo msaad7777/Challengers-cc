@@ -461,7 +461,13 @@ function ScorerInner() {
                           setSavedMatches((prev) => prev.filter((x) => x.id !== m.id));
                         } catch (err) {
                           console.error('Delete failed:', err);
-                          window.alert('Could not delete the match. Check your connection and try again.');
+                          const code = (err as { code?: string })?.code || '';
+                          const msg = (err as Error)?.message || 'Unknown error';
+                          let hint = '';
+                          if (code === 'permission-denied' || msg.toLowerCase().includes('permission')) {
+                            hint = '\n\nFirestore rules are blocking the delete. Open Firebase Console → Firestore → Rules and confirm the matches collection write rule is published correctly.';
+                          }
+                          window.alert(`Could not delete the match.\n\nError: ${msg}${hint}`);
                         }
                       };
                       return (

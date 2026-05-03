@@ -46,7 +46,13 @@ export default function LiveScorePage() {
       // onSnapshot will auto-update the list within ~1 sec
     } catch (err) {
       console.error('Delete failed:', err);
-      window.alert('Could not delete the match. Check your sign-in.');
+      const code = (err as { code?: string })?.code || '';
+      const msg = (err as Error)?.message || 'Unknown error';
+      let hint = '';
+      if (code === 'permission-denied' || msg.toLowerCase().includes('permission')) {
+        hint = '\n\nFirestore rules are blocking the delete. Open Firebase Console → Firestore → Rules and confirm the matches collection write rule is published correctly.';
+      }
+      window.alert(`Could not delete the match.\n\nError: ${msg}${hint}`);
     }
   };
 
