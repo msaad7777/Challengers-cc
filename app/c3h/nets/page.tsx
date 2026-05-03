@@ -102,6 +102,7 @@ const WHAT_WENT_WRONG_OPTIONS = [
   'Overthinking', 'Lost concentration', 'Poor footwork', 'Tried to hit too hard',
   'Defensive mindset', 'Did not rotate strike', 'Fatigue or distraction',
   'Bat-pad gap', 'Head fell over', 'Threw front leg to spin', 'Wrong shot to ball line',
+  'Grip felt off', 'Bat felt unbalanced',
 ];
 
 // Maps reflection mistakes to relevant Batting Principles for "Recommended for You"
@@ -145,6 +146,14 @@ const MISTAKE_TO_PRINCIPLE: Record<string, { principle: string; tip: string }> =
   'Tried to hit too hard': {
     principle: 'Stance & Setup',
     tip: "Bat lifted away. Tap near back foot toe. Power comes from timing, not muscle. Watch TPG Academy's \"Smooth Bat Flow ~ Effortless Power\" in the Power Hitting section.",
+  },
+  'Grip felt off': {
+    principle: 'Bat Grip & Balance',
+    tip: "Hold the bat with about a two-finger space between top and bottom hand grips — this keeps the bat balanced through the swing. Hands too close = lose leverage. Hands too far apart = lose control. Equal pressure in both hands; the V's formed by thumb and forefinger should align down the splice.",
+  },
+  'Bat felt unbalanced': {
+    principle: 'Bat Grip & Balance',
+    tip: "Two-finger space between top and bottom hand grips is the balance point. If the bat feels heavy in one direction, check the gap — too small and the bat wants to dive, too wide and it wobbles through the swing. Reset the grip between every ball if you have to.",
   },
 };
 

@@ -136,6 +136,25 @@ export default function DashboardPage() {
               </span>
             </a>
 
+            {/* Live Score (read-only) */}
+            <a href="/c3h/live" className="glass rounded-2xl p-6 border-2 border-red-500/20 hover:border-red-500/50 transition-all duration-300 block relative">
+              <div className="text-3xl mb-3">📡</div>
+              <h2 className="text-xl font-bold text-white mb-1">Live Score</h2>
+              <p className="text-red-400 text-xs font-medium mb-3 inline-flex items-center gap-1.5">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                </span>
+                Live · Read-only
+              </p>
+              <p className="text-gray-400 text-sm mb-4">
+                Watch the current match as it&apos;s being scored. Updates ball-by-ball.
+              </p>
+              <span className="text-xs px-3 py-1 rounded-full bg-primary-500/20 text-primary-400 border border-primary-500/30">
+                Open
+              </span>
+            </a>
+
             {/* The Dugout */}
             <a href="/c3h/availability" className="glass rounded-2xl p-6 border-2 border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 block">
               <div className="text-3xl mb-3">🪖</div>
