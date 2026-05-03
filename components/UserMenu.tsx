@@ -88,7 +88,7 @@ export default function UserMenu() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-72 glass rounded-xl border border-white/10 shadow-2xl py-2 z-50 bg-gray-950/95 backdrop-blur-xl">
+        <div className="absolute right-0 mt-2 w-72 rounded-xl border border-white/15 shadow-2xl py-2 z-50 bg-gray-950 ring-1 ring-black/50">
           {/* User info card */}
           <div className="px-4 py-3 border-b border-white/10">
             <div className="flex items-center gap-3">
