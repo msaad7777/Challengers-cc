@@ -113,12 +113,44 @@ export default function ScorerPage() {
     if (session?.user?.email) loadMatches();
   }, [session, loadMatches]);
 
-  const saveMatch = async (m: Match) => {
+  // Refresh saved-matches whenever the user returns to the home view
+  // (e.g. after exiting a match via the in-app back button). Catches
+  // the case where another scorer's writes happened while we were
+  // inside another view.
+  useEffect(() => {
+    if (view === 'home' && session?.user?.email) loadMatches();
+  }, [view, session, loadMatches]);
+
+  // Browser-level guard: if the user tries to close the tab, refresh,
+  // or click the browser back button while in the scoring view, show
+  // the native "Are you sure you want to leave?" prompt. The match is
+  // auto-saved every ball, so even if they confirm leaving, no data
+  // is lost — the match will still be in Firestore. This is purely
+  // a "wait, did you mean to do that?" prompt to avoid a misclick
+  // mid-innings.
+  useEffect(() => {
+    if (view !== 'scoring') return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      // Modern browsers ignore the message and show their own,
+      // but setting returnValue is required to trigger the prompt.
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [view]);
+
+  // Pass forceNew=true when starting a fresh match — bypasses the
+  // matchId state read (which can be stale within a single render
+  // tick) and always creates a brand-new Firestore doc. Without this,
+  // clicking "Start Match" while a previous match's matchId was still
+  // in state would overwrite that match's data via updateDoc.
+  const saveMatch = async (m: Match, opts?: { forceNew?: boolean }) => {
     setSaveStatus('saving');
     const stamp = new Date().toISOString();
     const data = { ...m, scorer: session?.user?.email || m.scorer, updatedAt: stamp };
     try {
-      if (matchId) {
+      if (matchId && !opts?.forceNew) {
         await updateDoc(doc(db, 'matches', matchId), data);
       } else {
         const ref = await addDoc(collection(db, 'matches'), data);
@@ -594,8 +626,11 @@ export default function ScorerPage() {
                   updatedAt: new Date().toISOString(),
                 };
                 setMatch(newMatch);
-                setMatchId('');
-                await saveMatch(newMatch);
+                // Force a fresh Firestore doc — saveMatch(forceNew) ignores
+                // any stale matchId still in state from a previously opened
+                // match. Without this, starting a new match could overwrite
+                // the previous one.
+                await saveMatch(newMatch, { forceNew: true });
                 setShowBatterSelect(true);
                 setView('scoring');
               }} disabled={team1Players.length < 2 || team2Players.length < 2}
@@ -1034,27 +1069,36 @@ export default function ScorerPage() {
                   : '—'}
               </p>
             </div>
-            <div className="flex gap-2">
-              <button
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setTakeoverPrompt(null)}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 text-sm font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    const m = takeoverPrompt;
+                    setMatch(m);
+                    setMatchId(m.id);
+                    setLastSavedAt(m.updatedAt || null);
+                    setSaveStatus(m.updatedAt ? 'saved' : 'idle');
+                    setView(m.status === 'completed' ? 'scorecard' : 'scoring');
+                    setTakeoverPrompt(null);
+                  }}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-accent-500/20 text-accent-400 border border-accent-500/40 hover:bg-accent-500/30 text-sm font-bold"
+                >
+                  Take Over &amp; Resume
+                </button>
+              </div>
+              <Link
+                href="/c3h/live"
                 onClick={() => setTakeoverPrompt(null)}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 text-sm font-semibold"
+                className="block w-full text-center px-4 py-2.5 rounded-xl bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 text-sm font-semibold"
               >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  const m = takeoverPrompt;
-                  setMatch(m);
-                  setMatchId(m.id);
-                  setLastSavedAt(m.updatedAt || null);
-                  setSaveStatus(m.updatedAt ? 'saved' : 'idle');
-                  setView(m.status === 'completed' ? 'scorecard' : 'scoring');
-                  setTakeoverPrompt(null);
-                }}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-accent-500/20 text-accent-400 border border-accent-500/40 hover:bg-accent-500/30 text-sm font-bold"
-              >
-                Take Over &amp; Resume
-              </button>
+                📡 Just watch live (read-only) →
+              </Link>
             </div>
           </div>
         </div>
