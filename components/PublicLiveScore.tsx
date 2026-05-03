@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { db } from '@/lib/firebase';
 import {
-  collection, query, where, orderBy, onSnapshot, limit,
+  collection, query, where, onSnapshot, limit,
   type Unsubscribe,
 } from 'firebase/firestore';
 import type { Match } from '@/app/c3h/scorer/types';
@@ -25,23 +25,30 @@ export default function PublicLiveScore() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Note: no orderBy here — combining where('status','in',...) with
+    // orderBy('updatedAt') requires a composite index, and creating
+    // that adds friction. Without orderBy, Firestore returns docs in
+    // arbitrary order, but in practice there's almost always 0 or 1
+    // match in 'playing' status at a time, so limit(5) + client-side
+    // pick-most-recent works perfectly.
     const q = query(
       collection(db, 'matches'),
       where('status', 'in', ['playing', 'innings_break']),
-      orderBy('updatedAt', 'desc'),
-      limit(1),
+      limit(5),
     );
     const unsub: Unsubscribe = onSnapshot(
       q,
       (snap) => {
         if (snap.empty) { setMatch(null); return; }
-        const d = snap.docs[0];
-        setMatch({ id: d.id, ...(d.data() as object) } as Match);
+        // Pick the most recently updated match
+        const docs = snap.docs.map((d) => ({ id: d.id, ...(d.data() as object) } as Match));
+        docs.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
+        setMatch(docs[0]);
         setError(null);
       },
       (err) => {
-        // Most likely cause: Firestore security rules block public reads.
-        // Render nothing so we don't show a broken state to visitors.
+        // Most likely causes: Firestore rules block reads, OR a missing
+        // index. Render nothing so visitors don't see a broken state.
         console.warn('Live score subscription failed:', err.message);
         setError(err.message);
       },

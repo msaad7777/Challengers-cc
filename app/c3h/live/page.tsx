@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { db } from '@/lib/firebase';
 import {
-  collection, query, where, orderBy, onSnapshot, doc as docRef,
+  collection, query, where, onSnapshot, doc as docRef,
   type Unsubscribe,
 } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
@@ -25,13 +25,15 @@ export default function LiveScorePage() {
 
   // Subscribe to all in-progress matches (live list).
   useEffect(() => {
+    // No orderBy — avoids a composite-index requirement. We sort
+    // client-side by updatedAt below.
     const q = query(
       collection(db, 'matches'),
       where('status', 'in', ['playing', 'innings_break']),
-      orderBy('updatedAt', 'desc'),
     );
     const unsub: Unsubscribe = onSnapshot(q, (snap) => {
       const list = snap.docs.map((d) => ({ id: d.id, ...(d.data() as object) })) as Match[];
+      list.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
       setOpenMatches(list);
       setLoading(false);
       // Auto-select if exactly one match is live
