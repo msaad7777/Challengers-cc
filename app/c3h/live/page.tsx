@@ -1,8 +1,6 @@
 "use client";
 
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { db } from '@/lib/firebase';
 import {
@@ -12,25 +10,21 @@ import {
 import Navbar from '@/components/Navbar';
 import { Match, getOversBalls, getRunRate, getRequiredRunRate } from '../scorer/types';
 
-// Read-only live scoreboard. Members can watch a match in progress
-// without taking over the scorer slot. Real-time via Firestore
-// onSnapshot — updates appear within ~1 second of the scorer's tap.
+// Read-only live scoreboard — open to anyone on the internet, no
+// authentication required. Subscribes to Firestore via onSnapshot
+// so the score updates within ~1 second of every ball the scorer
+// taps. Requires Firestore Security Rules to allow public reads
+// on matches with status in ['playing', 'innings_break',
+// 'completed'].
 
 export default function LiveScorePage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
   const [openMatches, setOpenMatches] = useState<Match[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [match, setMatch] = useState<Match | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (status === 'unauthenticated') router.push('/c3h/login');
-  }, [status, router]);
-
   // Subscribe to all in-progress matches (live list).
   useEffect(() => {
-    if (!session?.user?.email) return;
     const q = query(
       collection(db, 'matches'),
       where('status', 'in', ['playing', 'innings_break']),
@@ -45,7 +39,7 @@ export default function LiveScorePage() {
     });
     return () => unsub();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.user?.email]);
+  }, []);
 
   // Subscribe to the selected match document for real-time updates.
   useEffect(() => {
@@ -55,11 +49,6 @@ export default function LiveScorePage() {
     });
     return () => unsub();
   }, [selectedId]);
-
-  if (status === 'loading') {
-    return <div className="min-h-screen bg-black flex items-center justify-center"><div className="text-primary-400">Loading…</div></div>;
-  }
-  if (!session) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">

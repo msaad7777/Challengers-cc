@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import PublicLiveScore from '@/components/PublicLiveScore';
 
 export default function C3HPage() {
   const { status } = useSession();
@@ -32,8 +33,15 @@ export default function C3HPage() {
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
       <Navbar />
 
+      {/* Public live score banner — only renders when a match is in
+          progress. Visible to anyone, no login required. Auto-updates
+          via Firestore onSnapshot. */}
+      <div className="pt-28 md:pt-32">
+        <PublicLiveScore />
+      </div>
+
       {/* Hero */}
-      <section className="section-padding pt-32 md:pt-40 relative overflow-hidden">
+      <section className="section-padding pt-8 md:pt-10 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-950 to-black">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary-900/20 via-transparent to-transparent"></div>
         </div>
