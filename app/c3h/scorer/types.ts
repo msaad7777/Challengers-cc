@@ -41,6 +41,10 @@ export interface Innings {
   currentBatter1: string;
   currentBatter2: string;
   currentBowler: string;
+  // Bowler who just finished the previous over. Used to enforce
+  // the "no consecutive overs from the same bowler" rule. When set,
+  // the bowler-selection modal hides this player from the picker.
+  previousBowler?: string;
   isComplete: boolean;
 }
 

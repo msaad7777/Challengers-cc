@@ -173,6 +173,25 @@ function ScorerInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestedMatchId, savedMatches.length]);
 
+  // Auto-show the bowler modal whenever we're mid-innings and there's
+  // no current bowler set — covers two scenarios:
+  //   1. Takeover: a new scorer arrives mid-match after an over ended
+  //      and currentBowler was cleared. They need to pick the next bowler.
+  //   2. Page reload while in the same state.
+  // The modal only shows if scoring is active (not in setup/scorecard
+  // views) and the innings has at least one ball recorded.
+  useEffect(() => {
+    if (view !== 'scoring') return;
+    const inn = match
+      ? (match.currentInnings === 1 ? match.innings1 : match.innings2)
+      : null;
+    if (!inn) return;
+    const needsBowler = inn.balls.length > 0
+      && !inn.currentBowler
+      && !inn.isComplete;
+    if (needsBowler) setShowBowlerModal(true);
+  }, [view, match]);
+
   // Browser-level guard: if the user tries to close the tab, refresh,
   // or click the browser back button while in the scoring view, show
   // the native "Are you sure you want to leave?" prompt. The match is
@@ -298,6 +317,12 @@ function ScorerInner() {
   const recordBall = async (runs: number, extraType: '' | 'wide' | 'noball' | 'bye' | 'legbye' = '', isWicket = false) => {
     if (!match) return;
     const inn = getCurrentInnings()!;
+    // Block recording if no bowler is set (forces selection at start
+    // of every over). The modal is auto-shown by the effect above.
+    if (!inn.currentBowler) {
+      setShowBowlerModal(true);
+      return;
+    }
     const isLegal = extraType !== 'wide' && extraType !== 'noball';
     const currentLegalBalls = inn.balls.filter(b => b.extraType !== 'wide' && b.extraType !== 'noball').length;
     const currentOver = Math.floor(currentLegalBalls / 6);
@@ -347,10 +372,14 @@ function ScorerInner() {
 
     // Rotate strike on odd runs (1, 3) or end of over
     if (isLegal && legalBalls % 6 === 0) {
-      // End of over - swap batters
+      // End of over — swap batters, mark current bowler as previous
+      // (locks them out of next over per cricket rules), and clear
+      // currentBowler so a new selection is forced.
       const temp = updatedInnings.currentBatter1;
       updatedInnings.currentBatter1 = updatedInnings.currentBatter2;
       updatedInnings.currentBatter2 = temp;
+      updatedInnings.previousBowler = updatedInnings.currentBowler;
+      updatedInnings.currentBowler = '';
       setShowBowlerModal(true);
     } else if (runs % 2 === 1) {
       const temp = updatedInnings.currentBatter1;
@@ -909,9 +938,16 @@ function ScorerInner() {
                 return (
                 <div className="glass rounded-2xl p-6 border-2 border-accent-500/30">
                   <h3 className="text-lg font-bold text-white mb-3">Select Next Bowler</h3>
+                  {inn!.previousBowler && (
+                    <p className="text-xs text-gray-500 mb-3">
+                      <span className="text-accent-400">{inn!.previousBowler}</span> just bowled — they cannot bowl two overs in a row, so they&apos;re hidden below.
+                    </p>
+                  )}
                   <div className="space-y-2">
-                    {(inn!.bowlingTeam === team1 ? team1Players : team2Players)
-                      .filter(p => p.name !== inn!.currentBowler)
+                    {/* Pull players from the persisted match doc rather than
+                        React state — survives page reloads and takeovers. */}
+                    {(inn!.bowlingTeam === match!.team1 ? match!.team1Players : match!.team2Players)
+                      .filter(p => p.name !== inn!.currentBowler && p.name !== inn!.previousBowler)
                       .map(p => {
                         const s = bowlerStats[p.name];
                         const overs = s ? `${Math.floor(s.balls / 6)}.${s.balls % 6}` : '0';
