@@ -14,6 +14,7 @@ import {
   getOversBalls, getRunRate, getRequiredRunRate,
   getBattingStats, getBowlingStats,
 } from '../scorer/types';
+import MatchSummary from '../lib/MatchSummary';
 
 // Read-only live scoreboard — open to anyone on the internet, no
 // authentication required. Subscribes to Firestore via onSnapshot
@@ -30,12 +31,16 @@ export default function LiveScorePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Where to send the user when they tap "Continue scoring".
-  // - If signed in: jump straight to the scorer; the home view's
-  //   "Recent Matches" section lists in-progress matches so they
-  //   can pick the one they want to take over.
-  // - If not signed in: route through the login page first.
-  const continueScoringHref = session ? '/c3h/scorer' : '/c3h/login';
+  // Where to send the user when they tap "Continue scoring" on a
+  // SPECIFIC match. Includes the matchId so the scorer can auto-load
+  // and open that match (with takeover modal if someone else is
+  // currently scoring it). Login redirect preserves the destination.
+  const continueScoringHrefFor = (matchId?: string) => {
+    if (!matchId) return session ? '/c3h/scorer' : '/c3h/login';
+    return session
+      ? `/c3h/scorer?match=${matchId}`
+      : `/c3h/login?callbackUrl=${encodeURIComponent(`/c3h/scorer?match=${matchId}`)}`;
+  };
 
   // Subscribe to all in-progress matches (live list).
   useEffect(() => {
@@ -147,7 +152,7 @@ export default function LiveScorePage() {
                       📊 View Live Scorecard
                     </button>
                     <Link
-                      href={continueScoringHref}
+                      href={continueScoringHrefFor(m.id)}
                       className="px-4 py-2.5 rounded-xl bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/25 text-sm font-semibold text-center"
                     >
                       ✏️ {session ? 'Continue Scoring' : 'Sign in to Score'}
@@ -163,7 +168,7 @@ export default function LiveScorePage() {
             <ScoreboardView
               match={match}
               onBack={() => setSelectedId(null)}
-              continueScoringHref={continueScoringHref}
+              continueScoringHref={continueScoringHrefFor(match.id)}
               isLoggedIn={!!session}
             />
           )}
@@ -312,6 +317,9 @@ function ScoreboardView({ match, onBack, continueScoringHref, isLoggedIn }: {
           </div>
         )}
       </div>
+
+      {/* Match Summary + MVP — only for completed matches */}
+      {match.status === 'completed' && <MatchSummary match={match} />}
 
       {/* Full scorecard — current innings */}
       <ScorecardTables innings={innings} label={`${innings.battingTeam} — innings ${match.currentInnings}`} />

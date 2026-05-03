@@ -1,8 +1,8 @@
 "use client";
 
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState, useCallback } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
@@ -17,8 +17,17 @@ import {
 type View = 'home' | 'setup' | 'toss' | 'players' | 'scoring' | 'scorecard' | 'matches';
 
 export default function ScorerPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black flex items-center justify-center"><div className="text-primary-400">Loading…</div></div>}>
+      <ScorerInner />
+    </Suspense>
+  );
+}
+
+function ScorerInner() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [view, setView] = useState<View>('home');
   const [match, setMatch] = useState<Match | null>(null);
   const [matchId, setMatchId] = useState('');
@@ -132,6 +141,30 @@ export default function ScorerPage() {
   useEffect(() => {
     if (view === 'home' && session?.user?.email) loadMatches();
   }, [view, session, loadMatches]);
+
+  // Auto-open a specific match if the URL has ?match=ID — used by
+  // /c3h/live's "Continue Scoring" link to drop the user straight
+  // into the match (with takeover prompt if someone else is the
+  // current scorer). Runs once after savedMatches loads.
+  const requestedMatchId = searchParams.get('match');
+  useEffect(() => {
+    if (!requestedMatchId || savedMatches.length === 0 || view !== 'home') return;
+    const m = savedMatches.find((sm) => sm.id === requestedMatchId);
+    if (!m) return; // Match not found — leave on home view, user sees Recent Matches
+    const isOtherScorer = m.status !== 'completed' && m.scorer && m.scorer !== session?.user?.email;
+    if (isOtherScorer) {
+      setTakeoverPrompt(m);
+    } else {
+      setMatch(m);
+      setMatchId(m.id);
+      setLastSavedAt(m.updatedAt || null);
+      setSaveStatus(m.updatedAt ? 'saved' : 'idle');
+      setView(m.status === 'completed' ? 'scorecard' : 'scoring');
+    }
+    // Clear the query param so a refresh doesn't loop
+    router.replace('/c3h/scorer');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestedMatchId, savedMatches.length]);
 
   // Browser-level guard: if the user tries to close the tab, refresh,
   // or click the browser back button while in the scoring view, show
