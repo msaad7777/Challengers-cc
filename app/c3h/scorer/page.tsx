@@ -173,12 +173,12 @@ function ScorerInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestedMatchId, savedMatches.length]);
 
-  // Auto-show the bowler modal at the start of every new over and
-  // whenever we have stale data missing a current bowler. Covers:
-  //   1. Takeover mid-match after an over ended (currentBowler cleared)
-  //   2. Page reload at end-of-over boundary
-  //   3. Legacy match data where the over ended but currentBowler
-  //      wasn't cleared by the older code path
+  // Auto-show the bowler modal when the over just ended AND a new
+  // bowler hasn't been picked yet. Detects "not picked yet" by
+  // comparing the last-ball's bowler to the current bowler — if
+  // they're the same person at an over boundary, the next bowler
+  // hasn't been chosen. Once the user picks a different bowler,
+  // currentBowler !== lastBall.bowler, modal stays closed.
   useEffect(() => {
     if (view !== 'scoring') return;
     const inn = match
@@ -189,9 +189,12 @@ function ScorerInner() {
       (b) => b.extraType !== 'wide' && b.extraType !== 'noball',
     ).length;
     const atOverBoundary = legalBalls > 0 && legalBalls % 6 === 0;
+    const lastBall = inn.balls[inn.balls.length - 1];
+    const bowlerNotChangedSinceOverEnd =
+      atOverBoundary && lastBall && lastBall.bowler === inn.currentBowler;
     const needsBowler =
       inn.balls.length > 0 &&
-      (!inn.currentBowler || atOverBoundary);
+      (!inn.currentBowler || bowlerNotChangedSinceOverEnd);
     if (needsBowler) setShowBowlerModal(true);
   }, [view, match]);
 
@@ -955,10 +958,26 @@ function ScorerInner() {
                         const s = bowlerStats[p.name];
                         const overs = s ? `${Math.floor(s.balls / 6)}.${s.balls % 6}` : '0';
                         return (
-                        <button key={p.id} onClick={() => {
-                          const updated = { ...match!, [match!.currentInnings === 1 ? 'innings1' : 'innings2']: { ...inn!, currentBowler: p.name } };
+                        <button key={p.id} onClick={async () => {
+                          // The bowler who just finished is whichever
+                          // is currently set OR the explicit previousBowler
+                          // from the data. This becomes the new previousBowler
+                          // so the modal will exclude them next over too.
+                          const justFinished = inn!.currentBowler || inn!.previousBowler || '';
+                          const updatedInn = {
+                            ...inn!,
+                            currentBowler: p.name,
+                            previousBowler: justFinished,
+                          };
+                          const updated = {
+                            ...match!,
+                            [match!.currentInnings === 1 ? 'innings1' : 'innings2']: updatedInn,
+                          };
                           setMatch(updated);
                           setShowBowlerModal(false);
+                          // Persist to Firestore immediately so a takeover
+                          // / refresh sees the new bowler.
+                          await saveMatch(updated);
                         }} className="w-full text-left px-3 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-accent-500/20 hover:border-accent-500/30 transition-all flex justify-between items-center">
                           <span className="text-sm text-gray-300">{p.name}</span>
                           {s ? (
