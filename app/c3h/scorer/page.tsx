@@ -173,22 +173,25 @@ function ScorerInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestedMatchId, savedMatches.length]);
 
-  // Auto-show the bowler modal whenever we're mid-innings and there's
-  // no current bowler set — covers two scenarios:
-  //   1. Takeover: a new scorer arrives mid-match after an over ended
-  //      and currentBowler was cleared. They need to pick the next bowler.
-  //   2. Page reload while in the same state.
-  // The modal only shows if scoring is active (not in setup/scorecard
-  // views) and the innings has at least one ball recorded.
+  // Auto-show the bowler modal at the start of every new over and
+  // whenever we have stale data missing a current bowler. Covers:
+  //   1. Takeover mid-match after an over ended (currentBowler cleared)
+  //   2. Page reload at end-of-over boundary
+  //   3. Legacy match data where the over ended but currentBowler
+  //      wasn't cleared by the older code path
   useEffect(() => {
     if (view !== 'scoring') return;
     const inn = match
       ? (match.currentInnings === 1 ? match.innings1 : match.innings2)
       : null;
-    if (!inn) return;
-    const needsBowler = inn.balls.length > 0
-      && !inn.currentBowler
-      && !inn.isComplete;
+    if (!inn || inn.isComplete) return;
+    const legalBalls = inn.balls.filter(
+      (b) => b.extraType !== 'wide' && b.extraType !== 'noball',
+    ).length;
+    const atOverBoundary = legalBalls > 0 && legalBalls % 6 === 0;
+    const needsBowler =
+      inn.balls.length > 0 &&
+      (!inn.currentBowler || atOverBoundary);
     if (needsBowler) setShowBowlerModal(true);
   }, [view, match]);
 
