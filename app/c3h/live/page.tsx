@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { db } from '@/lib/firebase';
 import {
   collection, query, where, onSnapshot, doc as docRef,
@@ -18,11 +19,19 @@ import { Match, getOversBalls, getRunRate, getRequiredRunRate } from '../scorer/
 // 'completed'].
 
 export default function LiveScorePage() {
+  const { data: session } = useSession();
   const [openMatches, setOpenMatches] = useState<Match[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [match, setMatch] = useState<Match | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Where to send the user when they tap "Continue scoring".
+  // - If signed in: jump straight to the scorer; the home view's
+  //   "Recent Matches" section lists in-progress matches so they
+  //   can pick the one they want to take over.
+  // - If not signed in: route through the login page first.
+  const continueScoringHref = session ? '/c3h/scorer' : '/c3h/login';
 
   // Subscribe to all in-progress matches (live list).
   useEffect(() => {
@@ -111,32 +120,49 @@ export default function LiveScorePage() {
                 </div>
               )}
               {openMatches.map((m) => (
-                <button
+                <div
                   key={m.id}
-                  onClick={() => setSelectedId(m.id!)}
-                  className="w-full glass rounded-2xl p-5 border border-white/5 hover:border-primary-500/40 transition-all text-left"
+                  className="glass rounded-2xl p-5 border border-white/5 hover:border-primary-500/40 transition-all"
                 >
-                  <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-start justify-between gap-4 mb-3">
                     <div>
                       <p className="text-white font-bold">{m.team1} <span className="text-gray-500">vs</span> {m.team2}</p>
                       <p className="text-gray-500 text-xs mt-1">
                         {m.matchLabel || m.matchType} · {m.venue || 'venue TBD'}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <p className="text-primary-400 text-xs font-semibold">View live →</p>
-                      <p className="text-gray-600 text-[10px] mt-1">
-                        Last update {m.updatedAt ? new Date(m.updatedAt).toLocaleTimeString('en-CA', { hour: 'numeric', minute: '2-digit', hour12: true }) : '—'}
-                      </p>
-                    </div>
+                    <p className="text-gray-600 text-[10px] whitespace-nowrap">
+                      Last update {m.updatedAt ? new Date(m.updatedAt).toLocaleTimeString('en-CA', { hour: 'numeric', minute: '2-digit', hour12: true }) : '—'}
+                    </p>
                   </div>
-                </button>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setSelectedId(m.id!)}
+                      className="px-4 py-2.5 rounded-xl bg-primary-500/15 text-primary-400 border border-primary-500/30 hover:bg-primary-500/25 text-sm font-semibold"
+                    >
+                      📊 View Live Scorecard
+                    </button>
+                    <Link
+                      href={continueScoringHref}
+                      className="px-4 py-2.5 rounded-xl bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/25 text-sm font-semibold text-center"
+                    >
+                      ✏️ {session ? 'Continue Scoring' : 'Sign in to Score'}
+                    </Link>
+                  </div>
+                </div>
               ))}
             </div>
           )}
 
           {/* Selected match scoreboard */}
-          {selectedId && match && <ScoreboardView match={match} onBack={() => setSelectedId(null)} />}
+          {selectedId && match && (
+            <ScoreboardView
+              match={match}
+              onBack={() => setSelectedId(null)}
+              continueScoringHref={continueScoringHref}
+              isLoggedIn={!!session}
+            />
+          )}
 
         </div>
       </section>
@@ -148,7 +174,12 @@ export default function LiveScorePage() {
 // Scoreboard view — renders the active innings cleanly
 // ────────────────────────────────────────────────────────────────
 
-function ScoreboardView({ match, onBack }: { match: Match; onBack: () => void }) {
+function ScoreboardView({ match, onBack, continueScoringHref, isLoggedIn }: {
+  match: Match;
+  onBack: () => void;
+  continueScoringHref: string;
+  isLoggedIn: boolean;
+}) {
   const innings = match.currentInnings === 1 ? match.innings1 : match.innings2;
   const otherInnings = match.currentInnings === 1 ? match.innings2 : match.innings1;
   const oversBalls = getOversBalls(innings.totalBalls);
@@ -168,11 +199,19 @@ function ScoreboardView({ match, onBack }: { match: Match; onBack: () => void })
     <div className="space-y-4">
 
       {/* Top bar */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <button onClick={onBack} className="text-xs text-gray-400 hover:text-white">← All live matches</button>
-        <span className="text-xs text-gray-600">
-          Scorer: <span className="text-gray-400">{match.scorer?.split('@')[0] || '—'}</span> · Updates live
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-gray-600">
+            Scorer: <span className="text-gray-400">{match.scorer?.split('@')[0] || '—'}</span> · Updates live
+          </span>
+          <Link
+            href={continueScoringHref}
+            className="text-xs px-3 py-1.5 rounded-lg bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/25 font-semibold"
+          >
+            ✏️ {isLoggedIn ? 'Take Over Scoring →' : 'Sign in to Score →'}
+          </Link>
+        </div>
       </div>
 
       {/* Match header */}
