@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState, useCallback } from 'react';
-import { db } from '@/lib/firebase';
+import { db, firebaseAuthReady } from '@/lib/firebase';
 import { collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
@@ -81,6 +81,9 @@ function ScorerInner() {
     if (!session?.user?.email) return;
     setLoading(true);
     try {
+      // Wait for Firebase Anonymous Auth before any read — prevents
+      // race-condition permission-denied errors on first page load.
+      await firebaseAuthReady();
       const userEmail = session.user.email.toLowerCase();
       const userIsAdmin = isC3HAdmin(userEmail);
 

@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { db } from '@/lib/firebase';
+import { db, firebaseAuthReady } from '@/lib/firebase';
 import { collection, doc, setDoc, updateDoc, getDocs } from 'firebase/firestore';
 import { isC3HBoard, isC3HCaptain, isC3HSquadViewer } from '@/lib/c3h-access';
 import Navbar from '@/components/Navbar';
@@ -347,6 +347,11 @@ export default function AvailabilityPage() {
   const loadAvailability = useCallback(async () => {
     setLoading(true);
     try {
+      // Wait for Firebase Anonymous Auth to be ready before querying.
+      // Without this, the read can fire before auth signs in and
+      // Firestore rejects with permission-denied, leaving the page
+      // showing zero availability data even though it's all there.
+      await firebaseAuthReady();
       const snap = await getDocs(collection(db, 'availability'));
       const data: AllAvailability = {};
       snap.docs.forEach(d => {
