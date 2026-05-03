@@ -77,8 +77,9 @@ export default function LiveScorePage() {
         setOpenMatches(list);
         setLoading(false);
         setError(null);
-        // Auto-select if exactly one match is live
-        if (!selectedId && list.length === 1) setSelectedId(list[0].id);
+        // Auto-select the most-recently-updated match — there's only
+        // one truly live match at a time, even if stale drafts exist.
+        if (!selectedId && list.length > 0) setSelectedId(list[0].id);
       },
       (err) => {
         console.error('Live match query failed:', err);
@@ -121,75 +122,70 @@ export default function LiveScorePage() {
             <Link href="/c3h/dashboard" className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10">← Dashboard</Link>
           </div>
 
-          {/* Match list (when multiple, or none selected) */}
+          {/* Single live match — auto-selects the most-recently-updated
+              match in playing/innings_break. No multi-match list. */}
           {!selectedId && (
             <div className="space-y-3">
-              {loading && <p className="text-gray-500 text-sm">Looking for live matches…</p>}
+              {loading && <p className="text-gray-500 text-sm">Looking for the live match…</p>}
               {error && (
                 <div className="glass rounded-2xl p-6 border-2 border-red-500/40 bg-red-500/5">
-                  <p className="text-red-400 font-bold text-sm mb-2">⚠️ Could not load live matches</p>
+                  <p className="text-red-400 font-bold text-sm mb-2">⚠️ Could not load live match</p>
                   <p className="text-gray-300 text-xs mb-3 font-mono break-all">{error}</p>
                   <p className="text-gray-400 text-xs">
-                    Most common cause: <strong>Firestore Security Rules</strong> are not yet published, or are blocking reads. Open{' '}
-                    <a href="https://console.firebase.google.com/project/challengers-c3h/firestore/rules" target="_blank" rel="noopener noreferrer" className="text-primary-400 underline">
-                      Firebase Rules Console
-                    </a>{' '}
-                    and confirm the matches collection allows reads on <code className="bg-white/5 px-1 rounded">status in [&apos;playing&apos;,&apos;innings_break&apos;,&apos;completed&apos;]</code> (public) or for any authenticated user.
+                    Most common cause: <strong>Firestore Security Rules</strong> are not yet published, or are blocking reads.
                   </p>
                 </div>
               )}
               {!loading && !error && openMatches.length === 0 && (
                 <div className="glass rounded-2xl p-8 text-center border border-white/5">
-                  <p className="text-gray-400">No matches in progress right now.</p>
-                  <p className="text-gray-600 text-xs mt-2">When a captain or designated scorer starts scoring on the Scorer page, the match will appear here automatically.</p>
-                  <p className="text-gray-700 text-[10px] mt-3 italic">
-                    If you&apos;re currently scoring, check the match has reached &ldquo;Start Match&rdquo; (status must be <code className="bg-white/5 px-1 rounded">playing</code>).
-                  </p>
+                  <p className="text-gray-400 font-bold">No live match right now</p>
+                  <p className="text-gray-600 text-xs mt-2">When a scorer starts a match, it will appear here automatically.</p>
+                  {session && (
+                    <Link href="/c3h/scorer" className="inline-block mt-4 px-4 py-2 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30 text-sm font-semibold hover:bg-primary-500/30">
+                      🏏 Start a match →
+                    </Link>
+                  )}
                 </div>
               )}
-              {openMatches.map((m) => (
-                <div
-                  key={m.id}
-                  className="glass rounded-2xl p-5 border border-white/5 hover:border-primary-500/40 transition-all"
-                >
-                  <div className="flex items-start justify-between gap-4 mb-3">
-                    <div>
-                      <p className="text-white font-bold">{m.team1} <span className="text-gray-500">vs</span> {m.team2}</p>
-                      <p className="text-gray-500 text-xs mt-1">
-                        {m.matchLabel || m.matchType} · {m.venue || 'venue TBD'}
-                      </p>
-                    </div>
-                    <p className="text-gray-600 text-[10px] whitespace-nowrap">
-                      Last update {m.updatedAt ? new Date(m.updatedAt).toLocaleTimeString('en-CA', { hour: 'numeric', minute: '2-digit', hour12: true }) : '—'}
-                    </p>
-                  </div>
-                  <div className={`grid grid-cols-1 ${userIsAdmin ? 'sm:grid-cols-3' : 'sm:grid-cols-2'} gap-2`}>
-                    <button
-                      onClick={() => setSelectedId(m.id!)}
-                      className="px-4 py-2.5 rounded-xl bg-primary-500/15 text-primary-400 border border-primary-500/30 hover:bg-primary-500/25 text-sm font-semibold"
-                    >
-                      📊 View Live Scorecard
-                    </button>
-                    <Link
-                      href={continueScoringHrefFor(m.id)}
-                      className="px-4 py-2.5 rounded-xl bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/25 text-sm font-semibold text-center"
-                    >
-                      ✏️ {session ? 'Continue Scoring' : 'Sign in to Score'}
-                    </Link>
-                    {userIsAdmin && (
-                      <button
-                        onClick={(e) => handleDelete(m, e)}
-                        className="px-4 py-2.5 rounded-xl bg-gray-500/15 text-gray-400 border border-gray-500/30 hover:bg-red-500/15 hover:text-red-400 hover:border-red-500/30 text-sm font-semibold inline-flex items-center justify-center gap-2"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                        Delete
-                      </button>
-                    )}
+              {/* Auto-select happens in the onSnapshot callback above —
+                  the most-recently-updated match is selected automatically
+                  on first load. The user lands directly on the scoreboard
+                  with no list-of-matches step. */}
+
+              {/* Admin maintenance — visible only to admins when stale
+                  drafts exist. Lets them clean up without leaving this
+                  page. */}
+              {userIsAdmin && openMatches.length > 1 && (
+                <div className="glass rounded-2xl p-5 border-2 border-amber-500/30 bg-amber-500/5 mt-6">
+                  <p className="text-amber-400 text-xs uppercase tracking-wider font-bold mb-2">
+                    ⚠️ {openMatches.length} matches in progress
+                  </p>
+                  <p className="text-gray-300 text-sm mb-3">
+                    Multiple matches are flagged as live. The most recent one is shown above. Older drafts probably need cleanup:
+                  </p>
+                  <div className="space-y-2">
+                    {openMatches.slice(1).map((m) => (
+                      <div key={m.id} className="flex items-center justify-between gap-2 py-2 px-3 rounded-lg bg-white/5">
+                        <div className="min-w-0">
+                          <p className="text-white text-sm truncate">{m.team1} vs {m.team2}</p>
+                          <p className="text-gray-600 text-[10px]">
+                            Last update {m.updatedAt ? new Date(m.updatedAt).toLocaleString('en-CA', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : '—'}
+                          </p>
+                        </div>
+                        <button
+                          onClick={(e) => handleDelete(m, e)}
+                          className="flex-shrink-0 px-3 py-1.5 rounded-lg bg-gray-500/15 text-gray-400 border border-gray-500/30 hover:bg-red-500/15 hover:text-red-400 hover:border-red-500/30 text-xs font-semibold inline-flex items-center gap-1.5"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Delete
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))}
+              )}
             </div>
           )}
 
