@@ -110,6 +110,31 @@ export default function PublicLiveScore() {
               </span>
             </div>
 
+            {/* Current batters at the crease + bowler */}
+            {(innings.currentBatter1 || innings.currentBatter2 || innings.currentBowler) && (
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs border-t border-white/5 pt-2">
+                {innings.currentBatter1 && (
+                  <span className="text-gray-500 inline-flex items-center gap-1.5">
+                    <span className="text-primary-400 text-[10px]">●</span>
+                    <span className="text-white font-semibold">{innings.currentBatter1}</span>
+                    <span className="text-gray-600 text-[10px]">on strike</span>
+                  </span>
+                )}
+                {innings.currentBatter2 && (
+                  <span className="text-gray-500 inline-flex items-center gap-1.5">
+                    <span className="text-gray-600 text-[10px]">●</span>
+                    <span className="text-white">{innings.currentBatter2}</span>
+                  </span>
+                )}
+                {innings.currentBowler && (
+                  <span className="text-gray-500 inline-flex items-center gap-1.5 ml-auto">
+                    <span className="text-red-400 text-[10px] uppercase">Bowling</span>
+                    <span className="text-white">{innings.currentBowler}</span>
+                  </span>
+                )}
+              </div>
+            )}
+
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs">
               <span className="text-gray-500">RR <span className="text-white font-semibold tabular-nums">{runRate}</span></span>
               {target !== null && (
