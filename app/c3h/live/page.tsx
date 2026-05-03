@@ -9,7 +9,11 @@ import {
   type Unsubscribe,
 } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
-import { Match, getOversBalls, getRunRate, getRequiredRunRate } from '../scorer/types';
+import {
+  Match, Innings,
+  getOversBalls, getRunRate, getRequiredRunRate,
+  getBattingStats, getBowlingStats,
+} from '../scorer/types';
 
 // Read-only live scoreboard — open to anyone on the internet, no
 // authentication required. Subscribes to Firestore via onSnapshot
@@ -309,11 +313,119 @@ function ScoreboardView({ match, onBack, continueScoringHref, isLoggedIn }: {
         )}
       </div>
 
+      {/* Full scorecard — current innings */}
+      <ScorecardTables innings={innings} label={`${innings.battingTeam} — innings ${match.currentInnings}`} />
+
+      {/* Other innings (if it has any balls) */}
+      {otherInnings.balls.length > 0 && (
+        <ScorecardTables innings={otherInnings} label={`${otherInnings.battingTeam} — innings ${match.currentInnings === 1 ? 2 : 1}`} />
+      )}
+
       {/* Match status */}
       {match.status === 'innings_break' && (
         <div className="glass rounded-2xl p-5 border-2 border-accent-500/40 bg-accent-500/5">
           <p className="text-accent-400 font-bold">Innings break</p>
           <p className="text-gray-400 text-sm mt-1">Waiting for second innings to begin…</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────
+// Full scorecard tables — batting + bowling for one innings
+// ────────────────────────────────────────────────────────────────
+
+function ScorecardTables({ innings, label }: { innings: Innings; label: string }) {
+  const batting = getBattingStats(innings);
+  const bowling = getBowlingStats(innings);
+
+  if (batting.length === 0 && bowling.length === 0) return null;
+
+  const totalExtras =
+    innings.extras.byes + innings.extras.legbyes + innings.extras.wides +
+    innings.extras.noballs + innings.extras.penalty;
+
+  return (
+    <div className="space-y-3">
+      <p className="text-gray-500 text-xs uppercase tracking-wider mt-4">{label}</p>
+
+      {/* Batting */}
+      {batting.length > 0 && (
+        <div className="glass rounded-2xl border border-white/5 overflow-hidden">
+          <div className="bg-white/5 px-4 py-2 flex items-center justify-between">
+            <p className="text-white font-bold text-sm">🏏 Batting</p>
+            <p className="text-gray-500 text-xs">R / B / 4s / 6s / SR</p>
+          </div>
+          <div className="divide-y divide-white/5">
+            {batting.map((p) => {
+              const stillIn = !p.isOut && p.balls > 0;
+              return (
+                <div key={p.name} className="px-4 py-3">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <p className={`text-sm font-semibold truncate ${stillIn ? 'text-primary-400' : 'text-white'}`}>
+                      {p.name}{stillIn ? ' *' : ''}
+                    </p>
+                    <p className="text-sm font-bold text-white tabular-nums whitespace-nowrap">
+                      {p.runs} ({p.balls})
+                    </p>
+                  </div>
+                  <div className="flex justify-between items-baseline mt-0.5">
+                    <p className="text-[11px] text-gray-500 truncate">
+                      {p.isOut ? p.howOut : (stillIn ? 'not out' : 'did not bat')}
+                    </p>
+                    <p className="text-[11px] text-gray-500 tabular-nums whitespace-nowrap">
+                      4×{p.fours} · 6×{p.sixes} · SR {p.sr}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Extras + total */}
+          <div className="bg-white/5 px-4 py-2 flex items-baseline justify-between text-xs">
+            <p className="text-gray-400">
+              Extras{' '}
+              <span className="text-gray-300 tabular-nums">
+                {totalExtras}
+                {totalExtras > 0 && (
+                  <span className="text-gray-500 ml-1">
+                    (b{innings.extras.byes}, lb{innings.extras.legbyes}, w{innings.extras.wides}, nb{innings.extras.noballs}{innings.extras.penalty > 0 ? `, p${innings.extras.penalty}` : ''})
+                  </span>
+                )}
+              </span>
+            </p>
+            <p className="text-white font-bold tabular-nums">
+              Total {innings.totalRuns}/{innings.totalWickets} ({getOversBalls(innings.totalBalls)} ov)
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Bowling */}
+      {bowling.length > 0 && (
+        <div className="glass rounded-2xl border border-white/5 overflow-hidden">
+          <div className="bg-white/5 px-4 py-2 flex items-center justify-between">
+            <p className="text-white font-bold text-sm">🎯 Bowling</p>
+            <p className="text-gray-500 text-xs">O / R / W / Econ</p>
+          </div>
+          <div className="divide-y divide-white/5">
+            {bowling.map((p) => (
+              <div key={p.name} className="px-4 py-3 flex items-baseline justify-between gap-2">
+                <p className="text-white text-sm font-semibold truncate">{p.name}</p>
+                <p className="text-sm tabular-nums text-gray-300 whitespace-nowrap">
+                  <span className="text-white font-bold">{p.oversDisplay}</span>
+                  <span className="mx-1 text-gray-600">·</span>
+                  <span className="text-white">{p.runs}</span>r
+                  <span className="mx-1 text-gray-600">·</span>
+                  <span className={p.wickets > 0 ? 'text-accent-400 font-bold' : 'text-white'}>{p.wickets}</span>w
+                  <span className="mx-1 text-gray-600">·</span>
+                  <span className="text-gray-400">{p.economy}</span>
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
