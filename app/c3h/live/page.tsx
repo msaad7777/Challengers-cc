@@ -22,6 +22,7 @@ export default function LiveScorePage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [match, setMatch] = useState<Match | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Subscribe to all in-progress matches (live list).
   useEffect(() => {
@@ -31,14 +32,23 @@ export default function LiveScorePage() {
       collection(db, 'matches'),
       where('status', 'in', ['playing', 'innings_break']),
     );
-    const unsub: Unsubscribe = onSnapshot(q, (snap) => {
-      const list = snap.docs.map((d) => ({ id: d.id, ...(d.data() as object) })) as Match[];
-      list.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
-      setOpenMatches(list);
-      setLoading(false);
-      // Auto-select if exactly one match is live
-      if (!selectedId && list.length === 1) setSelectedId(list[0].id);
-    });
+    const unsub: Unsubscribe = onSnapshot(
+      q,
+      (snap) => {
+        const list = snap.docs.map((d) => ({ id: d.id, ...(d.data() as object) })) as Match[];
+        list.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
+        setOpenMatches(list);
+        setLoading(false);
+        setError(null);
+        // Auto-select if exactly one match is live
+        if (!selectedId && list.length === 1) setSelectedId(list[0].id);
+      },
+      (err) => {
+        console.error('Live match query failed:', err);
+        setError(err.message || 'Failed to load matches');
+        setLoading(false);
+      },
+    );
     return () => unsub();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -78,10 +88,26 @@ export default function LiveScorePage() {
           {!selectedId && (
             <div className="space-y-3">
               {loading && <p className="text-gray-500 text-sm">Looking for live matches…</p>}
-              {!loading && openMatches.length === 0 && (
+              {error && (
+                <div className="glass rounded-2xl p-6 border-2 border-red-500/40 bg-red-500/5">
+                  <p className="text-red-400 font-bold text-sm mb-2">⚠️ Could not load live matches</p>
+                  <p className="text-gray-300 text-xs mb-3 font-mono break-all">{error}</p>
+                  <p className="text-gray-400 text-xs">
+                    Most common cause: <strong>Firestore Security Rules</strong> are not yet published, or are blocking reads. Open{' '}
+                    <a href="https://console.firebase.google.com/project/challengers-c3h/firestore/rules" target="_blank" rel="noopener noreferrer" className="text-primary-400 underline">
+                      Firebase Rules Console
+                    </a>{' '}
+                    and confirm the matches collection allows reads on <code className="bg-white/5 px-1 rounded">status in [&apos;playing&apos;,&apos;innings_break&apos;,&apos;completed&apos;]</code> (public) or for any authenticated user.
+                  </p>
+                </div>
+              )}
+              {!loading && !error && openMatches.length === 0 && (
                 <div className="glass rounded-2xl p-8 text-center border border-white/5">
                   <p className="text-gray-400">No matches in progress right now.</p>
                   <p className="text-gray-600 text-xs mt-2">When a captain or designated scorer starts scoring on the Scorer page, the match will appear here automatically.</p>
+                  <p className="text-gray-700 text-[10px] mt-3 italic">
+                    If you&apos;re currently scoring, check the match has reached &ldquo;Start Match&rdquo; (status must be <code className="bg-white/5 px-1 rounded">playing</code>).
+                  </p>
                 </div>
               )}
               {openMatches.map((m) => (
