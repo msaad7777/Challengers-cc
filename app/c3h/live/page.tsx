@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { db } from '@/lib/firebase';
 import {
-  collection, query, where, onSnapshot, doc as docRef,
+  collection, query, where, onSnapshot, doc as docRef, deleteDoc,
   type Unsubscribe,
 } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
+import { isC3HAdmin } from '@/lib/c3h-access';
 import {
   Match, Innings,
   getOversBalls, getRunRate, getRequiredRunRate,
@@ -25,11 +26,29 @@ import MatchSummary from '../lib/MatchSummary';
 
 export default function LiveScorePage() {
   const { data: session } = useSession();
+  const userIsAdmin = isC3HAdmin(session?.user?.email);
   const [openMatches, setOpenMatches] = useState<Match[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [match, setMatch] = useState<Match | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Admin-only delete from this page. Confirms before deletion.
+  const handleDelete = async (m: Match, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const ok = window.confirm(
+      `Delete this match permanently?\n\n${m.team1} vs ${m.team2}\nLast update ${m.updatedAt ? new Date(m.updatedAt).toLocaleString() : '—'}\n\nThis cannot be undone. The match will disappear from /c3h/live for everyone.`,
+    );
+    if (!ok) return;
+    try {
+      await deleteDoc(docRef(db, 'matches', m.id));
+      // onSnapshot will auto-update the list within ~1 sec
+    } catch (err) {
+      console.error('Delete failed:', err);
+      window.alert('Could not delete the match. Check your sign-in.');
+    }
+  };
 
   // Where to send the user when they tap "Continue scoring" on a
   // SPECIFIC match. Includes the matchId so the scorer can auto-load
@@ -144,7 +163,7 @@ export default function LiveScorePage() {
                       Last update {m.updatedAt ? new Date(m.updatedAt).toLocaleTimeString('en-CA', { hour: 'numeric', minute: '2-digit', hour12: true }) : '—'}
                     </p>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div className={`grid grid-cols-1 ${userIsAdmin ? 'sm:grid-cols-3' : 'sm:grid-cols-2'} gap-2`}>
                     <button
                       onClick={() => setSelectedId(m.id!)}
                       className="px-4 py-2.5 rounded-xl bg-primary-500/15 text-primary-400 border border-primary-500/30 hover:bg-primary-500/25 text-sm font-semibold"
@@ -157,6 +176,17 @@ export default function LiveScorePage() {
                     >
                       ✏️ {session ? 'Continue Scoring' : 'Sign in to Score'}
                     </Link>
+                    {userIsAdmin && (
+                      <button
+                        onClick={(e) => handleDelete(m, e)}
+                        className="px-4 py-2.5 rounded-xl bg-gray-500/15 text-gray-400 border border-gray-500/30 hover:bg-red-500/15 hover:text-red-400 hover:border-red-500/30 text-sm font-semibold inline-flex items-center justify-center gap-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Delete
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
