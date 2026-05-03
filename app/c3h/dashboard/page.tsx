@@ -4,6 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
+import PublicLiveScore from '@/components/PublicLiveScore';
 import { isC3HBoard } from '@/lib/c3h-access';
 
 export default function DashboardPage() {
@@ -34,7 +35,14 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
       <Navbar />
 
-      <section className="section-padding pt-32 md:pt-40">
+      {/* Live score banner — visible to all logged-in members
+          when a match is in progress. Auto-disappears when no
+          match is active. */}
+      <div className="pt-28 md:pt-32">
+        <PublicLiveScore />
+      </div>
+
+      <section className="section-padding pt-4 md:pt-6">
         <div className="max-w-5xl mx-auto">
 
           {/* Welcome Header */}
