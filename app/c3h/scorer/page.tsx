@@ -494,7 +494,7 @@ function ScorerInner() {
   const updateDismissal = async (
     inningsNum: 1 | 2,
     ballId: string,
-    patch: { wicketType?: string; dismissedPlayer?: string; fielder?: string },
+    patch: { wicketType?: string; dismissedPlayer?: string; fielder?: string; bowler?: string },
   ) => {
     if (!match) return;
     const innKey = inningsNum === 1 ? 'innings1' : 'innings2';
@@ -508,6 +508,7 @@ function ScorerInner() {
               ...(patch.wicketType !== undefined ? { wicketType: patch.wicketType } : {}),
               ...(patch.dismissedPlayer !== undefined ? { dismissedPlayer: patch.dismissedPlayer } : {}),
               ...(patch.fielder !== undefined ? { fielder: patch.fielder } : {}),
+              ...(patch.bowler !== undefined ? { bowler: patch.bowler } : {}),
             }
           : b,
       ),
@@ -2020,6 +2021,31 @@ function ScorerInner() {
                     </div>
                     <p className="text-xs text-gray-600 mt-2">
                       Tip: if the keeper{inn.wicketKeeper ? ` (${inn.wicketKeeper})` : ''} took the catch, picking them here gives them a Best Fielder bonus.
+                    </p>
+                  </div>
+                )}
+
+                {/* Bowler re-assignment — only shown for wicket types
+                    that credit a bowler (skip Run Out / Retired Out /
+                    Retired Hurt). Used to fix mis-attribution when the
+                    over boundary missed a bowler change and the next
+                    bowler's wickets stayed with the previous bowler. */}
+                {!['Run Out', 'Retired Out', 'Retired Hurt'].includes(ball.wicketType) && (
+                  <div>
+                    <p className="text-gray-400 text-xs mb-2">Bowler</p>
+                    <div className="flex flex-wrap gap-1">
+                      {fielders.map(p => (
+                        <button
+                          key={p.id}
+                          onClick={() => updateDismissal(editingDismissal.innings, ball.id, { bowler: p.name })}
+                          className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${ball.bowler === p.name ? 'bg-red-500/20 text-red-400 border-red-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}
+                        >
+                          {p.name}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-600 mt-2">
+                      Re-assigning the bowler updates the wicket credit AND adds this ball to the new bowler&apos;s over count. Useful when an over-boundary bowler change was missed.
                     </p>
                   </div>
                 )}
