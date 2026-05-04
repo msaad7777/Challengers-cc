@@ -291,3 +291,69 @@ export function getMVP(match: Match): MatchPlayerImpact | null {
   const impact = getMatchImpact(match);
   return impact.length > 0 ? impact[0] : null;
 }
+
+// ── Shareable text scorecard ────────────────────────────────────
+
+// WhatsApp-friendly text scorecard. Plain Unicode (not markdown)
+// because most chat apps strip formatting. Includes result, MVP,
+// best-of trio, top scorers per innings, public live URL, and the
+// YouTube replay link if one is attached. Caller passes the
+// public base URL so dev/prod both work.
+export function formatMatchShareText(match: Match, baseUrl: string): string {
+  const lines: string[] = [];
+  lines.push(`🏏 ${match.team1} vs ${match.team2}`);
+  const meta: string[] = [];
+  if (match.date) meta.push(match.date);
+  if (match.venue) meta.push(match.venue);
+  if (match.totalOvers) meta.push(`${match.totalOvers} overs`);
+  if (meta.length > 0) lines.push(`📅 ${meta.join(' · ')}`);
+  if (match.result) lines.push('', `🏆 ${match.result}`);
+
+  const mvp = getMVP(match);
+  if (mvp && mvp.totalPts > 0) {
+    lines.push('', `🥇 MVP: ${mvp.name} (${mvp.totalPts} pts)`);
+    const bits: string[] = [];
+    if (mvp.battingPerf && mvp.battingPerf.runs > 0) bits.push(`${mvp.battingPerf.runs}(${mvp.battingPerf.balls})`);
+    if (mvp.bowlingPerf && mvp.bowlingPerf.wickets > 0) bits.push(`${mvp.bowlingPerf.wickets}/${mvp.bowlingPerf.runs} in ${mvp.bowlingPerf.oversDisplay}`);
+    if (mvp.fieldingPerf) {
+      const fp = mvp.fieldingPerf;
+      const f = fp.catches + fp.stumpings + fp.runOuts;
+      if (f > 0) bits.push(`${fp.catches}c${fp.stumpings ? ` ${fp.stumpings}st` : ''}${fp.runOuts ? ` ${fp.runOuts}ro` : ''}`);
+    }
+    if (bits.length > 0) lines.push(`   ${bits.join(' · ')}`);
+  }
+
+  const bestBat = getBestBatter(match);
+  const bestBowl = getBestBowler(match);
+  const bestField = getBestFielder(match);
+  if (bestBat && bestBat.runs > 0) lines.push(`🏏 Best Batter: ${bestBat.name} ${bestBat.runs}(${bestBat.balls})${bestBat.fours ? `, 4×${bestBat.fours}` : ''}${bestBat.sixes ? ` 6×${bestBat.sixes}` : ''}`);
+  if (bestBowl && bestBowl.wickets > 0) lines.push(`🎯 Best Bowler: ${bestBowl.name} ${bestBowl.wickets}/${bestBowl.runs} in ${bestBowl.oversDisplay} ov`);
+  if (bestField && (bestField.catches + bestField.stumpings + bestField.runOuts) > 0) {
+    const fp = bestField;
+    const total = fp.catches + fp.stumpings + fp.runOuts;
+    lines.push(`🧤 Best Fielder: ${fp.name} — ${total} dismissal${total !== 1 ? 's' : ''}`);
+  }
+
+  for (const inn of [match.innings1, match.innings2]) {
+    if (!inn || inn.balls.length === 0) continue;
+    const oversDisplay = `${Math.floor(inn.totalBalls / 6)}.${inn.totalBalls % 6}`;
+    lines.push('', `📋 ${inn.battingTeam}: ${inn.totalRuns}/${inn.totalWickets} (${oversDisplay})`);
+    const top = getBattingPerf(inn)
+      .filter((p) => p.balls > 0)
+      .sort((a, b) => b.runs - a.runs)
+      .slice(0, 3)
+      .map((p) => `${p.name} ${p.runs}${p.isOut ? '' : '*'}(${p.balls})`)
+      .join(', ');
+    if (top) lines.push(`   ${top}`);
+  }
+
+  if (match.replayUrl) {
+    lines.push('', `📺 Watch: ${match.replayUrl}`);
+  }
+  if (match.id) {
+    const base = baseUrl.replace(/\/$/, '');
+    lines.push(`🔗 Full scorecard: ${base}/c3h/live?id=${match.id}`);
+  }
+  lines.push('', '— Challengers Cricket Club');
+  return lines.join('\n');
+}

@@ -72,6 +72,10 @@ export interface Match {
   currentInnings: 1 | 2;
   status: 'setup' | 'toss' | 'playing' | 'innings_break' | 'completed';
   result: string;
+  // Optional YouTube (or other) replay URL — set from the scorecard
+  // view after the highlights are uploaded. Surfaced on the
+  // MatchSummary card and included in the shareable scorecard text.
+  replayUrl?: string;
   scorer: string;
   createdAt: string;
   updatedAt: string;

@@ -1606,6 +1606,36 @@ function ScorerInner() {
                   the detailed scorecard. */}
               <MatchSummary match={match} />
 
+              {/* Replay URL editor — scorer attaches the YouTube /
+                  highlights link here after the upload is live. Once
+                  saved, MatchSummary picks it up and embeds the
+                  player on /c3h/live + the share text includes it. */}
+              <div className="glass rounded-2xl p-4 border border-white/10">
+                <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">📺 Match Replay URL</p>
+                <p className="text-gray-500 text-xs mb-3">
+                  Paste the YouTube full-match or highlights link. It will appear on the public live page and in the shared scorecard.
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    defaultValue={match.replayUrl || ''}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    onBlur={async (e) => {
+                      const v = e.target.value.trim();
+                      if (v === (match.replayUrl || '')) return;
+                      const updated: Match = { ...match, replayUrl: v || undefined };
+                      setMatch(updated);
+                      await saveMatch(updated);
+                    }}
+                    className="flex-1 px-3 py-2 text-sm bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-primary-500"
+                  />
+                </div>
+                {match.replayUrl && (
+                  <p className="text-xs text-primary-400 mt-2">
+                    ✓ Replay attached — it&apos;ll show on the public live page.
+                  </p>
+                )}
+              </div>
+
               {[match.innings1, match.innings2].map((inning, idx) => {
                 if (inning.balls.length === 0) return null;
                 const batStats = getBattingStats(inning);

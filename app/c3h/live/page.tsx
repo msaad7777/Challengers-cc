@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { db } from '@/lib/firebase';
@@ -25,10 +26,25 @@ import MatchSummary from '../lib/MatchSummary';
 // 'completed'].
 
 export default function LiveScorePage() {
+  // useSearchParams needs a Suspense boundary in Next 15 App Router.
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+      <LiveScorePageInner />
+    </Suspense>
+  );
+}
+
+function LiveScorePageInner() {
   const { data: session } = useSession();
   const userIsAdmin = isC3HAdmin(session?.user?.email);
+  // Deep-link support: /c3h/live?id=<matchId> jumps straight to that
+  // match (works for completed matches too — Firestore doc subscribe
+  // doesn't care about status). Used by the Share button on
+  // MatchSummary so a single tap from a chat opens the right match.
+  const searchParams = useSearchParams();
+  const idFromUrl = searchParams.get('id');
   const [openMatches, setOpenMatches] = useState<Match[]>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(idFromUrl);
   const [match, setMatch] = useState<Match | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

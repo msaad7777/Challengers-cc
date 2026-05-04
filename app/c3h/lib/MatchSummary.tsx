@@ -4,12 +4,16 @@
 // /c3h/scorer scorecard view. Surfaces MVP, Best Batter, Best Bowler,
 // Best Fielder, and a top-3 impact leaderboard.
 
+import { useState } from 'react';
 import type { Match } from '../scorer/types';
 import {
   getMVP, getBestBatter, getBestBowler, getBestFielder, getMatchImpact,
+  formatMatchShareText,
 } from './matchStats';
 
 export default function MatchSummary({ match }: { match: Match }) {
+  const [shareNote, setShareNote] = useState<string | null>(null);
+
   if (match.status !== 'completed' && match.innings1.balls.length === 0) return null;
 
   const mvp = getMVP(match);
@@ -18,17 +22,105 @@ export default function MatchSummary({ match }: { match: Match }) {
   const bestField = getBestFielder(match);
   const top3 = getMatchImpact(match).slice(0, 3);
 
+  const handleShare = async () => {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://challengerscc.ca';
+    const text = formatMatchShareText(match, baseUrl);
+    const title = `${match.team1} vs ${match.team2} — Scorecard`;
+    // Web Share API is the right tool on mobile (native share sheet).
+    // Falls back to clipboard on desktop / unsupported browsers.
+    try {
+      const nav = typeof navigator !== 'undefined' ? navigator : null;
+      if (nav?.share) {
+        await nav.share({ title, text });
+        setShareNote('Shared');
+      } else if (nav?.clipboard) {
+        await nav.clipboard.writeText(text);
+        setShareNote('Copied to clipboard');
+      } else {
+        throw new Error('No share / clipboard API available');
+      }
+    } catch (err) {
+      // User cancelled the share sheet or clipboard write failed.
+      // Either way we don't surface an error — the share sheet's
+      // own "Cancel" UX is enough.
+      const aborted = (err as { name?: string })?.name === 'AbortError';
+      if (!aborted) setShareNote('Could not share');
+    }
+    if (shareNote) setTimeout(() => setShareNote(null), 2500);
+  };
+
+  const ytEmbed = (() => {
+    if (!match.replayUrl) return null;
+    // Accept both watch?v= and youtu.be/ formats.
+    const m1 = match.replayUrl.match(/[?&]v=([^&]+)/);
+    if (m1) return `https://www.youtube.com/embed/${m1[1]}`;
+    const m2 = match.replayUrl.match(/youtu\.be\/([^?&]+)/);
+    if (m2) return `https://www.youtube.com/embed/${m2[1]}`;
+    return null;
+  })();
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 mt-4 mb-2">
-        <span className="text-2xl">🏆</span>
-        <h3 className="text-lg font-bold text-white">Match Summary</h3>
+      <div className="flex items-center justify-between gap-2 mt-4 mb-2">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">🏆</span>
+          <h3 className="text-lg font-bold text-white">Match Summary</h3>
+        </div>
+        <button
+          onClick={handleShare}
+          className="px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 text-xs font-bold border border-primary-500/30 hover:bg-primary-500/30 transition-all"
+        >
+          📤 Share
+        </button>
       </div>
+      {shareNote && (
+        <p className="text-xs text-primary-400 text-right">{shareNote}</p>
+      )}
 
       {match.result && (
         <div className="glass rounded-2xl p-5 border-2 border-primary-500/30 bg-primary-500/5">
           <p className="text-primary-400 text-xs uppercase tracking-wider mb-1">Result</p>
           <p className="text-white font-bold text-lg">{match.result}</p>
+        </div>
+      )}
+
+      {/* Match replay — only shown when the scorer has attached a
+          highlights / full-match URL on the scorecard view. Embedded
+          inline if it's a YouTube link we can parse; otherwise just
+          render an external "Watch" button. */}
+      {match.replayUrl && (
+        <div className="glass rounded-2xl p-4 border border-red-500/20">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <p className="text-red-400 text-xs uppercase tracking-wider font-bold">📺 Match Replay</p>
+            <a
+              href={match.replayUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-gray-400 hover:text-red-400 underline"
+            >
+              Open on YouTube ↗
+            </a>
+          </div>
+          {ytEmbed ? (
+            <div className="aspect-video rounded-xl overflow-hidden bg-black">
+              <iframe
+                src={ytEmbed}
+                title="Match replay"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            </div>
+          ) : (
+            <a
+              href={match.replayUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full py-3 text-center rounded-lg bg-red-500/10 text-red-400 text-sm font-bold border border-red-500/30 hover:bg-red-500/20"
+            >
+              ▶ Watch the Match
+            </a>
+          )}
         </div>
       )}
 
