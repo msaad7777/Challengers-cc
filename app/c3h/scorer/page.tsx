@@ -75,6 +75,7 @@ function ScorerInner() {
   const [addStrikerName, setAddStrikerName] = useState('');
   const [addNonStrikerName, setAddNonStrikerName] = useState('');
   const [addBowlerName, setAddBowlerName] = useState('');
+  const [retireTarget, setRetireTarget] = useState<'batter1' | 'batter2' | null>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/c3h/login');
@@ -1018,11 +1019,14 @@ function ScorerInner() {
                     <div className="flex justify-between items-center text-xs mb-1">
                       <div>
                         {inn.currentBatter1 ? (
-                          <>
+                          // Clickable so the user can retire / swap out
+                          // this batter without using the WICKET flow.
+                          <button onClick={() => setRetireTarget('batter1')} title="Retire / change striker" className="hover:text-accent-400 transition-colors">
                             <span className="text-primary-400 font-bold">🏏 {inn.currentBatter1}</span>
                             <span className="text-gray-500 ml-1">*</span>
                             <span className="text-white font-bold ml-2">{b1.runs}({b1.balls})</span>
-                          </>
+                            <span className="ml-2 text-gray-600">✎</span>
+                          </button>
                         ) : (
                           <button onClick={() => setShowBatterSelect(true)} className="text-primary-400 font-bold underline decoration-dotted">🏏 Select batter*</button>
                         )}
@@ -1042,10 +1046,11 @@ function ScorerInner() {
                       )}
                       <div>
                         {inn.currentBatter2 ? (
-                          <>
+                          <button onClick={() => setRetireTarget('batter2')} title="Retire / change non-striker" className="hover:text-accent-400 transition-colors">
                             <span className="text-gray-400">{inn.currentBatter2}</span>
                             <span className="text-white font-bold ml-2">{b2.runs}({b2.balls})</span>
-                          </>
+                            <span className="ml-2 text-gray-600">✎</span>
+                          </button>
                         ) : (
                           <button onClick={() => setShowBatterSelect(true)} className="text-gray-400 underline decoration-dotted">Select batter</button>
                         )}
@@ -1400,6 +1405,66 @@ function ScorerInner() {
                   <button onClick={() => setView('scorecard')} className="flex-1 py-2 rounded-lg bg-white/5 text-gray-400 text-xs border border-white/10 hover:bg-white/10">View Scorecard</button>
                 </div>
               )}
+
+              {/* Retire-batter action sheet — opened by clicking on a
+                  batter name in the status card. Two paths:
+                  • "Retire & replace" just clears the slot (no wicket
+                    counted) so the auto-show batter modal prompts for
+                    the replacement. Common in practice rotation.
+                  • "Retire Out" pre-fills the existing wicket modal
+                    with the right wicketType + dismissedPlayer, so
+                    one tap on Confirm Wicket records it cricket-
+                    correctly. */}
+              {retireTarget && (() => {
+                const name = retireTarget === 'batter1' ? inn.currentBatter1 : inn.currentBatter2;
+                if (!name) { setRetireTarget(null); return null; }
+                return (
+                  <div className="glass rounded-2xl p-5 border-2 border-accent-500/30">
+                    <h3 className="text-base font-bold text-white mb-1">Retire <span className="text-primary-400">{name}</span>?</h3>
+                    <p className="text-xs text-gray-500 mb-4">Choose how to record this. The new batter picker will open after.</p>
+                    <div className="space-y-2">
+                      <button
+                        onClick={async () => {
+                          if (!match) return;
+                          const innKey = match.currentInnings === 1 ? 'innings1' : 'innings2';
+                          const updatedInn = {
+                            ...inn,
+                            ...(retireTarget === 'batter1' ? { currentBatter1: '' } : { currentBatter2: '' }),
+                          };
+                          const updatedMatch = { ...match, [innKey]: updatedInn };
+                          setMatch(updatedMatch);
+                          setRetireTarget(null);
+                          await saveMatch(updatedMatch);
+                        }}
+                        className="w-full py-2 rounded-lg bg-white/5 text-gray-300 text-sm border border-white/10 hover:bg-white/10 transition-all text-left px-3"
+                      >
+                        🔄 Retire &amp; replace <span className="text-gray-500 text-xs">— no wicket (practice rotation)</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          // Pre-load the wicket modal so the user just
+                          // taps Confirm Wicket. Reuses the existing
+                          // wicket-recording flow (recordBall handles
+                          // the synthetic ball + dismissal stats).
+                          setWicketType('Retired Out');
+                          setDismissedPlayer(name);
+                          setShowWicketModal(true);
+                          setRetireTarget(null);
+                        }}
+                        className="w-full py-2 rounded-lg bg-red-500/10 text-red-400 text-sm border border-red-500/20 hover:bg-red-500/20 transition-all text-left px-3"
+                      >
+                        🎯 Retire Out <span className="text-red-400/60 text-xs">— counts as a wicket</span>
+                      </button>
+                      <button
+                        onClick={() => setRetireTarget(null)}
+                        className="w-full py-2 rounded-lg bg-white/5 text-gray-500 text-xs border border-white/10 hover:bg-white/10"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Rename Players — small affordance for fixing typos /
                   placeholder names like "12". Always available. */}
