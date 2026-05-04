@@ -1345,7 +1345,7 @@ function ScorerInner() {
                   </div>
                   {showExtrasMenu && (
                     <div className="flex gap-1 mb-2 flex-wrap">
-                      {(showExtrasMenu === 'bye' || showExtrasMenu === 'legbye' ? [1, 2, 3, 4] : [0, 1, 2, 3, 4]).map(r => (
+                      {(showExtrasMenu === 'bye' || showExtrasMenu === 'legbye' ? [1, 2, 3, 4, 5, 6] : [0, 1, 2, 3, 4, 5, 6]).map(r => (
                         <button key={r} onClick={() => { recordBall(r, showExtrasMenu); setShowExtrasMenu(null); }}
                           className={`px-3 py-2 rounded-lg text-xs font-bold border transition-all ${
                             showExtrasMenu === 'wide' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30 hover:bg-blue-500/20' :
