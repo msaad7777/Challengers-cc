@@ -198,6 +198,25 @@ function ScorerInner() {
     if (needsBowler) setShowBowlerModal(true);
   }, [view, match]);
 
+  // Auto-show the batter-select modal whenever a batter slot is
+  // empty mid-innings. Covers:
+  //   1. Reload after a wicket where the new batter wasn't picked
+  //   2. Takeover landing on a match left in a half-picked state
+  //   3. Legacy data where an earlier scorer bug cleared the wrong
+  //      slot (stuck "Select batter*" placeholder with no UI to fix)
+  // Only fires once balls are recorded so the start-of-match flow
+  // (Start Match / Start 2nd Innings) still controls the initial open.
+  useEffect(() => {
+    if (view !== 'scoring') return;
+    const inn = match
+      ? (match.currentInnings === 1 ? match.innings1 : match.innings2)
+      : null;
+    if (!inn || inn.isComplete) return;
+    if (inn.balls.length === 0) return;
+    const needsBatter = !inn.currentBatter1 || !inn.currentBatter2;
+    if (needsBatter) setShowBatterSelect(true);
+  }, [view, match]);
+
   // Browser-level guard: if the user tries to close the tab, refresh,
   // or click the browser back button while in the scoring view, show
   // the native "Are you sure you want to leave?" prompt. The match is
@@ -863,18 +882,36 @@ function ScorerInner() {
                   <div className="glass rounded-xl p-3 border border-white/10">
                     <div className="flex justify-between text-xs mb-1">
                       <div>
-                        <span className="text-primary-400 font-bold">🏏 {inn.currentBatter1 || 'Select batter'}</span>
-                        <span className="text-gray-500 ml-1">*</span>
-                        {inn.currentBatter1 && <span className="text-white font-bold ml-2">{b1.runs}({b1.balls})</span>}
+                        {inn.currentBatter1 ? (
+                          <>
+                            <span className="text-primary-400 font-bold">🏏 {inn.currentBatter1}</span>
+                            <span className="text-gray-500 ml-1">*</span>
+                            <span className="text-white font-bold ml-2">{b1.runs}({b1.balls})</span>
+                          </>
+                        ) : (
+                          <button onClick={() => setShowBatterSelect(true)} className="text-primary-400 font-bold underline decoration-dotted">🏏 Select batter*</button>
+                        )}
                       </div>
                       <div>
-                        <span className="text-gray-400">{inn.currentBatter2 || 'Select batter'}</span>
-                        {inn.currentBatter2 && <span className="text-white font-bold ml-2">{b2.runs}({b2.balls})</span>}
+                        {inn.currentBatter2 ? (
+                          <>
+                            <span className="text-gray-400">{inn.currentBatter2}</span>
+                            <span className="text-white font-bold ml-2">{b2.runs}({b2.balls})</span>
+                          </>
+                        ) : (
+                          <button onClick={() => setShowBatterSelect(true)} className="text-gray-400 underline decoration-dotted">Select batter</button>
+                        )}
                       </div>
                     </div>
                     <div className="text-xs text-gray-500">
-                      🎾 {inn.currentBowler || 'Select bowler'}
-                      {inn.currentBowler && <span className="text-white font-bold ml-2">{bw.overs}-{bw.runs}-{bw.wickets}</span>}
+                      {inn.currentBowler ? (
+                        <>
+                          🎾 {inn.currentBowler}
+                          <span className="text-white font-bold ml-2">{bw.overs}-{bw.runs}-{bw.wickets}</span>
+                        </>
+                      ) : (
+                        <button onClick={() => setShowBowlerModal(true)} className="underline decoration-dotted">🎾 Select bowler</button>
+                      )}
                     </div>
                   </div>
                 );
