@@ -121,9 +121,33 @@ function ScorerInner() {
           .map(d => ({ ...d.data(), id: d.id } as Match))
           .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
 
-        // Merge without duplicates
+        // Also load all COMPLETED matches across the whole club, not
+        // just ones the current user created. /c3h/live already
+        // surfaces these publicly, so showing them in every scorer's
+        // Past Matches list just mirrors that visibility — and means
+        // a captain logging in as `saad` can review the previous
+        // night's match even if `contact@` was the original scorer.
+        // Admins were already covered via q1 (no createdBy filter);
+        // this closes the gap for non-admins.
+        const q3 = query(
+          collection(db, 'matches'),
+          where('status', '==', 'completed'),
+        );
+        const snap3 = await getDocs(q3);
+        const completedMatches = snap3.docs
+          .map(d => ({ ...d.data(), id: d.id } as Match))
+          .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+
+        // Merge without duplicates — keeps own matches first, then
+        // active drafts, then completed scorecards.
         const allIds = new Set(ownMatches.map(m => m.id));
-        const merged = [...ownMatches, ...activeMatches.filter(m => !allIds.has(m.id))];
+        const merged = [
+          ...ownMatches,
+          ...activeMatches.filter(m => !allIds.has(m.id)),
+        ];
+        for (const m of completedMatches) {
+          if (!allIds.has(m.id) && !merged.some(x => x.id === m.id)) merged.push(m);
+        }
         setSavedMatches(merged);
 
         // Extract unique opponent names from any past match (own + active)
