@@ -72,6 +72,7 @@ function ScorerInner() {
   const [newBatter, setNewBatter] = useState('');
   const [showBowlerModal, setShowBowlerModal] = useState(false);
   const [showBatterSelect, setShowBatterSelect] = useState(false);
+  const [showPlayerRename, setShowPlayerRename] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/c3h/login');
@@ -371,6 +372,48 @@ function ScorerInner() {
     setShowBowlerModal(false);
     setShowBatterSelect(false);
     await saveMatch(updatedMatch);
+  };
+
+  // Rename a player everywhere they appear in the match doc:
+  // both team rosters, current batter/bowler/previousBowler slots
+  // in both innings, and every ball event (batter, nonStriker,
+  // bowler, dismissedPlayer, fielder). Used to fix typos or
+  // replace placeholder names like "12" with the real name without
+  // losing any stats — every existing aggregation keys off these
+  // strings so a single-pass replace is sufficient.
+  const renamePlayer = async (oldName: string, newName: string) => {
+    if (!match) return;
+    const trimmed = newName.trim();
+    if (!oldName || !trimmed || trimmed === oldName) return;
+
+    const renameInInnings = (inn: Innings): Innings => ({
+      ...inn,
+      currentBatter1: inn.currentBatter1 === oldName ? trimmed : inn.currentBatter1,
+      currentBatter2: inn.currentBatter2 === oldName ? trimmed : inn.currentBatter2,
+      currentBowler: inn.currentBowler === oldName ? trimmed : inn.currentBowler,
+      previousBowler: inn.previousBowler === oldName ? trimmed : inn.previousBowler,
+      balls: inn.balls.map(b => ({
+        ...b,
+        batter: b.batter === oldName ? trimmed : b.batter,
+        nonStriker: b.nonStriker === oldName ? trimmed : b.nonStriker,
+        bowler: b.bowler === oldName ? trimmed : b.bowler,
+        dismissedPlayer: b.dismissedPlayer === oldName ? trimmed : b.dismissedPlayer,
+        fielder: b.fielder === oldName ? trimmed : b.fielder,
+      })),
+    });
+
+    const renameInRoster = (players: typeof match.team1Players) =>
+      players.map(p => (p.name === oldName ? { ...p, name: trimmed } : p));
+
+    const updated: Match = {
+      ...match,
+      team1Players: renameInRoster(match.team1Players),
+      team2Players: renameInRoster(match.team2Players),
+      innings1: renameInInnings(match.innings1),
+      innings2: renameInInnings(match.innings2),
+    };
+    setMatch(updated);
+    await saveMatch(updated);
   };
 
   // Pure swap of striker ↔ non-striker. Used when the wrong batter
@@ -1201,6 +1244,57 @@ function ScorerInner() {
                 <div className="flex gap-2">
                   <button onClick={undoLastBall} className="flex-1 py-2 rounded-lg bg-red-500/10 text-red-400 text-xs border border-red-500/20 hover:bg-red-500/20 transition-all">Undo Last Ball</button>
                   <button onClick={() => setView('scorecard')} className="flex-1 py-2 rounded-lg bg-white/5 text-gray-400 text-xs border border-white/10 hover:bg-white/10">View Scorecard</button>
+                </div>
+              )}
+
+              {/* Rename Players — small affordance for fixing typos /
+                  placeholder names like "12". Always available. */}
+              <div className="text-center">
+                <button
+                  onClick={() => setShowPlayerRename(true)}
+                  className="text-xs text-gray-500 hover:text-primary-400 underline decoration-dotted"
+                >
+                  ✏️ Edit player names
+                </button>
+              </div>
+
+              {/* Rename modal — propagates the new name everywhere
+                  (roster, current selections, all ball events) via
+                  renamePlayer. Each input fires onBlur so the user
+                  can rename multiple players in one panel. */}
+              {showPlayerRename && (
+                <div className="glass rounded-2xl p-4 border-2 border-primary-500/30">
+                  <h3 className="text-lg font-bold text-white mb-1">Edit Player Names</h3>
+                  <p className="text-xs text-gray-500 mb-4">
+                    Renames apply across the roster, current striker/non-striker/bowler, and every recorded ball. Tab or click out of a field to apply.
+                  </p>
+                  {[
+                    { team: match.team1, players: match.team1Players },
+                    { team: match.team2, players: match.team2Players },
+                  ].map(({ team, players }) => (
+                    <div key={team} className="mb-3">
+                      <p className="text-xs font-bold text-primary-400 mb-2">{team}</p>
+                      <div className="space-y-1">
+                        {players.map(p => (
+                          <input
+                            key={p.id}
+                            defaultValue={p.name}
+                            onBlur={async (e) => {
+                              const v = e.target.value.trim();
+                              if (v && v !== p.name) await renamePlayer(p.name, v);
+                            }}
+                            className="w-full px-3 py-1.5 text-sm bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary-500"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    onClick={() => setShowPlayerRename(false)}
+                    className="w-full mt-2 py-2 rounded-lg bg-primary-500/20 text-primary-400 text-sm font-bold border border-primary-500/30"
+                  >
+                    Done
+                  </button>
                 </div>
               )}
 
