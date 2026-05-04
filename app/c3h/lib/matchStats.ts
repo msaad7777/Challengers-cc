@@ -341,7 +341,7 @@ export function formatMatchShareText(match: Match, baseUrl: string): string {
     const top = getBattingPerf(inn)
       .filter((p) => p.balls > 0)
       .sort((a, b) => b.runs - a.runs)
-      .slice(0, 3)
+      .slice(0, 5)
       .map((p) => `${p.name} ${p.runs}${p.isOut ? '' : '*'}(${p.balls})`)
       .join(', ');
     if (top) lines.push(`   ${top}`);
