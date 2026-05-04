@@ -376,21 +376,35 @@ function ScorerInner() {
         (match.currentInnings === 2 && totalRuns > match.innings1.totalRuns),
     };
 
-    // Rotate strike on odd runs (1, 3) or end of over
-    if (isLegal && legalBalls % 6 === 0) {
-      // End of over — swap batters, mark current bowler as previous
-      // (locks them out of next over per cricket rules), and clear
-      // currentBowler so a new selection is forced.
+    // Rotate strike on odd runs (1, 3) or end of over.
+    // End-of-over: swap batters, mark current bowler as previous
+    // (locks them out of next over per cricket rules), and clear
+    // currentBowler so a new selection is forced.
+    const isOverComplete = isLegal && legalBalls % 6 === 0;
+    if (isOverComplete) {
       const temp = updatedInnings.currentBatter1;
       updatedInnings.currentBatter1 = updatedInnings.currentBatter2;
       updatedInnings.currentBatter2 = temp;
       updatedInnings.previousBowler = updatedInnings.currentBowler;
       updatedInnings.currentBowler = '';
-      setShowBowlerModal(true);
     } else if (runs % 2 === 1) {
       const temp = updatedInnings.currentBatter1;
       updatedInnings.currentBatter1 = updatedInnings.currentBatter2;
       updatedInnings.currentBatter2 = temp;
+    }
+
+    // Wicket cleanup must happen AFTER the over-end swap so we
+    // clear whichever slot the dismissed batter occupies post-swap.
+    // Doing it here (in one immutable update) avoids the
+    // setMatch → await → mutate-state-in-place → setMatch pattern
+    // that previously raced with the over-boundary modal logic
+    // and could leave the new-batter picker hidden.
+    if (isWicket && dismissedPlayer) {
+      if (dismissedPlayer === updatedInnings.currentBatter1) {
+        updatedInnings.currentBatter1 = '';
+      } else if (dismissedPlayer === updatedInnings.currentBatter2) {
+        updatedInnings.currentBatter2 = '';
+      }
     }
 
     const updatedMatch = {
@@ -419,23 +433,21 @@ function ScorerInner() {
     setMatch(updatedMatch);
     await saveMatch(updatedMatch);
 
-    // Reset wicket modal and clear dismissed batter
+    // Open the right modal(s) for what the user needs to pick next.
+    // When BOTH a new batter and a new bowler are needed (wicket on
+    // last ball of an over), the batter-select modal handles both in
+    // a single unified UI — its render is preferred over the
+    // bowler-change modal (see render guard below). Only fire
+    // selection prompts while the innings is still live.
+    if (!updatedInnings.isComplete) {
+      if (isWicket) setShowBatterSelect(true);
+      if (isOverComplete) setShowBowlerModal(true);
+    }
     if (isWicket) {
-      // Clear the dismissed player from current batters
-      const innKey = match.currentInnings === 1 ? 'innings1' : 'innings2';
-      const latestInn = updatedMatch[innKey];
-      if (dismissedPlayer === latestInn.currentBatter1) {
-        latestInn.currentBatter1 = '';
-      } else if (dismissedPlayer === latestInn.currentBatter2) {
-        latestInn.currentBatter2 = '';
-      }
-      setMatch({ ...updatedMatch, [innKey]: latestInn });
-
       setShowWicketModal(false);
       setWicketType('');
       setDismissedPlayer('');
       setFielder('');
-      setShowBatterSelect(true);
     }
   };
 
@@ -913,13 +925,29 @@ function ScorerInner() {
                     })()}
                     {!inn.currentBowler && (
                       <div>
-                        <p className="text-gray-400 text-xs mb-2">Opening Bowler:</p>
+                        <p className="text-gray-400 text-xs mb-2">
+                          {inn.previousBowler ? 'Next Bowler:' : 'Opening Bowler:'}
+                        </p>
+                        {inn.previousBowler && (
+                          <p className="text-xs text-gray-500 mb-2">
+                            <span className="text-accent-400">{inn.previousBowler}</span> just bowled — they cannot bowl two overs in a row.
+                          </p>
+                        )}
                         <div className="flex flex-wrap gap-1">
-                          {(inn.bowlingTeam === team1 ? team1Players : team2Players).map(p => (
-                            <button key={p.id} onClick={() => {
-                              const updated = { ...match, [match.currentInnings === 1 ? 'innings1' : 'innings2']: { ...inn, currentBowler: p.name } };
+                          {(inn.bowlingTeam === team1 ? team1Players : team2Players)
+                            .filter(p => p.name !== inn.previousBowler)
+                            .map(p => (
+                            <button key={p.id} onClick={async () => {
+                              // Mirror the bowler-change modal: persist
+                              // previousBowler so the rule keeps firing
+                              // for the over after this one too.
+                              const justFinished = inn.currentBowler || inn.previousBowler || '';
+                              const updatedInn = { ...inn, currentBowler: p.name, previousBowler: justFinished };
+                              const updated = { ...match, [match.currentInnings === 1 ? 'innings1' : 'innings2']: updatedInn };
                               setMatch(updated);
-                              if (inn.currentBatter1 && inn.currentBatter2) setShowBatterSelect(false);
+                              setShowBowlerModal(false);
+                              if (updatedInn.currentBatter1 && updatedInn.currentBatter2) setShowBatterSelect(false);
+                              await saveMatch(updated);
                             }} className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-400 border border-white/10 hover:bg-accent-500/20 hover:text-accent-400">{p.name}</button>
                           ))}
                         </div>
@@ -929,8 +957,10 @@ function ScorerInner() {
                 </div>
               )}
 
-              {/* Bowler Change Modal */}
-              {showBowlerModal && (() => {
+              {/* Bowler Change Modal — suppressed when batter-select
+                  is open, since that modal renders its own bowler
+                  picker so the user picks both in one place. */}
+              {showBowlerModal && !showBatterSelect && (() => {
                 const bowlerStats: Record<string, { balls: number; runs: number; wickets: number; maidens: number; wides: number; noballs: number }> = {};
                 inn!.balls.forEach(b => {
                   if (!b.bowler) return;
