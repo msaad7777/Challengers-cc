@@ -320,47 +320,78 @@ function ScoreboardView({ match, onBack, continueScoringHref, isLoggedIn }: {
         <p className="text-gray-500 text-xs mt-2">{match.venue || 'venue TBD'} · {match.totalOvers} overs · {match.maxWickets} wickets</p>
       </div>
 
-      {/* Score block */}
-      <div className="glass rounded-2xl p-6 border-2 border-primary-500/30">
-        <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">{innings.battingTeam} batting</p>
-        <div className="flex items-baseline gap-3 mb-3">
-          <p className="text-5xl font-bold text-white tabular-nums">{innings.totalRuns}</p>
-          <p className="text-2xl text-gray-400">/{innings.totalWickets}</p>
-          <p className="text-gray-500 text-sm ml-auto tabular-nums">({oversBalls} / {match.totalOvers}.0 ov)</p>
-        </div>
-        <div className="grid grid-cols-3 gap-3 pt-3 border-t border-white/5 text-sm">
-          <div>
-            <p className="text-gray-500 text-[10px] uppercase">Run rate</p>
-            <p className="text-white font-bold tabular-nums">{runRate}</p>
+      {/* Score block — completed matches show a "Final Score" card
+          with both innings side-by-side + the result headline.
+          Live matches keep the single-innings flow with target /
+          required rate / extras / innings number. */}
+      {match.status === 'completed' ? (
+        <div className="glass rounded-2xl p-6 border-2 border-primary-500/40 bg-primary-500/5">
+          <p className="text-primary-400 text-xs uppercase tracking-wider mb-3">Final Score</p>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            {[match.innings1, match.innings2].map((inn, i) => {
+              if (inn.balls.length === 0) return null;
+              const inOversBalls = `${Math.floor(inn.totalBalls / 6)}.${inn.totalBalls % 6}`;
+              return (
+                <div key={i}>
+                  <p className="text-gray-500 text-[11px] uppercase tracking-wider truncate">{inn.battingTeam}</p>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <p className="text-3xl font-bold text-white tabular-nums">{inn.totalRuns}</p>
+                    <p className="text-lg text-gray-400">/{inn.totalWickets}</p>
+                  </div>
+                  <p className="text-gray-500 text-xs tabular-nums">({inOversBalls} ov)</p>
+                </div>
+              );
+            })}
           </div>
-          {target !== null && (
-            <>
-              <div>
-                <p className="text-gray-500 text-[10px] uppercase">Target</p>
-                <p className="text-accent-400 font-bold tabular-nums">{target}</p>
-              </div>
-              <div>
-                <p className="text-gray-500 text-[10px] uppercase">Req rate</p>
-                <p className="text-accent-400 font-bold tabular-nums">{requiredRate}</p>
-              </div>
-            </>
-          )}
-          {target === null && (
-            <>
-              <div>
-                <p className="text-gray-500 text-[10px] uppercase">Extras</p>
-                <p className="text-white font-bold tabular-nums">
-                  {innings.extras.wides + innings.extras.noballs + innings.extras.byes + innings.extras.legbyes + innings.extras.penalty}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-500 text-[10px] uppercase">Innings</p>
-                <p className="text-white font-bold tabular-nums">{match.currentInnings} of 2</p>
-              </div>
-            </>
+          {match.result && (
+            <div className="pt-3 border-t border-primary-500/20">
+              <p className="text-gray-500 text-[10px] uppercase tracking-wider mb-1">Result</p>
+              <p className="text-primary-400 font-bold text-lg">🏆 {match.result}</p>
+            </div>
           )}
         </div>
-      </div>
+      ) : (
+        <div className="glass rounded-2xl p-6 border-2 border-primary-500/30">
+          <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">{innings.battingTeam} batting</p>
+          <div className="flex items-baseline gap-3 mb-3">
+            <p className="text-5xl font-bold text-white tabular-nums">{innings.totalRuns}</p>
+            <p className="text-2xl text-gray-400">/{innings.totalWickets}</p>
+            <p className="text-gray-500 text-sm ml-auto tabular-nums">({oversBalls} / {match.totalOvers}.0 ov)</p>
+          </div>
+          <div className="grid grid-cols-3 gap-3 pt-3 border-t border-white/5 text-sm">
+            <div>
+              <p className="text-gray-500 text-[10px] uppercase">Run rate</p>
+              <p className="text-white font-bold tabular-nums">{runRate}</p>
+            </div>
+            {target !== null && (
+              <>
+                <div>
+                  <p className="text-gray-500 text-[10px] uppercase">Target</p>
+                  <p className="text-accent-400 font-bold tabular-nums">{target}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500 text-[10px] uppercase">Req rate</p>
+                  <p className="text-accent-400 font-bold tabular-nums">{requiredRate}</p>
+                </div>
+              </>
+            )}
+            {target === null && (
+              <>
+                <div>
+                  <p className="text-gray-500 text-[10px] uppercase">Extras</p>
+                  <p className="text-white font-bold tabular-nums">
+                    {innings.extras.wides + innings.extras.noballs + innings.extras.byes + innings.extras.legbyes + innings.extras.penalty}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-500 text-[10px] uppercase">Innings</p>
+                  <p className="text-white font-bold tabular-nums">{match.currentInnings} of 2</p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Current batters + bowler — only meaningful while a match is
           in flight. Completed matches don't have anyone "at the
