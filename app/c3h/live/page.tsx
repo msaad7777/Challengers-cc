@@ -286,12 +286,30 @@ function ScoreboardView({ match, onBack, continueScoringHref, isLoggedIn }: {
             Scorer: <span className="text-gray-400">{match.scorer?.split('@')[0] || '—'}</span>
             {match.status === 'completed' ? ' · Match complete' : ' · Updates live'}
           </span>
-          <Link
-            href={continueScoringHref}
-            className="text-xs px-3 py-1.5 rounded-lg bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/25 font-semibold"
-          >
-            ✏️ {isLoggedIn ? 'Take Over Scoring →' : 'Sign in to Score →'}
-          </Link>
+          {/* Action button — context-dependent. The "Take Over /
+              Sign in to Score" CTA only makes sense for live matches.
+              On a completed match, hide it for public viewers (no
+              scoring to do, and the red CTA is confusing in a result
+              context) and downgrade to a quiet "Edit Scorecard" link
+              for logged-in scorers who may need to fix a dismissal,
+              attach a replay URL, or rename a player. */}
+          {match.status === 'completed' ? (
+            isLoggedIn && (
+              <Link
+                href={continueScoringHref}
+                className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10"
+              >
+                ✏️ Edit Scorecard →
+              </Link>
+            )
+          ) : (
+            <Link
+              href={continueScoringHref}
+              className="text-xs px-3 py-1.5 rounded-lg bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/25 font-semibold"
+            >
+              ✏️ {isLoggedIn ? 'Take Over Scoring →' : 'Sign in to Score →'}
+            </Link>
+          )}
         </div>
       </div>
 
