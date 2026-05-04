@@ -22,6 +22,12 @@ export default function MatchSummary({ match }: { match: Match }) {
   const bestField = getBestFielder(match);
   const top3 = getMatchImpact(match).slice(0, 3);
 
+  const publicUrl = (() => {
+    if (!match.id) return '';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://challengerscc.ca';
+    return `${base}/c3h/live?id=${match.id}`;
+  })();
+
   const handleShare = async () => {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://challengerscc.ca';
     const text = formatMatchShareText(match, baseUrl);
@@ -40,13 +46,35 @@ export default function MatchSummary({ match }: { match: Match }) {
         throw new Error('No share / clipboard API available');
       }
     } catch (err) {
-      // User cancelled the share sheet or clipboard write failed.
-      // Either way we don't surface an error — the share sheet's
-      // own "Cancel" UX is enough.
       const aborted = (err as { name?: string })?.name === 'AbortError';
       if (!aborted) setShareNote('Could not share');
     }
-    if (shareNote) setTimeout(() => setShareNote(null), 2500);
+    setTimeout(() => setShareNote(null), 2500);
+  };
+
+  // Copy just the public URL — for when the user wants a clean link
+  // to paste in a single message (Twitter, group title, club bio).
+  // Same /c3h/live?id=… route the share text already includes, but
+  // surfaced as its own one-tap action.
+  const handleCopyLink = async () => {
+    if (!publicUrl) return;
+    try {
+      const nav = typeof navigator !== 'undefined' ? navigator : null;
+      if (nav?.clipboard) {
+        await nav.clipboard.writeText(publicUrl);
+        setShareNote('Link copied');
+      } else if (nav?.share) {
+        // Fallback: use Web Share with the URL only.
+        await nav.share({ title: `${match.team1} vs ${match.team2}`, url: publicUrl });
+        setShareNote('Shared');
+      } else {
+        throw new Error('No clipboard / share API available');
+      }
+    } catch (err) {
+      const aborted = (err as { name?: string })?.name === 'AbortError';
+      if (!aborted) setShareNote('Could not copy');
+    }
+    setTimeout(() => setShareNote(null), 2500);
   };
 
   const ytEmbed = (() => {
@@ -61,20 +89,38 @@ export default function MatchSummary({ match }: { match: Match }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-2 mt-4 mb-2">
+      <div className="flex items-center justify-between gap-2 mt-4 mb-2 flex-wrap">
         <div className="flex items-center gap-2">
           <span className="text-2xl">🏆</span>
           <h3 className="text-lg font-bold text-white">Match Summary</h3>
         </div>
-        <button
-          onClick={handleShare}
-          className="px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 text-xs font-bold border border-primary-500/30 hover:bg-primary-500/30 transition-all"
-        >
-          📤 Share
-        </button>
+        <div className="flex items-center gap-2">
+          {publicUrl && (
+            <button
+              onClick={handleCopyLink}
+              title="Copy public link to this scorecard"
+              className="px-3 py-1.5 rounded-lg bg-white/5 text-gray-300 text-xs font-bold border border-white/10 hover:bg-white/10 transition-all"
+            >
+              🔗 Copy Link
+            </button>
+          )}
+          <button
+            onClick={handleShare}
+            title="Share full scorecard text"
+            className="px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 text-xs font-bold border border-primary-500/30 hover:bg-primary-500/30 transition-all"
+          >
+            📤 Share
+          </button>
+        </div>
       </div>
       {shareNote && (
         <p className="text-xs text-primary-400 text-right">{shareNote}</p>
+      )}
+      {publicUrl && (
+        <div className="glass rounded-xl p-3 border border-white/10">
+          <p className="text-gray-500 text-[10px] uppercase tracking-wider mb-1">Public scorecard link · no login needed</p>
+          <p className="text-xs text-primary-400 break-all font-mono">{publicUrl}</p>
+        </div>
       )}
 
       {match.result && (
