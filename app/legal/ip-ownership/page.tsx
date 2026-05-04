@@ -74,10 +74,8 @@ export default function IpOwnershipPage() {
                   <p className="text-sm font-bold text-white">Saad Cloud &amp; AI Solutions Inc.</p>
                   <ul className="text-xs text-gray-400 mt-2 space-y-1">
                     <li>Ontario business corporation</li>
-                    <li>Corporation #1001595840</li>
-                    <li>Incorporated 4 May 2026</li>
-                    <li>790 Capulet Lane, Unit 103, London, ON, N6H 0J8</li>
                     <li>Sole shareholder &amp; director: Mohammed Saad</li>
+                    <li className="text-gray-500 italic">Corporate registration details on file with the Club; available to regulators or lawyers on request.</li>
                   </ul>
                 </div>
               </div>
