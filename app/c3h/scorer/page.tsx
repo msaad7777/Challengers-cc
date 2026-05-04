@@ -922,9 +922,14 @@ function ScorerInner() {
                 <div className="glass rounded-2xl p-6 border-2 border-primary-500/30">
                   <h3 className="text-lg font-bold text-white mb-3">{inn.totalWickets > 0 && (!inn.currentBatter1 || !inn.currentBatter2) ? 'Select New Batter' : 'Select Batters'}</h3>
                   <div className="space-y-3">
+                    {/* Source the player rosters from the persisted match
+                        doc, not React state. team1Players/team2Players
+                        state is only populated during the setup flow and
+                        resets to [] on reload — pulling from match keeps
+                        the modal usable after reloads and takeovers. */}
                     {!inn.currentBatter1 && (() => {
                       const dismissed = inn.balls.filter(b => b.isWicket).map(b => b.dismissedPlayer);
-                      const available = (inn.battingTeam === team1 ? team1Players : team2Players)
+                      const available = (inn.battingTeam === match.team1 ? match.team1Players : match.team2Players)
                         .filter(p => p.name !== inn.currentBatter2 && !dismissed.includes(p.name));
                       return (
                       <div>
@@ -943,7 +948,7 @@ function ScorerInner() {
                     })()}
                     {!inn.currentBatter2 && (() => {
                       const dismissed = inn.balls.filter(b => b.isWicket).map(b => b.dismissedPlayer);
-                      const available = (inn.battingTeam === team1 ? team1Players : team2Players)
+                      const available = (inn.battingTeam === match.team1 ? match.team1Players : match.team2Players)
                         .filter(p => p.name !== inn.currentBatter1 && !dismissed.includes(p.name));
                       return (
                       <div>
@@ -971,7 +976,7 @@ function ScorerInner() {
                           </p>
                         )}
                         <div className="flex flex-wrap gap-1">
-                          {(inn.bowlingTeam === team1 ? team1Players : team2Players)
+                          {(inn.bowlingTeam === match.team1 ? match.team1Players : match.team2Players)
                             .filter(p => p.name !== inn.previousBowler)
                             .map(p => (
                             <button key={p.id} onClick={async () => {
@@ -1145,7 +1150,7 @@ function ScorerInner() {
                       <div>
                         <p className="text-gray-400 text-xs mb-2">Fielder:</p>
                         <div className="flex flex-wrap gap-1">
-                          {(inn.bowlingTeam === team1 ? team1Players : team2Players).map(p => (
+                          {(inn.bowlingTeam === match.team1 ? match.team1Players : match.team2Players).map(p => (
                             <button key={p.id} onClick={() => setFielder(p.name)} className={`text-xs px-2 py-1 rounded-lg border transition-all ${fielder === p.name ? 'bg-accent-500/20 text-accent-400 border-accent-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{p.name}</button>
                           ))}
                         </div>
