@@ -44,9 +44,9 @@ export default function About() {
               <p className="text-gray-300 leading-relaxed">
                 Our strength lies in our multidisciplinary approach. With professionals from banking, civil engineering,
                 hardware networking, and community services on our board, we bring corporate governance, financial
-                discipline, technical innovation, and community expertise to cricket administration. We&apos;re
-                federally incorporated, Cricket Ontario affiliated, and committed to transparency, professionalism,
-                and sustainable growth that benefits all of London&apos;s cricket community.
+                discipline, technical innovation, and community expertise to cricket administration. We&apos;re an
+                Ontario Not-for-Profit Corporation, run entirely by volunteers, and committed to transparency,
+                professionalism, and sustainable growth that benefits all of London&apos;s cricket community.
               </p>
             </div>
           </div>
