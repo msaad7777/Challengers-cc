@@ -174,11 +174,18 @@ function ScorerInner() {
   }, [requestedMatchId, savedMatches.length]);
 
   // Auto-show the bowler modal when the over just ended AND a new
-  // bowler hasn't been picked yet. Detects "not picked yet" by
-  // comparing the last-ball's bowler to the current bowler — if
-  // they're the same person at an over boundary, the next bowler
-  // hasn't been chosen. Once the user picks a different bowler,
-  // currentBowler !== lastBall.bowler, modal stays closed.
+  // bowler hasn't been picked yet. The "fresh bowler chosen" signal
+  // is `previousBowler !== currentBowler` — recordBall's end-of-
+  // over branch sets previousBowler to the finishing bowler and
+  // clears currentBowler, then selectBowler sets currentBowler to
+  // the user's pick (leaving previousBowler different). So they
+  // diverge as soon as a real change happens.
+  //
+  // Earlier versions compared lastBall.bowler === currentBowler,
+  // which broke when the new bowler's first delivery was a wide:
+  // the wide doesn't increment legalBalls, atOverBoundary stays
+  // true, and lastBall.bowler === currentBowler (the new bowler
+  // bowled the wide) — so the modal re-opened mid-over.
   useEffect(() => {
     if (view !== 'scoring') return;
     const inn = match
@@ -189,9 +196,10 @@ function ScorerInner() {
       (b) => b.extraType !== 'wide' && b.extraType !== 'noball',
     ).length;
     const atOverBoundary = legalBalls > 0 && legalBalls % 6 === 0;
-    const lastBall = inn.balls[inn.balls.length - 1];
     const bowlerNotChangedSinceOverEnd =
-      atOverBoundary && lastBall && lastBall.bowler === inn.currentBowler;
+      atOverBoundary &&
+      !!inn.currentBowler &&
+      inn.previousBowler === inn.currentBowler;
     const needsBowler =
       inn.balls.length > 0 &&
       (!inn.currentBowler || bowlerNotChangedSinceOverEnd);
