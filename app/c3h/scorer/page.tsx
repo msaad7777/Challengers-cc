@@ -365,6 +365,26 @@ function ScorerInner() {
     await saveMatch(updatedMatch);
   };
 
+  // Pure swap of striker ↔ non-striker. Used when the wrong batter
+  // was set on strike at the start of an over / new partnership and
+  // we need to fix it without altering balls, runs, or extras.
+  const swapBatters = async () => {
+    if (!match) return;
+    const inn = getCurrentInnings()!;
+    if (!inn.currentBatter1 || !inn.currentBatter2) return;
+    const updatedInnings: Innings = {
+      ...inn,
+      currentBatter1: inn.currentBatter2,
+      currentBatter2: inn.currentBatter1,
+    };
+    const updatedMatch = {
+      ...match,
+      [match.currentInnings === 1 ? 'innings1' : 'innings2']: updatedInnings,
+    };
+    setMatch(updatedMatch);
+    await saveMatch(updatedMatch);
+  };
+
   const recordBall = async (runs: number, extraType: '' | 'wide' | 'noball' | 'bye' | 'legbye' = '', isWicket = false) => {
     if (!match) return;
     const inn = getCurrentInnings()!;
@@ -907,7 +927,7 @@ function ScorerInner() {
                 const bw = getBowlerFigures(inn.currentBowler);
                 return (
                   <div className="glass rounded-xl p-3 border border-white/10">
-                    <div className="flex justify-between text-xs mb-1">
+                    <div className="flex justify-between items-center text-xs mb-1">
                       <div>
                         {inn.currentBatter1 ? (
                           <>
@@ -919,6 +939,19 @@ function ScorerInner() {
                           <button onClick={() => setShowBatterSelect(true)} className="text-primary-400 font-bold underline decoration-dotted">🏏 Select batter*</button>
                         )}
                       </div>
+                      {/* Swap striker ↔ non-striker without touching balls
+                          or stats. Useful when the wrong batter was put on
+                          strike at the start of an over / partnership. */}
+                      {inn.currentBatter1 && inn.currentBatter2 && (
+                        <button
+                          onClick={swapBatters}
+                          title="Swap striker"
+                          aria-label="Swap striker"
+                          className="px-2 py-0.5 rounded bg-white/5 text-gray-400 border border-white/10 hover:bg-primary-500/20 hover:text-primary-400 hover:border-primary-500/30 transition-all text-xs"
+                        >
+                          ⇄
+                        </button>
+                      )}
                       <div>
                         {inn.currentBatter2 ? (
                           <>
