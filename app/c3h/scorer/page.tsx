@@ -965,10 +965,18 @@ function ScorerInner() {
                     </div>
                     <div className="text-xs text-gray-500">
                       {inn.currentBowler ? (
-                        <>
+                        // Clickable so the user can fix a wrong-bowler
+                        // pick (or change mid-over for an injury) without
+                        // waiting for the next over-boundary auto-prompt.
+                        <button
+                          onClick={() => setShowBowlerModal(true)}
+                          title="Change bowler"
+                          className="hover:text-accent-400 transition-colors"
+                        >
                           🎾 {inn.currentBowler}
                           <span className="text-white font-bold ml-2">{bw.overs}-{bw.runs}-{bw.wickets}</span>
-                        </>
+                          <span className="ml-2 text-gray-600">✎</span>
+                        </button>
                       ) : (
                         <button onClick={() => setShowBowlerModal(true)} className="underline decoration-dotted">🎾 Select bowler</button>
                       )}
