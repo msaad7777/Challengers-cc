@@ -14,6 +14,7 @@ import {
   createEmptyInnings, getBattingStats, getBowlingStats,
   getOversBalls, getRunRate, getRequiredRunRate,
 } from './types';
+import MatchSummary from '../lib/MatchSummary';
 
 type View = 'home' | 'setup' | 'toss' | 'players' | 'scoring' | 'scorecard' | 'matches';
 
@@ -1597,6 +1598,13 @@ function ScorerInner() {
                 <p className="text-gray-500 text-xs">Toss: {match.tossWinner} elected to {match.tossDecision}</p>
                 {match.result && <p className="text-primary-400 font-bold mt-2">{match.result}</p>}
               </div>
+
+              {/* MVP / Best Batter / Best Bowler / Best Fielder / Top-3
+                  Impact — same component the public /c3h/live page
+                  renders for completed matches. Lives above the
+                  per-innings tables so the headline awards land before
+                  the detailed scorecard. */}
+              <MatchSummary match={match} />
 
               {[match.innings1, match.innings2].map((inning, idx) => {
                 if (inning.balls.length === 0) return null;
