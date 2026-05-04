@@ -455,6 +455,44 @@ function ScorerInner() {
     return { match: updated, addedName: trimmed };
   };
 
+  // Manually end the match — for cases the auto-complete in
+  // recordBall doesn't catch: time-up at the ground, forfeit, weather
+  // abandonment, practice-match cap, or both teams agreeing to call
+  // it. Computes the result from current totals (handles a partial
+  // 2nd innings where the chase fell short on overs) and flips
+  // status='completed' so the match settles into the past-matches
+  // list and the Match Summary card is unlocked.
+  const endMatch = async () => {
+    if (!match) return;
+    const ok = window.confirm(
+      'End the match now?\n\nCurrent totals will be saved as final and the match will move to Past Matches. You can still edit the replay URL afterwards.',
+    );
+    if (!ok) return;
+
+    const updated: Match = { ...match, status: 'completed' };
+    if (!updated.result) {
+      const i1 = match.innings1.totalRuns;
+      const i2 = match.innings2.totalRuns;
+      const i1Done = match.innings1.balls.length > 0;
+      const i2Done = match.innings2.balls.length > 0;
+      if (!i2Done && !i1Done) {
+        updated.result = 'Match Abandoned';
+      } else if (!i2Done) {
+        updated.result = `${match.innings1.battingTeam} ${i1}/${match.innings1.totalWickets} — innings ended early`;
+      } else if (i2 > i1) {
+        const wktsLeft = (match.maxWickets || 10) - match.innings2.totalWickets;
+        updated.result = `${match.innings2.battingTeam} won by ${wktsLeft} wicket${wktsLeft !== 1 ? 's' : ''}`;
+      } else if (i1 > i2) {
+        updated.result = `${match.innings1.battingTeam} won by ${i1 - i2} run${i1 - i2 !== 1 ? 's' : ''}`;
+      } else {
+        updated.result = 'Match Tied';
+      }
+    }
+    setMatch(updated);
+    await saveMatch(updated);
+    setView('scorecard');
+  };
+
   // Pure swap of striker ↔ non-striker. Used when the wrong batter
   // was set on strike at the start of an over / new partnership and
   // we need to fix it without altering balls, runs, or extras.
@@ -635,11 +673,22 @@ function ScorerInner() {
                 <p className="text-gray-400 text-sm">Start scoring a new match or practice game</p>
               </button>
 
-              {savedMatches.length > 0 && (
-                <div className="glass rounded-2xl p-6 border border-white/10">
-                  <h3 className="text-lg font-bold text-white mb-4">Recent Matches</h3>
-                  <div className="space-y-3">
-                    {savedMatches.slice(0, 20).map(m => {
+              {savedMatches.length > 0 && (() => {
+                // Two-bucket grouping so the user sees what's resumable
+                // first (in-progress / mid-innings drafts at the top)
+                // and a clean archive of completed scorecards below.
+                // Each bucket sorts by createdAt desc inside loadMatches
+                // already — just split it here at render time.
+                const active = savedMatches.filter(m => m.status !== 'completed');
+                const past = savedMatches.filter(m => m.status === 'completed');
+                return (
+                  <>
+                    {active.length > 0 && (
+                      <div className="glass rounded-2xl p-6 border border-accent-500/20">
+                        <h3 className="text-lg font-bold text-white mb-1">Active Matches</h3>
+                        <p className="text-gray-500 text-xs mb-4">Currently in progress — tap to resume scoring or take over.</p>
+                        <div className="space-y-3">
+                          {active.slice(0, 10).map(m => {
                       const isOtherScorer = m.status !== 'completed' && m.scorer && m.scorer !== session?.user?.email;
                       const isOwn = m.createdBy === session?.user?.email?.toLowerCase();
                       const userIsAdmin = isC3HAdmin(session?.user?.email);
@@ -714,9 +763,74 @@ function ScorerInner() {
                         </div>
                       );
                     })}
-                  </div>
-                </div>
-              )}
+                        </div>
+                      </div>
+                    )}
+
+                    {past.length > 0 && (
+                      <div className="glass rounded-2xl p-6 border border-white/10">
+                        <h3 className="text-lg font-bold text-white mb-1">Past Matches</h3>
+                        <p className="text-gray-500 text-xs mb-4">Completed scorecards — tap to view scorecard, MVP, and replay.</p>
+                        <div className="space-y-3">
+                          {past.slice(0, 30).map(m => {
+                            const isOwn = m.createdBy === session?.user?.email?.toLowerCase();
+                            const userIsAdmin = isC3HAdmin(session?.user?.email);
+                            const canDelete = isOwn || userIsAdmin;
+                            const openMatch = () => {
+                              setMatch(m);
+                              setMatchId(m.id);
+                              setLastSavedAt(m.updatedAt || null);
+                              setSaveStatus(m.updatedAt ? 'saved' : 'idle');
+                              setView('scorecard');
+                            };
+                            const handleDelete = async (e: React.MouseEvent) => {
+                              e.stopPropagation();
+                              const ok = window.confirm(
+                                `Delete this match permanently?\n\n${m.team1} vs ${m.team2}\n${m.date}\n\nThis cannot be undone.`,
+                              );
+                              if (!ok) return;
+                              try {
+                                await deleteDoc(doc(db, 'matches', m.id));
+                                setSavedMatches((prev) => prev.filter((x) => x.id !== m.id));
+                              } catch (err) {
+                                console.error('Delete failed:', err);
+                                window.alert(`Could not delete the match.\n\nError: ${(err as Error)?.message || 'Unknown error'}`);
+                              }
+                            };
+                            return (
+                              <div key={m.id} className="relative">
+                                <button onClick={openMatch} className="w-full text-left glass rounded-xl p-4 pr-12 border border-white/10 hover:border-primary-500/30 transition-all">
+                                  <div className="flex items-center justify-between">
+                                    <div>
+                                      <p className="text-white font-bold text-sm">{m.team1} vs {m.team2}</p>
+                                      <p className="text-gray-500 text-xs">{m.date} | {m.totalOvers} overs{m.venue ? ` · ${m.venue}` : ''}</p>
+                                    </div>
+                                    <span className="text-xs px-2 py-1 rounded-full bg-primary-500/20 text-primary-400">Completed</span>
+                                  </div>
+                                  {m.result && <p className="text-primary-400 text-xs mt-1">{m.result}</p>}
+                                  {m.replayUrl && <p className="text-red-400 text-xs mt-1">📺 Replay attached</p>}
+                                </button>
+                                {canDelete && (
+                                  <button
+                                    onClick={handleDelete}
+                                    title="Delete this match permanently"
+                                    aria-label="Delete match"
+                                    className="absolute top-3 right-3 w-8 h-8 rounded-lg flex items-center justify-center bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-colors"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                  </button>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
           )}
 
@@ -1396,14 +1510,18 @@ function ScorerInner() {
                 </div>
               )}
 
-              {/* Undo & Scorecard — always visible while in scoring view
-                  (independent of any modal) so the user can undo their
-                  way out of a stuck state inherited from a takeover or
-                  a half-completed wicket flow. */}
+              {/* Undo / Scorecard / End Match — always visible while in
+                  scoring view (independent of any modal) so the user
+                  can undo their way out of a stuck state inherited
+                  from a takeover or a half-completed wicket flow,
+                  and so they can manually end the match for time-up
+                  or abandoned scenarios that the auto-complete in
+                  recordBall doesn't cover. */}
               {inn.balls.length > 0 && (
-                <div className="flex gap-2">
-                  <button onClick={undoLastBall} className="flex-1 py-2 rounded-lg bg-red-500/10 text-red-400 text-xs border border-red-500/20 hover:bg-red-500/20 transition-all">Undo Last Ball</button>
-                  <button onClick={() => setView('scorecard')} className="flex-1 py-2 rounded-lg bg-white/5 text-gray-400 text-xs border border-white/10 hover:bg-white/10">View Scorecard</button>
+                <div className="flex gap-2 flex-wrap">
+                  <button onClick={undoLastBall} className="flex-1 min-w-[120px] py-2 rounded-lg bg-red-500/10 text-red-400 text-xs border border-red-500/20 hover:bg-red-500/20 transition-all">Undo Last Ball</button>
+                  <button onClick={() => setView('scorecard')} className="flex-1 min-w-[120px] py-2 rounded-lg bg-white/5 text-gray-400 text-xs border border-white/10 hover:bg-white/10">View Scorecard</button>
+                  <button onClick={endMatch} className="flex-1 min-w-[120px] py-2 rounded-lg bg-accent-500/10 text-accent-400 text-xs font-bold border border-accent-500/30 hover:bg-accent-500/20 transition-all">🏁 End Match</button>
                 </div>
               )}
 
