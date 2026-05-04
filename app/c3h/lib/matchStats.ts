@@ -66,7 +66,18 @@ export function getBattingPerf(innings: Innings): BattingPerf[] {
         seenOrder.push(b.dismissedPlayer);
       }
       stats[b.dismissedPlayer].isOut = true;
-      stats[b.dismissedPlayer].howOut = b.wicketType + (b.fielder ? ` (${b.fielder})` : '') + (b.bowler ? ` b ${b.bowler}` : '');
+      // Cricket Law 25 dismissal text convention:
+      // - Retired Out / Retired Hurt: voluntary, no bowler or
+      //   fielder credit — just the wicket type
+      // - Run Out: fielder credit, NO bowler ("run out (Fielder)")
+      // - All others: fielder if applicable, then "b Bowler"
+      const wt = b.wicketType;
+      stats[b.dismissedPlayer].howOut =
+        wt === 'Retired Out' || wt === 'Retired Hurt'
+          ? wt
+          : wt === 'Run Out'
+            ? wt + (b.fielder ? ` (${b.fielder})` : '')
+            : wt + (b.fielder ? ` (${b.fielder})` : '') + (b.bowler ? ` b ${b.bowler}` : '');
     }
   }
 
@@ -95,7 +106,12 @@ export function getBowlingPerf(innings: Innings): BowlingPerf[] {
     if (b.extraType !== 'wide' && b.extraType !== 'noball') {
       stats[b.bowler].ballsBowled++;
     }
-    if (b.isWicket && b.wicketType !== 'Run Out') stats[b.bowler].wickets++;
+    // Cricket Law 25.4: Run Out, Retired Out, and Retired Hurt do
+    // not credit the bowler. Filter them out of the wicket tally
+    // (and by extension out of fiveFor / Best Bowler / MVP scoring).
+    if (b.isWicket && b.wicketType !== 'Run Out' && b.wicketType !== 'Retired Out' && b.wicketType !== 'Retired Hurt') {
+      stats[b.bowler].wickets++;
+    }
     if (b.isDotBall && !b.extraType) stats[b.bowler].dots++;
 
     const overKey = `${b.bowler}__${b.over}`;

@@ -1183,7 +1183,8 @@ function ScorerInner() {
                     if (b.bowler === name) {
                       runs += b.runs + b.extras;
                       if (b.extraType !== 'wide' && b.extraType !== 'noball') legalBalls++;
-                      if (b.isWicket && b.wicketType !== 'Run Out') wickets++;
+                      // Run Out, Retired Out, Retired Hurt don't credit the bowler.
+                      if (b.isWicket && b.wicketType !== 'Run Out' && b.wicketType !== 'Retired Out' && b.wicketType !== 'Retired Hurt') wickets++;
                     }
                   });
                   return { wickets, runs, overs: `${Math.floor(legalBalls / 6)}.${legalBalls % 6}` };
@@ -1443,7 +1444,8 @@ function ScorerInner() {
                   if (!bowlerStats[b.bowler]) bowlerStats[b.bowler] = { balls: 0, runs: 0, wickets: 0, maidens: 0, wides: 0, noballs: 0 };
                   bowlerStats[b.bowler].runs += b.runs + b.extras;
                   if (b.extraType !== 'wide' && b.extraType !== 'noball') bowlerStats[b.bowler].balls++;
-                  if (b.isWicket && b.wicketType !== 'Run Out') bowlerStats[b.bowler].wickets++;
+                  // Run Out, Retired Out, Retired Hurt don't credit the bowler.
+                  if (b.isWicket && b.wicketType !== 'Run Out' && b.wicketType !== 'Retired Out' && b.wicketType !== 'Retired Hurt') bowlerStats[b.bowler].wickets++;
                   if (b.extraType === 'wide') bowlerStats[b.bowler].wides++;
                   if (b.extraType === 'noball') bowlerStats[b.bowler].noballs++;
                 });
