@@ -213,7 +213,15 @@ function ScorerInner() {
       : null;
     if (!inn || inn.isComplete) return;
     if (inn.balls.length === 0) return;
-    const needsBatter = !inn.currentBatter1 || !inn.currentBatter2;
+    // Also catches the rare case where undo collapses both slots
+    // onto the same player (BallEvent doesn't store the non-
+    // striker, so undo can't always reconstruct it). undoLastBall
+    // pre-clears batter2 in that case, but checking duplicate here
+    // is a cheap belt-and-suspenders for any other drift path.
+    const needsBatter =
+      !inn.currentBatter1 ||
+      !inn.currentBatter2 ||
+      inn.currentBatter1 === inn.currentBatter2;
     if (needsBatter) setShowBatterSelect(true);
   }, [view, match]);
 
@@ -325,6 +333,19 @@ function ScorerInner() {
       const temp = updatedInnings.currentBatter1;
       updatedInnings.currentBatter1 = updatedInnings.currentBatter2;
       updatedInnings.currentBatter2 = temp;
+    }
+
+    // BallEvent only records the striker, not the non-striker, so
+    // successive undos that traverse a strike-rotation can leave
+    // both slots holding the same player. Detect that collision and
+    // clear batter2 — the auto-show batter-select modal will then
+    // prompt the user to re-pick the non-striker rather than
+    // silently shipping a corrupt state to Firestore.
+    if (
+      updatedInnings.currentBatter1 &&
+      updatedInnings.currentBatter1 === updatedInnings.currentBatter2
+    ) {
+      updatedInnings.currentBatter2 = '';
     }
 
     const updatedMatch = {
