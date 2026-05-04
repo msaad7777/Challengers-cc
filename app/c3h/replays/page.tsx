@@ -1,22 +1,51 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { matchReplays, youtubeIdFromUrl } from './data';
+import { db, firebaseAuthReady } from '@/lib/firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import type { Match } from '../scorer/types';
 
 export default function ReplaysPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  // Completed matches loaded live from Firestore — surfaces every
+  // match the scorer has finished, so a registered player who's
+  // logged in can see all their recent fixtures (with scorecards
+  // and reflection CTAs) without waiting for a manual data.ts entry.
+  const [liveMatches, setLiveMatches] = useState<Match[]>([]);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/c3h/login?callbackUrl=/c3h/replays');
     }
   }, [status, router]);
+
+  useEffect(() => {
+    if (!session?.user?.email) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        await firebaseAuthReady();
+        const q = query(collection(db, 'matches'), where('status', '==', 'completed'));
+        const snap = await getDocs(q);
+        const list = snap.docs
+          .map((d) => ({ ...(d.data() as object), id: d.id } as Match))
+          .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+        if (!cancelled) setLiveMatches(list);
+      } catch (err) {
+        console.error('Failed to load completed matches', err);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.user?.email]);
 
   if (status === 'loading') {
     return (
@@ -52,10 +81,115 @@ export default function ReplaysPage() {
         </div>
       </section>
 
-      {/* Replays */}
+      {/* Recent Match Scorecards — pulled live from Firestore so
+          every completed match the scorer ends up here automatically.
+          Each card links to the public scorecard view (with MVP card
+          + share + replay embed) and the reflection prompt at /nets. */}
+      {liveMatches.length > 0 && (
+        <section className="pb-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
+            <div className="mb-6">
+              <h2 className="text-2xl md:text-3xl font-bold text-white">Recent Match Scorecards</h2>
+              <p className="text-gray-400 text-sm mt-1">
+                Every match the scorer has wrapped — open the scorecard, watch the replay (when attached), and reflect on it.
+              </p>
+            </div>
+            <div className="space-y-4">
+              {liveMatches.map((m) => {
+                const i1 = m.innings1;
+                const i2 = m.innings2;
+                const i1OversBalls = i1 ? `${Math.floor(i1.totalBalls / 6)}.${i1.totalBalls % 6}` : '';
+                const i2OversBalls = i2 ? `${Math.floor(i2.totalBalls / 6)}.${i2.totalBalls % 6}` : '';
+                const formattedDate = m.date
+                  ? new Date(m.date).toLocaleDateString('en-CA', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })
+                  : '';
+                return (
+                  <article key={m.id} className="glass rounded-2xl p-5 border border-white/10">
+                    <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+                      <div>
+                        <h3 className="text-lg font-bold text-white">{m.team1} <span className="text-gray-500">vs</span> {m.team2}</h3>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {formattedDate}
+                          {m.venue && <span> · {m.venue}</span>}
+                          {m.totalOvers && <span> · {m.totalOvers} overs</span>}
+                        </p>
+                      </div>
+                      {m.replayUrl && (
+                        <span className="text-[10px] uppercase tracking-wider text-red-400 font-bold px-2 py-1 rounded bg-red-500/10 border border-red-500/30">
+                          📺 Replay attached
+                        </span>
+                      )}
+                    </div>
+
+                    {m.result && (
+                      <p className="text-primary-400 font-semibold text-sm mb-3">🏆 {m.result}</p>
+                    )}
+
+                    <div className="grid sm:grid-cols-2 gap-3 mb-4">
+                      {i1 && i1.balls.length > 0 && (
+                        <div className="glass rounded-lg p-3 border border-white/5">
+                          <p className="text-[10px] uppercase tracking-wider text-gray-500 truncate">{i1.battingTeam}</p>
+                          <p className="text-xl font-bold text-white tabular-nums">
+                            {i1.totalRuns}<span className="text-base text-gray-400">/{i1.totalWickets}</span>
+                          </p>
+                          <p className="text-[10px] text-gray-600 tabular-nums">({i1OversBalls} ov)</p>
+                        </div>
+                      )}
+                      {i2 && i2.balls.length > 0 && (
+                        <div className="glass rounded-lg p-3 border border-white/5">
+                          <p className="text-[10px] uppercase tracking-wider text-gray-500 truncate">{i2.battingTeam}</p>
+                          <p className="text-xl font-bold text-white tabular-nums">
+                            {i2.totalRuns}<span className="text-base text-gray-400">/{i2.totalWickets}</span>
+                          </p>
+                          <p className="text-[10px] text-gray-600 tabular-nums">({i2OversBalls} ov)</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <Link
+                        href={`/c3h/live?id=${m.id}`}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 text-gray-300 text-xs font-semibold border border-white/10 hover:bg-white/10"
+                      >
+                        📋 Open Scorecard
+                      </Link>
+                      {m.replayUrl && (
+                        <a
+                          href={m.replayUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/15 text-red-400 text-xs font-semibold border border-red-500/30 hover:bg-red-500/25"
+                        >
+                          ▶ Watch Replay
+                        </a>
+                      )}
+                      <Link
+                        href="/c3h/nets"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-primary-600 to-primary-500 text-white text-xs font-semibold hover:shadow-primary-500/30 hover:shadow-lg"
+                      >
+                        ✍️ Reflect on this match
+                      </Link>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Curated Replays (data.ts) */}
       <section className="pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto space-y-12">
-          {matchReplays.length === 0 ? (
+          {matchReplays.length > 0 && (
+            <div className="mb-2">
+              <h2 className="text-2xl md:text-3xl font-bold text-white">Featured Replays</h2>
+              <p className="text-gray-400 text-sm mt-1">
+                Hand-picked matches with full video, top performers, and scorebook pages.
+              </p>
+            </div>
+          )}
+          {matchReplays.length === 0 && liveMatches.length === 0 ? (
             <div className="glass rounded-2xl p-12 text-center border border-white/10">
               <p className="text-gray-300 text-lg">No match replays yet.</p>
               <p className="text-gray-500 mt-2">
