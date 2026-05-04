@@ -1256,9 +1256,27 @@ function ScorerInner() {
               })()}
 
               {/* Select Batters Modal */}
-              {showBatterSelect && (
+              {showBatterSelect && (() => {
+                // Build a title that names exactly what's still
+                // missing instead of always saying "Select Batters".
+                // Avoids confusion when both batters are already in
+                // and only the bowler slot is open (the modal stayed
+                // open with a misleading "Select Batters" title).
+                const needBatter1 = !inn.currentBatter1;
+                const needBatter2 = !inn.currentBatter2;
+                const needBowler = !inn.currentBowler;
+                const wickets = inn.totalWickets > 0;
+                const parts: string[] = [];
+                if (needBatter1 && needBatter2) parts.push('Batters');
+                else if (needBatter1 || needBatter2) parts.push(wickets ? 'New Batter' : 'Batter');
+                if (needBowler) parts.push(inn.previousBowler ? 'Next Bowler' : 'Opening Bowler');
+                const title = parts.length > 0 ? `Select ${parts.join(' & ')}` : 'Select Players';
+                return (
                 <div className="glass rounded-2xl p-6 border-2 border-primary-500/30">
-                  <h3 className="text-lg font-bold text-white mb-3">{inn.totalWickets > 0 && (!inn.currentBatter1 || !inn.currentBatter2) ? 'Select New Batter' : 'Select Batters'}</h3>
+                  <h3 className="text-lg font-bold text-white mb-1">{title}</h3>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Batters from <span className="text-primary-400">{inn.battingTeam}</span> · Bowler from <span className="text-accent-400">{inn.bowlingTeam}</span>
+                  </p>
                   <div className="space-y-3">
                     {/* Source the player rosters from the persisted match
                         doc, not React state. team1Players/team2Players
@@ -1412,7 +1430,8 @@ function ScorerInner() {
                     )}
                   </div>
                 </div>
-              )}
+                );
+              })()}
 
               {/* Bowler Change Modal — suppressed when batter-select
                   is open, since that modal renders its own bowler
