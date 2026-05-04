@@ -72,6 +72,14 @@ const DOCS = [
     icon: '⚖️',
     priority: 'IP / governance',
   },
+  {
+    slug: 'photography-consent',
+    title: 'Photography & Media Consent',
+    summary: 'How we capture and use photos, videos, livestreams, and recordings of members. Special protection for minors. Opt-out at any time.',
+    audience: 'All members',
+    icon: '📸',
+    priority: 'All members',
+  },
 ];
 
 export default function LegalIndexPage() {
