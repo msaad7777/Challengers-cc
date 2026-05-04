@@ -1363,11 +1363,24 @@ function ScorerInner() {
                   <div className="mt-3 pt-3 border-t border-white/10">
                     <p className="text-gray-500 text-xs mb-1">This Over:</p>
                     <div className="flex gap-1 flex-wrap">
-                      {inn.balls.filter(b => {
-                        const legal = inn.balls.filter(bb => bb.extraType !== 'wide' && bb.extraType !== 'noball');
-                        const currentOver = Math.floor(legal.length > 0 ? (legal.length - 1) / 6 : 0);
-                        return b.over === currentOver || (b.extraType === 'wide' || b.extraType === 'noball');
-                      }).slice(-8).map((b, i) => (
+                      {(() => {
+                        // The in-progress over is `floor(legalBalls / 6)`,
+                        // not `floor((legalBalls - 1) / 6)`. The minus-one
+                        // form anchored on the last ball, so at an over
+                        // boundary it kept pointing back at the over that
+                        // just finished — making the new bowler's "This
+                        // Over:" panel display the previous bowler's
+                        // last 6 deliveries before they'd bowled at all.
+                        // Each ball already stores its own `over` index
+                        // (set in recordBall before any swap), so the
+                        // filter is just `b.over === currentOver` — the
+                        // old `|| extraType === 'wide'/'noball'` clause
+                        // was a leftover that pulled wides from past
+                        // overs in too.
+                        const legalCount = inn.balls.filter(b => b.extraType !== 'wide' && b.extraType !== 'noball').length;
+                        const currentOver = Math.floor(legalCount / 6);
+                        return inn.balls.filter(b => b.over === currentOver).slice(-8);
+                      })().map((b, i) => (
                         <span key={i} className={`text-xs px-2 py-1 rounded ${b.isWicket ? 'bg-red-500/20 text-red-400' : b.isSix ? 'bg-accent-500/20 text-accent-400' : b.isBoundary ? 'bg-primary-500/20 text-primary-400' : b.extraType ? 'bg-blue-500/20 text-blue-400' : 'bg-white/5 text-gray-400'}`}>
                           {b.isWicket ? 'W' : b.extraType === 'wide' ? `Wd${b.runs > 0 ? '+' + b.runs : ''}` : b.extraType === 'noball' ? `Nb${b.runs > 0 ? '+' + b.runs : ''}` : b.extraType ? `${b.runs}${b.extraType[0]}` : b.runs}
                         </span>
