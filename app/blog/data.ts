@@ -1439,12 +1439,14 @@ export const blogPosts: BlogPost[] = [
           View Full Schedule
         </a>
       </div>
-      <h3 class="text-2xl font-bold text-white mb-4">LCL T20 & LPL Coming Soon</h3>
+      <h3 class="text-2xl font-bold text-white mb-4">What's Next After T30</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        The T30 is just the beginning. We are also registered for the LCL T20 league and the London Premier
-        League (LPL). Those schedules will be published as soon as fixtures are confirmed. Keep an eye on
-        our <a href="/schedule" class="text-primary-400 hover:text-primary-300 underline">Schedule page</a>
-        for updates.
+        The T30 is just the beginning. After our LCL T30 and LPL T30 seasons wrap, we plan to enter the
+        <strong class="text-white">LCL T20 league</strong> as well — registration for that competition will
+        happen once the T30 season is underway and we've confirmed roster availability for a second format.
+        Keep an eye on our
+        <a href="/schedule" class="text-primary-400 hover:text-primary-300 underline">Schedule page</a>
+        for updates as fixtures are confirmed.
       </p>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         Let's go Challengers! Game on!
