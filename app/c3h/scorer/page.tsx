@@ -424,7 +424,12 @@ function ScorerInner() {
   // match doc + the trimmed name without saving, so the caller can
   // chain the add with an auto-select (e.g. drop the new batter
   // straight onto strike) and persist both in a single saveMatch.
-  // Returns null on empty / duplicate name.
+  //
+  // Dedup is intentionally per-team only, not cross-team. Practice
+  // matches rotate the same player between batting and bowling
+  // sides, and stats key off the name string — so a player on
+  // both rosters naturally accumulates their full contribution.
+  // Returns null on empty name or same-team duplicate.
   const addPlayerToTeam = (
     snapshot: Match,
     teamName: string,
@@ -432,8 +437,12 @@ function ScorerInner() {
   ): { match: Match; addedName: string } | null => {
     const trimmed = name.trim();
     if (!trimmed) return null;
-    const existing = [...snapshot.team1Players, ...snapshot.team2Players].map(p => p.name);
-    if (existing.includes(trimmed)) return null;
+    const targetRoster =
+      teamName === snapshot.team1 ? snapshot.team1Players :
+      teamName === snapshot.team2 ? snapshot.team2Players :
+      null;
+    if (!targetRoster) return null;
+    if (targetRoster.some(p => p.name === trimmed)) return null;
 
     const newPlayer = { id: `p${Date.now()}`, name: trimmed, isC3H: false };
     const updated: Match = {
