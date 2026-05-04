@@ -52,7 +52,7 @@ Path alias `@/*` maps to project root (`import x from '@/components/X'`). Font: 
 The codebase has two distinct sub-apps that share the same components and design system but otherwise barely touch:
 
 1. **Public marketing site** — top-level routes (`/`, `/sponsorship`, `/payments`, `/blog`, `/legal`, `/partners/[slug]`, `/schedule`, `/mental-game`, `/looking-for-sponsors`). Anonymous, mostly server components, no auth, no Firestore.
-2. **C3H members portal** — everything under `/c3h/*`. Gated by NextAuth Google OAuth. Reads/writes Firestore (`matches`, `squads`, `availability`, `field-positions`, `reflections`). All pages are client components (`"use client"`) because they use `useSession`.
+2. **C3H members portal** — everything under `/c3h/*`. Gated by NextAuth Google OAuth (one exception: `/c3h/live` is publicly readable). Reads/writes Firestore (`matches`, `squads`, `availability`, `field-positions`, `reflections`). All pages are client components (`"use client"`) because they use `useSession`.
 
 `/events` and `/watch` are server-side `redirect()` shims that bounce to `/c3h/events` and `/c3h/watch` — keeping the navbar tidy while pushing logged-out visitors through the C3H login flow.
 
@@ -63,11 +63,11 @@ The codebase has two distinct sub-apps that share the same components and design
 Two layered access checks:
 
 1. **Login eligibility** — `app/api/auth/[...nextauth]/route.ts` hardcodes `BOARD_EMAILS` + `PLAYER_EMAILS` whitelists. Anything not on either list is rejected at sign-in. Any `@challengerscc.ca` Workspace address is auto-approved as `board`. Sessions are JWT, 30-day max age. Custom `signIn` / `error` pages: `/c3h/login`.
-2. **Board-only UI inside C3H** — `lib/c3h-access.ts` defines `isC3HAdmin`, `isC3HCaptain`, `isC3HBoard`. **This is intentionally narrower than the NextAuth board list**: other club board members (Gokul, Madhu, Ankush, Roman, Qaiser) can sign in as players to mark availability but don't see captain/squad/Pavilion features. When gating a board-only feature, always use `isC3HBoard()` from `lib/c3h-access.ts` — never re-derive from email domain or role string.
+2. **Board-only UI inside C3H** — `lib/c3h-access.ts` defines four predicates: `isC3HAdmin` (Saad only), `isC3HCaptain` (admin + designated league captains/VCs), `isC3HBoard` (alias for captains today), and `isC3HSquadViewer` (read-only captain view for Treasurer + the shared `contact@` inbox). **This is intentionally narrower than the NextAuth board list**: other club board members (Gokul, Madhu, Ankush, Roman, Qaiser) can sign in as players to mark availability but don't see captain/squad/Pavilion features. When gating a board-only feature, always use `isC3HBoard()` (or `isC3HSquadViewer()` for read-only surfaces) from `lib/c3h-access.ts` — never re-derive from email domain or role string. `contact@challengerscc.ca` is deliberately excluded from `C3H_ADMIN_EMAILS` because the inbox is shared.
 
 ### C3H Firestore collections
 
-- `matches` — created by the Scorer; `createdBy` is the scorer's email; `status` ∈ `{...,'playing',...}`
+- `matches` — created by the Scorer; `createdBy` is the scorer's email; `status` includes at least `'playing'`, `'innings_break'`, `'completed'`. `/c3h/live` requires Firestore Security Rules to allow public reads on these three statuses.
 - `squads/{matchId}` — `{ players, roles, updatedBy, updatedAt }`. Roles enforce single-holder uniqueness (captain/VC/WK) — auto-heals stale data on read.
 - `availability/{playerName}` — player-keyed (not email-keyed)
 - `field-positions/{matchId}` — Field Editor state
@@ -90,13 +90,16 @@ When reading these, prefer `onSnapshot` for live views and `getDocs` for one-sho
 - **/schedule**, **/mental-game** — standalone pages
 - **/events**, **/watch** — `redirect()` shims to C3H equivalents
 
-**C3H members portal** (all client components, all gated):
+**C3H members portal** (all client components; all gated except `/c3h/live`):
 - `/c3h` — auto-redirects authenticated users to `/dashboard`; otherwise shows public marketing intro
 - `/c3h/login` — Google sign-in
 - `/c3h/dashboard` — landing after login; branches by `isC3HBoard()`
 - `/c3h/availability` — player availability per match. Match list (`ALL_MATCHES`) is hardcoded in this file with `fullDate`, `venue`, `clash` fields. Adds Google Calendar invites via `VENUE_FULL_NAME` lookup.
-- `/c3h/scorer` — live ball-by-ball scoring, writes to `matches`. Auto-save with status indicator. Takeover confirmation when claiming a match someone else started.
+- `/c3h/scorer` — live ball-by-ball scoring, writes to `matches`. Auto-save with status indicator. Takeover confirmation when claiming a match someone else started. Auto-shows the bowler-pick modal at every over boundary; enforces "no consecutive overs by the same bowler".
+- `/c3h/live` — **publicly readable** read-only scoreboard, subscribes to in-flight `matches` via `onSnapshot`, plus shows the `MatchSummary` card on completed matches. The only `/c3h/*` page that does not require login.
 - `/c3h/nets`, `/c3h/replays`, `/c3h/watch`, `/c3h/profile`, `/c3h/events`, `/c3h/field-editor`, `/c3h/receipts`
+
+**Per-portal helpers** — `app/c3h/lib/matchStats.ts` is a pure-function module computing per-player batting/bowling aggregates plus MVP / Best Batter / Best Bowler / Best Fielder / match-impact rankings from a `Match` document. `app/c3h/lib/MatchSummary.tsx` renders those into a card used by both `/c3h/live` and the Scorer's scorecard view. Keep these pure (no Firestore reads) so they can run server- or client-side off any `Match`.
 
 ### API Routes
 
