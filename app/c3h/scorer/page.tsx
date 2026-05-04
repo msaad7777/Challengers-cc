@@ -69,10 +69,12 @@ function ScorerInner() {
   const [wicketType, setWicketType] = useState('');
   const [dismissedPlayer, setDismissedPlayer] = useState('');
   const [fielder, setFielder] = useState('');
-  const [newBatter, setNewBatter] = useState('');
   const [showBowlerModal, setShowBowlerModal] = useState(false);
   const [showBatterSelect, setShowBatterSelect] = useState(false);
   const [showPlayerRename, setShowPlayerRename] = useState(false);
+  const [addStrikerName, setAddStrikerName] = useState('');
+  const [addNonStrikerName, setAddNonStrikerName] = useState('');
+  const [addBowlerName, setAddBowlerName] = useState('');
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/c3h/login');
@@ -414,6 +416,32 @@ function ScorerInner() {
     };
     setMatch(updated);
     await saveMatch(updated);
+  };
+
+  // Pure roster-extension helper — used when the scorer forgot to
+  // include someone during setup (late arrivals, last-minute squad
+  // changes) and needs to add them mid-match. Returns the updated
+  // match doc + the trimmed name without saving, so the caller can
+  // chain the add with an auto-select (e.g. drop the new batter
+  // straight onto strike) and persist both in a single saveMatch.
+  // Returns null on empty / duplicate name.
+  const addPlayerToTeam = (
+    snapshot: Match,
+    teamName: string,
+    name: string,
+  ): { match: Match; addedName: string } | null => {
+    const trimmed = name.trim();
+    if (!trimmed) return null;
+    const existing = [...snapshot.team1Players, ...snapshot.team2Players].map(p => p.name);
+    if (existing.includes(trimmed)) return null;
+
+    const newPlayer = { id: `p${Date.now()}`, name: trimmed, isC3H: false };
+    const updated: Match = {
+      ...snapshot,
+      team1Players: teamName === snapshot.team1 ? [...snapshot.team1Players, newPlayer] : snapshot.team1Players,
+      team2Players: teamName === snapshot.team2 ? [...snapshot.team2Players, newPlayer] : snapshot.team2Players,
+    };
+    return { match: updated, addedName: trimmed };
   };
 
   // Pure swap of striker ↔ non-striker. Used when the wrong batter
@@ -1062,6 +1090,31 @@ function ScorerInner() {
                               }} className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-400 border border-white/10 hover:bg-primary-500/20 hover:text-primary-400">{p.name}</button>
                             ))}
                         </div>
+                        <div className="flex gap-1 mt-2">
+                          <input
+                            value={addStrikerName}
+                            onChange={(e) => setAddStrikerName(e.target.value)}
+                            placeholder="+ Other batter…"
+                            className="flex-1 px-2 py-1 text-xs bg-white/5 border border-white/10 rounded text-white placeholder-gray-600 focus:outline-none focus:border-primary-500"
+                          />
+                          <button
+                            onClick={async () => {
+                              const added = addPlayerToTeam(match, inn.battingTeam, addStrikerName);
+                              if (!added) return;
+                              const innKey = match.currentInnings === 1 ? 'innings1' : 'innings2';
+                              const innFinal = { ...added.match[innKey], currentBatter1: added.addedName };
+                              const matchFinal = { ...added.match, [innKey]: innFinal };
+                              setMatch(matchFinal);
+                              setAddStrikerName('');
+                              if (innFinal.currentBatter2 && innFinal.currentBowler) setShowBatterSelect(false);
+                              await saveMatch(matchFinal);
+                            }}
+                            disabled={!addStrikerName.trim()}
+                            className="px-3 py-1 rounded bg-primary-500/20 text-primary-400 text-xs border border-primary-500/30 disabled:opacity-40"
+                          >
+                            Add
+                          </button>
+                        </div>
                       </div>
                       );
                     })()}
@@ -1080,6 +1133,31 @@ function ScorerInner() {
                                 if (inn.currentBatter1 && inn.currentBowler) setShowBatterSelect(false);
                               }} className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-400 border border-white/10 hover:bg-primary-500/20 hover:text-primary-400">{p.name}</button>
                             ))}
+                        </div>
+                        <div className="flex gap-1 mt-2">
+                          <input
+                            value={addNonStrikerName}
+                            onChange={(e) => setAddNonStrikerName(e.target.value)}
+                            placeholder="+ Other batter…"
+                            className="flex-1 px-2 py-1 text-xs bg-white/5 border border-white/10 rounded text-white placeholder-gray-600 focus:outline-none focus:border-primary-500"
+                          />
+                          <button
+                            onClick={async () => {
+                              const added = addPlayerToTeam(match, inn.battingTeam, addNonStrikerName);
+                              if (!added) return;
+                              const innKey = match.currentInnings === 1 ? 'innings1' : 'innings2';
+                              const innFinal = { ...added.match[innKey], currentBatter2: added.addedName };
+                              const matchFinal = { ...added.match, [innKey]: innFinal };
+                              setMatch(matchFinal);
+                              setAddNonStrikerName('');
+                              if (innFinal.currentBatter1 && innFinal.currentBowler) setShowBatterSelect(false);
+                              await saveMatch(matchFinal);
+                            }}
+                            disabled={!addNonStrikerName.trim()}
+                            className="px-3 py-1 rounded bg-primary-500/20 text-primary-400 text-xs border border-primary-500/30 disabled:opacity-40"
+                          >
+                            Add
+                          </button>
                         </div>
                       </div>
                       );
@@ -1111,6 +1189,33 @@ function ScorerInner() {
                               await saveMatch(updated);
                             }} className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-400 border border-white/10 hover:bg-accent-500/20 hover:text-accent-400">{p.name}</button>
                           ))}
+                        </div>
+                        <div className="flex gap-1 mt-2">
+                          <input
+                            value={addBowlerName}
+                            onChange={(e) => setAddBowlerName(e.target.value)}
+                            placeholder="+ Other bowler…"
+                            className="flex-1 px-2 py-1 text-xs bg-white/5 border border-white/10 rounded text-white placeholder-gray-600 focus:outline-none focus:border-accent-500"
+                          />
+                          <button
+                            onClick={async () => {
+                              const added = addPlayerToTeam(match, inn.bowlingTeam, addBowlerName);
+                              if (!added) return;
+                              const innKey = match.currentInnings === 1 ? 'innings1' : 'innings2';
+                              const justFinished = inn.currentBowler || inn.previousBowler || '';
+                              const innFinal = { ...added.match[innKey], currentBowler: added.addedName, previousBowler: justFinished };
+                              const matchFinal = { ...added.match, [innKey]: innFinal };
+                              setMatch(matchFinal);
+                              setAddBowlerName('');
+                              setShowBowlerModal(false);
+                              if (innFinal.currentBatter1 && innFinal.currentBatter2) setShowBatterSelect(false);
+                              await saveMatch(matchFinal);
+                            }}
+                            disabled={!addBowlerName.trim()}
+                            className="px-3 py-1 rounded bg-accent-500/20 text-accent-400 text-xs border border-accent-500/30 disabled:opacity-40"
+                          >
+                            Add
+                          </button>
                         </div>
                       </div>
                     )}
@@ -1179,6 +1284,33 @@ function ScorerInner() {
                         </button>
                         );
                       })}
+                    <div className="flex gap-1 mt-2">
+                      <input
+                        value={addBowlerName}
+                        onChange={(e) => setAddBowlerName(e.target.value)}
+                        placeholder="+ Other bowler…"
+                        className="flex-1 px-2 py-1 text-xs bg-white/5 border border-white/10 rounded text-white placeholder-gray-600 focus:outline-none focus:border-accent-500"
+                      />
+                      <button
+                        onClick={async () => {
+                          if (!match || !inn) return;
+                          const added = addPlayerToTeam(match, inn.bowlingTeam, addBowlerName);
+                          if (!added) return;
+                          const innKey = match.currentInnings === 1 ? 'innings1' : 'innings2';
+                          const justFinished = inn.currentBowler || inn.previousBowler || '';
+                          const innFinal = { ...added.match[innKey], currentBowler: added.addedName, previousBowler: justFinished };
+                          const matchFinal = { ...added.match, [innKey]: innFinal };
+                          setMatch(matchFinal);
+                          setAddBowlerName('');
+                          setShowBowlerModal(false);
+                          await saveMatch(matchFinal);
+                        }}
+                        disabled={!addBowlerName.trim()}
+                        className="px-3 py-1 rounded bg-accent-500/20 text-accent-400 text-xs border border-accent-500/30 disabled:opacity-40"
+                      >
+                        Add
+                      </button>
+                    </div>
                   </div>
                 </div>
                 );
