@@ -128,21 +128,44 @@ function LiveScorePageInner() {
       <section className="section-padding pt-32 md:pt-36">
         <div className="max-w-4xl mx-auto px-4">
 
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <div className="inline-flex items-center gap-2 mb-2">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
-                </span>
-                <span className="text-xs font-bold text-red-400 uppercase tracking-wider">Live</span>
+          {/* Header — status-aware. The selected match might be live OR
+              completed (deep-link via ?id=…), so the badge/title/sub
+              all reflect the actual match state instead of always
+              advertising "Live Scoring". */}
+          {(() => {
+            const isCompleted = match?.status === 'completed';
+            return (
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <div className="inline-flex items-center gap-2 mb-2">
+                    {isCompleted ? (
+                      <>
+                        <span className="text-base">🏆</span>
+                        <span className="text-xs font-bold text-primary-400 uppercase tracking-wider">Match Complete</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="relative flex h-2.5 w-2.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                        </span>
+                        <span className="text-xs font-bold text-red-400 uppercase tracking-wider">Live</span>
+                      </>
+                    )}
+                  </div>
+                  <h1 className="text-3xl sm:text-4xl font-bold text-white">
+                    {isCompleted ? 'Match Scorecard' : 'Live Scoring'}
+                  </h1>
+                  <p className="text-gray-500 text-sm mt-1">
+                    {isCompleted
+                      ? 'Read-only scorecard with MVP, best-of, and the full per-innings detail.'
+                      : 'Read-only view — updates as the scorer taps each ball.'}
+                  </p>
+                </div>
+                <Link href="/c3h/dashboard" className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10">← Dashboard</Link>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-white">Live Scoring</h1>
-              <p className="text-gray-500 text-sm mt-1">Read-only view — updates as the scorer taps each ball.</p>
-            </div>
-            <Link href="/c3h/dashboard" className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10">← Dashboard</Link>
-          </div>
+            );
+          })()}
 
           {/* Single live match — auto-selects the most-recently-updated
               match in playing/innings_break. No multi-match list. */}
@@ -260,7 +283,8 @@ function ScoreboardView({ match, onBack, continueScoringHref, isLoggedIn }: {
         <button onClick={onBack} className="text-xs text-gray-400 hover:text-white">← All live matches</button>
         <div className="flex items-center gap-3">
           <span className="text-xs text-gray-600">
-            Scorer: <span className="text-gray-400">{match.scorer?.split('@')[0] || '—'}</span> · Updates live
+            Scorer: <span className="text-gray-400">{match.scorer?.split('@')[0] || '—'}</span>
+            {match.status === 'completed' ? ' · Match complete' : ' · Updates live'}
           </span>
           <Link
             href={continueScoringHref}
@@ -320,7 +344,11 @@ function ScoreboardView({ match, onBack, continueScoringHref, isLoggedIn }: {
         </div>
       </div>
 
-      {/* Current batters + bowler */}
+      {/* Current batters + bowler — only meaningful while a match is
+          in flight. Completed matches don't have anyone "at the
+          crease" any more, and the per-innings tables below already
+          show every batter / bowler with their final figures. */}
+      {match.status !== 'completed' && (
       <div className="glass rounded-2xl p-5 border border-white/5">
         <p className="text-gray-500 text-xs uppercase tracking-wider mb-3">At the crease</p>
         <div className="space-y-2 text-sm">
@@ -341,8 +369,10 @@ function ScoreboardView({ match, onBack, continueScoringHref, isLoggedIn }: {
           </>
         )}
       </div>
+      )}
 
-      {/* Last 6 balls */}
+      {/* Last 6 balls — also live-only. */}
+      {match.status !== 'completed' && (
       <div className="glass rounded-2xl p-5 border border-white/5">
         <p className="text-gray-500 text-xs uppercase tracking-wider mb-3">Last 6 balls</p>
         {last6.length === 0 ? (
@@ -365,6 +395,7 @@ function ScoreboardView({ match, onBack, continueScoringHref, isLoggedIn }: {
           </div>
         )}
       </div>
+      )}
 
       {/* Match Summary + MVP — only for completed matches */}
       {match.status === 'completed' && <MatchSummary match={match} />}
