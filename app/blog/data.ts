@@ -18,6 +18,157 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'practice-match-2-2026-vs-chahtham-cc',
+    title: 'Practice Match #2 — Challengers Beat Chahtham CC by 13 Runs at Thamesville',
+    excerpt:
+      'Challengers Cricket Club won their second 2026 practice match by 13 runs at Thamesville Cricket Ground — Rajath Shetty 45 off 24, Ankush Arora 3/23, and a tight death-overs squeeze that defended 177 against a fast Chahtham chase.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Second practice match of 2026 is in the books — and it&apos;s another win for the
+        Challengers. We travelled to <strong class="text-white">Thamesville Cricket Ground</strong>
+        on Sunday to face <strong class="text-white">Chahtham Cricket Club</strong> in a
+        20-over fixture and came home with a <strong class="text-white">13-run victory</strong>,
+        defending a first-innings 177/6.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Match Summary</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-3">
+        <strong class="text-white">Toss:</strong> Challengers won the toss and elected to bat.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Challengers posted <strong class="text-white">177/6 in 20 overs</strong>, with Rajath
+        Shetty setting the tempo at the top, Qaiser Mahmood anchoring through the middle, and
+        a string of useful cameos through the lower order. Chahtham came out fast in reply but
+        couldn&apos;t sustain it — Challengers&apos; bowling unit kept chipping wickets in the
+        powerplay and the middle overs to close out the chase at
+        <strong class="text-white">164/6 in 20</strong>. Final margin: 13 runs.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Top Performers</h3>
+      <div class="grid sm:grid-cols-2 gap-4 mb-6">
+        <div class="glass rounded-xl p-5 border border-primary-500/20">
+          <p class="text-sm font-bold text-primary-400 uppercase tracking-wider mb-3">
+            🟢 Challengers CC
+          </p>
+          <ul class="text-gray-300 space-y-1.5 text-sm">
+            <li><strong class="text-white">Batting</strong></li>
+            <li>Rajath Shetty — 45 (24), 5×4, 1×6, SR 187.5</li>
+            <li>Qaiser Mahmood — 29* (33)</li>
+            <li>Siva — 26 (16), 2×4, 1×6, SR 162.5</li>
+            <li>Shoeb Ahmad — 13* (8), 2×4, SR 162.5</li>
+            <li class="pt-2"><strong class="text-white">Bowling</strong></li>
+            <li>Ankush Arora — 3/23 in 3 overs (match-winning spell)</li>
+            <li>Sujel — 1/8 in 2 overs (8 dots)</li>
+            <li>Siva — 1/14 in 2 overs</li>
+            <li>Gokul Prakash — 1/22 in 3 overs</li>
+            <li class="pt-2"><strong class="text-white">Fielding</strong></li>
+            <li>Shoeb Ahmad — 2 catches</li>
+          </ul>
+        </div>
+        <div class="glass rounded-xl p-5 border border-blue-500/20">
+          <p class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3">
+            🔵 Chahtham CC
+          </p>
+          <ul class="text-gray-300 space-y-1.5 text-sm">
+            <li><strong class="text-white">Batting</strong></li>
+            <li>Anwar — 44 (34), 2×4, 2×6</li>
+            <li>Abhishek V — 27* (13), 3×6, SR 207.7</li>
+            <li>Amroz — 22 (10), 3×6, SR 220.0</li>
+            <li>Amar — 22 (20), 2×4, 1×6</li>
+            <li>Harshil — 22 (15), 2×6, SR 146.7</li>
+            <li class="pt-2"><strong class="text-white">Bowling</strong></li>
+            <li>Aleem — 3/18 in 2 overs</li>
+            <li>Sujel — 1/11 in 2 overs</li>
+            <li>Harshil — 1/42 in 4 overs</li>
+            <li>Vijay — 1/5 in 1 over</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="text-2xl font-bold text-white mb-4">How the Match Played Out</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-4">
+        <strong class="text-white">First innings.</strong> Rajath Shetty came out swinging at
+        the top and put on the foundation Challengers needed — five fours and a six in a
+        24-ball 45 that gave the innings shape. Mohammed Saad (10 off 12) walked off to a
+        Sujel delivery before Qaiser Mahmood took over the role of anchor, finishing
+        unbeaten on 29 from 33. Siva chipped in with a quick 26 (16), and a tail of Shoeb
+        Ahmad (13*), Farooq Choudhary (7*), Gokul Prakash (7), and Judin Thomas (6*) made
+        sure the scoreboard kept ticking. 27 extras — 20 wides, 7 no-balls — pushed the
+        total to <strong class="text-white">177/6</strong>.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        <strong class="text-white">Second innings.</strong> Anwar opened with intent for
+        Chahtham — 44 off 34 with a couple of sixes — until <strong class="text-white">Ankush
+        Arora</strong> ran through the middle order with 3/23 in 3 overs, removing Anwar,
+        Aleem, and Harshil to swing the match decisively. Sujel set the tone in the
+        powerplay with a tight 1/8 from 2 overs (eight dots), Siva grabbed Amar courtesy
+        a sharp Shoeb Ahmad catch, and Gokul Prakash dismissed the dangerous Amroz with
+        Mohammed Saad taking the catch. Abhishek V&apos;s late blitz (27* off 13) brought
+        Chahtham close, but the chase fell <strong class="text-white">13 short</strong>
+        at 164/6.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Watch the Full Match</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        The full recording is up on the Challengers YouTube channel. Players, families, and
+        anyone planning to face either side later in the season — feel free to dive in.
+      </p>
+      <div class="aspect-video rounded-xl overflow-hidden bg-black mb-6">
+        <iframe
+          src="https://www.youtube.com/embed/diIv64fmSqk"
+          title="Challengers CC vs Chahtham CC — Practice Match #2 at Thamesville"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          class="w-full h-full"
+        ></iframe>
+      </div>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Members — Reflect While It&apos;s Fresh</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Registered Challengers CC members can sign in to <strong class="text-white">C3H</strong>
+        and add a personal reflection card for this match. Whether you faced Aleem&apos;s
+        line, fielded one of Ankush&apos;s overs, or sat in the dugout — write it down before
+        the next practice and the system will surface patterns and recommend Batting / Bowling
+        Principles to focus on next session.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        👉 <a href="/c3h/replays" class="text-primary-400 hover:text-primary-300 underline font-semibold">Watch the match on C3H Match Replays</a>
+        and click <em>Reflect on this match</em> to open your reflection journal.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Looking Ahead</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Two practice wins, two match recordings, and a settled-looking squad heading into
+        league play. <strong class="text-white">LCL T30 opens May 10 vs London Predators</strong>
+        at Northridge Cricket Ground; <strong class="text-white">LPL T30 the same day vs Maple
+        Tigers</strong> at Silverwoods. Weekly Wednesday training resumes
+        <strong class="text-white">May 13</strong>, 7:00 PM at Silverwoods.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Thank You</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Thank you to <strong class="text-white">Chahtham Cricket Club</strong> for the
+        fixture and to everyone who made the trip to Thamesville — players, drivers, and
+        families. Two practice matches in, and the standard for the season is set.
+      </p>
+
+      <p class="text-gray-400 text-sm italic">
+        Challengers Cricket Club — London, Ontario&apos;s inclusive community cricket club.
+        Registered Ontario Not-For-Profit Corporation #1746974-8. Follow us on
+        <a href="https://www.instagram.com/challengers.cc/" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">@challengers.cc</a>
+        and subscribe on
+        <a href="https://www.youtube.com/@Challengersccldn" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">YouTube</a>
+        for match livestreams and highlights all season.
+      </p>
+    `,
+    category: 'Match Reports',
+    author: 'Challengers CC',
+    date: '2026-05-04',
+    image: '/ccc-logo.png',
+    video: null,
+    featured: true,
+  },
+  {
     slug: 'mohammed-saad-london-sports-volunteer-recognition-award-2026',
     title: 'Mohammed Saad Honoured with 2026 London Sports Volunteer Recognition Award',
     excerpt:
