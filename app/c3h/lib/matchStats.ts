@@ -36,6 +36,10 @@ export interface FieldingPerf {
   stumpings: number;
   runOuts: number;
   directHits: number; // run-outs where fielder === bowler implies direct (rough heuristic)
+  // Catches taken by the player while keeping wicket for that
+  // innings. Subset of `catches` — included separately so MVP /
+  // best-fielder logic can weight keeper work above outfield catches.
+  keeperCatches: number;
 }
 
 // Aggregate batting perf across an innings, preserving order they came in
@@ -121,14 +125,17 @@ export function getBowlingPerf(innings: Innings): BowlingPerf[] {
 
 export function getFieldingPerf(innings: Innings): FieldingPerf[] {
   const stats: Record<string, FieldingPerf> = {};
+  const keeper = innings.wicketKeeper;
 
   for (const b of innings.balls) {
     if (!b.isWicket || !b.fielder) continue;
     if (!stats[b.fielder]) {
-      stats[b.fielder] = { name: b.fielder, catches: 0, stumpings: 0, runOuts: 0, directHits: 0 };
+      stats[b.fielder] = { name: b.fielder, catches: 0, stumpings: 0, runOuts: 0, directHits: 0, keeperCatches: 0 };
     }
-    if (b.wicketType === 'Caught' || b.wicketType === 'Caught & Bowled') stats[b.fielder].catches++;
-    else if (b.wicketType === 'Stumped') stats[b.fielder].stumpings++;
+    if (b.wicketType === 'Caught' || b.wicketType === 'Caught & Bowled') {
+      stats[b.fielder].catches++;
+      if (keeper && b.fielder === keeper) stats[b.fielder].keeperCatches++;
+    } else if (b.wicketType === 'Stumped') stats[b.fielder].stumpings++;
     else if (b.wicketType === 'Run Out') {
       stats[b.fielder].runOuts++;
       // Direct hit heuristic: only one fielder credited (no separate thrower).
@@ -190,9 +197,10 @@ export function bowlingMVP(p: BowlingPerf): number {
 export function fieldingMVP(p: FieldingPerf): number {
   let pts = 0;
   pts += p.catches * 5;
-  pts += p.stumpings * 5;
+  pts += p.stumpings * 7;     // stumpings rarer than catches → small extra
   pts += p.runOuts * 5;
-  pts += p.directHits * 5; // additional 5 for direct hits, total 10
+  pts += p.directHits * 5;    // additional 5 for direct hits, total 10
+  pts += p.keeperCatches * 1; // small bonus on top of the base catch
   return Math.round(pts * 10) / 10;
 }
 
@@ -276,15 +284,28 @@ export function getBestBowler(match: Match): BowlingPerf | null {
 }
 
 export function getBestFielder(match: Match): FieldingPerf | null {
-  const all = [
-    ...getFieldingPerf(match.innings1),
-    ...getFieldingPerf(match.innings2),
-  ];
+  // Aggregate across both innings — a player can field in either
+  // (practice rotation), so we collapse on name.
+  const merged: Record<string, FieldingPerf> = {};
+  for (const p of [...getFieldingPerf(match.innings1), ...getFieldingPerf(match.innings2)]) {
+    if (!merged[p.name]) {
+      merged[p.name] = { name: p.name, catches: 0, stumpings: 0, runOuts: 0, directHits: 0, keeperCatches: 0 };
+    }
+    merged[p.name].catches += p.catches;
+    merged[p.name].stumpings += p.stumpings;
+    merged[p.name].runOuts += p.runOuts;
+    merged[p.name].directHits += p.directHits;
+    merged[p.name].keeperCatches += p.keeperCatches;
+  }
+  const all = Object.values(merged);
   if (all.length === 0) return null;
-  return all.sort((a, b) =>
-    (b.catches + b.stumpings + b.runOuts) -
-    (a.catches + a.stumpings + a.runOuts),
-  )[0];
+  // Weighted: stumpings count 1.5×, keeper catches get +0.5 bonus on
+  // top of the base catch. Cricket convention — keeping wicket is
+  // harder than outfield catching, so a 1c keeper edges a 1c outfielder
+  // and ties with a 2c outfielder are broken by who kept wicket.
+  const weight = (p: FieldingPerf) =>
+    p.catches + p.stumpings * 1.5 + p.runOuts + p.keeperCatches * 0.5;
+  return all.sort((a, b) => weight(b) - weight(a))[0];
 }
 
 export function getMVP(match: Match): MatchPlayerImpact | null {

@@ -49,6 +49,11 @@ export interface Innings {
   // the "no consecutive overs from the same bowler" rule. When set,
   // the bowler-selection modal hides this player from the picker.
   previousBowler?: string;
+  // Fielding-side wicket-keeper for this innings. Optional so older
+  // matches still load. When set, getBestFielder weights catches
+  // taken by this player higher (cricket convention — keepers earn
+  // their fielding stats behind the stumps).
+  wicketKeeper?: string;
   isComplete: boolean;
 }
 

@@ -77,6 +77,12 @@ function ScorerInner() {
   const [addNonStrikerName, setAddNonStrikerName] = useState('');
   const [addBowlerName, setAddBowlerName] = useState('');
   const [retireTarget, setRetireTarget] = useState<'batter1' | 'batter2' | null>(null);
+  // Dismissals editor: tracks which ball event is being edited on
+  // the scorecard view. We hold the ball.id + which innings (1 | 2)
+  // so the save handler can find and update the right ball event.
+  const [editingDismissal, setEditingDismissal] = useState<
+    { ballId: string; innings: 1 | 2 } | null
+  >(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/c3h/login');
@@ -453,6 +459,38 @@ function ScorerInner() {
       team2Players: teamName === snapshot.team2 ? [...snapshot.team2Players, newPlayer] : snapshot.team2Players,
     };
     return { match: updated, addedName: trimmed };
+  };
+
+  // Edit a single dismissal on a previously-recorded wicket ball.
+  // Used to retro-fix the fielder credit (most common: a catch was
+  // recorded with the wrong fielder or none at all). Updates only
+  // the named fields on the matching ball event in the matching
+  // innings; everything else (runs, over index, batter, bowler,
+  // timestamp) is preserved so totals and stats stay correct.
+  const updateDismissal = async (
+    inningsNum: 1 | 2,
+    ballId: string,
+    patch: { wicketType?: string; dismissedPlayer?: string; fielder?: string },
+  ) => {
+    if (!match) return;
+    const innKey = inningsNum === 1 ? 'innings1' : 'innings2';
+    const inn = match[innKey];
+    const updatedInn: Innings = {
+      ...inn,
+      balls: inn.balls.map((b) =>
+        b.id === ballId
+          ? {
+              ...b,
+              ...(patch.wicketType !== undefined ? { wicketType: patch.wicketType } : {}),
+              ...(patch.dismissedPlayer !== undefined ? { dismissedPlayer: patch.dismissedPlayer } : {}),
+              ...(patch.fielder !== undefined ? { fielder: patch.fielder } : {}),
+            }
+          : b,
+      ),
+    };
+    const updated: Match = { ...match, [innKey]: updatedInn };
+    setMatch(updated);
+    await saveMatch(updated);
   };
 
   // Manually end the match — for cases the auto-complete in
@@ -1585,6 +1623,32 @@ function ScorerInner() {
                 );
               })()}
 
+              {/* Wicket-keeper picker for the current innings. Saving
+                  this gives all of the keeper's catches a small bonus
+                  in the Best Fielder ranking — cricket convention. */}
+              <div className="glass rounded-xl p-3 border border-white/10">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs text-gray-400">🧤 Wicket-keeper ({inn.bowlingTeam}):</span>
+                  <select
+                    value={inn.wicketKeeper || ''}
+                    onChange={async (e) => {
+                      if (!match) return;
+                      const innKey = match.currentInnings === 1 ? 'innings1' : 'innings2';
+                      const updatedInn: Innings = { ...inn, wicketKeeper: e.target.value || undefined };
+                      const updated: Match = { ...match, [innKey]: updatedInn };
+                      setMatch(updated);
+                      await saveMatch(updated);
+                    }}
+                    className="text-xs px-2 py-1 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:border-primary-500"
+                  >
+                    <option value="" className="bg-gray-900">— none —</option>
+                    {(inn.bowlingTeam === match.team1 ? match.team1Players : match.team2Players).map(p => (
+                      <option key={p.id} value={p.name} className="bg-gray-900">{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               {/* Rename Players — small affordance for fixing typos /
                   placeholder names like "12". Always available. */}
               <div className="text-center">
@@ -1758,6 +1822,14 @@ function ScorerInner() {
                 if (inning.balls.length === 0) return null;
                 const batStats = getBattingStats(inning);
                 const bowlStats = getBowlingStats(inning);
+                const inningsNum = (idx + 1) as 1 | 2;
+                // Map dismissed batter name → wicket ball event so the
+                // dismissal text in the scorecard can be tapped to edit
+                // the fielder credit.
+                const dismissalBalls: Record<string, BallEvent> = {};
+                for (const b of inning.balls) {
+                  if (b.isWicket && b.dismissedPlayer) dismissalBalls[b.dismissedPlayer] = b;
+                }
                 return (
                   <div key={idx} className="glass rounded-2xl p-4 border border-white/10">
                     <div className="flex justify-between items-center mb-4">
@@ -1771,16 +1843,32 @@ function ScorerInner() {
                         <thead><tr className="text-gray-500 border-b border-white/10">
                           <th className="text-left py-2 pr-2">Batter</th><th className="text-right px-1">R</th><th className="text-right px-1">B</th><th className="text-right px-1">4s</th><th className="text-right px-1">6s</th><th className="text-right pl-1">SR</th>
                         </tr></thead>
-                        <tbody>{batStats.map(b => (
+                        <tbody>{batStats.map(b => {
+                          const dismissalBall = dismissalBalls[b.name];
+                          return (
                           <tr key={b.name} className="border-b border-white/5">
-                            <td className="py-1.5 pr-2"><span className="text-white">{b.name}</span>{b.isOut && <span className="text-red-400 text-xs block">{b.howOut}</span>}{!b.isOut && <span className="text-primary-400 text-xs"> not out</span>}</td>
+                            <td className="py-1.5 pr-2">
+                              <span className="text-white">{b.name}</span>
+                              {b.isOut && dismissalBall && (
+                                <button
+                                  onClick={() => setEditingDismissal({ ballId: dismissalBall.id, innings: inningsNum })}
+                                  className="block text-red-400 text-xs text-left hover:text-red-300 underline decoration-dotted"
+                                  title="Edit dismissal — fix wicket type or fielder credit"
+                                >
+                                  {b.howOut} <span className="text-gray-500">✎</span>
+                                </button>
+                              )}
+                              {b.isOut && !dismissalBall && <span className="text-red-400 text-xs block">{b.howOut}</span>}
+                              {!b.isOut && <span className="text-primary-400 text-xs"> not out</span>}
+                            </td>
                             <td className="text-right px-1 text-white font-bold">{b.runs}</td>
                             <td className="text-right px-1 text-gray-400">{b.balls}</td>
                             <td className="text-right px-1 text-gray-400">{b.fours}</td>
                             <td className="text-right px-1 text-gray-400">{b.sixes}</td>
                             <td className="text-right pl-1 text-gray-400">{b.sr}</td>
                           </tr>
-                        ))}</tbody>
+                          );
+                        })}</tbody>
                       </table>
                     </div>
                     <p className="text-xs text-gray-500 mb-4">Extras: {inning.extras.wides}w {inning.extras.noballs}nb {inning.extras.byes}b {inning.extras.legbyes}lb (Total: {inning.extras.wides + inning.extras.noballs + inning.extras.byes + inning.extras.legbyes})</p>
@@ -1811,6 +1899,97 @@ function ScorerInner() {
 
         </div>
       </section>
+
+      {/* Dismissal editor — opens when the user taps a "how out" line
+          on the scorecard. Lets them retro-fix the fielder credit
+          (most common cause of a Best Fielder mismatch) and the
+          wicket type / dismissed batter if needed. Persists straight
+          back to the same ball event so all downstream stats
+          (Best Fielder, MVP, fielding totals) recompute. */}
+      {editingDismissal && match && (() => {
+        const innKey = editingDismissal.innings === 1 ? 'innings1' : 'innings2';
+        const inn = match[innKey];
+        const ball = inn.balls.find(b => b.id === editingDismissal.ballId);
+        if (!ball) { setEditingDismissal(null); return null; }
+        const fielders = inn.bowlingTeam === match.team1 ? match.team1Players : match.team2Players;
+        return (
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            style={{ backgroundColor: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)' }}
+            onClick={(e) => { if (e.target === e.currentTarget) setEditingDismissal(null); }}
+          >
+            <div className="glass rounded-2xl p-6 max-w-md w-full border-2 border-red-500/40">
+              <h3 className="text-lg font-bold text-white mb-1">Edit Dismissal</h3>
+              <p className="text-xs text-gray-500 mb-4">
+                Over {ball.over + 1}.{ball.ball} · bowler {ball.bowler}
+              </p>
+
+              <div className="space-y-3">
+                <div>
+                  <p className="text-gray-400 text-xs mb-2">Wicket type</p>
+                  <div className="flex flex-wrap gap-1">
+                    {WICKET_TYPES.map(w => (
+                      <button
+                        key={w}
+                        onClick={() => updateDismissal(editingDismissal.innings, ball.id, { wicketType: w })}
+                        className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${ball.wicketType === w ? 'bg-red-500/20 text-red-400 border-red-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}
+                      >
+                        {w}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-gray-400 text-xs mb-2">Dismissed batter</p>
+                  <select
+                    value={ball.dismissedPlayer}
+                    onChange={(e) => updateDismissal(editingDismissal.innings, ball.id, { dismissedPlayer: e.target.value })}
+                    className="w-full px-3 py-2 text-sm bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-red-500"
+                  >
+                    {(inn.battingTeam === match.team1 ? match.team1Players : match.team2Players).map(p => (
+                      <option key={p.id} value={p.name} className="bg-gray-900">{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {['Caught', 'Caught & Bowled', 'Stumped', 'Run Out'].includes(ball.wicketType) && (
+                  <div>
+                    <p className="text-gray-400 text-xs mb-2">Fielder</p>
+                    <div className="flex flex-wrap gap-1">
+                      <button
+                        onClick={() => updateDismissal(editingDismissal.innings, ball.id, { fielder: '' })}
+                        className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${!ball.fielder ? 'bg-gray-500/30 text-gray-300 border-gray-500/50' : 'bg-white/5 text-gray-500 border-white/10'}`}
+                      >
+                        — none —
+                      </button>
+                      {fielders.map(p => (
+                        <button
+                          key={p.id}
+                          onClick={() => updateDismissal(editingDismissal.innings, ball.id, { fielder: p.name })}
+                          className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${ball.fielder === p.name ? 'bg-accent-500/20 text-accent-400 border-accent-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}
+                        >
+                          {p.name}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-600 mt-2">
+                      Tip: if the keeper{inn.wicketKeeper ? ` (${inn.wicketKeeper})` : ''} took the catch, picking them here gives them a Best Fielder bonus.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <button
+                onClick={() => setEditingDismissal(null)}
+                className="w-full mt-4 py-2 rounded-lg bg-primary-500/20 text-primary-400 text-sm font-bold border border-primary-500/30"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Takeover confirmation modal — shown when opening a match
           currently being scored by someone else. Confirms intent
