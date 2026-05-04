@@ -8,7 +8,11 @@ export interface BallEvent {
   id: string;
   over: number;
   ball: number; // 1-6 (legal deliveries)
-  batter: string;
+  batter: string;          // striker who faced the ball
+  nonStriker?: string;     // non-striker at the moment of the ball.
+                           // Optional for backward-compat with balls
+                           // recorded before this field existed; undo
+                           // falls back to currentBatter2 if missing.
   bowler: string;
   runs: number;
   extras: number;

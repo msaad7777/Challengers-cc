@@ -297,7 +297,12 @@ function ScorerInner() {
       if (b.extraType === 'legbye') updatedExtras.legbyes += b.runs;
     });
 
-    // Restore batters from before this ball
+    // Restore batters from before this ball. Each ball records both
+    // the striker (batter) and the non-striker, so we can fully
+    // reconstruct the at-the-crease pair without guessing. Older
+    // balls predate the nonStriker field — fall back to the
+    // existing inn.currentBatter2 in that case so undo on legacy
+    // data degrades gracefully (same behavior as before this fix).
     const updatedInnings: Innings = {
       ...inn,
       balls: newBalls,
@@ -307,45 +312,45 @@ function ScorerInner() {
       totalBalls: legalBalls,
       extras: updatedExtras,
       currentBatter1: lastBall.batter || inn.currentBatter1,
+      currentBatter2: lastBall.nonStriker ?? inn.currentBatter2,
       currentBowler: lastBall.bowler || inn.currentBowler,
       isComplete: false,
     };
 
-    // If wicket was undone, restore dismissed player
-    if (lastBall.isWicket && lastBall.dismissedPlayer) {
-      if (lastBall.dismissedPlayer === inn.currentBatter1 || !inn.currentBatter1) {
-        updatedInnings.currentBatter1 = lastBall.dismissedPlayer;
-      } else {
-        updatedInnings.currentBatter2 = lastBall.dismissedPlayer;
+    // For balls recorded BEFORE the nonStriker field existed, fall
+    // back to the heuristic reversal logic (wicket-restore, strike-
+    // rotation reversal, end-of-over swap-back). Newer balls have
+    // an exact nonStriker snapshot so none of these compensations
+    // are needed — running them on top of the exact restore would
+    // double-undo and recreate the duplicate-batter bug.
+    if (lastBall.nonStriker === undefined) {
+      if (lastBall.isWicket && lastBall.dismissedPlayer) {
+        if (lastBall.dismissedPlayer === inn.currentBatter1 || !inn.currentBatter1) {
+          updatedInnings.currentBatter1 = lastBall.dismissedPlayer;
+        } else {
+          updatedInnings.currentBatter2 = lastBall.dismissedPlayer;
+        }
       }
-    }
-
-    // Reverse strike rotation
-    if (lastBall.extraType !== 'wide' && lastBall.extraType !== 'noball') {
-      if (legalBalls % 6 === 0 && legalBalls > 0) {
-        // Was end of over — swap back
+      if (lastBall.extraType !== 'wide' && lastBall.extraType !== 'noball') {
+        if (legalBalls % 6 === 0 && legalBalls > 0) {
+          const temp = updatedInnings.currentBatter1;
+          updatedInnings.currentBatter1 = updatedInnings.currentBatter2;
+          updatedInnings.currentBatter2 = temp;
+        }
+      }
+      if (lastBall.runs % 2 === 1) {
         const temp = updatedInnings.currentBatter1;
         updatedInnings.currentBatter1 = updatedInnings.currentBatter2;
         updatedInnings.currentBatter2 = temp;
       }
-    }
-    if (lastBall.runs % 2 === 1) {
-      const temp = updatedInnings.currentBatter1;
-      updatedInnings.currentBatter1 = updatedInnings.currentBatter2;
-      updatedInnings.currentBatter2 = temp;
-    }
-
-    // BallEvent only records the striker, not the non-striker, so
-    // successive undos that traverse a strike-rotation can leave
-    // both slots holding the same player. Detect that collision and
-    // clear batter2 — the auto-show batter-select modal will then
-    // prompt the user to re-pick the non-striker rather than
-    // silently shipping a corrupt state to Firestore.
-    if (
-      updatedInnings.currentBatter1 &&
-      updatedInnings.currentBatter1 === updatedInnings.currentBatter2
-    ) {
-      updatedInnings.currentBatter2 = '';
+      // Defensive: legacy heuristic can still collide on the same
+      // player. Clear batter2 and let the auto-show modal prompt.
+      if (
+        updatedInnings.currentBatter1 &&
+        updatedInnings.currentBatter1 === updatedInnings.currentBatter2
+      ) {
+        updatedInnings.currentBatter2 = '';
+      }
     }
 
     const updatedMatch = {
@@ -379,6 +384,7 @@ function ScorerInner() {
       over: currentOver,
       ball: isLegal ? currentBallInOver : currentLegalBalls % 6,
       batter: inn.currentBatter1,
+      nonStriker: inn.currentBatter2,
       bowler: inn.currentBowler,
       runs: extraType === 'wide' || extraType === 'bye' || extraType === 'legbye' ? 0 : runs,
       extras: extraType ? (extraType === 'wide' || extraType === 'noball' ? 1 + runs : runs) : 0,
