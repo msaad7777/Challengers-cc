@@ -18,6 +18,172 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'practice-match-3-2026-vs-tigers-cc',
+    title: 'Practice Match #3 — Challengers Beat Tigers CC by 26 Runs at Thamesville',
+    excerpt:
+      'Two-in-two on the road. Challengers posted 142 batting first against Tigers CC at Thamesville, then defended it with a disciplined bowling effort led by Syed Shahriar (2/9 in 4 overs, 16 dots) — winning by 26 runs. Shivam Rajput and Gokul Prakash both top-scored with 32.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Two practice matches in two days. Challengers Cricket Club returned to
+        <strong class="text-white">Thamesville Cricket Ground</strong> on Sunday for our third
+        20-over practice fixture of 2026, this time facing <strong class="text-white">Tigers CC</strong>.
+        We posted <strong class="text-white">142 batting first</strong> and defended it for a
+        <strong class="text-white">26-run win</strong> — making it three wins from three practice
+        outings heading into the league openers.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Match Summary</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-3">
+        <strong class="text-white">Toss:</strong> Challengers won the toss and elected to bat.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Challengers were bowled out for <strong class="text-white">142 in 18.3 overs</strong>,
+        with two batters scoring identical 32s and a steady 27 from Abhishek Ladva anchoring
+        the middle order. Tigers, chasing 143, were restricted to
+        <strong class="text-white">116/8 in 20 overs</strong> by a tight Challengers bowling
+        unit — the front-line attack giving up under five an over across the first three changes.
+        Final margin: 26 runs.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Top Performers</h3>
+      <div class="grid sm:grid-cols-2 gap-4 mb-6">
+        <div class="glass rounded-xl p-5 border border-primary-500/20">
+          <p class="text-sm font-bold text-primary-400 uppercase tracking-wider mb-3">
+            🟢 Challengers CC
+          </p>
+          <ul class="text-gray-300 space-y-1.5 text-sm">
+            <li><strong class="text-white">Batting</strong></li>
+            <li>Shivam Rajput — 32 (16), 3×4, 2×6, SR 200.0</li>
+            <li>Gokul Prakash — 32 (17), 1×4, 3×6, SR 188.2</li>
+            <li>Abhishek Ladva — 27 (34)</li>
+            <li>Mohammed Saad — 10 (11), 2×4</li>
+            <li class="pt-2"><strong class="text-white">Bowling</strong></li>
+            <li>Syed Shahriar — 2/9 in 4 overs · 16 dots · econ 2.25</li>
+            <li>Abhishek Ladva — 1/17 in 4 overs (9 dots)</li>
+            <li>Shivam Rajput — 1/13 in 3 overs</li>
+            <li>Judin Thomas — 1/16 in 3 overs</li>
+            <li class="pt-2"><strong class="text-white">Fielding</strong></li>
+            <li>Mohammed Saad — catch behind to dismiss JIger</li>
+          </ul>
+        </div>
+        <div class="glass rounded-xl p-5 border border-blue-500/20">
+          <p class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3">
+            🔵 Tigers CC
+          </p>
+          <ul class="text-gray-300 space-y-1.5 text-sm">
+            <li><strong class="text-white">Batting</strong></li>
+            <li>Syed R — 25 (20), 2×4, 1×6, SR 125.0</li>
+            <li>Jasim — 22 (38)</li>
+            <li>Sandu — 16* (13)</li>
+            <li>Sahaj — 15* (7), SR 214.3</li>
+            <li class="pt-2"><strong class="text-white">Bowling</strong></li>
+            <li>Akber — 2/26 in 3.5 overs</li>
+            <li>Lovely — 2/19 in 2.1 overs</li>
+            <li>Syed R — 1/10 in 1.2 overs</li>
+            <li>Teji — 1/11 in 2 overs</li>
+            <li>Sahaj — 1/28 in 3 overs</li>
+            <li>Teji-2 — 1/7 in 1.1 overs</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="text-2xl font-bold text-white mb-4">How the Match Played Out</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-4">
+        <strong class="text-white">First innings.</strong> Challengers lost wickets at regular
+        intervals through the middle order — Akber and Lovely both grabbed two each from the
+        Tigers attack — but two cameos kept the run rate climbing. Shivam Rajput came in and
+        smashed 32 off 16 with three boundaries and two sixes (SR 200), and Gokul Prakash
+        matched the 32 off 17 with a strike rate near 190 lower down the order. Abhishek
+        Ladva&apos;s 27 off 34 held one end together while shots happened around him. Tigers&apos;
+        bowling was disciplined enough to keep us under 145, but our lower-order acceleration
+        meant the total still gave us a defendable platform.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        <strong class="text-white">Second innings.</strong> The defining performance was
+        <strong class="text-white">Syed Shahriar</strong>: 4 full overs, 16 dot balls, only 9
+        runs conceded, 2 wickets. That economy of 2.25 strangled the chase from one end.
+        Abhishek Ladva, Shivam Rajput, and Judin Thomas each contributed a wicket and kept
+        the dot-ball pressure on. Tigers needed boundaries to chase 143 and we just didn&apos;t
+        let them score them — only one Tigers batter (Syed R, 25 off 20) cleared a strike
+        rate above 125. Despite three retired-out batters in the middle of the innings, Tigers
+        couldn&apos;t generate the late-overs surge required and finished
+        <strong class="text-white">26 short on 116/8</strong>.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">MVP &amp; Best of</h3>
+      <div class="grid sm:grid-cols-3 gap-3 mb-6">
+        <div class="glass rounded-xl p-4 border border-accent-500/30">
+          <p class="text-accent-400 text-xs uppercase tracking-wider mb-1">🥇 MVP</p>
+          <p class="text-white font-bold">Syed Shahriar</p>
+          <p class="text-gray-400 text-xs mt-1">26.2 pts · 6(7) · 2/9 in 4.0</p>
+        </div>
+        <div class="glass rounded-xl p-4 border border-primary-500/20">
+          <p class="text-primary-400 text-xs uppercase tracking-wider mb-1">🏏 Best Batter</p>
+          <p class="text-white font-bold">Shivam Rajput</p>
+          <p class="text-gray-400 text-xs mt-1">32 (16) · SR 200.0</p>
+        </div>
+        <div class="glass rounded-xl p-4 border border-red-500/20">
+          <p class="text-red-400 text-xs uppercase tracking-wider mb-1">🎯 Best Bowler</p>
+          <p class="text-white font-bold">Syed Shahriar</p>
+          <p class="text-gray-400 text-xs mt-1">2/9 · 4.0 ov · econ 2.25 · 16 dots</p>
+        </div>
+      </div>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Watch the Full Match</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Highlights will be uploaded to the
+        <a href="https://www.youtube.com/@Challengersccldn" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">Challengers YouTube channel</a>
+        in the next few days. We&apos;ll attach the embed here when it&apos;s live — or you can
+        subscribe to the channel and get notified the moment it goes up.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Members — Reflect While It&apos;s Fresh</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Registered Challengers CC members can sign in to <strong class="text-white">C3H</strong>
+        and add a personal reflection card for this match. Three matches in three days is a
+        lot of cricket and a lot of new shots to think about — write it down before next
+        practice and the system will surface patterns and recommend Batting / Bowling
+        Principles to focus on.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        👉 <a href="/c3h/replays" class="text-primary-400 hover:text-primary-300 underline font-semibold">Watch the match on C3H Match Replays</a>
+        and click <em>Reflect on this match</em> to open your reflection journal.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Looking Ahead</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Three practice wins, three matches recorded, settled units in both batting and bowling.
+        <strong class="text-white">LCL T30 opens May 10 vs London Predators</strong> at
+        Northridge Cricket Ground; <strong class="text-white">LPL T30 the same day vs Maple
+        Tigers</strong> at Silverwoods. Weekly Wednesday training resumes
+        <strong class="text-white">May 13</strong>, 7:00 PM at Silverwoods.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Thank You</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Thank you to <strong class="text-white">Tigers CC</strong> for the fixture, to
+        Thamesville Cricket Ground for hosting back-to-back Challengers matches, and to
+        every Challenger who travelled, played, scored, or watched. The standard is set —
+        league season starts now.
+      </p>
+
+      <p class="text-gray-400 text-sm italic">
+        Challengers Cricket Club — London, Ontario&apos;s inclusive community cricket club.
+        Registered Ontario Not-For-Profit Corporation #1746974-8. Follow us on
+        <a href="https://www.instagram.com/challengers.cc/" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">@challengers.cc</a>
+        and subscribe on
+        <a href="https://www.youtube.com/@Challengersccldn" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">YouTube</a>
+        for match livestreams and highlights all season.
+      </p>
+    `,
+    category: 'Match Reports',
+    author: 'Challengers CC',
+    date: '2026-05-04',
+    image: '/ccc-logo.png',
+    video: null,
+    featured: true,
+  },
+  {
     slug: 'practice-match-2-2026-vs-chahtham-cc',
     title: 'Practice Match #2 — Challengers Beat Chahtham CC by 13 Runs at Thamesville',
     excerpt:
