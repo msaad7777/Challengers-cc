@@ -228,6 +228,39 @@ export default function PavilionPage() {
             </p>
           </div>
 
+          {/* My Volunteer Agreement status — every member (including directors)
+              should sign this. Show a clear CTA if the current user hasn't yet. */}
+          {userWorkspaceEmail && (() => {
+            const myVaSigned =
+              vaSigners.has(userWorkspaceEmail) ||
+              (userRosterEntry?.personalEmail
+                ? vaSigners.has(userRosterEntry.personalEmail.toLowerCase())
+                : false);
+            return myVaSigned ? (
+              <div className="mb-6 rounded-xl bg-primary-500/5 border border-primary-500/20 p-4 flex items-center justify-between gap-3 flex-wrap">
+                <div className="text-sm text-primary-300">
+                  ✓ You&apos;ve signed the Volunteer Agreement.
+                </div>
+                <a href="/legal/volunteer-agreement" className="text-xs text-gray-400 hover:text-primary-400 underline">
+                  View / print my signed copy
+                </a>
+              </div>
+            ) : (
+              <div className="mb-6 rounded-xl bg-amber-500/5 border border-amber-500/30 p-4">
+                <p className="text-sm text-amber-200 mb-2">
+                  ⚠ You haven&apos;t signed the Volunteer Agreement yet. Every member (directors included) is
+                  expected to sign it as part of onboarding.
+                </p>
+                <a
+                  href="/legal/volunteer-agreement"
+                  className="inline-block px-4 py-2 rounded-lg bg-amber-500 text-black font-semibold text-sm hover:bg-amber-400 transition-all"
+                >
+                  Open and e-sign my Volunteer Agreement →
+                </a>
+              </div>
+            );
+          })()}
+
           {loadingSigs ? (
             <div className="text-gray-400 text-sm">Loading governance ledger…</div>
           ) : (
@@ -236,12 +269,18 @@ export default function PavilionPage() {
                 const required = requiredSignersFor(gd);
                 const total = required.length;
                 const signed = signedCount(gd);
-                const fullySigned = signed === total;
                 const myKey = userWorkspaceEmail ? sigKey(gd.id, gd.version, userWorkspaceEmail) : '';
                 const mySig = myKey ? signatures[myKey] : undefined;
                 const isConflicted = (gd.conflictedSigners ?? []).includes(userWorkspaceEmail || '');
                 const isOpen = openContentFor === gd.id;
                 const isSigning = openSignerFor === gd.id;
+                // For two-party agreements, fully-signed requires both
+                // the CCC director side AND the SACS side. Otherwise
+                // CCC director side alone is sufficient.
+                const sacsSigPresent = gd.requiresSacsSignature
+                  ? Boolean(signatures[sacsSigKey(gd.id, gd.version)])
+                  : true;
+                const fullySigned = signed === total && sacsSigPresent;
 
                 return (
                   <article key={gd.id} className="glass rounded-2xl p-6 border border-white/10">
@@ -260,7 +299,9 @@ export default function PavilionPage() {
                               : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
                           }`}
                         >
-                          {signed} / {total} signed
+                          {gd.requiresSacsSignature
+                            ? `${signed} / ${total} directors${sacsSigPresent ? ' · ✓ SACS' : ' · SACS pending'}`
+                            : `${signed} / ${total} signed`}
                         </div>
                       </div>
                     </header>
