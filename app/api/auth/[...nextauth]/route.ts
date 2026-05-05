@@ -5,23 +5,26 @@ import GoogleProvider from 'next-auth/providers/google';
 // Includes both @challengerscc.ca and personal Gmail
 const BOARD_EMAILS = [
   'contact@challengerscc.ca',
+  // Directors (5 — per federal corporate profile)
   'saad@challengerscc.ca',
-  'tarek@challengerscc.ca',
-  'gokul@challengerscc.ca',
-  'qaiser@challengerscc.ca',
-  'madhu@challengerscc.ca',
   'ankush@challengerscc.ca',
-  'roman@challengerscc.ca',
+  'tarek@challengerscc.ca',
+  'sazzad@challengerscc.ca',
+  'gokul@challengerscc.ca',
+  // Officers (non-director)
+  'madhu@challengerscc.ca',
+  'qaiser@challengerscc.ca',
   'shariar@challengerscc.ca',
-  // Personal Gmails of board members & captains
-  'mbadru3434@gmail.com',
-  'monirulislambd64@gmail.com',
-  'gokulprakash663@gmail.com',
-  'qureshiqaiser007@gmail.com',
-  'vantarimadhu@gmail.com',
-  '92ankusharora@gmail.com',
-  'romans987@gmail.com',
-  'syedshahriar77@gmail.com',
+  // Personal Gmails of directors & officers
+  'mbadru3434@gmail.com',          // Saad
+  'monirulislambd64@gmail.com',    // Tarek (Md Monirul Islam)
+  'gokulprakash663@gmail.com',     // Gokul
+  'qureshiqaiser007@gmail.com',    // Qaiser
+  'vantarimadhu@gmail.com',        // Madhu
+  '92ankusharora@gmail.com',       // Ankush
+  'syedshahriar77@gmail.com',      // Shahriar
+  // Sazzad's personal Gmail TBC — workspace email above will work via the
+  // @challengerscc.ca catch-all in getUserRole().
 ];
 
 // Whitelisted player Gmail accounts (non-board players only)

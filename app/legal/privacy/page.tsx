@@ -72,6 +72,19 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section>
+              <h2 className="text-lg font-bold text-white mb-2">Who operates this platform</h2>
+              <p className="text-sm">The Club&apos;s public website at <code className="text-primary-400">challengerscc.ca</code> and the C3H members&apos; portal are <strong className="text-white">operated on behalf of the Club</strong> by <strong className="text-white">Saad Cloud &amp; AI Solutions Inc.</strong> (<a href="https://msaad.tech" target="_blank" rel="noopener noreferrer" className="text-primary-400 underline hover:text-primary-300">msaad.tech</a>), an Ontario business corporation owned by Mohammed Saad. Saad Cloud &amp; AI Solutions Inc. authored the software and pays for the underlying cloud infrastructure (Vercel, Firebase, NextAuth/Google sign-in) at no cost to the Club. Full details of this arrangement are set out in the <Link href="/legal/ip-ownership" className="text-primary-400 underline hover:text-primary-300">Software &amp; IP Ownership Acknowledgement</Link>.</p>
+              <p className="text-sm mt-2">For PIPEDA purposes:</p>
+              <ul className="space-y-2 mt-2 text-sm list-disc list-inside ml-2">
+                <li><strong className="text-white">Challengers Cricket Club is the data controller</strong> — we decide what personal information is collected and why.</li>
+                <li><strong className="text-white">Saad Cloud &amp; AI Solutions Inc. is the data processor</strong> — it operates the platform on our instructions and may not use member data for any other purpose.</li>
+                <li>Saad Cloud &amp; AI Solutions Inc. is contractually prohibited from using Club member data to train artificial intelligence models, demonstrate to other clubs, or build commercial products. Member data may not be re-used in any future Saad Cloud &amp; AI Solutions Inc. commercial offering without each member&apos;s explicit consent and a separate Data Processing Agreement.</li>
+                <li>Sub-processors used by Saad Cloud &amp; AI Solutions Inc. to deliver the platform (each subject to their own privacy practices): <strong className="text-white">Vercel</strong> (web hosting), <strong className="text-white">Google Cloud / Firebase</strong> (database, authentication), <strong className="text-white">Stripe</strong> (payments), <strong className="text-white">Zeffy</strong> (donations, when active), <strong className="text-white">YouTube</strong> (video hosting).</li>
+              </ul>
+              <p className="text-sm mt-2">A formal Software License &amp; Service Agreement (which includes data processing terms) between the Club and Saad Cloud &amp; AI Solutions Inc. is being executed and will be e-signed by the directors via the C3H Pavilion governance module. Until then, this Privacy Policy and the IP Ownership Acknowledgement constitute the public record of the arrangement.</p>
+            </section>
+
+            <section>
               <h2 className="text-lg font-bold text-white mb-2">Who we share it with</h2>
               <p className="text-sm">We do <strong className="text-white">not sell or rent</strong> personal information. We share it only as follows:</p>
               <ul className="space-y-2 mt-2 text-sm list-disc list-inside ml-2">

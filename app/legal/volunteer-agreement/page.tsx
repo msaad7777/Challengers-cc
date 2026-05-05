@@ -51,17 +51,23 @@ export default function VolunteerAgreementPage() {
               <h2 className="text-lg font-bold text-white mb-2">3. Donated Work Product</h2>
               <p className="text-sm">Any work product the Volunteer creates in connection with the Club — including but not limited to designs, content, photographs, videos, training materials, and documents — is contributed as a <strong className="text-white">donation to the Club</strong>. The Volunteer assigns to the Club a perpetual, irrevocable, royalty-free, worldwide licence to use, modify, reproduce, and distribute that work product for the Club&apos;s purposes.</p>
               <p className="text-sm mt-3">
-                <strong className="text-accent-400">Exception — pre-existing intellectual property contributed under licence.</strong>
+                <strong className="text-accent-400">Exception — pre-existing intellectual property contributed under a separate licence.</strong>
                 {' '}This Section 3 does <strong className="text-white">not</strong> apply to source code, software, infrastructure, or
                 derivative works that the Volunteer (or a corporation owned by the Volunteer) has authored outside
-                of any employment or work-for-hire relationship with the Club, and which the Volunteer makes
-                available to the Club under a separate written licence. Such intellectual property remains the
-                Volunteer&apos;s (or their corporation&apos;s) sole property and is governed by the licence terms recorded in
-                the Club&apos;s
+                of any employment or work-for-hire relationship with the Club, and which the Volunteer or their
+                corporation makes available to the Club under a separate written licence. Such works are
+                <strong className="text-white"> commercial corporate work, not donated volunteer output</strong>, and remain the
+                sole property of the contributing corporation. The Club&apos;s right to use them is governed exclusively
+                by that separate licence — which may be revocable, conditional, or time-limited — and by the
+                licence terms recorded in the Club&apos;s
                 <Link href="/legal/ip-ownership" className="text-primary-400 hover:text-primary-300 underline mx-1">Software &amp; IP Ownership Acknowledgement</Link>
-                and any associated Software License Agreement. For the avoidance of doubt: the C3H members&apos; portal
-                and the challengerscc.ca website were authored by Mohammed Saad and are owned by Saad Cloud &amp; AI
-                Solutions Inc., not by the Club, despite Saad&apos;s role as a director and volunteer.
+                and the associated Software License &amp; Service Agreement. For the avoidance of doubt: the C3H
+                members&apos; portal and the <code className="text-primary-400">challengerscc.ca</code> website were authored by
+                Saad Cloud &amp; AI Solutions Inc. (the corporation owned by Mohammed Saad). The Club uses them
+                under a <strong className="text-white">revocable licence at no charge</strong> while Mohammed Saad serves as a
+                director, with Saad Cloud &amp; AI Solutions Inc. retaining the unilateral right to withdraw the
+                platform. Mohammed Saad&apos;s personal volunteer service as a director does <strong className="text-white">not</strong>
+                transfer his corporation&apos;s commercial intellectual property to the Club.
               </p>
             </section>
 

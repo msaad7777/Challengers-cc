@@ -97,9 +97,18 @@ When reading these, prefer `onSnapshot` for live views and `getDocs` for one-sho
 - `/c3h/availability` — player availability per match. Match list (`ALL_MATCHES`) is hardcoded in this file with `fullDate`, `venue`, `clash` fields. Adds Google Calendar invites via `VENUE_FULL_NAME` lookup.
 - `/c3h/scorer` — live ball-by-ball scoring, writes to `matches`. Auto-save with status indicator. Takeover confirmation when claiming a match someone else started. Auto-shows the bowler-pick modal at every over boundary; enforces "no consecutive overs by the same bowler".
 - `/c3h/live` — **publicly readable** read-only scoreboard, subscribes to in-flight `matches` via `onSnapshot`, plus shows the `MatchSummary` card on completed matches. The only `/c3h/*` page that does not require login.
-- `/c3h/nets`, `/c3h/replays`, `/c3h/watch`, `/c3h/profile`, `/c3h/events`, `/c3h/field-editor`, `/c3h/receipts`
+- `/c3h/nets` — Pavilion reflections + coach-level review form. Match dropdown lists actual completed `matches` from Firestore (not just generic "Practice"); selecting one auto-pulls the player's batting/bowling stats from the match document. Renders `PlayerCoachCard` (per-player rule-based analysis) and an "Auto Coach Insight" derived from the reflection form. Writes to `reflections`.
+- `/c3h/replays` — lists completed matches from Firestore for replay/review.
+- `/c3h/watch`, `/c3h/profile`, `/c3h/events`, `/c3h/field-editor`, `/c3h/receipts`
 
-**Per-portal helpers** — `app/c3h/lib/matchStats.ts` is a pure-function module computing per-player batting/bowling aggregates plus MVP / Best Batter / Best Bowler / Best Fielder / match-impact rankings from a `Match` document. `app/c3h/lib/MatchSummary.tsx` renders those into a card used by both `/c3h/live` and the Scorer's scorecard view. Keep these pure (no Firestore reads) so they can run server- or client-side off any `Match`.
+**Per-portal helpers in `app/c3h/lib/`** — all pure-function / pure-component modules; no Firestore reads, so they can run server- or client-side off any `Match`:
+- `matchStats.ts` — per-player batting/bowling aggregates plus MVP / Best Batter / Best Bowler / Best Fielder / match-impact rankings from a `Match` document.
+- `MatchSummary.tsx` — renders the above into a card; used by `/c3h/live` and the Scorer scorecard view.
+- `playerAnalysis.ts` — per-player match analysis + rule-based coach feedback (rules keyed off dismissal type, SR vs team SR, economy vs team econ, dot-ball pressure, position-relative par-score). Includes `findPlayerName(sessionName, sessionEmail, rosters)` for resolving the logged-in user's name to a roster entry.
+- `coachInsight.ts` — rule-based "Auto Coach Insight" generated from the Nets reflection form (technical mistake → plan failure → fix → next-innings plan). No LLM, deterministic, zero per-request cost.
+- `PlayerCoachCard.tsx` — UI card rendering `playerAnalysis` output.
+
+When adding rule-based analysis, extend these modules — keep them LLM-free and pure so they remain auditable and offline-safe.
 
 ### API Routes
 

@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 
 export const metadata = {
   title: 'Software & IP Ownership Acknowledgement — Challengers Cricket Club',
-  description: 'Public acknowledgement that the C3H portal, challengerscc.ca website, and all related software is owned by Saad Cloud & AI Solutions Inc. Challengers Cricket Club operates the platform under a perpetual royalty-free license.',
+  description: 'Public acknowledgement that the C3H portal, challengerscc.ca website, and all related software is owned by Saad Cloud & AI Solutions Inc. Challengers Cricket Club operates the platform under a revocable licence at no charge while Mohammed Saad serves as a director.',
 };
 
 export default function IpOwnershipPage() {
@@ -30,12 +30,25 @@ export default function IpOwnershipPage() {
             <p className="text-sm text-gray-200 leading-relaxed">
               <strong className="text-accent-400">Plain-language summary.</strong> The C3H members&apos; portal, the
               <code className="text-primary-400 mx-1">challengerscc.ca</code> website, and every line of source code,
-              design, and infrastructure that powers them was built by <strong className="text-white">Mohammed Saad</strong>,
-              a director of Challengers Cricket Club, on his own time, on his own equipment, using his own cloud
-              accounts, and at no cost to the Club. All of that intellectual property is owned by Saad&apos;s
-              incorporated business, <strong className="text-white">Saad Cloud &amp; AI Solutions Inc.</strong> The Club
-              uses the platform under a perpetual royalty-free licence. The Club has never paid Saad for this work
-              and never employed him to do it. This document records that fact on the public record.
+              design, and infrastructure that powers them was built by <strong className="text-white">Saad Cloud &amp; AI Solutions Inc.</strong>,
+              an Ontario business corporation owned by Mohammed Saad. The work is <strong className="text-white">commercial corporate work</strong>,
+              not a volunteer effort by the company. The intellectual property is owned outright by Saad Cloud &amp;
+              AI Solutions Inc. as a corporate asset.
+            </p>
+            <p className="text-sm text-gray-200 leading-relaxed mt-3">
+              <strong className="text-white">For so long as Mohammed Saad remains a director of Challengers Cricket Club</strong>,
+              Saad Cloud &amp; AI Solutions Inc. provides the platform — frontend, backend, cloud infrastructure,
+              ongoing development, and ongoing maintenance — to the Club at <strong className="text-white">no charge,
+              with no payment due</strong>. This is a courtesy made possible by the related-party relationship; it
+              is not a donation, not a transfer of ownership, and not an irrevocable grant.
+            </p>
+            <p className="text-sm text-gray-200 leading-relaxed mt-3">
+              Saad Cloud &amp; AI Solutions Inc. retains the <strong className="text-white">unilateral right to
+              terminate the licence and withdraw the platform</strong> — frontend, backend, source code, deployments,
+              data exports, and related setup — at its sole discretion. If Mohammed Saad ceases to be a director
+              of the Club, the no-charge arrangement may be wound down, re-priced at fair market value, or
+              terminated entirely. The Club has never paid Saad Cloud &amp; AI Solutions Inc. or Mohammed Saad
+              for software development, and has never employed either as staff or contractor.
             </p>
           </div>
 
@@ -75,6 +88,7 @@ export default function IpOwnershipPage() {
                   <ul className="text-xs text-gray-400 mt-2 space-y-1">
                     <li>Ontario business corporation</li>
                     <li>Sole shareholder &amp; director: Mohammed Saad</li>
+                    <li>Website: <a href="https://msaad.tech" target="_blank" rel="noopener noreferrer" className="text-primary-400 hover:text-primary-300 underline">msaad.tech</a></li>
                     <li className="text-gray-500 italic">Corporate registration details on file with the Club; available to regulators or lawyers on request.</li>
                   </ul>
                 </div>
@@ -114,17 +128,20 @@ export default function IpOwnershipPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-2">No employment, no compensation, no work-for-hire</h2>
+              <h2 className="text-lg font-bold text-white mb-2">Commercial work, currently provided at no cost</h2>
               <p className="text-sm">
-                Mohammed Saad has performed all software development for the Club <strong className="text-white">on a strictly volunteer basis</strong>:
+                The platform is the commercial work product of Saad Cloud &amp; AI Solutions Inc. The corporation
+                authored, owns, hosts, and maintains it as part of its business. <strong className="text-white">It is
+                not volunteer work by the corporation, and it is not a donation of intellectual property to the
+                Club.</strong> The Club&apos;s use of the platform is governed by a separate licence and is conditional
+                on the terms below.
               </p>
-              <ul className="space-y-2 text-sm list-disc list-inside ml-2 mt-2">
-                <li>The Club has <strong className="text-white">never employed</strong> Mohammed Saad. No employment contract has ever existed. No T4 has ever been issued.</li>
-                <li>The Club has <strong className="text-white">never paid</strong> Mohammed Saad or Saad Cloud &amp; AI Solutions Inc. for software development, hosting, or any related service — neither in cash nor in equivalent value.</li>
-                <li>No <strong className="text-white">work-made-for-hire</strong> contract or written assignment of intellectual property has been executed between Mohammed Saad and the Club.</li>
-                <li>All work was performed on Mohammed Saad&apos;s <strong className="text-white">personal time, personal equipment, and personal cloud accounts</strong>, outside any working hours owed to the Club.</li>
+              <ul className="space-y-2 text-sm list-disc list-inside ml-2 mt-3">
+                <li>The Club has <strong className="text-white">never employed</strong> Mohammed Saad or Saad Cloud &amp; AI Solutions Inc. No employment contract or work-for-hire contract has ever existed. No T4 has ever been issued. No invoice has ever been raised against the Club.</li>
+                <li>The Club has <strong className="text-white">never paid</strong> Saad Cloud &amp; AI Solutions Inc. or Mohammed Saad for software development, hosting, or any related service — neither in cash nor in equivalent value. No payment is currently due.</li>
+                <li>All work was performed on the corporation&apos;s own time and equipment, using cloud accounts and infrastructure owned and paid for by Saad Cloud &amp; AI Solutions Inc.</li>
                 <li>The Club did not <strong className="text-white">commission, direct, or supervise</strong> the technical work in the manner that would create employer-style ownership rights.</li>
-                <li>The Club has explicitly accepted Mohammed Saad&apos;s development effort as an <strong className="text-white">in-kind contribution under licence</strong>, not as a transfer of ownership or a donation of intellectual property.</li>
+                <li>Mohammed Saad personally serves the Club as a <strong className="text-white">volunteer director</strong>. That personal volunteer role does not extend to or transfer the commercial work of his corporation. The two are kept legally distinct.</li>
               </ul>
               <p className="text-sm mt-3">
                 For the avoidance of doubt: under section 13(1) of the Copyright Act of Canada, the author of a work
@@ -138,11 +155,22 @@ export default function IpOwnershipPage() {
             <section>
               <h2 className="text-lg font-bold text-white mb-2">The Club&apos;s licence to use the platform</h2>
               <p className="text-sm">
-                Saad Cloud &amp; AI Solutions Inc. grants Challengers Cricket Club a <strong className="text-white">perpetual,
-                royalty-free, irrevocable, non-exclusive licence</strong> to use the C3H portal and the challengerscc.ca
-                website for the Club&apos;s internal operations, member services, communications, and public outreach.
+                Saad Cloud &amp; AI Solutions Inc. grants Challengers Cricket Club a <strong className="text-white">limited,
+                non-exclusive, non-transferable, revocable licence</strong> to use the C3H portal and the
+                <code className="text-primary-400 mx-1">challengerscc.ca</code> website for the Club&apos;s internal operations,
+                member services, communications, and public outreach. The licence is <strong className="text-white">not
+                perpetual and not irrevocable</strong>. It is provided as a courtesy under the related-party
+                arrangement and may be terminated as set out below.
               </p>
-              <p className="text-sm mt-2">The licence explicitly <strong className="text-white">does not</strong> permit the Club to:</p>
+              <p className="text-sm mt-3"><strong className="text-white">Term and termination.</strong></p>
+              <ul className="space-y-2 text-sm list-disc list-inside ml-2 mt-2">
+                <li>The licence is provided <strong className="text-white">at no charge</strong> for so long as Mohammed Saad continues to serve as a director of the Club <em>and</em> Saad Cloud &amp; AI Solutions Inc. elects to continue providing the platform.</li>
+                <li>Saad Cloud &amp; AI Solutions Inc. may, <strong className="text-white">at its sole discretion</strong>, terminate the licence and withdraw the platform — the website, the C3H portal, the source code deployments, the cloud infrastructure, and all related setup — by giving the Club reasonable written notice. Reasonable notice will be no less than thirty (30) days unless the termination is for cause.</li>
+                <li>If Mohammed Saad <strong className="text-white">ceases to be a director</strong> of the Club for any reason — resignation, removal, end of term, or otherwise — Saad Cloud &amp; AI Solutions Inc. may, at its sole discretion, (a) wind down the no-charge arrangement, (b) propose a fair-market commercial agreement to continue the service, or (c) terminate the licence and withdraw the platform.</li>
+                <li>Termination for cause includes, without limitation: any attempt by the Club, its directors, officers, members, or successors to assert ownership of the source code, the infrastructure, or the related-party intellectual property; any breach of this acknowledgement; or any material breach of the separate Software License or Data Processing Agreements once executed.</li>
+                <li>On termination, the Club&apos;s right to use the platform ends immediately. Saad Cloud &amp; AI Solutions Inc. will, on request and where reasonably practicable, provide the Club with a one-time data export of Club-owned member data in a standard format. The Club has no claim to the source code, deployments, hosting accounts, or any other intellectual property.</li>
+              </ul>
+              <p className="text-sm mt-3"><strong className="text-white">What the licence does not permit.</strong> Even while the licence is in force, the Club may not:</p>
               <ul className="space-y-2 text-sm list-disc list-inside ml-2 mt-2">
                 <li>Sublicense, resell, white-label, or commercialize the source code or platform</li>
                 <li>Distribute the source code outside the Club&apos;s own use</li>
@@ -151,16 +179,11 @@ export default function IpOwnershipPage() {
                 <li>Demand the assignment, transfer, or escrow of source code as a condition of using the platform</li>
               </ul>
               <p className="text-sm mt-3">
-                The licence <strong className="text-white">survives</strong> any change of officers, directors, or members of the
-                Club, and any change of corporate status (including dissolution, merger, or transfer to a successor
-                organization).
-              </p>
-              <p className="text-sm mt-2">
-                A separate, more detailed <strong className="text-white">Software License Agreement</strong> between Saad Cloud
-                &amp; AI Solutions Inc. and the Club will codify the technical operating terms (uptime expectations,
-                support levels, sub-processors, termination notice periods, and similar). That agreement will be
-                signed by the Club&apos;s board with Mohammed Saad declaring conflict of interest and abstaining from the
-                vote, in accordance with the
+                A separate, more detailed <strong className="text-white">Software License &amp; Service Agreement</strong> between
+                Saad Cloud &amp; AI Solutions Inc. and the Club will codify the operating terms (notice periods, data
+                export procedures, support levels, sub-processors). That agreement will be signed by the Club&apos;s
+                board with Mohammed Saad declaring conflict of interest and abstaining from the vote, in
+                accordance with the
                 <Link href="/legal/conflict-of-interest" className="text-primary-400 hover:text-primary-300 underline mx-1">Conflict of Interest Policy</Link>.
               </p>
             </section>
@@ -225,13 +248,15 @@ export default function IpOwnershipPage() {
                 technical staff to do so.
               </p>
               <p className="text-sm mt-2">
-                Mohammed Saad&apos;s in-kind contribution of his time, skill, and infrastructure — under licence, with the
-                Club retaining its data and brand — is the most generous form of support a director can offer a
-                Not-for-Profit. It is also the form least vulnerable to misunderstanding when boards change, when
-                grant funders ask about IP registers, when CRA charity registration is reviewed, or when the
-                organization eventually faces a transition. The Club&apos;s board has accepted this contribution on those
-                terms with thanks, and recorded the acceptance here so that no future board, member, or third party
-                is left to guess at the arrangement.
+                Saad Cloud &amp; AI Solutions Inc. has agreed to operate the platform on the Club&apos;s behalf at zero
+                cost while the related-party relationship continues. The Club, in return, has accepted that the
+                arrangement is a courtesy on revocable terms — not a perpetual entitlement. The Club retains
+                ownership of its name, brand, domain, and member data; Saad Cloud &amp; AI Solutions Inc. retains
+                ownership of the software and the right to withdraw it. This is the form of arrangement least
+                vulnerable to misunderstanding when boards change, when grant funders ask about IP registers, when
+                CRA charity registration is reviewed, or when the organization eventually faces a transition. The
+                Club&apos;s board has accepted these terms with thanks and recorded the acceptance here so that no
+                future board, member, or third party is left to guess at the arrangement.
               </p>
             </section>
 
@@ -245,7 +270,7 @@ export default function IpOwnershipPage() {
               </p>
               <p className="text-sm mt-2 text-gray-400 italic">
                 Questions about this document can be directed to the Club at <a href="mailto:contact@challengerscc.ca" className="text-primary-400 hover:text-primary-300 underline">contact@challengerscc.ca</a>
-                {' '}or to Saad Cloud &amp; AI Solutions Inc. via Mohammed Saad.
+                {' '}or to Saad Cloud &amp; AI Solutions Inc. via <a href="https://msaad.tech" target="_blank" rel="noopener noreferrer" className="text-primary-400 hover:text-primary-300 underline">msaad.tech</a>.
               </p>
             </section>
 

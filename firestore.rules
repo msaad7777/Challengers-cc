@@ -1,0 +1,159 @@
+// Firestore Security Rules — Challengers Cricket Club (challengers-c3h project)
+// =============================================================================
+//
+// SECURITY MODEL
+// --------------
+// The app uses Firebase **anonymous auth** (lib/firebase.ts) to satisfy
+// `request.auth != null` in these rules. Real per-user access control lives
+// at the NextAuth layer in the React app — Firestore rules can therefore do
+// SHAPE validation, append-only enforcement, and basic email-allowlisting,
+// but cannot identify *which* logged-in user is making a write.
+//
+// Trade-off: a Firebase-aware client could forge a write by signing in
+// anonymously and crafting a doc that passes shape rules. For a small NFP
+// with a friendly board this is acceptable. The upgrade path when needed:
+// move sensitive writes (governance_signatures) to a server-side Next.js
+// API route using firebase-admin + a service account.
+//
+// HOW TO DEPLOY
+// -------------
+// Easiest:  paste this file into Firebase Console → Firestore → Rules → Edit
+// Or via CLI:
+//   npm i -g firebase-tools
+//   firebase login
+//   firebase use challengers-c3h
+//   firebase deploy --only firestore:rules
+//
+// =============================================================================
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ───────────────────────────────────────────────────────────
+    function authed() {
+      return request.auth != null;
+    }
+
+    function isString(v) { return v is string; }
+    function isNum(v)    { return v is number; }
+    function isBool(v)   { return v is bool; }
+
+    // Hardcoded director allowlist (workspace emails) — kept in sync with
+    // C3H_DIRECTOR_ROSTER in lib/c3h-access.ts. The personal Gmail aliases
+    // are NOT listed here because the Pavilion writes always normalize to
+    // the canonical workspace email (resolveDirectorWorkspaceEmail).
+    function directorEmails() {
+      return [
+        'saad@challengerscc.ca',
+        'ankush@challengerscc.ca',
+        'tarek@challengerscc.ca',
+        'sazzad@challengerscc.ca',
+        'gokul@challengerscc.ca'
+      ];
+    }
+
+    // ── Matches: ball-by-ball scoring + completed scorecards ──────────────
+    // Public READ is intentional — /c3h/live is the only public C3H page,
+    // and it requires reading active matches without authentication.
+    // Writes require auth (anonymous Firebase auth from any browser).
+    match /matches/{matchId} {
+      allow read: if true;
+      allow create: if authed()
+        && request.resource.data.keys().hasAll(['format', 'status', 'createdBy'])
+        && isString(request.resource.data.format)
+        && isString(request.resource.data.status);
+      allow update: if authed();
+      allow delete: if false; // Match records are part of the historical archive
+    }
+
+    // ── Squads per match (captain selections) ─────────────────────────────
+    match /squads/{matchId} {
+      allow read: if authed();
+      allow write: if authed()
+        && request.resource.data.keys().hasAll(['players', 'updatedBy', 'updatedAt']);
+    }
+
+    // ── Player availability (player-keyed, not email-keyed) ───────────────
+    match /availability/{playerName} {
+      allow read: if authed();
+      allow write: if authed();
+    }
+
+    // ── Field positions (Field Editor state per match) ────────────────────
+    match /field-positions/{matchId} {
+      allow read: if authed();
+      allow write: if authed();
+    }
+
+    // ── Nets reflections (private to player + captains) ───────────────────
+    match /reflections/{reflectionId} {
+      allow read: if authed();
+      allow create: if authed()
+        && request.resource.data.keys().hasAll(['playerName', 'createdAt']);
+      allow update: if authed();
+      allow delete: if false; // Reflections are append-only
+    }
+
+    // ── Governance signatures (Pavilion e-signature ledger) ───────────────
+    // STRICT rules — this is the corporate signing record. Append-only.
+    // Document key MUST be of the form: {docId}__v{version}__{safeEmail}
+    // so the rules can correlate the doc id with the data shape.
+    match /governance_signatures/{sigId} {
+
+      // Anyone authenticated may read the ledger (directors see who has
+      // signed; status is public-by-design within the org).
+      allow read: if authed();
+
+      allow create: if authed()
+        && validSignaturePayload(request.resource.data)
+        && request.resource.data.signerWorkspaceEmail in directorEmails();
+
+      // Append-only — once a signature is recorded, it cannot be edited
+      // or deleted by clients. Corrections require a new doc with bumped
+      // version, or admin intervention via the Firebase console.
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    function validSignaturePayload(d) {
+      return d.keys().hasAll([
+        'docId', 'docVersion',
+        'signerWorkspaceEmail', 'signerLoginEmail',
+        'signerName', 'signerRole',
+        'signedAt', 'signatureType', 'signatureData'
+      ])
+        && isString(d.docId) && d.docId.size() > 0
+        && isString(d.docVersion) && d.docVersion.size() > 0
+        && isString(d.signerWorkspaceEmail)
+        && isString(d.signerLoginEmail)
+        && isString(d.signerName) && d.signerName.size() > 1
+        && isString(d.signerRole)
+        && d.signedAt is timestamp
+        && d.signatureType in ['typed', 'drawn']
+        // Cap the signature payload at 800KB to prevent abuse — typed sigs
+        // are tiny, drawn PNGs are typically 20-200KB at our canvas size.
+        && isString(d.signatureData) && d.signatureData.size() < 800000;
+    }
+
+    // ── Pavilion onboarding marker (lightweight first-login record) ───────
+    // Written when a director or officer first hits /c3h/pavilion.
+    // Lets the onboarding tracker show "✓ Onboarded" status for officers
+    // (who don't sign governance docs but should still be tracked).
+    match /pavilion_onboarding/{userKey} {
+      allow read: if authed();
+      allow create: if authed()
+        && request.resource.data.keys().hasAll(['email', 'firstSeenAt'])
+        && isString(request.resource.data.email)
+        && request.resource.data.firstSeenAt is timestamp;
+      allow update: if false; // First-seen is permanent
+      allow delete: if false;
+    }
+
+    // ── Default deny for unknown collections ──────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

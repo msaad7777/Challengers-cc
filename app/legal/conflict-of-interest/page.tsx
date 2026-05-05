@@ -97,9 +97,32 @@ export default function ConflictOfInterestPage() {
                 <p className="text-sm text-gray-300">Allowed only if: (a) the goods or services are at or below market price, (b) at least one comparable quote was obtained from an unrelated supplier, and (c) the director recused themselves from the supplier-selection decision.</p>
               </div>
 
-              <div className="rounded-xl p-4 bg-white/5 border border-white/10">
+              <div className="rounded-xl p-4 bg-white/5 border border-white/10 mb-3">
                 <p className="text-sm font-bold text-white mb-1">Director receives gifts from a sponsor</p>
                 <p className="text-sm text-gray-300">Token gifts (e.g. a free meal, branded merchandise) under $100 in value are acceptable. Gifts above that threshold must be disclosed to the board and either declined, returned, or — if appropriate — passed to the Club as a donation.</p>
+              </div>
+
+              <div className="rounded-xl p-4 bg-accent-500/5 border border-accent-500/30">
+                <p className="text-sm font-bold text-white mb-1">Director-owned company providing software, infrastructure, or technical services to the Club</p>
+                <p className="text-sm text-gray-300">Allowed only if: (a) the contribution is recorded in writing as either an in-kind donation under licence or a paid contract at fair market value; (b) the Club&apos;s ownership of, or licence to, the resulting work is set out clearly in a written agreement; (c) the conflicted director recuses themselves from any board vote concerning that agreement; and (d) the arrangement is publicly disclosed in a governance document accessible to members and regulators.</p>
+                <p className="text-sm text-gray-300 mt-2">A current standing example: see the <strong className="text-white">Saad Cloud &amp; AI Solutions Inc. standing disclosure</strong> below.</p>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-2">Standing disclosures</h2>
+              <p className="text-sm mb-3">The Club maintains a public register of standing related-party arrangements. As of the date of this Policy, the following arrangement is on the register:</p>
+
+              <div className="rounded-xl p-4 bg-white/5 border-2 border-accent-500/40">
+                <p className="text-xs uppercase tracking-wider text-accent-400 font-bold mb-2">Standing Disclosure — Saad Cloud &amp; AI Solutions Inc. / CCC platform operation</p>
+                <ul className="text-sm text-gray-200 space-y-1.5">
+                  <li><strong className="text-white">Conflicted director:</strong> Mohammed Saad (co-founding director and Privacy Officer of the Club; volunteer in his personal capacity).</li>
+                  <li><strong className="text-white">Related party:</strong> Saad Cloud &amp; AI Solutions Inc. (Ontario business corporation; sole shareholder and director: Mohammed Saad; corporate website: <a href="https://msaad.tech" target="_blank" rel="noopener noreferrer" className="text-primary-400 underline hover:text-primary-300">msaad.tech</a>).</li>
+                  <li><strong className="text-white">Nature of the arrangement:</strong> Saad Cloud &amp; AI Solutions Inc. authored and continues to operate the Club&apos;s public website (<code className="text-primary-400">challengerscc.ca</code>) and the C3H members&apos; portal. The work is the corporation&apos;s commercial work product, not a volunteer effort by the corporation. The Club uses the platform under a <strong className="text-white">limited, non-exclusive, non-transferable, revocable licence</strong> at no charge for so long as Mohammed Saad continues to serve as a director of the Club and Saad Cloud &amp; AI Solutions Inc. elects to continue providing the platform. The corporation retains the unilateral right to terminate the licence and withdraw the platform on reasonable written notice. The Club has never paid Saad Cloud &amp; AI Solutions Inc. or Mohammed Saad for software development.</li>
+                  <li><strong className="text-white">Documents on file:</strong> the public <Link href="/legal/ip-ownership" className="text-primary-400 underline hover:text-primary-300">Software &amp; IP Ownership Acknowledgement</Link>; the carve-out in Section 3 of the <Link href="/legal/volunteer-agreement" className="text-primary-400 underline hover:text-primary-300">Volunteer Agreement</Link>; <Link href="/legal/bylaws" className="text-primary-400 underline hover:text-primary-300">Bylaws Article 10</Link>; the disclosure in the <Link href="/legal/privacy" className="text-primary-400 underline hover:text-primary-300">Privacy Policy</Link>. A formal Software License &amp; Service Agreement is to be e-signed by the directors via the C3H Pavilion governance module.</li>
+                  <li><strong className="text-white">How the conflict is managed:</strong> Mohammed Saad declares the conflict at every board meeting at which the Club&apos;s technology arrangements are discussed, and abstains from any vote concerning the Saad Cloud &amp; AI Solutions Inc. / CCC relationship. The remaining directors review and approve any change to that relationship. The arrangement, in its current form, is on terms strictly favourable to the Club (zero cost to the Club while the related-party relationship continues; member data protected from commercial re-use).</li>
+                  <li><strong className="text-white">Reviewed:</strong> annually at the AGM. Updated whenever the underlying agreements change.</li>
+                </ul>
               </div>
             </section>
 

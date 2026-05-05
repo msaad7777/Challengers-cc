@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import PublicLiveScore from '@/components/PublicLiveScore';
-import { isC3HBoard } from '@/lib/c3h-access';
+import { isC3HBoard, isC3HDirector } from '@/lib/c3h-access';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -28,6 +28,7 @@ export default function DashboardPage() {
   if (!session) return null;
 
   const isBoard = isC3HBoard(session.user?.email);
+  const isDirector = isC3HDirector(session.user?.email);
   const userName = session.user?.name || 'Player';
   const userImage = session.user?.image || '';
 
@@ -176,19 +177,34 @@ export default function DashboardPage() {
               </span>
             </a>
 
-            {/* The Pavilion — Board Only */}
-            {isBoard && (
-              <div className="glass rounded-2xl p-6 border-2 border-accent-500/20 hover:border-accent-500/50 transition-all duration-300">
+            {/* Rule Books */}
+            <a href="/c3h/rulebooks" className="glass rounded-2xl p-6 border-2 border-amber-500/20 hover:border-amber-500/50 transition-all duration-300 block">
+              <div className="text-3xl mb-3">📘</div>
+              <h2 className="text-xl font-bold text-white mb-1">Rule Books</h2>
+              <p className="text-amber-400 text-xs font-medium mb-3">LPL &amp; LCL 2026</p>
+              <p className="text-gray-400 text-sm mb-4">
+                Official LPL and LCL 2026 rule books, viewable in-app. Substitute rules differ between the two
+                leagues — check before each match.
+              </p>
+              <span className="text-xs px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                Open
+              </span>
+            </a>
+
+            {/* The Pavilion — Directors Only */}
+            {isDirector && (
+              <a href="/c3h/pavilion" className="glass rounded-2xl p-6 border-2 border-accent-500/20 hover:border-accent-500/50 transition-all duration-300 block">
                 <div className="text-3xl mb-3">🏛️</div>
                 <h2 className="text-xl font-bold text-white mb-1">The Pavilion</h2>
-                <p className="text-accent-400 text-xs font-medium mb-3">Board Governance & Voting</p>
+                <p className="text-accent-400 text-xs font-medium mb-3">Director Governance &amp; E-Signatures</p>
                 <p className="text-gray-400 text-sm mb-4">
-                  Review resolutions, cast votes, and e-sign documents.
+                  Read corporate agreements, sign with typed or drawn signature, see which directors have signed
+                  and which are pending.
                 </p>
                 <span className="text-xs px-3 py-1 rounded-full bg-accent-500/20 text-accent-400 border border-accent-500/30">
-                  Coming Soon
+                  Open
                 </span>
-              </div>
+              </a>
             )}
 
           </div>
