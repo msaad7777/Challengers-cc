@@ -10,6 +10,8 @@ import { matchReplays, youtubeIdFromUrl } from './data';
 import { db, firebaseAuthReady } from '@/lib/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import type { Match } from '../scorer/types';
+import { findPlayerName, rostersFromMatches } from '../lib/playerAnalysis';
+import PlayerCoachCard from '../lib/PlayerCoachCard';
 
 export default function ReplaysPage() {
   const { data: session, status } = useSession();
@@ -19,6 +21,12 @@ export default function ReplaysPage() {
   // logged in can see all their recent fixtures (with scorecards
   // and reflection CTAs) without waiting for a manual data.ts entry.
   const [liveMatches, setLiveMatches] = useState<Match[]>([]);
+  // The current user, resolved against the player rosters from
+  // recent matches. Null if we can't auto-detect — UI surfaces a
+  // dropdown so the user can pick themselves manually. Cached in
+  // localStorage so they don't re-pick on every visit.
+  const [playerName, setPlayerName] = useState<string | null>(null);
+  const [showPlayerPicker, setShowPlayerPicker] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -37,7 +45,22 @@ export default function ReplaysPage() {
         const list = snap.docs
           .map((d) => ({ ...(d.data() as object), id: d.id } as Match))
           .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-        if (!cancelled) setLiveMatches(list);
+        if (cancelled) return;
+        setLiveMatches(list);
+
+        // Resolve the user's player name. Prefer a previously-saved
+        // pick from localStorage (once they've confirmed it once,
+        // we trust it). Otherwise auto-detect from session name +
+        // email against the C3H roster collated from these matches.
+        const stored = typeof window !== 'undefined' ? localStorage.getItem('c3h:playerName') : null;
+        if (stored) {
+          setPlayerName(stored);
+        } else {
+          const rosters = rostersFromMatches(list, 'Challengers Cricket Club');
+          const detected = findPlayerName(session.user?.name, session.user?.email, rosters);
+          if (detected) setPlayerName(detected);
+          else setShowPlayerPicker(true); // ask the user
+        }
       } catch (err) {
         console.error('Failed to load completed matches', err);
       }
@@ -45,7 +68,27 @@ export default function ReplaysPage() {
     return () => {
       cancelled = true;
     };
-  }, [session?.user?.email]);
+  }, [session?.user?.email, session?.user?.name]);
+
+  const allRosterNames = (() => {
+    const seen = new Set<string>();
+    const names: string[] = [];
+    for (const m of liveMatches) {
+      const ours = m.team1 === 'Challengers Cricket Club' ? m.team1Players :
+                   m.team2 === 'Challengers Cricket Club' ? m.team2Players :
+                   [];
+      for (const p of ours) {
+        if (!seen.has(p.name)) { seen.add(p.name); names.push(p.name); }
+      }
+    }
+    return names.sort();
+  })();
+
+  const setAndStorePlayer = (name: string) => {
+    setPlayerName(name);
+    setShowPlayerPicker(false);
+    if (typeof window !== 'undefined') localStorage.setItem('c3h:playerName', name);
+  };
 
   if (status === 'loading') {
     return (
@@ -91,9 +134,48 @@ export default function ReplaysPage() {
             <div className="mb-6">
               <h2 className="text-2xl md:text-3xl font-bold text-white">Recent Match Scorecards</h2>
               <p className="text-gray-400 text-sm mt-1">
-                Every match the scorer has wrapped — open the scorecard, watch the replay (when attached), and reflect on it.
+                Every match the scorer has wrapped — open the scorecard, watch the replay (when attached), and get an auto-generated coach analysis of your performance.
               </p>
             </div>
+
+            {/* Player identity bar — confirms who we're showing
+                analysis for, and lets the user re-pick if we got it
+                wrong. Stored in localStorage so we don't re-prompt
+                next visit. */}
+            {(playerName || showPlayerPicker) && (
+              <div className="glass rounded-xl p-3 mb-6 border border-accent-500/20 bg-accent-500/5">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <p className="text-sm text-gray-300">
+                    {playerName ? (
+                      <>Showing your performance as <span className="text-accent-400 font-bold">{playerName}</span></>
+                    ) : (
+                      <>Pick your player name to see your match analysis:</>
+                    )}
+                  </p>
+                  {playerName && (
+                    <button
+                      onClick={() => setShowPlayerPicker(!showPlayerPicker)}
+                      className="text-xs text-gray-500 hover:text-accent-400 underline decoration-dotted"
+                    >
+                      Not me? Change
+                    </button>
+                  )}
+                </div>
+                {showPlayerPicker && allRosterNames.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-3">
+                    {allRosterNames.map((n) => (
+                      <button
+                        key={n}
+                        onClick={() => setAndStorePlayer(n)}
+                        className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${playerName === n ? 'bg-accent-500/20 text-accent-400 border-accent-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-accent-500/10'}`}
+                      >
+                        {n}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             <div className="space-y-4">
               {liveMatches.map((m) => {
                 const i1 = m.innings1;
@@ -170,6 +252,13 @@ export default function ReplaysPage() {
                         ✍️ Reflect on this match
                       </Link>
                     </div>
+
+                    {/* Auto-generated coach analysis — only when we
+                        know who the user is AND they actually played
+                        in this match (the card returns null otherwise). */}
+                    {playerName && (
+                      <PlayerCoachCard match={m} playerName={playerName} />
+                    )}
                   </article>
                 );
               })}
