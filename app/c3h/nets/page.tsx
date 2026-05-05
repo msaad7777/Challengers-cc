@@ -7,7 +7,7 @@ import { db } from '@/lib/firebase';
 import { collection, addDoc, query, where, orderBy, getDocs, getDoc, setDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
-import { getBattingStats, type Innings } from '../scorer/types';
+import { getBattingStats, type Innings, type Match } from '../scorer/types';
 
 // Map scorer's wicket type to the reflection's HOW_GOT_OUT_OPTIONS
 function mapScorerWicketToReflection(scorerHowOut: string): string {
@@ -40,6 +40,13 @@ interface Reflection {
   matchIndex: number;
   match: string;
   opponent: string;
+  // Optional Firestore matches/<id> link. Set when the user picks
+  // a real recorded match from the dropdown rather than the generic
+  // "Practice Match" / scheduled-fixture options. Lets future
+  // analytics (cross-match patterns, performance overlays, replay
+  // links) join reflection → match data without name-and-date
+  // guessing.
+  matchId?: string;
   howGotOut: string | string[];
   feeling: number;
   bodyStatus: string[];
@@ -612,6 +619,12 @@ export default function NetsPage() {
   const [scorerStats, setScorerStats] = useState<ScorerBattingLine | null>(null);
   const [scorerLoading, setScorerLoading] = useState(false);
   const [matchIndex, setMatchIndex] = useState(0);
+  const [matchId, setMatchId] = useState<string | undefined>(undefined);
+  // All completed matches from Firestore, surfaced as additional
+  // dropdown options so a player reflecting on yesterday's practice
+  // match picks the actual recorded match (which links the reflection
+  // to the matchId) instead of generic "Practice Match".
+  const [firestoreMatches, setFirestoreMatches] = useState<Match[]>([]);
   const [howGotOut, setHowGotOut] = useState<string[]>([]);
   const [feeling, setFeeling] = useState(3);
   const [bodyStatus, setBodyStatus] = useState<string[]>([]);
@@ -705,6 +718,26 @@ export default function NetsPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
+  // Load every completed Firestore match so the match dropdown can
+  // include them. Sorted desc by date — most recent at top.
+  useEffect(() => {
+    if (!session?.user?.email) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const q = query(collection(db, 'matches'), where('status', '==', 'completed'));
+        const snap = await getDocs(q);
+        const list = snap.docs
+          .map((d) => ({ ...(d.data() as object), id: d.id } as Match))
+          .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+        if (!cancelled) setFirestoreMatches(list);
+      } catch {
+        /* swallow — dropdown still works with hardcoded fixtures */
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [session?.user?.email]);
+
   // Auto-pull scorer stats when a match is selected (only on NEW reflection,
   // not edit). Looks for any completed scorer match on the same date and finds
   // the logged-in player's batting line.
@@ -721,11 +754,25 @@ export default function NetsPage() {
     setScorerLoading(true);
     (async () => {
       try {
-        const q = query(
-          collection(db, 'matches'),
-          where('date', '==', m.date),
-        );
-        const snap = await getDocs(q);
+        // If a Firestore matchId is linked to this dropdown selection,
+        // fetch that exact match doc — much faster and less error-prone
+        // than the date-match heuristic. Falls back to the date query
+        // for hardcoded league-fixture options that don't have a
+        // matchId yet.
+        let docs: { id: string; data: () => unknown }[] = [];
+        if (matchId) {
+          const single = await getDoc(doc(db, 'matches', matchId));
+          if (single.exists()) docs = [single];
+        }
+        if (docs.length === 0) {
+          const q = query(
+            collection(db, 'matches'),
+            where('date', '==', m.date),
+          );
+          const snap = await getDocs(q);
+          docs = snap.docs;
+        }
+        const snap = { docs };
 
         for (const matchDoc of snap.docs) {
           const data = matchDoc.data() as { innings1?: Innings; innings2?: Innings; matchLabel?: string; scorer?: string; status?: string };
@@ -811,7 +858,7 @@ export default function NetsPage() {
     setSaving(true);
     const opponent = match.includes('vs') ? match.split('vs ')[1]?.split(' (')[0] || '' : '';
     const now = new Date().toISOString();
-    const payload = {
+    const payload: Record<string, unknown> = {
       email: session.user.email.toLowerCase(),
       matchIndex,
       match,
@@ -830,6 +877,9 @@ export default function NetsPage() {
       notes,
       updatedAt: now,
     };
+    // Only set matchId when the user picked a real Firestore-recorded
+    // match. Don't clobber an existing matchId on update if not set.
+    if (matchId) payload.matchId = matchId;
 
     if (editingId) {
       // Update existing reflection — preserve original date + createdAt; bump editCount
@@ -852,7 +902,7 @@ export default function NetsPage() {
     setSaving(false);
     setEditingId(null);
     setView('list');
-    setMatch(''); setMatchIndex(0); setHowGotOut([]); setFeeling(3); setBodyStatus([]); setNutrition([]); setWhatWentRight([]);
+    setMatch(''); setMatchIndex(0); setMatchId(undefined); setHowGotOut([]); setFeeling(3); setBodyStatus([]); setNutrition([]); setWhatWentRight([]);
     setWhatWentWrong([]); setMindsetWord(''); setNextInningsPlan('');
     setStrengthToBuild(''); setPressureResponse(''); setIntentScore(3); setNotes('');
   };
@@ -862,6 +912,7 @@ export default function NetsPage() {
     setEditingId(r.id);
     setMatch(r.match);
     setMatchIndex(r.matchIndex);
+    setMatchId(r.matchId);
     setHowGotOut(Array.isArray(r.howGotOut) ? r.howGotOut : r.howGotOut ? [r.howGotOut] : []);
     setFeeling(r.feeling);
     setBodyStatus(r.bodyStatus || []);
@@ -2332,17 +2383,77 @@ export default function NetsPage() {
                 </div>
               )}
               <div className="space-y-5">
-                <div className="glass rounded-2xl p-6 border border-white/10">
-                  <h3 className="text-lg font-bold text-white mb-3">Match</h3>
-                  <select value={match} onChange={e => { setMatch(e.target.value); const m = MATCHES.find(x => x.label === e.target.value); setMatchIndex(m?.index || 0); }} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 text-white text-sm">
-                    <option value="" className="bg-gray-900">Select match...</option>
-                    {MATCHES.filter(m => isMatchAvailable(m.date)).map(m => <option key={m.label} value={m.label} className="bg-gray-900">{m.label}</option>)}
-                    {MATCHES.filter(m => !isMatchAvailable(m.date)).length > 0 && (
-                      <option disabled className="bg-gray-900 text-gray-600">── Upcoming (locked) ──</option>
-                    )}
-                    {MATCHES.filter(m => !isMatchAvailable(m.date)).map(m => <option key={m.label} disabled className="bg-gray-900 text-gray-600">{m.label}</option>)}
-                  </select>
-                </div>
+                {(() => {
+                  // Build the combined option list. Firestore matches
+                  // (real recorded matches) sit at the top under their
+                  // own group so they're the obvious choice when a
+                  // user reflects on a match they just played.
+                  // Hardcoded fixtures still listed so users can
+                  // pre-write reflections for upcoming/historical
+                  // games not yet in Firestore.
+                  type Opt = { label: string; index: number; date: string; matchId?: string };
+                  const firestoreOpts: Opt[] = firestoreMatches.map((m) => {
+                    const opponent = m.team1 === 'Challengers Cricket Club' ? m.team2 :
+                                     m.team2 === 'Challengers Cricket Club' ? m.team1 :
+                                     m.team2; // fallback
+                    const niceDate = m.date
+                      ? new Date(m.date).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' })
+                      : 'unknown date';
+                    return {
+                      label: `📋 vs ${opponent} (${niceDate})`,
+                      index: 98, // counts as practice for filtering
+                      date: m.date || '',
+                      matchId: m.id,
+                    };
+                  });
+                  const setMatchSelection = (label: string) => {
+                    setMatch(label);
+                    const fs = firestoreOpts.find((x) => x.label === label);
+                    if (fs) {
+                      setMatchIndex(fs.index);
+                      setMatchId(fs.matchId);
+                    } else {
+                      const m = MATCHES.find((x) => x.label === label);
+                      setMatchIndex(m?.index || 0);
+                      setMatchId(undefined);
+                    }
+                  };
+                  return (
+                    <div className="glass rounded-2xl p-6 border border-white/10">
+                      <h3 className="text-lg font-bold text-white mb-3">Match</h3>
+                      <select
+                        value={match}
+                        onChange={(e) => setMatchSelection(e.target.value)}
+                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 text-white text-sm"
+                      >
+                        <option value="" className="bg-gray-900">Select match...</option>
+                        {firestoreOpts.length > 0 && (
+                          <option disabled className="bg-gray-900 text-accent-400">── Recently played (recorded) ──</option>
+                        )}
+                        {firestoreOpts.map((o) => (
+                          <option key={o.matchId || o.label} value={o.label} className="bg-gray-900">{o.label}</option>
+                        ))}
+                        {firestoreOpts.length > 0 && (
+                          <option disabled className="bg-gray-900 text-gray-500">── Scheduled fixtures ──</option>
+                        )}
+                        {MATCHES.filter((m) => isMatchAvailable(m.date)).map((m) => (
+                          <option key={m.label} value={m.label} className="bg-gray-900">{m.label}</option>
+                        ))}
+                        {MATCHES.filter((m) => !isMatchAvailable(m.date)).length > 0 && (
+                          <option disabled className="bg-gray-900 text-gray-600">── Upcoming (locked) ──</option>
+                        )}
+                        {MATCHES.filter((m) => !isMatchAvailable(m.date)).map((m) => (
+                          <option key={m.label} disabled className="bg-gray-900 text-gray-600">{m.label}</option>
+                        ))}
+                      </select>
+                      {matchId && (
+                        <p className="text-xs text-accent-400 mt-2">
+                          ✓ Linked to match scorecard — your stats and dismissal will auto-fill below.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* From the scorecard — auto-pulled from /c3h/scorer when available */}
                 {scorerLoading && match && !editingId && (
