@@ -744,8 +744,10 @@ export default function NetsPage() {
   useEffect(() => {
     if (editingId) { setScorerStats(null); return; }
     if (!match || !session?.user) { setScorerStats(null); return; }
-    const m = MATCHES.find((x) => x.label === match);
-    if (!m) { setScorerStats(null); return; }
+    // Two paths: a real Firestore match (matchId set) or a hardcoded
+    // fixture from MATCHES. Bail only if neither.
+    const hardcoded = MATCHES.find((x) => x.label === match);
+    if (!matchId && !hardcoded) { setScorerStats(null); return; }
 
     const sessionName = session.user.name || '';
     const sessionEmail = (session.user.email || '').toLowerCase();
@@ -754,20 +756,20 @@ export default function NetsPage() {
     setScorerLoading(true);
     (async () => {
       try {
-        // If a Firestore matchId is linked to this dropdown selection,
-        // fetch that exact match doc — much faster and less error-prone
-        // than the date-match heuristic. Falls back to the date query
-        // for hardcoded league-fixture options that don't have a
-        // matchId yet.
+        // Fetch the source match doc(s):
+        // - If matchId is set (Firestore match dropdown pick), getDoc
+        //   it directly. Exact-match lookup, no false positives.
+        // - Otherwise fall back to the date-match heuristic against
+        //   hardcoded fixtures so league fixtures still auto-fill once
+        //   the scorer records the match on that date.
         let docs: { id: string; data: () => unknown }[] = [];
         if (matchId) {
           const single = await getDoc(doc(db, 'matches', matchId));
           if (single.exists()) docs = [single];
-        }
-        if (docs.length === 0) {
+        } else if (hardcoded) {
           const q = query(
             collection(db, 'matches'),
-            where('date', '==', m.date),
+            where('date', '==', hardcoded.date),
           );
           const snap = await getDocs(q);
           docs = snap.docs;
@@ -807,7 +809,7 @@ export default function NetsPage() {
                 sixes: myStat.sixes,
                 isOut: myStat.isOut,
                 howOut: myStat.howOut,
-                matchLabel: data.matchLabel || m.label,
+                matchLabel: data.matchLabel || hardcoded?.label || match,
                 scoredBy: data.scorer || 'unknown',
               });
               setScorerLoading(false);
