@@ -165,7 +165,8 @@ describe('generateCoachFeedback', () => {
     });
     const player = extractPlayerInMatch('Saad', m);
     expect(player).not.toBeNull();
-    const fb = generateCoachFeedback(player!, m);
+    const rates = teamRatesForPlayer('Saad', m);
+    const fb = generateCoachFeedback(player!, rates.battingTeamSr, rates.bowlingTeamEcon);
     expect(fb).toBeDefined();
     expect(typeof fb).toBe('object');
   });

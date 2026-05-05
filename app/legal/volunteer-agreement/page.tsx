@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SignBlock from './SignBlock';
 
 export const metadata = {
   title: 'Volunteer Agreement — Challengers Cricket Club',
@@ -127,7 +128,7 @@ export default function VolunteerAgreementPage() {
 
             <hr className="border-white/10" />
 
-            {/* Signature block */}
+            {/* Acknowledgement + e-signature flow */}
             <section>
               <h2 className="text-lg font-bold text-white mb-3">Acknowledgement &amp; Signature</h2>
               <p className="text-sm mb-4">By signing below, I confirm that:</p>
@@ -139,45 +140,7 @@ export default function VolunteerAgreementPage() {
                 <li>I am at least 18 years old, or my parent/guardian is co-signing below.</li>
               </ul>
 
-              <div className="grid sm:grid-cols-2 gap-4 mb-5">
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Volunteer Full Name</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Date (YYYY-MM-DD)</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Volunteer Signature</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Email</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-              </div>
-
-              <div className="rounded-lg p-3 mb-4 bg-white/5 border border-white/10">
-                <label className="flex items-start gap-2 text-sm">
-                  <input type="checkbox" className="mt-0.5" />
-                  <span className="text-gray-300">
-                    <strong className="text-white">Opt out of photo/video use:</strong> I do <em>not</em> consent to my photograph or video being used in Club promotional materials. (Leave unchecked to grant permission.)
-                  </span>
-                </label>
-              </div>
-
-              <p className="text-xs text-gray-500 mb-3">Witness (any other adult member of the Club):</p>
-              <div className="grid sm:grid-cols-2 gap-4 mb-3">
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Witness Name</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Witness Signature</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-              </div>
+              <SignBlock />
             </section>
 
             <hr className="border-white/10" />

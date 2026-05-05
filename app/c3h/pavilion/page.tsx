@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import {
   collection,
   doc,
+  getDocs,
   onSnapshot,
   query,
   serverTimestamp,
@@ -49,6 +50,8 @@ export default function PavilionPage() {
   const router = useRouter();
   const [signatures, setSignatures] = useState<Record<string, SignatureRecord>>({});
   const [loadingSigs, setLoadingSigs] = useState(true);
+  // Volunteer-agreement signers, keyed by lower-cased email.
+  const [vaSigners, setVaSigners] = useState<Set<string>>(new Set());
   const [openSignerFor, setOpenSignerFor] = useState<string | null>(null);
   const [openContentFor, setOpenContentFor] = useState<string | null>(null);
   const [busyDocId, setBusyDocId] = useState<string | null>(null);
@@ -71,6 +74,25 @@ export default function PavilionPage() {
       setLoadingSigs(false);
     });
     return () => unsub();
+  }, [session?.user?.email]);
+
+  // Volunteer-agreement signers — one-shot read on mount. We don't
+  // need a live snapshot; the onboarding tracker is read-mostly.
+  useEffect(() => {
+    if (!session?.user?.email) return;
+    if (!isC3HDirector(session.user.email)) return;
+    getDocs(collection(db, 'volunteer_agreement_signatures'))
+      .then((snap) => {
+        const emails = new Set<string>();
+        snap.forEach((d) => {
+          const data = d.data() as { signerEmail?: string };
+          if (data.signerEmail) emails.add(data.signerEmail.toLowerCase());
+        });
+        setVaSigners(emails);
+      })
+      .catch(() => {
+        /* read failure is non-fatal — onboarding tracker just shows nobody as signed */
+      });
   }, [session?.user?.email]);
 
   const userEmail = session?.user?.email || '';
@@ -279,6 +301,9 @@ export default function PavilionPage() {
                         {required.map((d) => {
                           const sig = signatures[sigKey(gd.id, gd.version, d.workspaceEmail)];
                           const isSelf = d.workspaceEmail === userWorkspaceEmail;
+                          const signedVa =
+                            vaSigners.has(d.workspaceEmail) ||
+                            (d.personalEmail ? vaSigners.has(d.personalEmail.toLowerCase()) : false);
                           return (
                             <div
                               key={d.workspaceEmail}
@@ -299,9 +324,13 @@ export default function PavilionPage() {
                                     <div className="text-[10px] text-gray-500 mt-0.5">
                                       {sig.signedAt ? sig.signedAt.toDate().toLocaleDateString() : '…'} · {sig.signatureType}
                                     </div>
+                                    <div className="text-[10px] text-gray-500">VA: {signedVa ? '✓' : '—'}</div>
                                   </div>
                                 ) : (
-                                  <div className="text-amber-400 text-xs font-semibold">Pending</div>
+                                  <div className="text-right">
+                                    <div className="text-amber-400 text-xs font-semibold">Pending</div>
+                                    <div className="text-[10px] text-gray-500 mt-0.5">VA: {signedVa ? '✓' : '—'}</div>
+                                  </div>
                                 )}
                               </div>
                             </div>
@@ -336,9 +365,13 @@ export default function PavilionPage() {
             <div className="glass rounded-2xl p-5 border border-white/10">
               <div className="grid sm:grid-cols-2 gap-2">
                 {C3H_OFFICER_ROSTER.map((o) => {
-                  const hasAnyActivity = Object.values(signatures).some(
+                  const hasGovernanceActivity = Object.values(signatures).some(
                     (s) => s.signerWorkspaceEmail === o.workspaceEmail,
                   );
+                  const signedVa =
+                    vaSigners.has(o.workspaceEmail) ||
+                    (o.personalEmail ? vaSigners.has(o.personalEmail.toLowerCase()) : false);
+                  const onboarded = hasGovernanceActivity || signedVa;
                   return (
                     <div key={o.workspaceEmail} className="rounded-lg px-3 py-2 border bg-white/3 border-white/10 text-sm">
                       <div className="flex items-center justify-between gap-2">
@@ -346,11 +379,14 @@ export default function PavilionPage() {
                           <div className="text-white font-medium truncate">{o.name}</div>
                           <div className="text-xs text-gray-500 truncate">{o.role} · <span className="text-gray-400">{o.workspaceEmail}</span></div>
                         </div>
-                        {hasAnyActivity ? (
-                          <div className="text-primary-400 text-xs font-semibold">✓ Onboarded</div>
-                        ) : (
-                          <div className="text-amber-400 text-xs font-semibold">Awaiting onboarding</div>
-                        )}
+                        <div className="text-right">
+                          <div className={`text-xs font-semibold ${onboarded ? 'text-primary-400' : 'text-amber-400'}`}>
+                            {onboarded ? '✓ Onboarded' : 'Awaiting onboarding'}
+                          </div>
+                          <div className="text-[10px] text-gray-500 mt-0.5">
+                            VA: {signedVa ? '✓' : '—'}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   );
