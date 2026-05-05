@@ -104,7 +104,7 @@ export type DirectorEntry = {
 //
 // Order: as listed on the federal corporate profile.
 export const C3H_DIRECTOR_ROSTER: readonly DirectorEntry[] = [
-  { workspaceEmail: 'saad@challengerscc.ca',   personalEmail: 'mbadru3434@gmail.com',       name: 'Mohammed Saad',     role: 'President / Director' },
+  { workspaceEmail: 'saad@challengerscc.ca',   personalEmail: 'mbadru3434@gmail.com',       name: 'Mohammed Saad',     role: 'Director' },
   { workspaceEmail: 'ankush@challengerscc.ca', personalEmail: '92ankusharora@gmail.com',    name: 'Ankush Arora',      role: 'Director' },
   { workspaceEmail: 'tarek@challengerscc.ca',  personalEmail: 'monirulislambd64@gmail.com', name: 'Md Monirul Islam',  role: 'Director' },
   { workspaceEmail: 'sazzad@challengerscc.ca',                                                name: 'Sazzad Mahmud',     role: 'Director' },
