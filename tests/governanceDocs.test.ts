@@ -46,4 +46,14 @@ describe('governanceDocs', () => {
     const ids = GOVERNANCE_DOCS.map((d) => d.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
+
+  it('Service Agreement requires SACS authorized signature (two-party)', () => {
+    const sa = GOVERNANCE_DOCS.find((d) => d.id === 'service-agreement-v1');
+    expect(sa?.requiresSacsSignature).toBe(true);
+  });
+
+  it('IP Ownership Acknowledgement does NOT require SACS signature (unilateral CCC act)', () => {
+    const ipo = GOVERNANCE_DOCS.find((d) => d.id === 'ip-ownership-acknowledgement');
+    expect(ipo?.requiresSacsSignature ?? false).toBe(false);
+  });
 });

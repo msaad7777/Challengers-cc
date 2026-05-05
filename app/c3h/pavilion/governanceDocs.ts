@@ -13,7 +13,23 @@ export type GovernanceDoc = {
   inline?: 'service-agreement'; // If the body is rendered inline by an inline component
   summary: string;
   whoMustSign: 'all-directors' | 'all-directors-except-conflicted';
-  conflictedSigners?: readonly string[]; // workspace emails recused from signing
+  conflictedSigners?: readonly string[]; // workspace emails recused from CCC-side signing
+  // True for two-party agreements where Saad Cloud & AI Solutions Inc. is
+  // the counterparty (the Service Agreement). Triggers a separate
+  // "SACS authorized representative" signing track on the Pavilion,
+  // signed by Saad as the sole shareholder/director of SACS. The CCC
+  // recusal still applies on the director-approval side; this track is
+  // separate.
+  requiresSacsSignature?: boolean;
+};
+
+// Saad signs as SACS authorized representative — sole shareholder &
+// director of Saad Cloud & AI Solutions Inc. Workspace email used as
+// the canonical signer identity (mirrors the director roster pattern).
+export const SACS_OFFICER = {
+  workspaceEmail: 'saad@challengerscc.ca',
+  name: 'Mohammed Saad',
+  role: 'Sole shareholder & director, Saad Cloud & AI Solutions Inc.',
 };
 
 export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
@@ -37,9 +53,10 @@ export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
     effective: '2026-05-05',
     inline: 'service-agreement',
     summary:
-      'Formalizes the operating terms between Challengers Cricket Club and Saad Cloud & AI Solutions Inc.: revocable licence at no charge, conditional on Mohammed Saad serving as a director; right of withdrawal; data export on termination; what the Club may not do. Signed by all directors. Mohammed Saad signs as the authorized representative of Saad Cloud & AI Solutions Inc.; he separately declares conflict of interest and abstains from signing as a CCC director.',
+      'Two-party contract between Challengers Cricket Club and Saad Cloud & AI Solutions Inc. CCC side: 4 non-conflicted directors approve on behalf of the Club (Saad recused, declared conflict of interest). SACS side: Mohammed Saad signs as the sole shareholder and director of Saad Cloud & AI Solutions Inc. Both signatures required for the agreement to take effect.',
     whoMustSign: 'all-directors-except-conflicted',
     conflictedSigners: ['saad@challengerscc.ca'],
+    requiresSacsSignature: true,
   },
 ];
 

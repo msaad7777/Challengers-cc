@@ -22,7 +22,7 @@ import {
   resolveDirectorWorkspaceEmail,
 } from '@/lib/c3h-access';
 import Navbar from '@/components/Navbar';
-import { GOVERNANCE_DOCS, type GovernanceDoc } from './governanceDocs';
+import { GOVERNANCE_DOCS, SACS_OFFICER, type GovernanceDoc } from './governanceDocs';
 import SignaturePad, { type SignatureResult } from './SignaturePad';
 import ServiceAgreement from './ServiceAgreement';
 
@@ -45,6 +45,13 @@ function sigKey(docId: string, docVersion: string, workspaceEmail: string) {
   return `${docId}__v${docVersion}__${workspaceEmail.replace(/[^a-z0-9@.]/gi, '_')}`;
 }
 
+// Distinct key for the SACS-side signature on a two-party agreement.
+// Lives in the same governance_signatures collection but is tracked
+// independently from CCC-director signatures.
+function sacsSigKey(docId: string, docVersion: string) {
+  return `${docId}__v${docVersion}__sacs-officer`;
+}
+
 export default function PavilionPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -53,6 +60,7 @@ export default function PavilionPage() {
   // Volunteer-agreement signers, keyed by lower-cased email.
   const [vaSigners, setVaSigners] = useState<Set<string>>(new Set());
   const [openSignerFor, setOpenSignerFor] = useState<string | null>(null);
+  const [openSacsSignerFor, setOpenSacsSignerFor] = useState<string | null>(null);
   const [openContentFor, setOpenContentFor] = useState<string | null>(null);
   const [busyDocId, setBusyDocId] = useState<string | null>(null);
 
@@ -156,6 +164,33 @@ export default function PavilionPage() {
       };
       await setDoc(doc_ref(key), record);
       setOpenSignerFor(null);
+    } finally {
+      setBusyDocId(null);
+    }
+  };
+
+  const submitSacsSignature = async (doc: GovernanceDoc, result: SignatureResult) => {
+    if (userEmail.toLowerCase() !== SACS_OFFICER.workspaceEmail &&
+        userEmail.toLowerCase() !== 'mbadru3434@gmail.com') {
+      return; // Only Saad can sign as SACS authorized rep
+    }
+    setBusyDocId(doc.id);
+    try {
+      const key = sacsSigKey(doc.id, doc.version);
+      const record = {
+        docId: doc.id,
+        docVersion: doc.version,
+        signerWorkspaceEmail: SACS_OFFICER.workspaceEmail,
+        signerLoginEmail: userEmail.toLowerCase(),
+        signerName: SACS_OFFICER.name,
+        signerRole: SACS_OFFICER.role,
+        signedAt: serverTimestamp(),
+        signatureType: result.type,
+        signatureData: result.data,
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+      };
+      await setDoc(doc_ref(key), record);
+      setOpenSacsSignerFor(null);
     } finally {
       setBusyDocId(null);
     }
@@ -293,6 +328,71 @@ export default function PavilionPage() {
                         />
                       </div>
                     )}
+
+                    {/* ── SACS authorized representative signing track ─── */}
+                    {gd.requiresSacsSignature && (() => {
+                      const sacsKey = sacsSigKey(gd.id, gd.version);
+                      const sacsSig = signatures[sacsKey];
+                      const userIsSacsOfficer =
+                        userEmail.toLowerCase() === SACS_OFFICER.workspaceEmail ||
+                        userEmail.toLowerCase() === 'mbadru3434@gmail.com';
+                      const isOpenSacs = openSacsSignerFor === gd.id;
+                      return (
+                        <div className="mt-4 rounded-xl bg-accent-500/5 border-2 border-accent-500/30 p-4">
+                          <div className="flex items-start justify-between gap-3 flex-wrap mb-2">
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs uppercase tracking-wider text-accent-400 font-bold mb-1">
+                                Saad Cloud &amp; AI Solutions Inc. — counterparty signature
+                              </p>
+                              <p className="text-sm text-gray-300">
+                                This is a two-party agreement. The Club&apos;s 4 non-conflicted directors approve
+                                on the CCC side above; Saad Cloud &amp; AI Solutions Inc. signs separately as
+                                the counterparty. Mohammed Saad, sole shareholder and director of Saad Cloud
+                                &amp; AI Solutions Inc., signs here in that capacity — distinct from his
+                                recused role as a CCC director.
+                              </p>
+                            </div>
+                            {sacsSig ? (
+                              <div className="text-right">
+                                <div className="text-primary-400 text-xs font-semibold">✓ SACS signed</div>
+                                <div className="text-[10px] text-gray-500 mt-0.5">
+                                  {sacsSig.signedAt ? sacsSig.signedAt.toDate().toLocaleDateString() : '…'} · {sacsSig.signatureType}
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="text-amber-400 text-xs font-semibold">SACS pending</div>
+                            )}
+                          </div>
+
+                          {!sacsSig && userIsSacsOfficer && (
+                            <div className="mt-3">
+                              {isOpenSacs ? (
+                                <SignaturePad
+                                  signerName={SACS_OFFICER.name}
+                                  busy={busyDocId === gd.id}
+                                  onCancel={() => setOpenSacsSignerFor(null)}
+                                  onSubmit={(result) => submitSacsSignature(gd, result)}
+                                />
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => setOpenSacsSignerFor(gd.id)}
+                                  className="px-5 py-2 rounded-lg bg-accent-500 text-black font-semibold text-sm hover:bg-accent-400 transition-all"
+                                >
+                                  Sign as SACS Inc. authorized representative
+                                </button>
+                              )}
+                            </div>
+                          )}
+
+                          {!sacsSig && !userIsSacsOfficer && (
+                            <p className="text-xs text-gray-500 italic mt-2">
+                              Pending Mohammed Saad to sign on behalf of Saad Cloud &amp; AI Solutions Inc.
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })()}
 
                     {/* Sign-status grid */}
                     <div>
