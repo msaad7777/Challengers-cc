@@ -8,6 +8,7 @@ import { collection, addDoc, query, where, orderBy, getDocs, getDoc, setDoc, upd
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import { getBattingStats, type Innings, type Match } from '../scorer/types';
+import { generateCoachInsight } from '../lib/coachInsight';
 
 // Map scorer's wicket type to the reflection's HOW_GOT_OUT_OPTIONS
 function mapScorerWicketToReflection(scorerHowOut: string): string {
@@ -48,6 +49,23 @@ interface Reflection {
   // guessing.
   matchId?: string;
   howGotOut: string | string[];
+  // ── Coach-level review (optional, deeper analysis) ──────────
+  // All optional so existing quick-reflection flow still works.
+  // Populated when the user expands the Coach-Level Review panel
+  // and answers the questions there.
+  controlPercent?: number;                          // 0-100
+  pickedLengthEarly?: 'yes' | 'mostly' | 'no';
+  watchedBall?: 'yes' | 'partially' | 'no';
+  misjudgedPaceOrBounce?: boolean;
+  headOverBall?: 'yes' | 'sometimes' | 'no';
+  frontFootToPitch?: 'yes' | 'sometimes' | 'no';
+  balanceAtContact?: 'stable' | 'falling' | 'reaching';
+  matchPhase?: 'powerplay' | 'middle' | 'death' | 'na';
+  pressureLevel?: 'low' | 'medium' | 'high';
+  intentMode?: 'accelerate' | 'consolidate' | 'settle';
+  firstSixBallsPlan?: string;
+  stuckToPlan?: 'yes' | 'partly' | 'no';
+  whyShotThatGotMeOut?: string;
   feeling: number;
   bodyStatus: string[];
   nutrition: string[];
@@ -639,6 +657,22 @@ export default function NetsPage() {
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
 
+  // Coach-Level Review (collapsible, all optional)
+  const [showCoachReview, setShowCoachReview] = useState(false);
+  const [controlPercent, setControlPercent] = useState<number | undefined>(undefined);
+  const [pickedLengthEarly, setPickedLengthEarly] = useState<'yes' | 'mostly' | 'no' | undefined>(undefined);
+  const [watchedBall, setWatchedBall] = useState<'yes' | 'partially' | 'no' | undefined>(undefined);
+  const [misjudgedPaceOrBounce, setMisjudgedPaceOrBounce] = useState<boolean | undefined>(undefined);
+  const [headOverBall, setHeadOverBall] = useState<'yes' | 'sometimes' | 'no' | undefined>(undefined);
+  const [frontFootToPitch, setFrontFootToPitch] = useState<'yes' | 'sometimes' | 'no' | undefined>(undefined);
+  const [balanceAtContact, setBalanceAtContact] = useState<'stable' | 'falling' | 'reaching' | undefined>(undefined);
+  const [matchPhase, setMatchPhase] = useState<'powerplay' | 'middle' | 'death' | 'na' | undefined>(undefined);
+  const [pressureLevel, setPressureLevel] = useState<'low' | 'medium' | 'high' | undefined>(undefined);
+  const [intentMode, setIntentMode] = useState<'accelerate' | 'consolidate' | 'settle' | undefined>(undefined);
+  const [firstSixBallsPlan, setFirstSixBallsPlan] = useState('');
+  const [stuckToPlan, setStuckToPlan] = useState<'yes' | 'partly' | 'no' | undefined>(undefined);
+  const [whyShotThatGotMeOut, setWhyShotThatGotMeOut] = useState('');
+
   // Shot planner state
   const [shotPlan, setShotPlan] = useState<ShotPlan>({ shotConfidence: {}, bowlerPlans: {}, notes: '' });
   const [plannerBowlerType, setPlannerBowlerType] = useState('');
@@ -883,6 +917,22 @@ export default function NetsPage() {
     // match. Don't clobber an existing matchId on update if not set.
     if (matchId) payload.matchId = matchId;
 
+    // Coach-level review fields — only persist when set so we don't
+    // pollute Firestore with a forest of `undefined`s.
+    if (controlPercent !== undefined) payload.controlPercent = controlPercent;
+    if (pickedLengthEarly !== undefined) payload.pickedLengthEarly = pickedLengthEarly;
+    if (watchedBall !== undefined) payload.watchedBall = watchedBall;
+    if (misjudgedPaceOrBounce !== undefined) payload.misjudgedPaceOrBounce = misjudgedPaceOrBounce;
+    if (headOverBall !== undefined) payload.headOverBall = headOverBall;
+    if (frontFootToPitch !== undefined) payload.frontFootToPitch = frontFootToPitch;
+    if (balanceAtContact !== undefined) payload.balanceAtContact = balanceAtContact;
+    if (matchPhase !== undefined) payload.matchPhase = matchPhase;
+    if (pressureLevel !== undefined) payload.pressureLevel = pressureLevel;
+    if (intentMode !== undefined) payload.intentMode = intentMode;
+    if (firstSixBallsPlan.trim()) payload.firstSixBallsPlan = firstSixBallsPlan.trim();
+    if (stuckToPlan !== undefined) payload.stuckToPlan = stuckToPlan;
+    if (whyShotThatGotMeOut.trim()) payload.whyShotThatGotMeOut = whyShotThatGotMeOut.trim();
+
     if (editingId) {
       // Update existing reflection — preserve original date + createdAt; bump editCount
       const existing = reflections.find((r) => r.id === editingId);
@@ -905,6 +955,11 @@ export default function NetsPage() {
     setEditingId(null);
     setView('list');
     setMatch(''); setMatchIndex(0); setMatchId(undefined); setHowGotOut([]); setFeeling(3); setBodyStatus([]); setNutrition([]); setWhatWentRight([]);
+    setShowCoachReview(false);
+    setControlPercent(undefined); setPickedLengthEarly(undefined); setWatchedBall(undefined); setMisjudgedPaceOrBounce(undefined);
+    setHeadOverBall(undefined); setFrontFootToPitch(undefined); setBalanceAtContact(undefined);
+    setMatchPhase(undefined); setPressureLevel(undefined); setIntentMode(undefined);
+    setFirstSixBallsPlan(''); setStuckToPlan(undefined); setWhyShotThatGotMeOut('');
     setWhatWentWrong([]); setMindsetWord(''); setNextInningsPlan('');
     setStrengthToBuild(''); setPressureResponse(''); setIntentScore(3); setNotes('');
   };
@@ -927,6 +982,28 @@ export default function NetsPage() {
     setPressureResponse(r.pressureResponse || '');
     setIntentScore(r.intentScore);
     setNotes(r.notes || '');
+    // Coach-level review — restore if any field was set
+    setControlPercent(r.controlPercent);
+    setPickedLengthEarly(r.pickedLengthEarly);
+    setWatchedBall(r.watchedBall);
+    setMisjudgedPaceOrBounce(r.misjudgedPaceOrBounce);
+    setHeadOverBall(r.headOverBall);
+    setFrontFootToPitch(r.frontFootToPitch);
+    setBalanceAtContact(r.balanceAtContact);
+    setMatchPhase(r.matchPhase);
+    setPressureLevel(r.pressureLevel);
+    setIntentMode(r.intentMode);
+    setFirstSixBallsPlan(r.firstSixBallsPlan || '');
+    setStuckToPlan(r.stuckToPlan);
+    setWhyShotThatGotMeOut(r.whyShotThatGotMeOut || '');
+    // Auto-expand the coach review if any of its fields were filled
+    const hasCoachData = r.controlPercent !== undefined || r.pickedLengthEarly !== undefined ||
+      r.watchedBall !== undefined || r.headOverBall !== undefined ||
+      r.frontFootToPitch !== undefined || r.balanceAtContact !== undefined ||
+      r.matchPhase !== undefined || r.pressureLevel !== undefined ||
+      r.intentMode !== undefined || (r.firstSixBallsPlan && r.firstSixBallsPlan.length > 0) ||
+      r.stuckToPlan !== undefined || (r.whyShotThatGotMeOut && r.whyShotThatGotMeOut.length > 0);
+    setShowCoachReview(!!hasCoachData);
     setView('new');
   };
 
@@ -1432,6 +1509,77 @@ export default function NetsPage() {
                     <p className="text-primary-400 font-bold text-xs">{selectedReflection.mindsetWord || '—'}</p>
                   </div>
                 </div>
+
+                {/* Auto Coach Insight — generated from this reflection's
+                    own answers (rule-based). Sharpens substantially when
+                    the Coach-Level Review section is filled in. */}
+                {(() => {
+                  const insight = generateCoachInsight({
+                    howGotOut: Array.isArray(selectedReflection.howGotOut)
+                      ? selectedReflection.howGotOut
+                      : selectedReflection.howGotOut ? [selectedReflection.howGotOut] : [],
+                    whatWentRight: selectedReflection.whatWentRight || [],
+                    whatWentWrong: selectedReflection.whatWentWrong || [],
+                    feeling: selectedReflection.feeling || 3,
+                    intentScore: selectedReflection.intentScore || 3,
+                    controlPercent: selectedReflection.controlPercent,
+                    pickedLengthEarly: selectedReflection.pickedLengthEarly,
+                    watchedBall: selectedReflection.watchedBall,
+                    misjudgedPaceOrBounce: selectedReflection.misjudgedPaceOrBounce,
+                    headOverBall: selectedReflection.headOverBall,
+                    frontFootToPitch: selectedReflection.frontFootToPitch,
+                    balanceAtContact: selectedReflection.balanceAtContact,
+                    matchPhase: selectedReflection.matchPhase,
+                    pressureLevel: selectedReflection.pressureLevel,
+                    intentMode: selectedReflection.intentMode,
+                    firstSixBallsPlan: selectedReflection.firstSixBallsPlan,
+                    stuckToPlan: selectedReflection.stuckToPlan,
+                    whyShotThatGotMeOut: selectedReflection.whyShotThatGotMeOut,
+                  });
+                  return (
+                    <div className="glass rounded-2xl p-5 mb-6 border-2 border-accent-500/30 bg-gradient-to-br from-accent-500/10 to-transparent">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="text-2xl">🧠</span>
+                        <h3 className="text-base font-bold text-white">Auto Coach Insight</h3>
+                      </div>
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-accent-400 text-[10px] uppercase tracking-wider font-bold mb-1">Diagnosis</p>
+                          <p className="text-sm text-white">{insight.diagnosis}</p>
+                        </div>
+                        <div>
+                          <p className="text-accent-400 text-[10px] uppercase tracking-wider font-bold mb-1">Coach Voice</p>
+                          <p className="text-sm text-gray-200 leading-relaxed">{insight.narrative}</p>
+                        </div>
+                        {insight.drills.length > 0 && (
+                          <div>
+                            <p className="text-accent-400 text-[10px] uppercase tracking-wider font-bold mb-2">🏋️ Drills for next nets</p>
+                            <ul className="space-y-1.5">
+                              {insight.drills.map((d, i) => (
+                                <li key={i} className="text-sm text-gray-300 flex gap-2">
+                                  <span className="text-accent-400 flex-shrink-0">→</span><span>{d}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        <div className="rounded-xl p-4 border border-primary-500/30 bg-primary-500/5">
+                          <p className="text-primary-400 text-[10px] uppercase tracking-wider font-bold mb-2">🎯 Next innings plan</p>
+                          <ul className="space-y-2 text-sm text-gray-200">
+                            <li><span className="text-gray-500">First 6 balls:</span> {insight.nextInningsPlan.firstSixBalls}</li>
+                            <li><span className="text-gray-500">Scoring areas:</span> {insight.nextInningsPlan.scoringAreas}</li>
+                            <li><span className="text-gray-500">Risk to avoid:</span> {insight.nextInningsPlan.riskToAvoid}</li>
+                            <li><span className="text-gray-500">Strength to back:</span> {insight.nextInningsPlan.strengthToBack}</li>
+                          </ul>
+                        </div>
+                        <p className="text-[10px] text-gray-600 italic">
+                          Auto-generated from your answers. Fill in the &quot;Coach-Level Review&quot; section when you reflect for sharper, more specific insights.
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 {((selectedReflection.bodyStatus && selectedReflection.bodyStatus.length > 0) || (selectedReflection.nutrition && selectedReflection.nutrition.length > 0)) && (
                   <div className="mb-4">
                     <h4 className="text-blue-400 font-bold text-xs mb-2">Match Day Check-In</h4>
@@ -2593,6 +2741,122 @@ export default function NetsPage() {
                 <div className="glass rounded-2xl p-6 border border-white/10">
                   <h3 className="text-lg font-bold text-white mb-3">Notes</h3>
                   <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 text-white text-sm placeholder-gray-600 resize-none" placeholder="Anything else..." />
+                </div>
+
+                {/* Coach-Level Review — collapsible. Optional deeper
+                    questions (decision-making, ball tracking, body
+                    mechanics, game context). When filled, the Auto
+                    Coach Insight on the reflection detail page gets
+                    much sharper. */}
+                <div className="glass rounded-2xl border border-accent-500/20 bg-accent-500/5">
+                  <button
+                    type="button"
+                    onClick={() => setShowCoachReview(!showCoachReview)}
+                    className="w-full flex items-center justify-between p-6 text-left"
+                  >
+                    <div>
+                      <h3 className="text-lg font-bold text-white">🧠 Coach-Level Review</h3>
+                      <p className="text-xs text-gray-400 mt-1">Optional. Sharpens the Auto Coach Insight after you save.</p>
+                    </div>
+                    <svg className={`w-5 h-5 text-gray-500 transition-transform ${showCoachReview ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {showCoachReview && (
+                    <div className="px-6 pb-6 space-y-5 border-t border-accent-500/20 pt-5">
+                      {/* Decision making */}
+                      <div>
+                        <label className="text-gray-400 text-xs block mb-1">Plan for first 6 balls (what was your intent?)</label>
+                        <input type="text" value={firstSixBallsPlan} onChange={e => setFirstSixBallsPlan(e.target.value)} placeholder="e.g. Watch ball, leave outside off, defend straight" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-accent-500 text-white text-sm placeholder-gray-600" />
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-xs mb-2">Did you stick to the plan?</p>
+                        <div className="flex gap-2">
+                          {(['yes', 'partly', 'no'] as const).map(v => (
+                            <button key={v} type="button" onClick={() => setStuckToPlan(stuckToPlan === v ? undefined : v)} className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium border transition-all ${stuckToPlan === v ? 'bg-accent-500/20 text-accent-400 border-accent-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{v.charAt(0).toUpperCase() + v.slice(1)}</button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-gray-400 text-xs block mb-1">Why did you play the shot that got you out?</label>
+                        <input type="text" value={whyShotThatGotMeOut} onChange={e => setWhyShotThatGotMeOut(e.target.value)} placeholder="e.g. Misjudged length, expected a fuller ball" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-accent-500 text-white text-sm placeholder-gray-600" />
+                      </div>
+                      <div>
+                        <label className="text-gray-400 text-xs block mb-1">% of balls you felt in control: {controlPercent ?? '—'}%</label>
+                        <input type="range" min={0} max={100} step={5} value={controlPercent ?? 50} onChange={e => setControlPercent(parseInt(e.target.value, 10))} className="w-full accent-accent-500" />
+                      </div>
+
+                      {/* Ball tracking */}
+                      <div>
+                        <p className="text-gray-400 text-xs mb-2">Picked the length early?</p>
+                        <div className="flex gap-2">
+                          {(['yes', 'mostly', 'no'] as const).map(v => (
+                            <button key={v} type="button" onClick={() => setPickedLengthEarly(pickedLengthEarly === v ? undefined : v)} className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium border transition-all ${pickedLengthEarly === v ? 'bg-primary-500/20 text-primary-400 border-primary-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{v.charAt(0).toUpperCase() + v.slice(1)}</button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-xs mb-2">Watched the ball till contact?</p>
+                        <div className="flex gap-2">
+                          {(['yes', 'partially', 'no'] as const).map(v => (
+                            <button key={v} type="button" onClick={() => setWatchedBall(watchedBall === v ? undefined : v)} className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium border transition-all ${watchedBall === v ? 'bg-primary-500/20 text-primary-400 border-primary-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{v.charAt(0).toUpperCase() + v.slice(1)}</button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Body mechanics */}
+                      <div>
+                        <p className="text-gray-400 text-xs mb-2">Head over the ball?</p>
+                        <div className="flex gap-2">
+                          {(['yes', 'sometimes', 'no'] as const).map(v => (
+                            <button key={v} type="button" onClick={() => setHeadOverBall(headOverBall === v ? undefined : v)} className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium border transition-all ${headOverBall === v ? 'bg-blue-500/20 text-blue-400 border-blue-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{v.charAt(0).toUpperCase() + v.slice(1)}</button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-xs mb-2">Front foot reached the pitch?</p>
+                        <div className="flex gap-2">
+                          {(['yes', 'sometimes', 'no'] as const).map(v => (
+                            <button key={v} type="button" onClick={() => setFrontFootToPitch(frontFootToPitch === v ? undefined : v)} className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium border transition-all ${frontFootToPitch === v ? 'bg-blue-500/20 text-blue-400 border-blue-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{v.charAt(0).toUpperCase() + v.slice(1)}</button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-xs mb-2">Balance at contact?</p>
+                        <div className="flex gap-2">
+                          {(['stable', 'falling', 'reaching'] as const).map(v => (
+                            <button key={v} type="button" onClick={() => setBalanceAtContact(balanceAtContact === v ? undefined : v)} className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium border transition-all ${balanceAtContact === v ? 'bg-blue-500/20 text-blue-400 border-blue-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{v.charAt(0).toUpperCase() + v.slice(1)}</button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Game context */}
+                      <div>
+                        <p className="text-gray-400 text-xs mb-2">Match phase when you batted</p>
+                        <div className="flex gap-2 flex-wrap">
+                          {(['powerplay', 'middle', 'death', 'na'] as const).map(v => (
+                            <button key={v} type="button" onClick={() => setMatchPhase(matchPhase === v ? undefined : v)} className={`py-2 px-3 rounded-lg text-xs font-medium border transition-all ${matchPhase === v ? 'bg-red-500/20 text-red-400 border-red-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{v === 'na' ? 'N/A' : v.charAt(0).toUpperCase() + v.slice(1)}</button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-xs mb-2">Pressure level</p>
+                        <div className="flex gap-2">
+                          {(['low', 'medium', 'high'] as const).map(v => (
+                            <button key={v} type="button" onClick={() => setPressureLevel(pressureLevel === v ? undefined : v)} className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium border transition-all ${pressureLevel === v ? 'bg-red-500/20 text-red-400 border-red-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{v.charAt(0).toUpperCase() + v.slice(1)}</button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-xs mb-2">Intent mode (what were you trying to do?)</p>
+                        <div className="flex gap-2 flex-wrap">
+                          {(['accelerate', 'consolidate', 'settle'] as const).map(v => (
+                            <button key={v} type="button" onClick={() => setIntentMode(intentMode === v ? undefined : v)} className={`py-2 px-3 rounded-lg text-xs font-medium border transition-all ${intentMode === v ? 'bg-red-500/20 text-red-400 border-red-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{v.charAt(0).toUpperCase() + v.slice(1)}</button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <button onClick={handleSubmit} disabled={!match || saving} className="w-full py-4 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-[1.02] disabled:opacity-40">
