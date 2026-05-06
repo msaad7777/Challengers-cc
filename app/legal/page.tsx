@@ -1,86 +1,11 @@
-import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import LegalDocsGrid from './LegalDocsGrid';
 
 export const metadata = {
   title: 'Governance & Legal — Challengers Cricket Club',
-  description: 'Volunteer Agreement, Liability Waiver, Privacy Policy, Code of Conduct, and other governance documents for Challengers Cricket Club, an Ontario Not-for-Profit Corporation.',
+  description: 'Volunteer Agreement, Liability Waiver, Privacy Policy, Code of Conduct, and other governance documents for Challengers Cricket Club.',
 };
-
-const DOCS = [
-  {
-    slug: 'volunteer-agreement',
-    title: 'Volunteer Agreement',
-    summary: 'Every player, board member, and contributor signs this. Confirms volunteer status, no compensation, work is donated.',
-    audience: 'All members',
-    icon: '🤝',
-    priority: 'Required',
-  },
-  {
-    slug: 'liability-waiver',
-    title: 'Liability Waiver',
-    summary: 'Acknowledgement of inherent risks of cricket, concussion awareness, and release of claims.',
-    audience: 'All players',
-    icon: '🏏',
-    priority: 'Required at registration',
-  },
-  {
-    slug: 'privacy',
-    title: 'Privacy Policy',
-    summary: 'How we collect, store, use, and protect personal information from members and the public.',
-    audience: 'Public',
-    icon: '🔒',
-    priority: 'Public',
-  },
-  {
-    slug: 'code-of-conduct',
-    title: 'Code of Conduct',
-    summary: 'Standards of behaviour for players, coaches, board members, and volunteers. Inclusion-first.',
-    audience: 'All members',
-    icon: '⚖️',
-    priority: 'All members',
-  },
-  {
-    slug: 'financial-policy',
-    title: 'Financial Policy',
-    summary: 'How money flows through the club: signing authority, deposits, reimbursements, annual reporting.',
-    audience: 'Board + members',
-    icon: '💰',
-    priority: 'Governance',
-  },
-  {
-    slug: 'conflict-of-interest',
-    title: 'Conflict of Interest Policy',
-    summary: 'Director declarations, recusal procedures, annual disclosures.',
-    audience: 'Board members',
-    icon: '🧭',
-    priority: 'Board only',
-  },
-  {
-    slug: 'bylaws',
-    title: 'Bylaws',
-    summary: 'Ontario NFP-compliant operating rules of the club. Draft pending legal review.',
-    audience: 'All members',
-    icon: '📜',
-    priority: 'Governance',
-  },
-  {
-    slug: 'ip-ownership',
-    title: 'Software & IP Ownership',
-    summary: 'The C3H portal and challengerscc.ca website were authored by Mohammed Saad personally and are his personal property under Copyright Act §13(1). The Club operates under a revocable licence at no charge while he serves as a director. Not a donation.',
-    audience: 'Public + governance',
-    icon: '⚖️',
-    priority: 'IP / governance',
-  },
-  {
-    slug: 'photography-consent',
-    title: 'Photography & Media Consent',
-    summary: 'How we capture and use photos, videos, livestreams, and recordings of members. Special protection for minors. Opt-out at any time.',
-    audience: 'All members',
-    icon: '📸',
-    priority: 'All members',
-  },
-];
 
 export default function LegalIndexPage() {
   return (
@@ -101,7 +26,7 @@ export default function LegalIndexPage() {
               Governance &amp; <span className="gradient-text">Legal</span>
             </h1>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-              Challengers Cricket Club is an Ontario Not-for-Profit Corporation (#1746974-8), entirely volunteer-run, with no paid staff or contractors. These documents codify how we operate.
+              Challengers Cricket Club is a Not-for-Profit Corporation (#1746974-8), entirely volunteer-run, with no paid staff or contractors. These documents codify how we operate.
             </p>
           </div>
 
@@ -121,9 +46,9 @@ export default function LegalIndexPage() {
             <h2 className="text-lg font-bold text-white mb-3">About the Organization</h2>
             <ul className="space-y-2 text-sm text-gray-300">
               <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Legal name:</strong> Challengers Cricket Club</span></li>
-              <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Corporate type:</strong> Ontario Not-for-Profit Corporation, governed by the Ontario Not-for-Profit Corporations Act (ONCA)</span></li>
+              <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Corporate type:</strong> Not-for-Profit Corporation</span></li>
               <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Corporation Number:</strong> 1746974-8</span></li>
-              <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Date of incorporation:</strong> 11 November 2025</span></li>
+              <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Date of incorporation:</strong> November 2025</span></li>
               <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Registered office:</strong> London, Ontario, Canada</span></li>
               <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Operations:</strong> 100% volunteer-run. No employees, no paid staff, no paid contractors.</span></li>
               <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Funding:</strong> member contributions, voluntary sponsorships, in-kind support. Surplus reinvested in club operations only.</span></li>
@@ -131,32 +56,13 @@ export default function LegalIndexPage() {
             </ul>
           </div>
 
-          <h2 className="text-2xl font-bold text-white mb-5">Documents</h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {DOCS.map((doc) => (
-              <Link
-                key={doc.slug}
-                href={`/legal/${doc.slug}`}
-                className="glass rounded-2xl p-5 border border-white/10 hover:border-primary-500/40 transition-all group"
-              >
-                <div className="flex items-start gap-3 mb-3">
-                  <span className="text-2xl">{doc.icon}</span>
-                  <div className="flex-1">
-                    <h3 className="text-white font-bold text-base group-hover:text-primary-400 transition-colors">{doc.title}</h3>
-                    <p className="text-[10px] uppercase tracking-wider text-accent-400 font-semibold mt-0.5">{doc.priority}</p>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-400 leading-relaxed">{doc.summary}</p>
-                <p className="text-xs text-gray-500 mt-3">For: {doc.audience}</p>
-              </Link>
-            ))}
-          </div>
+          <LegalDocsGrid />
 
           <div className="mt-10 text-center text-xs text-gray-500">
             <p>Questions about governance? Contact the board at{' '}
               <a href="mailto:contact@challengerscc.ca" className="text-primary-400 hover:text-primary-300 underline break-all">contact@challengerscc.ca</a>
             </p>
-            <p className="mt-1">Last updated: 30 April 2026</p>
+            <p className="mt-1">Last updated: 6 May 2026</p>
           </div>
         </div>
       </section>
