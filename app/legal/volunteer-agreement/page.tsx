@@ -64,11 +64,10 @@ export default function VolunteerAgreementPage() {
                 <Link href="/legal/ip-ownership" className="text-primary-400 hover:text-primary-300 underline mx-1">Software &amp; IP Ownership Acknowledgement</Link>
                 and the associated Software License &amp; Service Agreement. For the avoidance of doubt: the C3H
                 members&apos; portal and the <code className="text-primary-400">challengerscc.ca</code> website were authored by
-                Saad Cloud &amp; AI Solutions Inc. (the corporation owned by Mohammed Saad). The Club uses them
-                under a <strong className="text-white">revocable licence at no charge</strong> while Mohammed Saad serves as a
-                director, with Saad Cloud &amp; AI Solutions Inc. retaining the unilateral right to withdraw the
-                platform. Mohammed Saad&apos;s personal volunteer service as a director does <strong className="text-white">not</strong>
-                transfer his corporation&apos;s commercial intellectual property to the Club.
+                Mohammed Saad personally. The Club uses them under a <strong className="text-white">revocable
+                licence at no charge</strong> while he serves as a director, with him retaining the unilateral right
+                to withdraw the platform. His personal volunteer service as a director does <strong className="text-white">not</strong>
+                transfer his personal intellectual property to the Club.
               </p>
             </section>
 

@@ -34,7 +34,7 @@ describe('governanceDocs', () => {
 
   it('findDoc returns the matching doc', () => {
     expect(findDoc('ip-ownership-acknowledgement')?.shortTitle).toBe('IP Ownership Acknowledgement');
-    expect(findDoc('service-agreement-v1')?.shortTitle).toBe('Service Agreement');
+    expect(findDoc('service-agreement-v1')?.shortTitle).toBe('Software Licence Agreement');
   });
 
   it('findDoc returns undefined for unknown id', () => {
@@ -47,13 +47,13 @@ describe('governanceDocs', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it('Service Agreement requires SACS authorized signature (two-party)', () => {
+  it('Software Licence Agreement requires licensor signature (two-party with Mohammed Saad personally)', () => {
     const sa = GOVERNANCE_DOCS.find((d) => d.id === 'service-agreement-v1');
-    expect(sa?.requiresSacsSignature).toBe(true);
+    expect(sa?.requiresLicensorSignature).toBe(true);
   });
 
-  it('IP Ownership Acknowledgement does NOT require SACS signature (unilateral CCC act)', () => {
+  it('IP Ownership Acknowledgement does NOT require licensor signature (unilateral CCC act)', () => {
     const ipo = GOVERNANCE_DOCS.find((d) => d.id === 'ip-ownership-acknowledgement');
-    expect(ipo?.requiresSacsSignature ?? false).toBe(false);
+    expect(ipo?.requiresLicensorSignature ?? false).toBe(false);
   });
 });

@@ -22,7 +22,7 @@ import {
   resolveDirectorWorkspaceEmail,
 } from '@/lib/c3h-access';
 import Navbar from '@/components/Navbar';
-import { GOVERNANCE_DOCS, SACS_OFFICER, type GovernanceDoc } from './governanceDocs';
+import { GOVERNANCE_DOCS, LICENSOR, type GovernanceDoc } from './governanceDocs';
 import SignaturePad, { type SignatureResult } from './SignaturePad';
 import ServiceAgreement from './ServiceAgreement';
 
@@ -45,11 +45,11 @@ function sigKey(docId: string, docVersion: string, workspaceEmail: string) {
   return `${docId}__v${docVersion}__${workspaceEmail.replace(/[^a-z0-9@.]/gi, '_')}`;
 }
 
-// Distinct key for the SACS-side signature on a two-party agreement.
-// Lives in the same governance_signatures collection but is tracked
-// independently from CCC-director signatures.
-function sacsSigKey(docId: string, docVersion: string) {
-  return `${docId}__v${docVersion}__sacs-officer`;
+// Distinct key for the licensor (Mohammed Saad personally) signature
+// on a two-party agreement. Lives in the same governance_signatures
+// collection but is tracked independently from CCC-director sigs.
+function licensorSigKey(docId: string, docVersion: string) {
+  return `${docId}__v${docVersion}__licensor`;
 }
 
 export default function PavilionPage() {
@@ -169,21 +169,21 @@ export default function PavilionPage() {
     }
   };
 
-  const submitSacsSignature = async (doc: GovernanceDoc, result: SignatureResult) => {
-    if (userEmail.toLowerCase() !== SACS_OFFICER.workspaceEmail &&
+  const submitLicensorSignature = async (doc: GovernanceDoc, result: SignatureResult) => {
+    if (userEmail.toLowerCase() !== LICENSOR.workspaceEmail &&
         userEmail.toLowerCase() !== 'mbadru3434@gmail.com') {
-      return; // Only Saad can sign as SACS authorized rep
+      return; // Only Mohammed Saad can sign as the personal licensor
     }
     setBusyDocId(doc.id);
     try {
-      const key = sacsSigKey(doc.id, doc.version);
+      const key = licensorSigKey(doc.id, doc.version);
       const record = {
         docId: doc.id,
         docVersion: doc.version,
-        signerWorkspaceEmail: SACS_OFFICER.workspaceEmail,
+        signerWorkspaceEmail: LICENSOR.workspaceEmail,
         signerLoginEmail: userEmail.toLowerCase(),
-        signerName: SACS_OFFICER.name,
-        signerRole: SACS_OFFICER.role,
+        signerName: LICENSOR.name,
+        signerRole: LICENSOR.role,
         signedAt: serverTimestamp(),
         signatureType: result.type,
         signatureData: result.data,
@@ -275,12 +275,12 @@ export default function PavilionPage() {
                 const isOpen = openContentFor === gd.id;
                 const isSigning = openSignerFor === gd.id;
                 // For two-party agreements, fully-signed requires both
-                // the CCC director side AND the SACS side. Otherwise
+                // the CCC director side AND the licensor side. Otherwise
                 // CCC director side alone is sufficient.
-                const sacsSigPresent = gd.requiresSacsSignature
-                  ? Boolean(signatures[sacsSigKey(gd.id, gd.version)])
+                const licensorSigPresent = gd.requiresLicensorSignature
+                  ? Boolean(signatures[licensorSigKey(gd.id, gd.version)])
                   : true;
-                const fullySigned = signed === total && sacsSigPresent;
+                const fullySigned = signed === total && licensorSigPresent;
 
                 return (
                   <article key={gd.id} className="glass rounded-2xl p-6 border border-white/10">
@@ -299,8 +299,8 @@ export default function PavilionPage() {
                               : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
                           }`}
                         >
-                          {gd.requiresSacsSignature
-                            ? `${signed} / ${total} directors${sacsSigPresent ? ' · ✓ SACS' : ' · SACS pending'}`
+                          {gd.requiresLicensorSignature
+                            ? `${signed} / ${total} directors${licensorSigPresent ? ' · ✓ Licensor' : ' · Licensor pending'}`
                             : `${signed} / ${total} signed`}
                         </div>
                       </div>
@@ -370,49 +370,48 @@ export default function PavilionPage() {
                       </div>
                     )}
 
-                    {/* ── SACS authorized representative signing track ─── */}
-                    {gd.requiresSacsSignature && (() => {
-                      const sacsKey = sacsSigKey(gd.id, gd.version);
-                      const sacsSig = signatures[sacsKey];
-                      const userIsSacsOfficer =
-                        userEmail.toLowerCase() === SACS_OFFICER.workspaceEmail ||
+                    {/* ── Licensor (Mohammed Saad personally) signing track ─── */}
+                    {gd.requiresLicensorSignature && (() => {
+                      const licKey = licensorSigKey(gd.id, gd.version);
+                      const licSig = signatures[licKey];
+                      const userIsLicensor =
+                        userEmail.toLowerCase() === LICENSOR.workspaceEmail ||
                         userEmail.toLowerCase() === 'mbadru3434@gmail.com';
-                      const isOpenSacs = openSacsSignerFor === gd.id;
+                      const isOpenLic = openSacsSignerFor === gd.id;
                       return (
                         <div className="mt-4 rounded-xl bg-accent-500/5 border-2 border-accent-500/30 p-4">
                           <div className="flex items-start justify-between gap-3 flex-wrap mb-2">
                             <div className="min-w-0 flex-1">
                               <p className="text-xs uppercase tracking-wider text-accent-400 font-bold mb-1">
-                                Saad Cloud &amp; AI Solutions Inc. — counterparty signature
+                                Licensor signature — Mohammed Saad
                               </p>
                               <p className="text-sm text-gray-300">
                                 This is a two-party agreement. The Club&apos;s 4 non-conflicted directors approve
-                                on the CCC side above; Saad Cloud &amp; AI Solutions Inc. signs separately as
-                                the counterparty. Mohammed Saad, sole shareholder and director of Saad Cloud
-                                &amp; AI Solutions Inc., signs here in that capacity — distinct from his
-                                recused role as a CCC director.
+                                on the CCC side above; Mohammed Saad signs separately on the licensor side
+                                in his personal capacity as the author and copyright owner of the platform —
+                                distinct from his recused role as a CCC director.
                               </p>
                             </div>
-                            {sacsSig ? (
+                            {licSig ? (
                               <div className="text-right">
-                                <div className="text-primary-400 text-xs font-semibold">✓ SACS signed</div>
+                                <div className="text-primary-400 text-xs font-semibold">✓ Licensor signed</div>
                                 <div className="text-[10px] text-gray-500 mt-0.5">
-                                  {sacsSig.signedAt ? sacsSig.signedAt.toDate().toLocaleDateString() : '…'} · {sacsSig.signatureType}
+                                  {licSig.signedAt ? licSig.signedAt.toDate().toLocaleDateString() : '…'} · {licSig.signatureType}
                                 </div>
                               </div>
                             ) : (
-                              <div className="text-amber-400 text-xs font-semibold">SACS pending</div>
+                              <div className="text-amber-400 text-xs font-semibold">Licensor pending</div>
                             )}
                           </div>
 
-                          {!sacsSig && userIsSacsOfficer && (
+                          {!licSig && userIsLicensor && (
                             <div className="mt-3">
-                              {isOpenSacs ? (
+                              {isOpenLic ? (
                                 <SignaturePad
-                                  signerName={SACS_OFFICER.name}
+                                  signerName={LICENSOR.name}
                                   busy={busyDocId === gd.id}
                                   onCancel={() => setOpenSacsSignerFor(null)}
-                                  onSubmit={(result) => submitSacsSignature(gd, result)}
+                                  onSubmit={(result) => submitLicensorSignature(gd, result)}
                                 />
                               ) : (
                                 <button
@@ -420,15 +419,15 @@ export default function PavilionPage() {
                                   onClick={() => setOpenSacsSignerFor(gd.id)}
                                   className="px-5 py-2 rounded-lg bg-accent-500 text-black font-semibold text-sm hover:bg-accent-400 transition-all"
                                 >
-                                  Sign as SACS Inc. authorized representative
+                                  Sign as licensor (personal capacity)
                                 </button>
                               )}
                             </div>
                           )}
 
-                          {!sacsSig && !userIsSacsOfficer && (
+                          {!licSig && !userIsLicensor && (
                             <p className="text-xs text-gray-500 italic mt-2">
-                              Pending Mohammed Saad to sign on behalf of Saad Cloud &amp; AI Solutions Inc.
+                              Pending Mohammed Saad to sign as licensor.
                             </p>
                           )}
                         </div>

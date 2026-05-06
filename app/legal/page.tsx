@@ -67,7 +67,7 @@ const DOCS = [
   {
     slug: 'ip-ownership',
     title: 'Software & IP Ownership',
-    summary: 'The C3H portal and challengerscc.ca website are owned by Saad Cloud & AI Solutions Inc. The Club operates under a revocable licence at no charge while Mohammed Saad serves as a director. Commercial work, not a donation.',
+    summary: 'The C3H portal and challengerscc.ca website were authored by Mohammed Saad personally and are his personal property under Copyright Act §13(1). The Club operates under a revocable licence at no charge while he serves as a director. Not a donation.',
     audience: 'Public + governance',
     icon: '⚖️',
     priority: 'IP / governance',
