@@ -231,7 +231,13 @@ export default function OfficerHubPage() {
                     <div>
                       <p className="text-xs text-gray-400 print:text-gray-700 uppercase tracking-wider mb-1">Signature</p>
                       {existing.signatureType === 'drawn' ? (
-                        <img src={existing.signatureData} alt="Your signature" className="bg-white rounded border border-white/20 max-h-20" />
+                        // White ink on transparent. bg-black for screen,
+                        // print:invert + print:bg-white for printed PDF.
+                        <img
+                          src={existing.signatureData}
+                          alt="Your signature"
+                          className="bg-black rounded border border-white/20 max-h-20 print:invert print:bg-white print:border-black"
+                        />
                       ) : (
                         <p className="text-2xl text-white print:text-black" style={{ fontFamily: 'Brush Script MT, cursive' }}>
                           {existing.signatureData}

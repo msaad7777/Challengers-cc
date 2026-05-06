@@ -193,7 +193,16 @@ export default function DocumentSignBlock({
           <div>
             <p className="text-xs text-gray-400 print:text-gray-700 uppercase tracking-wider mb-1">Signature</p>
             {existing.signatureType === 'drawn' ? (
-              <img src={existing.signatureData} alt="Your signature" className="bg-white rounded border border-white/20 max-h-20" />
+              // Drawn signatures are captured as white ink on transparent PNG
+              // (matches the SignaturePad's dark canvas). bg-black container
+              // makes them visible on screen. print:invert + print:bg-white
+              // flip the ink to black for the printed PDF (otherwise white ink
+              // on white paper is invisible).
+              <img
+                src={existing.signatureData}
+                alt="Your signature"
+                className="bg-black rounded border border-white/20 max-h-20 print:invert print:bg-white print:border-black"
+              />
             ) : (
               <p className="text-2xl text-white print:text-black" style={{ fontFamily: 'Brush Script MT, cursive' }}>
                 {existing.signatureData}

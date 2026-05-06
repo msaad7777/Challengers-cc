@@ -163,7 +163,13 @@ export default function SignBlock() {
           <div>
             <p className="text-xs text-gray-400 print:text-gray-700 uppercase tracking-wider mb-1">Signature</p>
             {existing.signatureType === 'drawn' ? (
-              <img src={existing.signatureData} alt="Your signature" className="bg-white rounded border border-white/20 max-h-20" />
+              // White ink on transparent PNG. bg-black for screen visibility;
+              // print:invert + print:bg-white flips it to black on white paper.
+              <img
+                src={existing.signatureData}
+                alt="Your signature"
+                className="bg-black rounded border border-white/20 max-h-20 print:invert print:bg-white print:border-black"
+              />
             ) : (
               <p className="text-2xl text-white print:text-black" style={{ fontFamily: 'Brush Script MT, cursive' }}>
                 {existing.signatureData}
