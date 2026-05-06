@@ -42,6 +42,7 @@ export default function ServiceAgreement() {
         <li>The Club has no right, title, or interest in the source code or related infrastructure.</li>
         <li>Mohammed Saad&apos;s service as a volunteer director of the Club does not transfer or licence to the Club any of the Provider&apos;s intellectual property beyond the limited usage rights granted in Section 4.</li>
       </ul>
+      <p className="mt-3"><strong className="text-white">Pre-incorporation work and assignment to the Provider.</strong> The Club further acknowledges that the platform was authored by Mohammed Saad personally between approximately November 2025 and 4 May 2026, in his individual capacity, before the Provider corporation was incorporated. During that period Mohammed Saad personally owned the copyright in the work under section 13(1) of the federal <em>Copyright Act</em> (no employment relationship, no written assignment to the Club). On or about 4 May 2026 he incorporated the Provider and assigned all pre-existing intellectual property in the platform to the Provider as a founding contribution. This Agreement <strong className="text-white">covers and ratifies both periods</strong>: the period during which Mohammed Saad personally owned the work and the period since 4 May 2026 during which the Provider has owned it. There is no period during which the Club was the owner, co-owner, or assignee of the platform. Full timeline detail is set out in the Club&apos;s <em>Software &amp; IP Ownership Acknowledgement</em>.</p>
 
       <h3 className="text-base font-bold text-white mt-4">4. Licence to the Club</h3>
       <p>The Provider grants the Club a <strong className="text-white">limited, non-exclusive, non-transferable, revocable licence</strong> to access and use the platform for the Club&apos;s internal not-for-profit operations, member services, communications, and public outreach.</p>
@@ -115,8 +116,10 @@ export default function ServiceAgreement() {
       <hr className="border-white/10 my-6" />
 
       <p className="text-xs text-gray-500 italic">
-        Document version 1.0 · Effective 5 May 2026. Pending lawyer review. Director e-signatures recorded in the Club&apos;s
-        Pavilion governance ledger with timestamp, signing method (typed or drawn), and signer email.
+        Document version 1.1 · Effective 6 May 2026. Pending lawyer review. v1.1 adds the pre-incorporation
+        timeline acknowledgement in Section 3 to ratify the Nov 2025 — May 4, 2026 personal authorship period.
+        Director e-signatures recorded in the Club&apos;s Pavilion governance ledger with timestamp, signing
+        method (typed or drawn), and signer email.
       </p>
     </div>
   );

@@ -35,25 +35,25 @@ export const SACS_OFFICER = {
 export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
   {
     id: 'ip-ownership-acknowledgement',
-    version: '1.0',
+    version: '1.1',
     title: 'Software & IP Ownership Acknowledgement',
     shortTitle: 'IP Ownership Acknowledgement',
-    effective: '2026-05-04',
+    effective: '2026-05-06',
     publicUrl: '/legal/ip-ownership',
     summary:
-      'Records the public acknowledgement that the C3H portal and challengerscc.ca website are owned by Saad Cloud & AI Solutions Inc. The Club operates the platform under a revocable licence at no charge while Mohammed Saad serves as a director. Mohammed Saad declares conflict of interest and abstains from signing.',
+      'Records the public acknowledgement that the C3H portal and challengerscc.ca website are owned by Saad Cloud & AI Solutions Inc. The Club operates the platform under a revocable licence at no charge while Mohammed Saad serves as a director. v1.1 adds explicit Period-1 (Nov 2025 to May 4, 2026: personal authorship by Mohammed Saad) and Period-2 (May 4, 2026 onward: corporate ownership by SACS) timeline, ratifying the pre-incorporation work and closing any implied-license argument. Mohammed Saad declares conflict of interest and abstains from signing.',
     whoMustSign: 'all-directors-except-conflicted',
     conflictedSigners: ['saad@challengerscc.ca'],
   },
   {
     id: 'service-agreement-v1',
-    version: '1.0',
+    version: '1.1',
     title: 'Software License & Service Agreement (CCC ↔ Saad Cloud & AI Solutions Inc.)',
     shortTitle: 'Service Agreement',
-    effective: '2026-05-05',
+    effective: '2026-05-06',
     inline: 'service-agreement',
     summary:
-      'Two-party contract between Challengers Cricket Club and Saad Cloud & AI Solutions Inc. CCC side: 4 non-conflicted directors approve on behalf of the Club (Saad recused, declared conflict of interest). SACS side: Mohammed Saad signs as the sole shareholder and director of Saad Cloud & AI Solutions Inc. Both signatures required for the agreement to take effect.',
+      'Two-party contract between Challengers Cricket Club and Saad Cloud & AI Solutions Inc. CCC side: 4 non-conflicted directors approve on behalf of the Club (Saad recused, declared conflict of interest). SACS side: Mohammed Saad signs as the sole shareholder and director of Saad Cloud & AI Solutions Inc. Both signatures required for the agreement to take effect. v1.1 adds the pre-incorporation timeline acknowledgement (Section 3) covering the Nov 2025 — May 4, 2026 personal authorship period.',
     whoMustSign: 'all-directors-except-conflicted',
     conflictedSigners: ['saad@challengerscc.ca'],
     requiresSacsSignature: true,

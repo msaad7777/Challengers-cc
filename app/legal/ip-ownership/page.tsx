@@ -22,7 +22,7 @@ export default function IpOwnershipPage() {
           <div className="text-center mb-10">
             <span className="text-3xl">⚖️</span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-3 mb-3">Software &amp; IP Ownership Acknowledgement</h1>
-            <p className="text-sm text-gray-500">Challengers Cricket Club · Effective 4 May 2026</p>
+            <p className="text-sm text-gray-500">Challengers Cricket Club · Version 1.1 · Effective 6 May 2026 (covers Nov 2025 onward retroactively)</p>
           </div>
 
           {/* Headline summary */}
@@ -125,6 +125,50 @@ export default function IpOwnershipPage() {
                 </li>
                 <li>The Club&apos;s YouTube channel, social media accounts, and any other Club-branded properties</li>
               </ul>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-2">Timeline of authorship and ownership transfer</h2>
+              <p className="text-sm">
+                The platform was built in two distinct legal periods. This Acknowledgement covers <strong className="text-white">both</strong>,
+                so that no future party can argue the pre-incorporation work was an implied gift to the Club.
+              </p>
+              <div className="rounded-xl bg-white/5 border border-white/10 p-4 my-3">
+                <p className="text-xs uppercase tracking-wider text-accent-400 font-bold mb-2">Period 1 — Personal authorship</p>
+                <p className="text-sm text-gray-200">
+                  <strong className="text-white">From approximately November 2025 to 4 May 2026</strong>, Mohammed Saad personally
+                  authored the source code of the C3H members&apos; portal and the <code className="text-primary-400">challengerscc.ca</code>
+                  website, in his individual capacity, on his own time and equipment, using cloud accounts (GitHub, Vercel, Firebase,
+                  Google Cloud) registered to him personally and paid for from his own funds. During this period:
+                </p>
+                <ul className="space-y-1.5 mt-2 text-sm list-disc list-inside ml-2">
+                  <li>The Club had no employment relationship with him. No T4 was issued. No salary, fee, or wage was paid.</li>
+                  <li>No written assignment of intellectual property from him to the Club was ever executed.</li>
+                  <li>By default under section 13(1) of the federal <em>Copyright Act</em>, Mohammed Saad was the first and sole owner of the copyright in the works he authored.</li>
+                  <li>His service as a volunteer director of the Club did not constitute employment under section 13(3), nor a written assignment under section 13(4), and therefore did not transfer copyright to the Club.</li>
+                  <li>His use of the platform on the Club&apos;s behalf during this period operated under an <strong className="text-white">implicit licence at no charge</strong>, on the same revocable terms now formalized below.</li>
+                </ul>
+              </div>
+              <div className="rounded-xl bg-white/5 border border-white/10 p-4 my-3">
+                <p className="text-xs uppercase tracking-wider text-accent-400 font-bold mb-2">Period 2 — Corporate ownership</p>
+                <p className="text-sm text-gray-200">
+                  On <strong className="text-white">4 May 2026</strong>, Mohammed Saad incorporated Saad Cloud &amp; AI Solutions Inc. as
+                  an Ontario business corporation (sole shareholder and director: himself). On or about the same date, by his
+                  founding act and contribution, he <strong className="text-white">assigned all pre-existing copyright, source code,
+                  designs, and infrastructure</strong> in the platform from himself personally to Saad Cloud &amp; AI Solutions Inc.
+                  This assignment is recorded in the corporation&apos;s own records (held with its corporate minute book) and is
+                  acknowledged by the Club in this document. From 4 May 2026 forward, all hosting, infrastructure, and
+                  ongoing development is performed by and billed to Saad Cloud &amp; AI Solutions Inc. as a corporate entity.
+                </p>
+              </div>
+              <p className="text-sm">
+                The Club&apos;s board, through this Acknowledgement, <strong className="text-white">ratifies</strong> the pre-incorporation
+                arrangement (Period 1) on the same terms now applied to Period 2: revocable licence at no charge while
+                Mohammed Saad serves as a director of the Club, with the right of withdrawal preserved in favour of the
+                copyright owner. This ratification covers the entire period from November 2025 to the present and applies
+                retroactively — there is no period during which the Club was the owner or co-owner of the platform, nor any
+                period during which the work is treated as a gift, donation, or transfer of intellectual property to the Club.
+              </p>
             </section>
 
             <section>
@@ -277,7 +321,8 @@ export default function IpOwnershipPage() {
           </div>
 
           <div className="mt-8 text-xs text-gray-500 text-center">
-            <p>Effective: 4 May 2026 · Version 1.0 · Pending lawyer review</p>
+            <p>Effective: 6 May 2026 · Version 1.1 · Pending lawyer review</p>
+            <p className="mt-1">v1.1 (2026-05-06) — adds explicit timeline of authorship and the Period-1/Period-2 ratification covering work performed before Saad Cloud &amp; AI Solutions Inc. was incorporated.</p>
           </div>
         </div>
       </section>
