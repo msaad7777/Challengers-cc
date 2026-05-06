@@ -28,6 +28,30 @@ export default function OfficerAppointment({ officerName, role, effectiveFrom, r
         </p>
       </div>
 
+      <h3 className="text-base font-bold text-white mt-4">Purpose &amp; context</h3>
+      <p>
+        During the Club&apos;s founding phase from November 2025 onward, officer appointments
+        (Treasurer, Secretary, and other roles) were made by informal agreement at the founding
+        board level, alongside the rapid build-out of the Club&apos;s public presence and operations.
+        Canadian not-for-profit governance best practice — as set out by <strong className="text-white">CPA Canada</strong>,
+        {' '}<strong className="text-white">Imagine Canada</strong>, and similar guidance — recommends that each
+        officer receive a written <em>Officer Appointment &amp; Volunteer Status Confirmation</em> at the time
+        of their appointment, alongside a board orientation package and a clearly defined scope of duties.
+      </p>
+      <p className="mt-2">
+        The Club did not complete this formal onboarding step at the time. This Confirmation, executed
+        in May 2026, is the <strong className="text-white">proper onboarding step now being completed</strong>.
+        It does not change the substance of the Officer&apos;s role, nor the volunteer nature of the work,
+        nor the existing repayment obligation for past expenses. It documents what was always
+        understood — on the public governance record, in the form recommended by Canadian not-for-profit
+        governance standards.
+      </p>
+      <p className="mt-2 text-gray-400 text-xs italic">
+        Issuing this Confirmation now (rather than at the time of appointment) is a maturation of the
+        Club&apos;s governance practice as we prepare for CRA charity registration. It is not a re-appointment,
+        a demotion, or a re-characterization of past performance.
+      </p>
+
       <h3 className="text-base font-bold text-white mt-4">1. Officer details</h3>
       <ul className="list-disc list-inside ml-2 space-y-1">
         <li><strong className="text-white">Name:</strong> {officerName}</li>
