@@ -117,13 +117,28 @@ export default function VolunteerAgreementPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-2">12. Governing Law</h2>
+              <h2 className="text-lg font-bold text-white mb-2">12. Indemnification &amp; Limitation of Liability</h2>
+              <ul className="space-y-2 text-sm list-disc list-inside ml-2">
+                <li>The Club <strong className="text-white">indemnifies the Volunteer</strong> against all costs, charges, expenses, damages, and liabilities reasonably incurred by the Volunteer in connection with the <strong className="text-white">lawful, good-faith performance</strong> of their volunteer service to the Club, except where such loss arises from the Volunteer&apos;s wilful misconduct, gross negligence, fraud, or breach of fiduciary duty. This indemnification mirrors and incorporates by reference <Link href="/legal/bylaws" className="text-primary-400 hover:text-primary-300 underline">Article 9 of the Club&apos;s Bylaws</Link>.</li>
+                <li>The Volunteer is <strong className="text-white">not personally liable</strong> to the Club for decisions made or actions taken in good faith on behalf of the Club, provided those decisions and actions are within the scope of their volunteer role and consistent with this Agreement, the <Link href="/legal/code-of-conduct" className="text-primary-400 hover:text-primary-300 underline">Code of Conduct</Link>, and the Club&apos;s Bylaws.</li>
+                <li>If the Club purchases Directors&apos; &amp; Officers&apos; (D&amp;O) liability insurance, the Volunteer is included in the policy&apos;s coverage to the extent permitted by the policy terms.</li>
+                <li>This indemnification <strong className="text-white">survives</strong> the termination of the volunteer relationship for matters arising during the period of volunteer service.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-2">13. Severability</h2>
+              <p className="text-sm">If any provision of this Agreement is held by a court of competent jurisdiction to be invalid, illegal, or unenforceable, the remaining provisions remain in full force and effect, and the invalid provision shall be replaced — to the extent permitted by law — with a valid provision that most closely matches the original intent of the parties.</p>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-2">14. Governing Law</h2>
               <p className="text-sm">This Agreement is governed by the laws of the Province of Ontario and the federal laws of Canada applicable in Ontario.</p>
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-2">13. Entire Agreement</h2>
-              <p className="text-sm">This Agreement, together with the Code of Conduct, Privacy Policy, and Liability Waiver, sets out the entire understanding between the Volunteer and the Club regarding the volunteer relationship. It supersedes all prior or contemporaneous oral or written discussions on the same subject.</p>
+              <h2 className="text-lg font-bold text-white mb-2">15. Entire Agreement</h2>
+              <p className="text-sm">This Agreement, together with the Code of Conduct, Privacy Policy, Liability Waiver, the Software &amp; IP Ownership Acknowledgement, and any associated Software License &amp; Service Agreement, sets out the entire understanding between the Volunteer and the Club regarding the volunteer relationship. It supersedes all prior or contemporaneous oral or written discussions on the same subject.</p>
             </section>
 
             <hr className="border-white/10" />
@@ -145,7 +160,7 @@ export default function VolunteerAgreementPage() {
 
             <hr className="border-white/10" />
 
-            <p className="text-xs text-gray-500 italic">Document version: v1.0 · 30 April 2026 · Pending legal review.</p>
+            <p className="text-xs text-gray-500 italic">Document version: v1.1 · 6 May 2026 · Pending legal review. Adds explicit indemnification (Section 12), severability (Section 13), and broader entire-agreement scope (Section 15).</p>
           </div>
 
           <div className="text-center mt-6 print:hidden text-sm text-gray-500">

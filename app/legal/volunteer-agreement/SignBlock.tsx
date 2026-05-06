@@ -13,7 +13,13 @@ import { db, firebaseAuthReady } from '@/lib/firebase';
 import SignaturePad, { type SignatureResult } from '@/app/c3h/pavilion/SignaturePad';
 
 const DOC_ID = 'volunteer-agreement';
-const DOC_VERSION = '1.0';
+// v1.1 (2026-05-06) — added explicit indemnification (Section 12) and
+// severability (Section 13). Bump on any material change so that the
+// version stored alongside each signature is auditable. Existing v1.0
+// signatures (if any from local dev) remain valid as v1.0 records;
+// the Pavilion can flag mismatches if the Club ever needs everyone
+// to re-sign against a newer version.
+const DOC_VERSION = '1.1';
 const COLLECTION = 'volunteer_agreement_signatures';
 
 type SignatureRecord = {
