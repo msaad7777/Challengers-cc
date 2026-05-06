@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import PublicLiveScore from '@/components/PublicLiveScore';
-import { isC3HBoard, isC3HDirector } from '@/lib/c3h-access';
+import { isC3HBoard, isC3HDirector, isC3HOfficer } from '@/lib/c3h-access';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -29,6 +29,7 @@ export default function DashboardPage() {
 
   const isBoard = isC3HBoard(session.user?.email);
   const isDirector = isC3HDirector(session.user?.email);
+  const isOfficer = isC3HOfficer(session.user?.email);
   const userName = session.user?.name || 'Player';
   const userImage = session.user?.image || '';
 
@@ -190,6 +191,22 @@ export default function DashboardPage() {
                 Open
               </span>
             </a>
+
+            {/* Officer Hub — Officers Only (Madhu, Qaiser, Shahriar) */}
+            {isOfficer && (
+              <a href="/c3h/officer-hub" className="glass rounded-2xl p-6 border-2 border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 block">
+                <div className="text-3xl mb-3">🎩</div>
+                <h2 className="text-xl font-bold text-white mb-1">Officer Hub</h2>
+                <p className="text-amber-400 text-xs font-medium mb-3">Officer Appointment &amp; E-Sign</p>
+                <p className="text-gray-400 text-sm mb-4">
+                  E-sign your Officer Appointment &amp; Volunteer Status Confirmation. Confirms your role on a
+                  strictly volunteer basis. Past expenses already advanced remain repayable.
+                </p>
+                <span className="text-xs px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  Open
+                </span>
+              </a>
+            )}
 
             {/* The Pavilion — Directors Only */}
             {isDirector && (

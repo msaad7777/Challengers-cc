@@ -159,6 +159,30 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // ── Officer Appointment & Volunteer Status Confirmation ────────────────
+    // Per-officer signed confirmation that their role is volunteer + unpaid.
+    // Append-only; records the officer's name, role, signature, timestamp.
+    // Past expenses owed are NOT extinguished by this record (see the doc
+    // text for the "documentation rather than waiver" clause).
+    match /officer_appointment_signatures/{userKey} {
+      allow read: if authed();
+      allow create: if authed()
+        && request.resource.data.keys().hasAll([
+          'docId', 'docVersion', 'signerEmail', 'signerWorkspaceEmail',
+          'signerName', 'signerRole', 'effectiveFrom',
+          'signedAt', 'signatureType', 'signatureData'
+        ])
+        && isString(request.resource.data.signerEmail)
+        && isString(request.resource.data.signerName)
+        && request.resource.data.signerName.size() > 1
+        && isString(request.resource.data.signerRole)
+        && request.resource.data.signedAt is timestamp
+        && request.resource.data.signatureType in ['typed', 'drawn']
+        && isString(request.resource.data.signatureData)
+        && request.resource.data.signatureData.size() < 800000;
+      allow update, delete: if false;
+    }
+
     // ── Pavilion onboarding marker (lightweight first-login record) ───────
     // Written when a director or officer first hits /c3h/pavilion.
     // Lets the onboarding tracker show "✓ Onboarded" status for officers

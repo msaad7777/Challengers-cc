@@ -59,6 +59,8 @@ export default function PavilionPage() {
   const [loadingSigs, setLoadingSigs] = useState(true);
   // Volunteer-agreement signers, keyed by lower-cased email.
   const [vaSigners, setVaSigners] = useState<Set<string>>(new Set());
+  // Officer-appointment signers, keyed by lower-cased workspace email.
+  const [oaSigners, setOaSigners] = useState<Set<string>>(new Set());
   const [openSignerFor, setOpenSignerFor] = useState<string | null>(null);
   const [openSacsSignerFor, setOpenSacsSignerFor] = useState<string | null>(null);
   const [openContentFor, setOpenContentFor] = useState<string | null>(null);
@@ -84,8 +86,9 @@ export default function PavilionPage() {
     return () => unsub();
   }, [session?.user?.email]);
 
-  // Volunteer-agreement signers — one-shot read on mount. We don't
-  // need a live snapshot; the onboarding tracker is read-mostly.
+  // Volunteer-agreement + Officer-appointment signers — one-shot reads
+  // on mount. The onboarding tracker is read-mostly; no live snapshot
+  // needed.
   useEffect(() => {
     if (!session?.user?.email) return;
     if (!isC3HDirector(session.user.email)) return;
@@ -99,7 +102,20 @@ export default function PavilionPage() {
         setVaSigners(emails);
       })
       .catch(() => {
-        /* read failure is non-fatal — onboarding tracker just shows nobody as signed */
+        /* read failure is non-fatal */
+      });
+
+    getDocs(collection(db, 'officer_appointment_signatures'))
+      .then((snap) => {
+        const emails = new Set<string>();
+        snap.forEach((d) => {
+          const data = d.data() as { signerWorkspaceEmail?: string };
+          if (data.signerWorkspaceEmail) emails.add(data.signerWorkspaceEmail.toLowerCase());
+        });
+        setOaSigners(emails);
+      })
+      .catch(() => {
+        /* read failure is non-fatal */
       });
   }, [session?.user?.email]);
 
@@ -505,13 +521,11 @@ export default function PavilionPage() {
             <div className="glass rounded-2xl p-5 border border-white/10">
               <div className="grid sm:grid-cols-2 gap-2">
                 {C3H_OFFICER_ROSTER.map((o) => {
-                  const hasGovernanceActivity = Object.values(signatures).some(
-                    (s) => s.signerWorkspaceEmail === o.workspaceEmail,
-                  );
                   const signedVa =
                     vaSigners.has(o.workspaceEmail) ||
                     (o.personalEmail ? vaSigners.has(o.personalEmail.toLowerCase()) : false);
-                  const onboarded = hasGovernanceActivity || signedVa;
+                  const signedOa = oaSigners.has(o.workspaceEmail);
+                  const onboarded = signedVa && signedOa;
                   return (
                     <div key={o.workspaceEmail} className="rounded-lg px-3 py-2 border bg-white/3 border-white/10 text-sm">
                       <div className="flex items-center justify-between gap-2">
@@ -524,7 +538,7 @@ export default function PavilionPage() {
                             {onboarded ? '✓ Onboarded' : 'Awaiting onboarding'}
                           </div>
                           <div className="text-[10px] text-gray-500 mt-0.5">
-                            VA: {signedVa ? '✓' : '—'}
+                            VA: {signedVa ? '✓' : '—'} · Officer: {signedOa ? '✓' : '—'}
                           </div>
                         </div>
                       </div>

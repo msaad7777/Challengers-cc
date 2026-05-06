@@ -143,3 +143,22 @@ export const resolveDirectorWorkspaceEmail = (email?: string | null): string | n
   );
   return match?.workspaceEmail ?? null;
 };
+
+// ── Officers (non-director) and Captains — predicates ──────────────
+// Used by the Officer Hub at /c3h/officer-hub to gate access.
+// Officers/captains see THEIR OWN Officer Appointment & Volunteer
+// Status Confirmation; they do not see the director-only Pavilion.
+export const isC3HOfficer = (email?: string | null) => {
+  const lower = lc(email);
+  return C3H_OFFICER_ROSTER.some(
+    o => o.workspaceEmail === lower || o.personalEmail?.toLowerCase() === lower,
+  );
+};
+
+export const resolveOfficerWorkspaceEmail = (email?: string | null): string | null => {
+  const lower = lc(email);
+  const match = C3H_OFFICER_ROSTER.find(
+    o => o.workspaceEmail === lower || o.personalEmail?.toLowerCase() === lower,
+  );
+  return match?.workspaceEmail ?? null;
+};
