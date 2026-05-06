@@ -71,9 +71,10 @@ const DOCS: DocConfig[] = [
     slug: 'conflict-of-interest',
     title: 'Conflict of Interest Policy',
     summary: 'Director declarations, recusal procedures, annual disclosures.',
-    audience: 'Board members',
+    audience: 'Directors, officers, captains',
     icon: '🧭',
-    priority: 'Board only',
+    priority: 'Annual — directors / officers',
+    signingCollection: 'coi_declarations',
   },
   {
     slug: 'bylaws',

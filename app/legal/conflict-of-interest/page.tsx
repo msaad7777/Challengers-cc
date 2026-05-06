@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SignBlock from './SignBlock';
 
 export const metadata = {
   title: 'Conflict of Interest Policy — Challengers Cricket Club',
@@ -150,24 +151,14 @@ export default function ConflictOfInterestPage() {
             <hr className="border-white/10" />
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-3">Annual Director Declaration (template)</h2>
-              <p className="text-sm mb-4">Each director completes this annually. (For internal use — print and sign.)</p>
-              <div className="rounded-xl p-4 bg-white/5 border border-white/10 text-sm space-y-3">
-                <p>I, <span className="border-b border-white/30 inline-block w-48 align-bottom">&nbsp;</span>, a director of Challengers Cricket Club, declare for the year <span className="border-b border-white/30 inline-block w-16 align-bottom">&nbsp;</span> that:</p>
-                <p>The following are my potential conflicts of interest. (List businesses I own, family members with Club ties, sponsorships I have provided, or write &ldquo;none&rdquo;):</p>
-                <div className="border border-white/30 rounded-lg p-3 min-h-[80px] print:border-black"></div>
-                <p>I have read the Club&apos;s Conflict of Interest Policy. I agree to follow it. I will disclose any new conflicts that arise during the year.</p>
-                <div className="grid sm:grid-cols-2 gap-4 pt-2">
-                  <div>
-                    <label className="text-xs text-gray-400 block mb-1">Signature</label>
-                    <div className="border-b border-white/30 h-8 print:border-black"></div>
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-400 block mb-1">Date</label>
-                    <div className="border-b border-white/30 h-8 print:border-black"></div>
-                  </div>
-                </div>
-              </div>
+              <h2 className="text-lg font-bold text-white mb-3">Annual Director / Officer Declaration</h2>
+              <p className="text-sm mb-4">
+                Each director, officer, captain, and committee member completes this annually. By signing below, I,
+                the named signer, confirm that I have read this Conflict of Interest Policy, I agree to follow it,
+                I have declared any potential conflicts in the field below, and I will disclose any new conflicts
+                that arise during the year.
+              </p>
+              <SignBlock />
             </section>
 
             <hr className="border-white/10" />

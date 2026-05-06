@@ -199,6 +199,31 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // ── Conflict of Interest annual declarations ──────────────────────
+    // Annual COI declaration by directors / officers / committee members.
+    // Includes a year field and free-text conflictDeclarations entry.
+    // Append-only — annual renewal handled by re-signing at start of each
+    // year (currently single doc per user; year stored as a field).
+    match /coi_declarations/{userKey} {
+      allow read: if authed();
+      allow create: if authed()
+        && request.resource.data.keys().hasAll([
+          'docId', 'docVersion', 'signerEmail', 'signerName',
+          'signedAt', 'signatureType', 'signatureData',
+          'year', 'conflictDeclarations'
+        ])
+        && isString(request.resource.data.signerEmail)
+        && isString(request.resource.data.signerName)
+        && request.resource.data.signerName.size() > 1
+        && isString(request.resource.data.year)
+        && isString(request.resource.data.conflictDeclarations)
+        && request.resource.data.signedAt is timestamp
+        && request.resource.data.signatureType in ['typed', 'drawn']
+        && isString(request.resource.data.signatureData)
+        && request.resource.data.signatureData.size() < 800000;
+      allow update, delete: if false;
+    }
+
     // ── Photography Consent signatures (with optOut boolean) ────────────
     match /photography_consent_signatures/{userKey} {
       allow read: if authed();
