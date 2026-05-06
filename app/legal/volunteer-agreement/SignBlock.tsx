@@ -10,6 +10,7 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 import { db, firebaseAuthReady } from '@/lib/firebase';
+import { resolveDirectorWorkspaceEmail, resolveOfficerWorkspaceEmail } from '@/lib/c3h-access';
 import SignaturePad, { type SignatureResult } from '@/app/c3h/pavilion/SignaturePad';
 
 const DOC_ID = 'volunteer-agreement';
@@ -38,6 +39,17 @@ function safeUserKey(email: string) {
   return email.toLowerCase().replace(/[^a-z0-9]/g, '_');
 }
 
+// Canonical email for signing keys. Directors/officers map to their
+// workspace email so signing with workspace OR personal Gmail produces
+// the same Firestore record.
+function canonicalEmailFor(loginEmail: string): string {
+  return (
+    resolveDirectorWorkspaceEmail(loginEmail) ??
+    resolveOfficerWorkspaceEmail(loginEmail) ??
+    loginEmail.toLowerCase()
+  );
+}
+
 function todayIso() {
   const d = new Date();
   return d.toISOString().slice(0, 10);
@@ -63,12 +75,23 @@ export default function SignBlock() {
       setLoading(false);
       return;
     }
+    const loginEmail = session.user.email;
+    const canonicalKey = safeUserKey(canonicalEmailFor(loginEmail));
+    const loginKey = safeUserKey(loginEmail);
     setLoading(true);
     firebaseAuthReady()
-      .then(() => getDoc(doc(db, COLLECTION, safeUserKey(session.user!.email!))))
-      .then((snap) => {
+      .then(async () => {
+        const canonicalSnap = await getDoc(doc(db, COLLECTION, canonicalKey));
+        if (canonicalSnap.exists()) return canonicalSnap.data() as SignatureRecord;
+        if (canonicalKey !== loginKey) {
+          const fallback = await getDoc(doc(db, COLLECTION, loginKey));
+          if (fallback.exists()) return fallback.data() as SignatureRecord;
+        }
+        return null;
+      })
+      .then((data) => {
         if (cancelled) return;
-        if (snap.exists()) setExisting(snap.data() as SignatureRecord);
+        if (data) setExisting(data);
         setLoading(false);
       })
       .catch((err) => {
@@ -87,10 +110,14 @@ export default function SignBlock() {
     setBusy(true);
     setError(null);
     try {
+      const loginEmail = session.user.email;
+      const canonical = canonicalEmailFor(loginEmail);
+      const userKey = safeUserKey(canonical);
       const record = {
         docId: DOC_ID,
         docVersion: DOC_VERSION,
-        signerEmail: session.user.email.toLowerCase(),
+        signerEmail: canonical,                       // canonical (workspace for directors/officers)
+        signerLoginEmail: loginEmail.toLowerCase(),   // actual login email used
         signerName: name.trim(),
         signedAt: serverTimestamp(),
         signatureType: sig.type,
@@ -98,7 +125,6 @@ export default function SignBlock() {
         photoOptOut,
         userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
       };
-      const userKey = safeUserKey(session.user.email);
       await setDoc(doc(db, COLLECTION, userKey), record);
       const snap = await getDoc(doc(db, COLLECTION, userKey));
       if (snap.exists()) setExisting(snap.data() as SignatureRecord);

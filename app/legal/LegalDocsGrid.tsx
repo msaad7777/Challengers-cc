@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { doc, getDoc, Timestamp } from 'firebase/firestore';
 import { db, firebaseAuthReady } from '@/lib/firebase';
+import { resolveDirectorWorkspaceEmail, resolveOfficerWorkspaceEmail } from '@/lib/c3h-access';
 
 // ── Configuration ──────────────────────────────────────────────────────
 // `signingCollection` — when set, the card reads the current user's
@@ -113,6 +114,17 @@ function safeUserKey(email: string) {
   return email.toLowerCase().replace(/[^a-z0-9]/g, '_');
 }
 
+// Mirror canonicalization from DocumentSignBlock so reads match writes.
+// Directors/officers are normalized to workspace email so signing with
+// either workspace OR personal Gmail produces the same status.
+function canonicalEmailFor(loginEmail: string): string {
+  return (
+    resolveDirectorWorkspaceEmail(loginEmail) ??
+    resolveOfficerWorkspaceEmail(loginEmail) ??
+    loginEmail.toLowerCase()
+  );
+}
+
 function formatSignedDate(t: Timestamp | null | undefined): string {
   if (!t) return 'pending sync';
   return t.toDate().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
@@ -129,7 +141,9 @@ export default function LegalDocsGrid() {
       setLoading(false);
       return;
     }
-    const userKey = safeUserKey(session.user.email);
+    const loginEmail = session.user.email;
+    const canonicalKey = safeUserKey(canonicalEmailFor(loginEmail));
+    const loginKey = safeUserKey(loginEmail);
     const signableDocs = DOCS.filter((d) => d.signingCollection);
     if (signableDocs.length === 0) {
       setLoading(false);
@@ -142,8 +156,17 @@ export default function LegalDocsGrid() {
         await Promise.all(
           signableDocs.map(async (d) => {
             try {
-              const snap = await getDoc(doc(db, d.signingCollection!, userKey));
-              if (snap.exists()) results[d.slug] = snap.data() as SignatureRecord;
+              // Try canonical key first (workspace email for directors/officers)
+              const canonicalSnap = await getDoc(doc(db, d.signingCollection!, canonicalKey));
+              if (canonicalSnap.exists()) {
+                results[d.slug] = canonicalSnap.data() as SignatureRecord;
+                return;
+              }
+              // Fall back to login-email key — preserves old records
+              if (canonicalKey !== loginKey) {
+                const fallback = await getDoc(doc(db, d.signingCollection!, loginKey));
+                if (fallback.exists()) results[d.slug] = fallback.data() as SignatureRecord;
+              }
             } catch {
               /* permission errors are non-fatal — leave doc as unsigned */
             }

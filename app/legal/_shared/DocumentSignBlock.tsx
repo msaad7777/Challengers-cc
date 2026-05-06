@@ -19,6 +19,7 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 import { db, firebaseAuthReady } from '@/lib/firebase';
+import { resolveDirectorWorkspaceEmail, resolveOfficerWorkspaceEmail } from '@/lib/c3h-access';
 import SignaturePad, { type SignatureResult } from '@/app/c3h/pavilion/SignaturePad';
 
 export type SignatureRecord = {
@@ -57,6 +58,18 @@ function safeUserKey(email: string) {
   return email.toLowerCase().replace(/[^a-z0-9]/g, '_');
 }
 
+// Canonical email for signing keys. Directors/officers map to their
+// workspace email so signing with either workspace OR personal Gmail
+// produces the same Firestore record. Everyone else uses their login
+// email as-is.
+function canonicalEmailFor(loginEmail: string): string {
+  return (
+    resolveDirectorWorkspaceEmail(loginEmail) ??
+    resolveOfficerWorkspaceEmail(loginEmail) ??
+    loginEmail.toLowerCase()
+  );
+}
+
 function todayIso() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -91,12 +104,26 @@ export default function DocumentSignBlock({
       setLoading(false);
       return;
     }
+    const loginEmail = session.user.email;
+    const canonicalKey = safeUserKey(canonicalEmailFor(loginEmail));
+    const loginKey = safeUserKey(loginEmail);
     setLoading(true);
     firebaseAuthReady()
-      .then(() => getDoc(doc(db, collection, safeUserKey(session.user!.email!))))
-      .then((snap) => {
+      .then(async () => {
+        // Try canonical key first (workspace email for directors/officers).
+        const canonicalSnap = await getDoc(doc(db, collection, canonicalKey));
+        if (canonicalSnap.exists()) return canonicalSnap.data() as SignatureRecord;
+        // Fall back to login-email key — preserves visibility of records
+        // that were saved before the canonical-key normalization landed.
+        if (canonicalKey !== loginKey) {
+          const fallback = await getDoc(doc(db, collection, loginKey));
+          if (fallback.exists()) return fallback.data() as SignatureRecord;
+        }
+        return null;
+      })
+      .then((data) => {
         if (cancelled) return;
-        if (snap.exists()) setExisting(snap.data() as SignatureRecord);
+        if (data) setExisting(data);
         setLoading(false);
       })
       .catch(() => {
@@ -119,12 +146,15 @@ export default function DocumentSignBlock({
     setBusy(true);
     setError(null);
     try {
-      const userKey = safeUserKey(session.user.email);
+      const loginEmail = session.user.email;
+      const canonical = canonicalEmailFor(loginEmail);
+      const userKey = safeUserKey(canonical);
       const record = {
         ...extraData,
         docId,
         docVersion,
-        signerEmail: session.user.email.toLowerCase(),
+        signerEmail: canonical,           // canonical (workspace for directors/officers)
+        signerLoginEmail: loginEmail.toLowerCase(), // actual login email used
         signerName: name.trim(),
         signedAt: serverTimestamp(),
         signatureType: sig.type,
