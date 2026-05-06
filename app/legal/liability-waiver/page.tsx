@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SignBlock from './SignBlock';
 
 export const metadata = {
   title: 'Liability Waiver — Challengers Cricket Club',
@@ -126,52 +127,7 @@ export default function LiabilityWaiverPage() {
             <section>
               <h2 className="text-lg font-bold text-white mb-3">Signature</h2>
               <p className="text-sm mb-4"><strong className="text-white">I have read this Waiver. I understand it. I agree to its terms.</strong></p>
-
-              <div className="grid sm:grid-cols-2 gap-4 mb-5">
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Player Full Name</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Date of Birth (YYYY-MM-DD)</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Signature</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Date Signed</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="text-xs text-gray-400 block mb-1">Emergency Contact Name &amp; Phone</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-              </div>
-            </section>
-
-            <section>
-              <h2 className="text-lg font-bold text-white mb-3">For Players Under 18</h2>
-              <p className="text-sm mb-4">A parent or legal guardian must co-sign this Waiver. By signing, the parent/guardian confirms they have read and understood the Waiver and consent to the minor&apos;s participation.</p>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Parent/Guardian Full Name</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Relationship to Player</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Parent/Guardian Signature</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Date Signed</label>
-                  <div className="border-b border-white/30 h-8 print:border-black"></div>
-                </div>
-              </div>
+              <SignBlock />
             </section>
 
             <hr className="border-white/10" />

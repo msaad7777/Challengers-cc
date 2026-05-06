@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SignBlock from './SignBlock';
 
 export const metadata = {
   title: 'Photography & Media Consent — Challengers Cricket Club',
@@ -160,6 +161,15 @@ export default function PhotographyConsentPage() {
                 <a href="mailto:contact@challengerscc.ca" className="text-primary-400 hover:text-primary-300 underline mx-1">contact@challengerscc.ca</a>.
                 We aim to respond to takedown requests within 14 days for material under our control. Disputes that cannot be resolved by direct correspondence may be escalated under the Club&apos;s Complaint &amp; Dispute Resolution Procedure (in development).
               </p>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-2">Consent &amp; signature</h2>
+              <p className="text-sm mb-4">
+                By signing below, I confirm that I have read this Photography &amp; Media Consent and that I have made my
+                consent / opt-out choice. The Club will respect my choice in all future communications and materials.
+              </p>
+              <SignBlock />
             </section>
 
           </div>

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SignBlock from './SignBlock';
 
 export const metadata = {
   title: 'Code of Conduct — Challengers Cricket Club',
@@ -121,7 +122,8 @@ export default function CodeOfConductPage() {
 
             <section>
               <h2 className="text-lg font-bold text-white mb-2">Acceptance</h2>
-              <p className="text-sm">By signing the <Link href="/legal/volunteer-agreement" className="text-primary-400 underline hover:text-primary-300">Volunteer Agreement</Link> or the <Link href="/legal/liability-waiver" className="text-primary-400 underline hover:text-primary-300">Liability Waiver</Link>, members confirm they have read, understood, and accept this Code of Conduct.</p>
+              <p className="text-sm mb-4">By signing below, I confirm that I have read, understood, and accept this Code of Conduct, and that I will follow it in all my interactions on behalf of, or in connection with, Challengers Cricket Club.</p>
+              <SignBlock />
             </section>
 
             <hr className="border-white/10" />

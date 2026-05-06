@@ -159,6 +159,64 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // ── Liability Waiver signatures (per-player, with DOB + emergency contact) ──
+    // Append-only. May include guardianName + guardianRelationship for U18 players.
+    match /liability_waiver_signatures/{userKey} {
+      allow read: if authed();
+      allow create: if authed()
+        && request.resource.data.keys().hasAll([
+          'docId', 'docVersion', 'signerEmail', 'signerName',
+          'signedAt', 'signatureType', 'signatureData',
+          'dateOfBirth', 'emergencyContact'
+        ])
+        && isString(request.resource.data.signerEmail)
+        && isString(request.resource.data.signerName)
+        && request.resource.data.signerName.size() > 1
+        && isString(request.resource.data.dateOfBirth)
+        && isString(request.resource.data.emergencyContact)
+        && request.resource.data.signedAt is timestamp
+        && request.resource.data.signatureType in ['typed', 'drawn']
+        && isString(request.resource.data.signatureData)
+        && request.resource.data.signatureData.size() < 800000;
+      allow update, delete: if false;
+    }
+
+    // ── Code of Conduct signatures ──────────────────────────────────────
+    match /code_of_conduct_signatures/{userKey} {
+      allow read: if authed();
+      allow create: if authed()
+        && request.resource.data.keys().hasAll([
+          'docId', 'docVersion', 'signerEmail', 'signerName',
+          'signedAt', 'signatureType', 'signatureData'
+        ])
+        && isString(request.resource.data.signerEmail)
+        && isString(request.resource.data.signerName)
+        && request.resource.data.signerName.size() > 1
+        && request.resource.data.signedAt is timestamp
+        && request.resource.data.signatureType in ['typed', 'drawn']
+        && isString(request.resource.data.signatureData)
+        && request.resource.data.signatureData.size() < 800000;
+      allow update, delete: if false;
+    }
+
+    // ── Photography Consent signatures (with optOut boolean) ────────────
+    match /photography_consent_signatures/{userKey} {
+      allow read: if authed();
+      allow create: if authed()
+        && request.resource.data.keys().hasAll([
+          'docId', 'docVersion', 'signerEmail', 'signerName',
+          'signedAt', 'signatureType', 'signatureData'
+        ])
+        && isString(request.resource.data.signerEmail)
+        && isString(request.resource.data.signerName)
+        && request.resource.data.signerName.size() > 1
+        && request.resource.data.signedAt is timestamp
+        && request.resource.data.signatureType in ['typed', 'drawn']
+        && isString(request.resource.data.signatureData)
+        && request.resource.data.signatureData.size() < 800000;
+      allow update, delete: if false;
+    }
+
     // ── Officer Appointment & Volunteer Status Confirmation ────────────────
     // Per-officer signed confirmation that their role is volunteer + unpaid.
     // Append-only; records the officer's name, role, signature, timestamp.

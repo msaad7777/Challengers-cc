@@ -40,6 +40,7 @@ const DOCS: DocConfig[] = [
     audience: 'All players',
     icon: '🏏',
     priority: 'Required at registration',
+    signingCollection: 'liability_waiver_signatures',
   },
   {
     slug: 'privacy',
@@ -56,6 +57,7 @@ const DOCS: DocConfig[] = [
     audience: 'All members',
     icon: '⚖️',
     priority: 'All members',
+    signingCollection: 'code_of_conduct_signatures',
   },
   {
     slug: 'financial-policy',
@@ -96,6 +98,7 @@ const DOCS: DocConfig[] = [
     audience: 'All members',
     icon: '📸',
     priority: 'All members',
+    signingCollection: 'photography_consent_signatures',
   },
 ];
 
