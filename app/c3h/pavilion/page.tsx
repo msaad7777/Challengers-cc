@@ -25,6 +25,7 @@ import Navbar from '@/components/Navbar';
 import { GOVERNANCE_DOCS, LICENSOR, type GovernanceDoc } from './governanceDocs';
 import SignaturePad, { type SignatureResult } from './SignaturePad';
 import ServiceAgreement from './ServiceAgreement';
+import Resolutions from './Resolutions';
 
 type SignatureRecord = {
   docId: string;
@@ -551,6 +552,17 @@ export default function PavilionPage() {
                 acknowledged through the portal.
               </p>
             </div>
+          </div>
+
+          {/* Board Resolutions + voting */}
+          <div className="mt-10 glass rounded-2xl p-6 border border-white/10">
+            {userWorkspaceEmail && userRosterEntry && (
+              <Resolutions
+                userEmail={userEmail}
+                userWorkspaceEmail={userWorkspaceEmail}
+                userName={userRosterEntry.name}
+              />
+            )}
           </div>
 
           <div className="mt-10 rounded-xl bg-amber-500/5 border border-amber-500/20 p-4 text-sm text-amber-200">

@@ -269,6 +269,38 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // ── Board Resolutions + voting ────────────────────────────────────
+    // Generic resolution voting system used by directors for officer
+    // performance reviews (every 3 months / pre + post season),
+    // financial decisions, governance amendments, etc. Each resolution
+    // doc has a votes map keyed by canonical workspace email so each
+    // director can have at most one vote per resolution. Append-only
+    // for the resolution itself (no delete); votes update the doc until
+    // the resolution status is closed.
+    match /board_resolutions/{resId} {
+      allow read: if authed();
+      allow create: if authed()
+        && request.resource.data.keys().hasAll([
+          'title', 'description', 'category',
+          'proposedByEmail', 'proposedByName',
+          'proposedAt', 'deadline', 'status', 'votes'
+        ])
+        && isString(request.resource.data.title)
+        && request.resource.data.title.size() >= 5
+        && isString(request.resource.data.description)
+        && request.resource.data.description.size() >= 10
+        && isString(request.resource.data.category)
+        && isString(request.resource.data.proposedByEmail)
+        && isString(request.resource.data.proposedByName)
+        && request.resource.data.proposedAt is timestamp
+        && request.resource.data.deadline is timestamp
+        && request.resource.data.status == 'open';
+      // Updates allowed for vote casting + closing the resolution.
+      // UI controls who can do what (proposer can close; any director can vote).
+      allow update: if authed();
+      allow delete: if false;
+    }
+
     // ── Pavilion onboarding marker (lightweight first-login record) ───────
     // Written when a director or officer first hits /c3h/pavilion.
     // Lets the onboarding tracker show "✓ Onboarded" status for officers
