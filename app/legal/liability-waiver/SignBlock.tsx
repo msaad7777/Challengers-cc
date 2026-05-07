@@ -1,24 +1,23 @@
 "use client";
 
-import DocumentSignBlock, { type SignatureRecord } from '../_shared/DocumentSignBlock';
+import DocumentSignBlock from '../_shared/DocumentSignBlock';
 
 const DOC_ID = 'liability-waiver';
-const DOC_VERSION = '1.0';
+// v1.1 (2026-05-07) — PII reduction. Removed Date of Birth field
+// (unnecessarily sensitive — Bylaws Article 3.1 currently restricts
+// membership to adults). Replaced with a simple "I am 18+" checkbox.
+// Emergency contact remains — it's genuinely useful if a player is
+// injured during play.
+//
+// Existing v1.0 records (with DOB) remain valid as their original
+// record. They're not asked to re-sign; the historical DOB stays
+// in their record but is no longer collected from new signers.
+//
+// Youth programs (per Bylaws Art. 3.1 "minors with parental consent
+// under specific programs") will use a separate signing flow with
+// dedicated parent/guardian fields when the Club introduces them.
+const DOC_VERSION = '1.1';
 const COLLECTION = 'liability_waiver_signatures';
-
-// 18-or-over check from a YYYY-MM-DD DOB string. Returns true if
-// the person is at least 18 years old as of today, false otherwise.
-// Returns null if the input isn't a valid date.
-function isAdult(dob: string | undefined): boolean | null {
-  if (!dob || !/^\d{4}-\d{2}-\d{2}$/.test(dob)) return null;
-  const d = new Date(dob);
-  if (isNaN(d.getTime())) return null;
-  const now = new Date();
-  let age = now.getFullYear() - d.getFullYear();
-  const m = now.getMonth() - d.getMonth();
-  if (m < 0 || (m === 0 && now.getDate() < d.getDate())) age--;
-  return age >= 18;
-}
 
 export default function SignBlock() {
   return (
@@ -27,115 +26,72 @@ export default function SignBlock() {
       docVersion={DOC_VERSION}
       collection={COLLECTION}
       validateExtra={(extra) => {
-        const dob = extra.dateOfBirth as string | undefined;
+        const isAdult = Boolean(extra.isAdult);
         const emergency = extra.emergencyContact as string | undefined;
-        if (!dob || !/^\d{4}-\d{2}-\d{2}$/.test(dob)) {
-          return 'Please enter your date of birth as YYYY-MM-DD.';
+        if (!isAdult) {
+          return 'Please confirm you are 18 years of age or older. The Club is currently adult-only.';
         }
         if (!emergency || emergency.trim().length < 5) {
           return 'Please enter an emergency contact name and phone number.';
         }
-        const adult = isAdult(dob);
-        if (adult === false) {
-          const guardianName = (extra.guardianName as string | undefined) ?? '';
-          const guardianRelationship = (extra.guardianRelationship as string | undefined) ?? '';
-          if (guardianName.trim().length < 2) {
-            return 'Player is under 18. Please enter parent/guardian full name.';
-          }
-          if (guardianRelationship.trim().length < 2) {
-            return 'Please describe the parent/guardian relationship to the player.';
-          }
-        }
         return null;
       }}
-      renderExtraFields={({ extraData, setExtra }) => {
-        const dob = extraData.dateOfBirth as string | undefined;
-        const adult = isAdult(dob);
-        return (
-          <div className="space-y-4">
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs text-gray-400 block mb-1">Date of Birth (YYYY-MM-DD)</label>
-                <input
-                  type="date"
-                  value={dob ?? ''}
-                  onChange={(e) => setExtra('dateOfBirth', e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-gray-400 block mb-1">Emergency Contact Name &amp; Phone</label>
-                <input
-                  type="text"
-                  value={(extraData.emergencyContact as string | undefined) ?? ''}
-                  onChange={(e) => setExtra('emergencyContact', e.target.value)}
-                  placeholder="e.g. Jane Doe — +1 519 555 0123"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
-                />
-              </div>
-            </div>
-
-            {adult === false && (
-              <div className="rounded-lg bg-amber-500/5 border border-amber-500/30 p-3">
-                <p className="text-xs uppercase tracking-wider text-amber-400 font-bold mb-2">Player is under 18 — parent/guardian required</p>
-                <p className="text-xs text-amber-200 mb-3">
-                  By providing these details, the parent/guardian confirms they have read and understood the
-                  Waiver and consent to the minor&apos;s participation. The signature below should be the parent/guardian&apos;s
-                  signature.
-                </p>
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs text-gray-400 block mb-1">Parent/Guardian Full Name</label>
-                    <input
-                      type="text"
-                      value={(extraData.guardianName as string | undefined) ?? ''}
-                      onChange={(e) => setExtra('guardianName', e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-400 block mb-1">Relationship to Player</label>
-                    <input
-                      type="text"
-                      value={(extraData.guardianRelationship as string | undefined) ?? ''}
-                      onChange={(e) => setExtra('guardianRelationship', e.target.value)}
-                      placeholder="Mother, Father, Legal Guardian"
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
+      renderExtraFields={({ extraData, setExtra }) => (
+        <div className="space-y-4">
+          <div className="rounded-lg p-3 bg-white/5 border border-white/10">
+            <label className="flex items-start gap-2 text-sm cursor-pointer">
+              <input
+                type="checkbox"
+                checked={Boolean(extraData.isAdult)}
+                onChange={(e) => setExtra('isAdult', e.target.checked)}
+                className="mt-0.5"
+              />
+              <span className="text-gray-200">
+                <strong className="text-white">I confirm I am 18 years of age or older.</strong>
+                {' '}<span className="text-gray-500">CCC is currently an adult-only club; youth programs will use a separate parent/guardian-co-signed flow when introduced.</span>
+              </span>
+            </label>
           </div>
-        );
-      }}
+
+          <div>
+            <label className="text-xs text-gray-400 block mb-1">Emergency Contact Name &amp; Phone</label>
+            <input
+              type="text"
+              value={(extraData.emergencyContact as string | undefined) ?? ''}
+              onChange={(e) => setExtra('emergencyContact', e.target.value)}
+              placeholder="e.g. Jane Doe — +1 519 555 0123"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
+            />
+            <p className="text-[10px] text-gray-500 mt-1 italic">
+              Used only by Club captains / board members to contact your emergency contact in case of injury during a Club activity. Not shared with sponsors, not used for marketing.
+            </p>
+          </div>
+        </div>
+      )}
       renderSignedExtra={(record) => {
-        const dob = record.dateOfBirth as string | undefined;
         const emergency = record.emergencyContact as string | undefined;
-        const guardianName = record.guardianName as string | undefined;
-        const guardianRelationship = record.guardianRelationship as string | undefined;
+        const isAdult = record.isAdult as boolean | undefined;
+        // Legacy: v1.0 records captured DOB. Display if present so
+        // existing signers can still see their own historical record.
+        const dob = record.dateOfBirth as string | undefined;
         return (
           <div className="grid sm:grid-cols-2 gap-x-4 gap-y-2">
-            <div>
-              <span className="text-gray-400 print:text-gray-700">Date of Birth: </span>
-              <span className="text-white print:text-black">{dob ?? '—'}</span>
-            </div>
+            {isAdult !== undefined && (
+              <div>
+                <span className="text-gray-400 print:text-gray-700">Age confirmation: </span>
+                <span className="text-white print:text-black">{isAdult ? '18+ confirmed' : 'Not confirmed'}</span>
+              </div>
+            )}
+            {dob && (
+              <div>
+                <span className="text-gray-400 print:text-gray-700">Date of Birth (legacy v1.0): </span>
+                <span className="text-white print:text-black">{dob}</span>
+              </div>
+            )}
             <div>
               <span className="text-gray-400 print:text-gray-700">Emergency Contact: </span>
               <span className="text-white print:text-black">{emergency ?? '—'}</span>
             </div>
-            {guardianName && (
-              <>
-                <div>
-                  <span className="text-gray-400 print:text-gray-700">Parent/Guardian: </span>
-                  <span className="text-white print:text-black">{guardianName}</span>
-                </div>
-                <div>
-                  <span className="text-gray-400 print:text-gray-700">Relationship: </span>
-                  <span className="text-white print:text-black">{guardianRelationship ?? '—'}</span>
-                </div>
-              </>
-            )}
           </div>
         );
       }}

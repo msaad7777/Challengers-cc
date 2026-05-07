@@ -159,20 +159,23 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
-    // ── Liability Waiver signatures (per-player, with DOB + emergency contact) ──
-    // Append-only. May include guardianName + guardianRelationship for U18 players.
+    // ── Liability Waiver signatures (per-player) ──────────────────────
+    // v1.1 (2026-05-07) — DOB removed for PII minimization. Now requires
+    // isAdult boolean (per Bylaws Art. 3.1 adult-only club) + emergency
+    // contact. Legacy v1.0 records (with dateOfBirth) remain valid in
+    // storage; they were created under the previous rules.
     match /liability_waiver_signatures/{userKey} {
       allow read: if authed();
       allow create: if authed()
         && request.resource.data.keys().hasAll([
           'docId', 'docVersion', 'signerEmail', 'signerName',
           'signedAt', 'signatureType', 'signatureData',
-          'dateOfBirth', 'emergencyContact'
+          'isAdult', 'emergencyContact'
         ])
         && isString(request.resource.data.signerEmail)
         && isString(request.resource.data.signerName)
         && request.resource.data.signerName.size() > 1
-        && isString(request.resource.data.dateOfBirth)
+        && isBool(request.resource.data.isAdult)
         && isString(request.resource.data.emergencyContact)
         && request.resource.data.signedAt is timestamp
         && request.resource.data.signatureType in ['typed', 'drawn']
