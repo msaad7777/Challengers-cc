@@ -5,7 +5,12 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { doc, getDoc, Timestamp } from 'firebase/firestore';
 import { db, firebaseAuthReady } from '@/lib/firebase';
-import { resolveDirectorWorkspaceEmail, resolveOfficerWorkspaceEmail } from '@/lib/c3h-access';
+import {
+  isC3HDirector,
+  isC3HOfficer,
+  resolveDirectorWorkspaceEmail,
+  resolveOfficerWorkspaceEmail,
+} from '@/lib/c3h-access';
 
 // ── Configuration ──────────────────────────────────────────────────────
 // `signingCollection` — when set, the card reads the current user's
@@ -13,6 +18,15 @@ import { resolveDirectorWorkspaceEmail, resolveOfficerWorkspaceEmail } from '@/l
 // and renders a "✓ Signed on [date]" badge. Adding e-sign to a future
 // document is a one-line change here once the SignBlock pattern is
 // reused on that document's page.
+
+// minRole — who is allowed / encouraged to see this doc on the /legal index:
+//   'public'         — visible to everyone (logged in or not)
+//   'all-members'    — visible to any authenticated member
+//   'officer-or-up'  — visible to officers + directors only
+//   'director-only'  — visible to directors only
+// Filtering is at the index card level; the actual /legal/<slug> pages
+// remain individually accessible for legal-compliance / regulator review.
+type MinRole = 'public' | 'all-members' | 'officer-or-up' | 'director-only';
 
 type DocConfig = {
   slug: string;
@@ -22,27 +36,65 @@ type DocConfig = {
   icon: string;
   priority: string;
   signingCollection?: string;
+  minRole: MinRole;
 };
 
 const DOCS: DocConfig[] = [
+  // ── Required for every member (player, officer, director) ──
   {
     slug: 'volunteer-agreement',
     title: 'Volunteer Agreement',
-    summary: 'Every player, board member, and contributor signs this. Confirms volunteer status, no compensation, work is donated.',
+    summary: 'Every player, officer, and director signs this. Confirms volunteer status, no compensation, work is donated.',
     audience: 'All members',
     icon: '🤝',
     priority: 'Required',
     signingCollection: 'volunteer_agreement_signatures',
+    minRole: 'all-members',
   },
   {
     slug: 'liability-waiver',
     title: 'Liability Waiver',
-    summary: 'Acknowledgement of inherent risks of cricket, concussion awareness, and release of claims.',
+    summary: 'Acknowledgement of inherent risks of cricket, concussion awareness, release of claims. Required before any match.',
     audience: 'All players',
     icon: '🏏',
     priority: 'Required at registration',
     signingCollection: 'liability_waiver_signatures',
+    minRole: 'all-members',
   },
+  {
+    slug: 'code-of-conduct',
+    title: 'Code of Conduct',
+    summary: 'Standards of behaviour for players, coaches, officers, and volunteers. Inclusion-first.',
+    audience: 'All members',
+    icon: '⚖️',
+    priority: 'All members',
+    signingCollection: 'code_of_conduct_signatures',
+    minRole: 'all-members',
+  },
+  {
+    slug: 'photography-consent',
+    title: 'Photography & Media Consent',
+    summary: 'How we capture and use photos, videos, livestreams, and recordings of members. Opt-out at any time.',
+    audience: 'All members',
+    icon: '📸',
+    priority: 'All members',
+    signingCollection: 'photography_consent_signatures',
+    minRole: 'all-members',
+  },
+
+  // ── Officers + directors only (annual COI declaration) ──
+  {
+    slug: 'conflict-of-interest',
+    title: 'Conflict of Interest Policy',
+    summary: 'Annual declarations and recusal procedures. Required for directors, officers, and committee members.',
+    audience: 'Directors, officers, captains',
+    icon: '🧭',
+    priority: 'Annual — directors / officers',
+    signingCollection: 'coi_declarations',
+    minRole: 'officer-or-up',
+  },
+
+  // ── Public legal documents — visible to everyone, no signing required ──
   {
     slug: 'privacy',
     title: 'Privacy Policy',
@@ -50,32 +102,7 @@ const DOCS: DocConfig[] = [
     audience: 'Public',
     icon: '🔒',
     priority: 'Public',
-  },
-  {
-    slug: 'code-of-conduct',
-    title: 'Code of Conduct',
-    summary: 'Standards of behaviour for players, coaches, board members, and volunteers. Inclusion-first.',
-    audience: 'All members',
-    icon: '⚖️',
-    priority: 'All members',
-    signingCollection: 'code_of_conduct_signatures',
-  },
-  {
-    slug: 'financial-policy',
-    title: 'Financial Policy',
-    summary: 'How money flows through the club: signing authority, deposits, reimbursements, annual reporting.',
-    audience: 'Board + members',
-    icon: '💰',
-    priority: 'Governance',
-  },
-  {
-    slug: 'conflict-of-interest',
-    title: 'Conflict of Interest Policy',
-    summary: 'Director declarations, recusal procedures, annual disclosures.',
-    audience: 'Directors, officers, captains',
-    icon: '🧭',
-    priority: 'Annual — directors / officers',
-    signingCollection: 'coi_declarations',
+    minRole: 'public',
   },
   {
     slug: 'bylaws',
@@ -84,6 +111,16 @@ const DOCS: DocConfig[] = [
     audience: 'All members',
     icon: '📜',
     priority: 'Governance',
+    minRole: 'public',
+  },
+  {
+    slug: 'financial-policy',
+    title: 'Financial Policy',
+    summary: 'How money flows through the club: signing authority, deposits, reimbursements, annual reporting.',
+    audience: 'Board + members',
+    icon: '💰',
+    priority: 'Governance',
+    minRole: 'public',
   },
   {
     slug: 'ip-ownership',
@@ -91,18 +128,28 @@ const DOCS: DocConfig[] = [
     summary: 'The C3H portal and challengerscc.ca website were authored by Mohammed Saad personally and are his personal property under Copyright Act §13(1). The Club operates under a revocable licence at no charge while he serves as a director. Not a donation.',
     audience: 'Public + governance',
     icon: '⚖️',
-    priority: 'IP / governance',
-  },
-  {
-    slug: 'photography-consent',
-    title: 'Photography & Media Consent',
-    summary: 'How we capture and use photos, videos, livestreams, and recordings of members. Special protection for minors. Opt-out at any time.',
-    audience: 'All members',
-    icon: '📸',
-    priority: 'All members',
-    signingCollection: 'photography_consent_signatures',
+    priority: 'IP / governance · signed in Pavilion',
+    minRole: 'public',
   },
 ];
+
+// Filter docs based on the user's role. Public docs visible to everyone;
+// member-required docs to any logged-in user; COI to officers + directors.
+function visibleDocs(
+  isAuthed: boolean,
+  isOfficer: boolean,
+  isDirector: boolean,
+): DocConfig[] {
+  return DOCS.filter((d) => {
+    switch (d.minRole) {
+      case 'public': return true;
+      case 'all-members': return isAuthed;
+      case 'officer-or-up': return isOfficer || isDirector;
+      case 'director-only': return isDirector;
+      default: return false;
+    }
+  });
+}
 
 type SignatureRecord = {
   signedAt?: Timestamp | null;
@@ -183,8 +230,15 @@ export default function LegalDocsGrid() {
     return () => { cancelled = true; };
   }, [session?.user?.email, status]);
 
-  // Summary stats — count signed vs total signable
-  const signableDocs = DOCS.filter((d) => d.signingCollection);
+  // Filter docs by user's role so non-officer players don't see COI etc.
+  const isAuthed = status === 'authenticated';
+  const userIsOfficer = isC3HOfficer(session?.user?.email);
+  const userIsDirector = isC3HDirector(session?.user?.email);
+  const docsForUser = visibleDocs(isAuthed, userIsOfficer, userIsDirector);
+
+  // Summary stats — count signed vs total signable, scoped to docs visible
+  // to this user (so a player isn't shown "X of 5" when COI doesn't apply).
+  const signableDocs = docsForUser.filter((d) => d.signingCollection);
   const signedCount = signableDocs.filter((d) => signatures[d.slug]).length;
   const totalSignable = signableDocs.length;
 
@@ -230,7 +284,7 @@ export default function LegalDocsGrid() {
 
       <h2 className="text-2xl font-bold text-white mb-5">Documents</h2>
       <div className="grid sm:grid-cols-2 gap-4">
-        {DOCS.map((d) => {
+        {docsForUser.map((d) => {
           const sig = signatures[d.slug];
           const isSigned = Boolean(sig);
 
