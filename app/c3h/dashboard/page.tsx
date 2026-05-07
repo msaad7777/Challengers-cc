@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import PublicLiveScore from '@/components/PublicLiveScore';
-import { isC3HBoard, isC3HDirector, isC3HOfficer } from '@/lib/c3h-access';
+import { isC3HAdmin, isC3HBoard, isC3HDirector, isC3HOfficer } from '@/lib/c3h-access';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -30,6 +30,7 @@ export default function DashboardPage() {
   const isBoard = isC3HBoard(session.user?.email);
   const isDirector = isC3HDirector(session.user?.email);
   const isOfficer = isC3HOfficer(session.user?.email);
+  const isAdmin = isC3HAdmin(session.user?.email);
   const userName = session.user?.name || 'Player';
   const userImage = session.user?.image || '';
 
@@ -191,6 +192,22 @@ export default function DashboardPage() {
                 Open
               </span>
             </a>
+
+            {/* Signatures Tracker — Admin Only */}
+            {isAdmin && (
+              <a href="/c3h/admin/signatures" className="glass rounded-2xl p-6 border-2 border-primary-500/20 hover:border-primary-500/50 transition-all duration-300 block">
+                <div className="text-3xl mb-3">📋</div>
+                <h2 className="text-xl font-bold text-white mb-1">Signatures Tracker</h2>
+                <p className="text-primary-400 text-xs font-medium mb-3">Admin · All e-signatures</p>
+                <p className="text-gray-400 text-sm mb-4">
+                  Live view of every signature across the 7 governance collections. Click any signer to view
+                  their signed copy and print/save as PDF for the corporate record.
+                </p>
+                <span className="text-xs px-3 py-1 rounded-full bg-primary-500/20 text-primary-400 border border-primary-500/30">
+                  Open
+                </span>
+              </a>
+            )}
 
             {/* Officer Hub — Officers Only (Madhu, Qaiser, Shahriar) */}
             {isOfficer && (
