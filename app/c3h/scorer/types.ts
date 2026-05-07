@@ -133,6 +133,7 @@ export const C3H_PLAYERS: Player[] = [
   { id: '32', name: 'Siva Sriram', isC3H: true },
   { id: '33', name: 'Rajath Shetty', isC3H: true },
   { id: '34', name: 'Murshad Azad', isC3H: true },
+  { id: '35', name: 'Thoufeeq Muhammed', isC3H: true },
 ];
 
 export const LCL_TEAMS = [
