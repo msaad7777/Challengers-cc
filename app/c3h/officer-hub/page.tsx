@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
+  collection,
   doc,
   getDoc,
+  getDocs,
   serverTimestamp,
   setDoc,
   Timestamp,
@@ -13,6 +15,7 @@ import {
 import { db, firebaseAuthReady } from '@/lib/firebase';
 import {
   C3H_OFFICER_ROSTER,
+  isC3HAdmin,
   isC3HOfficer,
   resolveOfficerWorkspaceEmail,
 } from '@/lib/c3h-access';
@@ -90,8 +93,11 @@ export default function OfficerHubPage() {
   }
   if (!session) return null;
 
-  // Hard gate: only officers
-  if (!isC3HOfficer(userEmail)) {
+  const userIsOfficer = isC3HOfficer(userEmail);
+  const userIsAdmin = isC3HAdmin(userEmail);
+
+  // Gate: must be an officer OR an admin (admins get view-only)
+  if (!userIsOfficer && !userIsAdmin) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
         <Navbar />
@@ -101,8 +107,8 @@ export default function OfficerHubPage() {
             <h1 className="text-2xl font-bold text-white mb-2">The Officer Hub is for officers</h1>
             <p className="text-sm text-gray-400 mb-4">
               You&apos;re signed in as <code className="text-primary-400">{userEmail}</code>, but this page is only
-              accessible to current officers of Challengers Cricket Club. If you should have access, please
-              contact <a href="mailto:contact@challengerscc.ca" className="text-primary-400 underline">contact@challengerscc.ca</a>.
+              accessible to current officers of Challengers Cricket Club (or admin oversight). If you should have
+              access, please contact <a href="mailto:contact@challengerscc.ca" className="text-primary-400 underline">contact@challengerscc.ca</a>.
             </p>
             <button
               onClick={() => router.push('/c3h/dashboard')}
@@ -114,6 +120,11 @@ export default function OfficerHubPage() {
         </div>
       </div>
     );
+  }
+
+  // Admin (not also an officer) gets a view-only roster of all officers.
+  if (userIsAdmin && !userIsOfficer) {
+    return <AdminOfficerHubView userEmail={userEmail} router={router} />;
   }
 
   if (!officer) return null;
@@ -287,6 +298,200 @@ export default function OfficerHubPage() {
             copy of the signature image (drawn) or typed text. Under Ontario&apos;s
             <em> Electronic Commerce Act, 2000</em> and Canada&apos;s <em>UECA</em>, electronic signatures are
             generally enforceable for documents of this kind.
+          </div>
+
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// ── Admin view-only mode ────────────────────────────────────────────
+// Shown to admins (Saad) who are not themselves officers. Lists every
+// officer's appointment + signing status. No signing UI — admins
+// cannot sign on behalf of officers.
+
+type AdminProps = {
+  userEmail: string;
+  router: ReturnType<typeof useRouter>;
+};
+
+function AdminOfficerHubView({ userEmail, router }: AdminProps) {
+  const [signatures, setSignatures] = useState<Record<string, SignatureRecord>>({});
+  const [loading, setLoading] = useState(true);
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    firebaseAuthReady()
+      .then(() => getDocs(collection(db, COLLECTION)))
+      .then((snap) => {
+        if (cancelled) return;
+        const result: Record<string, SignatureRecord> = {};
+        snap.forEach((d) => {
+          const data = d.data() as SignatureRecord;
+          if (data.signerWorkspaceEmail) {
+            result[data.signerWorkspaceEmail.toLowerCase()] = data;
+          }
+        });
+        setSignatures(result);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
+
+  const reaffirmedDate = '6 May 2026';
+  const effectiveFrom = '12 November 2025';
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
+      <Navbar />
+      <section className="section-padding pt-28 md:pt-32">
+        <div className="max-w-4xl mx-auto">
+
+          <div className="mb-6 rounded-xl bg-amber-500/5 border-2 border-amber-500/30 p-4">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xl">👁️</span>
+              <h1 className="text-lg font-bold text-amber-300">Admin view-only — Officer Hub</h1>
+            </div>
+            <p className="text-xs text-amber-200">
+              You&apos;re viewing this page as an admin. You can see each officer&apos;s appointment letter and
+              signing status. <strong>You cannot sign on behalf of an officer</strong> — only the named officer
+              can sign their own appointment using their own login. Signed in as <code className="text-primary-400">{userEmail}</code>.
+            </p>
+          </div>
+
+          <div className="mb-6">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-3xl">🎩</span>
+              <h1 className="text-3xl md:text-4xl font-bold text-white">Officer Hub — All Officers</h1>
+            </div>
+            <p className="text-gray-400 text-sm">
+              Roster of officer appointments. Click an officer to view their personalized appointment letter and
+              signing status. Use this for governance oversight; the dedicated Signatures Tracker at
+              {' '}<a href="/c3h/admin/signatures" className="text-primary-400 underline">/c3h/admin/signatures</a>{' '}
+              shows full per-record audit detail.
+            </p>
+          </div>
+
+          {loading ? (
+            <div className="text-gray-400 text-sm">Loading officer roster…</div>
+          ) : (
+            <div className="space-y-3">
+              {C3H_OFFICER_ROSTER.map((o) => {
+                const sig = signatures[o.workspaceEmail.toLowerCase()];
+                const isOpen = expanded === o.workspaceEmail;
+                const signedDate = sig?.signedAt
+                  ? sig.signedAt.toDate().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+                  : null;
+                return (
+                  <article key={o.workspaceEmail} className="glass rounded-2xl border border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => setExpanded(isOpen ? null : o.workspaceEmail)}
+                      className="w-full p-5 flex items-start justify-between gap-3 text-left hover:bg-white/3 rounded-2xl transition"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <h2 className="text-lg font-bold text-white">{o.name}</h2>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {o.role} · <code className="text-primary-400">{o.workspaceEmail}</code>
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3 flex-shrink-0">
+                        {sig ? (
+                          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-primary-500/20 text-primary-400 border border-primary-500/30">
+                            ✓ Signed {signedDate ? `· ${signedDate}` : ''}
+                          </span>
+                        ) : (
+                          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                            Pending signature
+                          </span>
+                        )}
+                        <span className="text-gray-500 text-lg">{isOpen ? '▾' : '▸'}</span>
+                      </div>
+                    </button>
+
+                    {isOpen && (
+                      <div className="px-5 pb-5 pt-0 border-t border-white/5 space-y-4">
+                        <div className="rounded-xl bg-black/30 border border-white/10 p-5 mt-3 max-h-[420px] overflow-y-auto">
+                          <OfficerAppointment
+                            officerName={o.name}
+                            role={o.role}
+                            effectiveFrom={effectiveFrom}
+                            reaffirmedDate={reaffirmedDate}
+                          />
+                        </div>
+
+                        {sig && (
+                          <div className="rounded-xl bg-primary-500/5 border border-primary-500/20 p-4 print:bg-white print:border-black">
+                            <div className="flex items-center gap-2 mb-3">
+                              <span className="text-xl">✓</span>
+                              <h3 className="text-base font-bold text-white print:text-black">
+                                Signed on {signedDate ?? 'pending sync'}
+                              </h3>
+                            </div>
+                            <div className="grid sm:grid-cols-2 gap-4 mb-3">
+                              <div>
+                                <p className="text-xs text-gray-400 print:text-gray-700 uppercase tracking-wider mb-1">Email</p>
+                                <p className="text-white print:text-black break-all">{sig.signerEmail}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-gray-400 print:text-gray-700 uppercase tracking-wider mb-1">Method</p>
+                                <p className="text-white print:text-black">{sig.signatureType}</p>
+                              </div>
+                              <div className="sm:col-span-2">
+                                <p className="text-xs text-gray-400 print:text-gray-700 uppercase tracking-wider mb-1">Signature</p>
+                                {sig.signatureType === 'drawn' ? (
+                                  <img
+                                    src={sig.signatureData}
+                                    alt={`Signature of ${o.name}`}
+                                    className="bg-black rounded border border-white/20 max-h-20 print:invert print:bg-white print:border-black"
+                                  />
+                                ) : (
+                                  <p className="text-2xl text-white print:text-black" style={{ fontFamily: 'Brush Script MT, cursive' }}>
+                                    {sig.signatureData}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {!sig && (
+                          <p className="text-xs text-gray-500 italic">
+                            {o.name} has not yet signed their Officer Appointment Confirmation. Send them a
+                            reminder to log in at challengerscc.ca/c3h/login → Officer Hub.
+                          </p>
+                        )}
+
+                        <p className="text-[11px] text-gray-500 italic">
+                          Admin view — read only. {o.name} signs their own appointment by logging in as themselves.
+                        </p>
+                      </div>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <button
+              onClick={() => router.push('/c3h/dashboard')}
+              className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 text-sm hover:bg-white/10 transition-all"
+            >
+              ← Back to dashboard
+            </button>
+            <a
+              href="/c3h/admin/signatures"
+              className="px-4 py-2 rounded-lg bg-primary-500/10 border border-primary-500/30 text-primary-300 text-sm hover:bg-primary-500/20 transition-all"
+            >
+              Open full Signatures Tracker →
+            </a>
           </div>
 
         </div>
