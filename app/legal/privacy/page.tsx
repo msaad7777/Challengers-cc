@@ -87,14 +87,18 @@ export default function PrivacyPolicyPage() {
                 The Club&apos;s public website at <code className="text-primary-400">challengerscc.ca</code>
                 and the C3H members&apos; portal are <strong className="text-white">operated on behalf of the
                 Club</strong> by <strong className="text-white">Mohammed Saad</strong>, who authored the
-                software personally. The source-code and web-hosting accounts (GitHub for source control,
-                Vercel for production hosting) are registered to him personally and paid for by him.
-                {' '}<strong className="text-white">The Firebase / Google Cloud project that stores all member
-                data and personal information</strong> — project ID
-                {' '}<code className="text-primary-400">challengers-c3h</code> — is owned and administered by
-                the Club, through the <strong className="text-white">contact@challengerscc.ca</strong>
-                {' '}Google Workspace account (Owner role in the Google Cloud Console). Full details of this
-                arrangement are set out in the
+                software personally. The infrastructure is split across three layers, each with a clearly
+                defined owner:
+              </p>
+              <ul className="space-y-2 mt-2 text-sm list-disc list-inside ml-2">
+                <li><strong className="text-white">Source code — GitHub.</strong> The repository containing all source code is in Mohammed Saad&apos;s personal GitHub account. The source code is his personal copyright under the federal <em>Copyright Act</em> §13(1).</li>
+                <li><strong className="text-white">Production hosting — Vercel.</strong> The Vercel project that builds and serves the production website is registered to the Club at <strong className="text-white">challengerscricketclub2026@gmail.com</strong>. The Club controls deployment access, environment variables, and domain configuration in Vercel. The Vercel project pulls source from Mohammed Saad&apos;s GitHub repository to deploy; if access to that repository is revoked, Vercel can no longer redeploy. Existing deployments at the time of revocation continue to serve until they are next rebuilt.</li>
+                <li><strong className="text-white">Member data — Firebase / Google Cloud.</strong> The Firebase / Google Cloud project storing all member data (project ID <code className="text-primary-400">challengers-c3h</code>) is registered to the Club at <strong className="text-white">contact@challengerscc.ca</strong>, which holds the Owner role in the Google Cloud Console.</li>
+              </ul>
+              <p className="text-sm mt-2">
+                Net effect: the Club controls two of the three infrastructure layers (Vercel hosting +
+                Firebase data); Mohammed Saad personally controls the third (the source code on GitHub).
+                Full details are set out in the
                 {' '}<Link href="/legal/ip-ownership" className="text-primary-400 underline hover:text-primary-300">Software &amp; IP Ownership Acknowledgement</Link>.
               </p>
               <p className="text-sm mt-2">For PIPEDA purposes:</p>
@@ -102,7 +106,7 @@ export default function PrivacyPolicyPage() {
                 <li><strong className="text-white">Challengers Cricket Club is the data controller</strong> — we decide what personal information is collected, why, and how long it is retained. The Firebase / Firestore project that stores it is registered to and administered by the Club.</li>
                 <li><strong className="text-white">Mohammed Saad is the data processor</strong> — he operates the platform on the Club&apos;s instructions and may not use member data for any other purpose. He does not own the data, the Firebase project, or any administrative claim on personal information stored there. His access is operational only and may be revoked at any time by board resolution.</li>
                 <li>Mohammed Saad is contractually prohibited from using Club member data to train artificial intelligence models, demonstrate to other clubs, or build commercial products. Member data may not be re-used in any future commercial offering — by him or by any corporation he owns — without each member&apos;s explicit consent and a separate Data Processing Agreement.</li>
-                <li>Sub-processors used to deliver the platform (each subject to their own privacy practices): <strong className="text-white">Vercel</strong> (web hosting, source code only — no member data), <strong className="text-white">Google Cloud / Firebase</strong> (Club-owned project; database, authentication, file storage), <strong className="text-white">Stripe</strong> (payments), <strong className="text-white">Zeffy</strong> (donations, when active), <strong className="text-white">YouTube</strong> (video hosting).</li>
+                <li>Sub-processors used to deliver the platform (each subject to their own privacy practices): <strong className="text-white">Vercel</strong> (production hosting; account registered to the Club at <strong className="text-white">challengerscricketclub2026@gmail.com</strong>; serves the deployed front-end and proxies API requests; does not hold member data — that lives in Firebase), <strong className="text-white">Google Cloud / Firebase</strong> (Club-owned project administered through <strong className="text-white">contact@challengerscc.ca</strong>; database, authentication, file storage), <strong className="text-white">Stripe</strong> (payments), <strong className="text-white">Zeffy</strong> (donations, when active), <strong className="text-white">YouTube</strong> (video hosting).</li>
               </ul>
               <p className="text-sm mt-2">A formal Software Licence Agreement (which includes data processing terms) between the Club and Mohammed Saad is being executed and will be e-signed by the directors via the C3H Pavilion governance module. Until then, this Privacy Policy and the IP Ownership Acknowledgement constitute the public record of the arrangement.</p>
             </section>

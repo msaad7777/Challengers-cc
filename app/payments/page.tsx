@@ -7,9 +7,15 @@ import VerifiedBanner from '@/components/VerifiedBanner';
 const STRIPE_DONATION_LINK = 'https://donate.stripe.com/00w3cwaPAdAwdmT08j9R600';
 const ZEFFY_DONATION_LINK = 'https://www.zeffy.com/en-CA/donation-form/challengers-cricket-building-community-through-sport';
 
+// Member fees vary year-to-year and within a season. They are set by the
+// Board based on the actual operational costs of the season (insurance,
+// venue rentals, league registrations, equipment, jersey production, etc.)
+// divided across the active members. Posted prices are intentionally a
+// "starting from" range rather than a fixed amount; final amounts are
+// communicated to members via WhatsApp before payment is collected.
 const PAYMENT_OPTIONS = [
-  { name: 'Club Registration', description: '2026 Season membership (includes indoor & outdoor practice)', price: '$100', icon: '🏏' },
-  { name: 'Season Fee', description: '2026 League fees (covers all leagues for the season)', price: '$200', icon: '⚡' },
+  { name: 'Club Registration', description: '2026 Season membership (includes indoor & outdoor practice). Final amount confirmed before payment.', price: 'Varies', icon: '🏏' },
+  { name: 'Season Fee', description: '2026 League fees (LCL T30, LPL T20, etc.). Varies by enrolment and league mix.', price: 'Varies', icon: '⚡' },
 ];
 
 const SPONSORSHIP_TIERS = [
@@ -228,8 +234,29 @@ export default function PaymentsPage() {
               <p className="text-sm text-gray-400">We accept all major credit and debit cards, Apple Pay, Klarna, and Link.</p>
             </div>
             <div className="glass rounded-xl p-6">
-              <h3 className="font-semibold mb-2">How do I know the correct amount for practice/league fees?</h3>
-              <p className="text-sm text-gray-400">Fee amounts are shared by club management via WhatsApp group. If you&apos;re unsure, please contact us at <a href="mailto:contact@challengerscc.ca" className="text-primary-400 hover:text-primary-300 underline break-all">contact@challengerscc.ca</a> before paying.</p>
+              <h3 className="font-semibold mb-2">How are fees set, and why aren&apos;t they fixed?</h3>
+              <p className="text-sm text-gray-400">
+                Challengers Cricket Club is a volunteer-run not-for-profit. Member fees — registration,
+                membership, indoor and outdoor practice, league fees — are <strong className="text-white">not
+                a fixed annual rate</strong>. They vary based on the number of members who join in a given
+                season and the Club&apos;s actual operational costs for that season (venue rental, league
+                registration, insurance, equipment, jersey production, scoring/league-software fees, etc.).
+                The Board reviews and confirms the per-member amount before payment is collected, and shares
+                the final figures with members via WhatsApp. If you&apos;re unsure of the current amount,
+                please contact us at{' '}
+                <a href="mailto:contact@challengerscc.ca" className="text-primary-400 hover:text-primary-300 underline break-all">contact@challengerscc.ca</a>{' '}
+                before paying.
+              </p>
+            </div>
+            <div className="glass rounded-xl p-6">
+              <h3 className="font-semibold mb-2">Where do fees go?</h3>
+              <p className="text-sm text-gray-400">
+                100% of fees collected go to Club operations: league registration fees, insurance,
+                equipment (balls, nets, kit, training gear), venue rental for practices and matches,
+                jersey production, scoring/league-software subscriptions, and other costs of running
+                the season. No part of fees is paid to any director, officer, or volunteer as compensation
+                — see the <a href="/legal/financial-policy" className="text-primary-400 hover:text-primary-300 underline">Financial Policy</a>.
+              </p>
             </div>
           </div>
         </div>

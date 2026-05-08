@@ -79,12 +79,21 @@ export default function TermsOfServicePage() {
             <section>
               <h2 className="text-lg font-bold text-white mb-2">3. Ownership of source code, design, and infrastructure</h2>
               <p>
-                The source code, designs, build configurations, and operational infrastructure that power
-                the Website and the Portal are the personal intellectual property of
-                {' '}<strong className="text-white">Mohammed Saad</strong>, who authored them in his
-                individual capacity and is the first owner of copyright under section 13(1) of the federal
-                {' '}<em>Copyright Act</em>. The source-code accounts (GitHub, Vercel) are registered to him
+                The source code and designs that power the Website and the Portal are the personal
+                intellectual property of <strong className="text-white">Mohammed Saad</strong>, who authored
+                them in his individual capacity and is the first owner of copyright under section 13(1) of
+                the federal <em>Copyright Act</em>. The source-code account (GitHub) is registered to him
                 personally and paid for by him.
+              </p>
+              <p className="mt-2">
+                The <strong className="text-white">production-hosting account (Vercel)</strong> is registered
+                to the <strong className="text-white">Club</strong> at
+                {' '}<strong className="text-white">challengerscricketclub2026@gmail.com</strong>. The Club
+                controls deployment access, environment variables, domain configuration, and billing for
+                this Vercel account. Vercel deploys from Mohammed Saad&apos;s GitHub repository — if access
+                to that repository is revoked under the licence-termination provisions described in the IP
+                Ownership Acknowledgement, Vercel can no longer redeploy, but the Club retains the Vercel
+                account itself.
               </p>
               <p className="mt-2">
                 The Club uses the Platform under a <strong className="text-white">limited, non-exclusive,

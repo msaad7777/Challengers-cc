@@ -58,12 +58,42 @@ export default function FinancialPolicyPage() {
             <section>
               <h2 className="text-lg font-bold text-white mb-2">Income</h2>
               <ul className="space-y-2 text-sm list-disc list-inside ml-2">
-                <li>All Club income — registration fees, season fees, sponsorship payments, donations, grants — is deposited into the Club&apos;s bank account within <strong className="text-white">7 days</strong> of receipt.</li>
+                <li>All Club income — registration fees, season fees, league fees, indoor/outdoor practice fees, sponsorship payments, donations, grants — is deposited into the Club&apos;s bank account within <strong className="text-white">7 days</strong> of receipt.</li>
                 <li>Payment processors used: <strong className="text-white">Stripe, Zeffy, Interac e-Transfer</strong>. Processor balances are settled to the bank account on each platform&apos;s standard cycle.</li>
                 <li>Each income item is logged in the Club&apos;s accounting system (Wave Accounting) with: date, amount, source, and category (registration / sponsorship / donation / grant / other).</li>
                 <li>Receipts (PDF or printable) are issued for any income over $20 on request.</li>
-                <li>Once CRA charity status is registered (target 2027), official tax receipts will be issued for eligible donations per CRA rules.</li>
+                <li>Once CRA charity status is registered, official tax receipts will be issued for eligible donations per CRA rules.</li>
               </ul>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-2">Member fees — variable, set by Board, fund operations</h2>
+              <p className="text-sm">
+                Member fees — including registration fees, membership fees, indoor practice fees, outdoor practice
+                fees, and league fees — are <strong className="text-white">not a fixed annual rate</strong>.
+                They are reviewed and set by the Board for each season based on:
+              </p>
+              <ul className="space-y-2 mt-2 text-sm list-disc list-inside ml-2">
+                <li>The number of members enrolled in that season (more members → lower per-member share);</li>
+                <li>The actual operational costs of the season — league registration fees, venue rental for practices and matches, insurance, equipment (balls, nets, training gear), jersey production, scoring/league-software subscriptions, communications, and other costs of running a community cricket club;</li>
+                <li>Any sponsorship and grant revenue offsetting these costs;</li>
+                <li>The Board&apos;s judgement on what is reasonable and accessible to the Club&apos;s members.</li>
+              </ul>
+              <p className="text-sm mt-2">
+                <strong className="text-white">Final fee amounts are confirmed before payment is collected</strong> and
+                communicated to members via the Club&apos;s WhatsApp group and email. Payments collected before final
+                confirmation may be refunded, applied to the next season&apos;s fees, or adjusted as appropriate.
+              </p>
+              <p className="text-sm mt-2">
+                <strong className="text-white">100% of member fees fund Club operations.</strong> No part of any
+                member fee is paid to any director, officer, or volunteer as compensation. See <em>No payment for
+                services</em> and <em>No retroactive compensation</em> below.
+              </p>
+              <p className="text-sm mt-2">
+                Per <Link href="/legal/bylaws" className="text-primary-400 underline hover:text-primary-300">By-Laws Article 3.3</Link>, members are
+                given at least <strong className="text-white">thirty (30) days&apos; notice</strong> of any change
+                to membership dues before the change takes effect.
+              </p>
             </section>
 
             <section>

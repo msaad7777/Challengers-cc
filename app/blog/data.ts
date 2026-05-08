@@ -545,7 +545,8 @@ export const blogPosts: BlogPost[] = [
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         As our Platinum Sponsor, Bhupinder's name and Century 21 branding are featured prominently on player
         jerseys, social media posts, event banners, and right here on our website. His support helps fund
-        practice sessions, league fees, equipment, and youth development programs.
+        Club operations including practice sessions, league registration, equipment, venue rentals, and other
+        costs of running a community cricket club.
       </p>
       <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
         <p class="text-gray-300 text-lg italic">
@@ -1801,8 +1802,10 @@ export const blogPosts: BlogPost[] = [
       </p>
 
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Challengers CC is a registered Ontario nonprofit. All membership fees go directly toward league fees,
-        equipment, ground bookings, and player development. C3H is a free member benefit — not a paid product.
+        Challengers CC is a federally-registered Canada Not-for-Profit Corporation. Member fees are not a fixed
+        annual rate — they vary season-to-season based on enrolment numbers and actual operating costs (league
+        registration, equipment, venue rental, insurance, jersey production). 100% of fees fund Club operations;
+        no part is paid to any director, officer, or volunteer. C3H is a free member benefit — not a paid product.
       </p>
 
       <p class="text-gray-300 text-lg leading-relaxed">

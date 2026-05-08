@@ -22,7 +22,7 @@ export default function IpOwnershipPage() {
           <div className="text-center mb-10">
             <span className="text-3xl">⚖️</span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-3 mb-3">Software &amp; IP Ownership Acknowledgement</h1>
-            <p className="text-sm text-gray-500">Challengers Cricket Club · Version 2.1 · Effective 8 May 2026 (covers Nov 2025 onward retroactively)</p>
+            <p className="text-sm text-gray-500">Challengers Cricket Club · Version 2.2 · Effective 8 May 2026 (covers Nov 2025 onward retroactively)</p>
           </div>
 
           {/* Headline summary */}
@@ -112,13 +112,15 @@ export default function IpOwnershipPage() {
                 <li>All architecture, data models, build configurations, deployment scripts, and operational tooling</li>
                 <li>All design, layout, animations, and visual systems other than the Club&apos;s registered name and logo</li>
                 <li>Any and all <strong className="text-white">derivative works</strong>, including any future multi-tenant or commercial version of the platform offered to other cricket clubs and sporting organizations</li>
-                <li>The <strong className="text-white">GitHub repository</strong> hosting the source code and the <strong className="text-white">Vercel project</strong> hosting the production deployment — both exist within Mohammed Saad&apos;s personal accounts and are paid for by him personally. These hold software code only, not member data.</li>
+                <li>The <strong className="text-white">GitHub repository</strong> hosting the source code, registered to and paid for by Mohammed Saad personally. This repository holds source code only, not member data.</li>
               </ul>
               <p className="text-xs text-gray-500 mt-3 italic">
-                What Mohammed Saad does <strong className="text-gray-400">not</strong> own: any member data, personal
-                information, signed legal documents, match records, registrations, or any other information stored in
-                the Club&apos;s Firebase / Firestore project. See the next section for the Club&apos;s data and
-                infrastructure ownership.
+                What Mohammed Saad does <strong className="text-gray-400">not</strong> own: the production-hosting
+                Vercel account (Club-controlled, registered to{' '}
+                <strong className="text-gray-400">challengerscricketclub2026@gmail.com</strong>); the Firebase /
+                Google Cloud project that stores all member data; any member data, personal information, signed
+                legal documents, match records, registrations, or any other information stored there. See the next
+                section for the Club&apos;s data-and-hosting ownership.
               </p>
             </section>
 
@@ -127,6 +129,14 @@ export default function IpOwnershipPage() {
               <ul className="space-y-2 text-sm list-disc list-inside ml-2">
                 <li>The domain name <strong className="text-white">challengerscc.ca</strong>, registered to and renewed by the Club</li>
                 <li>The Club&apos;s <strong className="text-white">name, brand, logo, and colours</strong> — &ldquo;Challengers Cricket Club&rdquo; and &ldquo;CCC&rdquo; trademarks and any associated visual identity</li>
+                <li>
+                  The <strong className="text-white">Vercel production-hosting account</strong>, registered to the
+                  Club at <strong className="text-white">challengerscricketclub2026@gmail.com</strong>. The Club
+                  controls deployment access, environment variables, domain configuration, and billing for this
+                  account. The Vercel project pulls source from Mohammed Saad&apos;s GitHub repository to build
+                  and deploy; if access to that repository is revoked, Vercel can no longer redeploy, but the
+                  Club retains the Vercel account itself and its historical deployments running there.
+                </li>
                 <li>
                   The <strong className="text-white">Firebase / Google Cloud project</strong> (project ID
                   {' '}<code className="text-primary-400">challengers-c3h</code>) where every piece of platform data
@@ -174,10 +184,12 @@ export default function IpOwnershipPage() {
                 Mohammed Saad has personally authored the source code of the C3H members&apos; portal and the
                 <code className="text-primary-400 mx-1">challengerscc.ca</code> website from approximately
                 <strong className="text-white"> November 2025 to the present</strong>, in his individual capacity, on his
-                own time and equipment. The source-code accounts (GitHub, Vercel) are registered to him
-                personally. The Firebase / Google Cloud project (<code className="text-primary-400">challengers-c3h</code>)
-                that stores all member data and personal information is owned and administered by the Club through
-                the <strong className="text-white">contact@challengerscc.ca</strong> Workspace account — see{' '}
+                own time and equipment. The source-code account (GitHub) is registered to him personally. The
+                production-hosting account (Vercel) is registered to the Club at
+                {' '}<strong className="text-white">challengerscricketclub2026@gmail.com</strong>. The Firebase /
+                Google Cloud project (<code className="text-primary-400">challengers-c3h</code>) that stores all
+                member data and personal information is owned and administered by the Club through the
+                {' '}<strong className="text-white">contact@challengerscc.ca</strong> Workspace account — see{' '}
                 <em>What the Club owns</em> above. Throughout this period:
               </p>
               <ul className="space-y-1.5 mt-2 text-sm list-disc list-inside ml-2">
@@ -212,7 +224,7 @@ export default function IpOwnershipPage() {
               <ul className="space-y-2 text-sm list-disc list-inside ml-2 mt-3">
                 <li>The Club has <strong className="text-white">never employed</strong> Mohammed Saad. No employment contract or work-for-hire contract has ever existed. No T4 has ever been issued. No invoice has ever been raised against the Club.</li>
                 <li>The Club has <strong className="text-white">never paid</strong> Mohammed Saad for software development, hosting, or any related service — neither in cash nor in equivalent value. No payment is currently due.</li>
-                <li>All software-development work was performed on his own time and equipment, using source-code accounts (GitHub, Vercel) registered to him personally. The data infrastructure (Firebase / Firestore / Google Cloud project <code className="text-primary-400">challengers-c3h</code>) is the Club&apos;s, administered through the <strong className="text-white">contact@challengerscc.ca</strong> Workspace account.</li>
+                <li>All software-development work was performed on his own time and equipment, using a source-code account (GitHub) registered to him personally. The production-hosting account (Vercel, registered to <strong className="text-white">challengerscricketclub2026@gmail.com</strong>) and the data infrastructure (Firebase / Firestore / Google Cloud project <code className="text-primary-400">challengers-c3h</code>, administered through <strong className="text-white">contact@challengerscc.ca</strong>) are the Club&apos;s.</li>
                 <li>The Club did not <strong className="text-white">commission, direct, or supervise</strong> the technical work in the manner that would create employer-style ownership rights.</li>
                 <li>Mohammed Saad serves the Club as a <strong className="text-white">volunteer director</strong>. That personal volunteer role is separate from his ownership of the platform — service to the Club does not transfer the platform to the Club.</li>
               </ul>
@@ -347,8 +359,9 @@ export default function IpOwnershipPage() {
           </div>
 
           <div className="mt-8 text-xs text-gray-500 text-center">
-            <p>Effective: 8 May 2026 · Version 2.1 · Pending lawyer review</p>
-            <p className="mt-1">v2.1 (2026-05-08) — clarifies the data-infrastructure split: source-code accounts (GitHub, Vercel) are personal to Mohammed Saad; the Firebase / Firestore / Google Cloud project <code className="text-primary-400">challengers-c3h</code> that stores all member data and PII is the Club&apos;s, owned and administered through the <strong className="text-white">contact@challengerscc.ca</strong> Workspace account. Aligns with PIPEDA data-controller framing and CRA charity expectations.</p>
+            <p>Effective: 8 May 2026 · Version 2.2 · Pending lawyer review</p>
+            <p className="mt-1">v2.2 (2026-05-08) — corrects the infrastructure-ownership split. Vercel production-hosting is the Club&apos;s, registered to <strong className="text-white">challengerscricketclub2026@gmail.com</strong>; only GitHub (source code) is Mohammed Saad&apos;s personal account. So the Club controls TWO infrastructure layers (Vercel + Firebase) and Mohammed Saad controls ONE (GitHub source code).</p>
+            <p className="mt-1">v2.1 (2026-05-08) — clarified the data-infrastructure split between GitHub/Vercel (then said personal) and Firebase (Club&apos;s). Superseded by v2.2 above which corrects Vercel ownership.</p>
             <p className="mt-1">v2.0 (2026-05-06) — restructured around Mohammed Saad personally as author and licensor. Replaced the prior corporate-licensor framing. Internal corporate arrangements are treated as the licensor&apos;s private matter.</p>
           </div>
         </div>

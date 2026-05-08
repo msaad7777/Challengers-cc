@@ -332,7 +332,7 @@ export default function MentalGamePage() {
             <Link href="/#register" className="inline-block px-8 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-105">
               Join the Club
             </Link>
-            <p className="text-gray-600 text-xs mt-3">Challengers CC is a registered Ontario nonprofit. All membership fees go directly toward league fees, equipment, and ground bookings.</p>
+            <p className="text-gray-600 text-xs mt-3">Challengers CC is a federally-registered Canada Not-for-Profit Corporation. Member fees are not fixed — they vary by season based on enrolment and the Club&apos;s actual operating costs (league registration, equipment, venue rentals, insurance). 100% of fees fund Club operations.</p>
           </div>
 
           {/* FINAL QUOTE */}
