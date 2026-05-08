@@ -562,16 +562,6 @@ function FieldEditorContent() {
     saveField(updated);
   };
 
-  // Load a field preset into the ACTIVE scenario only. Other scenarios
-  // are untouched, so the captain can keep their PP / Pacer / Spin
-  // configurations independently.
-  const applyPreset = (preset: FieldPreset) => {
-    if (players.length === 0) return;
-    const newPlayers = applyPresetToPlayers(players, preset, leftHanded);
-    setActivePlayers(newPlayers);
-    saveField(newPlayers);
-  };
-
   // Mirror flips ALL four scenarios at once — leftHanded is a per-match
   // attribute (which batter we're facing), not per-scenario.
   const mirrorField = () => {
@@ -909,26 +899,10 @@ function FieldEditorContent() {
                 <button onClick={() => { setShowNames(true); setShowPositions(true); setScreenshotMode(true); }} className="text-accent-400 glass px-2 py-1 rounded-lg hover:bg-accent-500/10">Share</button>
               </div>
 
-              {/* Field Presets — one-click load common setups */}
-              <div className="glass rounded-xl p-2.5 mb-2 border border-white/5">
-                <p className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1.5">Quick Setups</p>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {FIELD_PRESETS.map((preset) => (
-                    <button
-                      key={preset.id}
-                      onClick={() => applyPreset(preset)}
-                      title={preset.description}
-                      className="text-left px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-primary-500/40 hover:bg-primary-500/10 transition-all"
-                    >
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-sm">{preset.emoji}</span>
-                        <span className="text-[11px] font-bold text-white">{preset.name}</span>
-                      </div>
-                      <p className="text-[9px] text-gray-500 leading-tight mt-0.5">{preset.description}</p>
-                    </button>
-                  ))}
-                </div>
-              </div>
+              {/* Quick Setups removed — redundant with the Field Scenario
+                  tabs at the top (each scenario auto-applies its preset on
+                  first creation, and Reset re-applies the active scenario's
+                  preset). */}
 
               {/* Outside-ring counter — phase derived from active scenario */}
               {(() => {
