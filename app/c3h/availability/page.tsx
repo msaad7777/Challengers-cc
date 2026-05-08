@@ -174,6 +174,41 @@ function rolesChanged(
   return a !== b;
 }
 
+// Validate squad readiness before "Save & Field Editor". Captains must
+// designate a Wicketkeeper, and (for 12-man squads) a Batting Sub and
+// Bowling Sub — the bat-sub is the 12th man (off field), so the Field
+// Editor renders only 11. Without these designations the Field Editor
+// would mis-render all 12 as fielders.
+function validateSquadReadiness(
+  players: string[],
+  roles: Record<string, string>,
+): { ok: boolean; errors: string[] } {
+  const errors: string[] = [];
+  if (players.length === 0) {
+    return { ok: false, errors: ['No players selected for this squad.'] };
+  }
+  if (players.length < 11) {
+    errors.push(
+      `Select ${11 - players.length} more player${11 - players.length === 1 ? '' : 's'} (currently ${players.length}/12).`,
+    );
+  }
+  const hasWk = players.some((p) => roles[p] === 'wk');
+  if (!hasWk) {
+    errors.push('Designate a Wicketkeeper — tap WK on one of the selected players.');
+  }
+  if (players.length === 12) {
+    const hasBatSub = players.some((p) => roles[p] === 'bat-sub');
+    const hasBowlSub = players.some((p) => roles[p] === 'bowl-sub');
+    if (!hasBatSub) {
+      errors.push('Designate a Batting Sub — tap B on one of the selected players. (Bat sub = 12th man, off field.)');
+    }
+    if (!hasBowlSub) {
+      errors.push('Designate a Bowling Sub — tap W on one of the selected players.');
+    }
+  }
+  return { ok: errors.length === 0, errors };
+}
+
 // Reverse-lookup: given a player's display name, return their primary
 // email for calendar invitations. Prefers personal @gmail.com (the
 // inbox most players actually monitor); falls back to the
@@ -759,8 +794,34 @@ export default function AvailabilityPage() {
                             </div>
                           </div>
 
+                          {/* Validation panel — captain must designate WK + Bat Sub + Bowl Sub
+                              before opening the Field Editor, otherwise it would render all
+                              12 as fielders instead of the proper 11 (bat-sub off field). */}
+                          {(squads[m.id] || []).length >= 11 && isCaptain && (() => {
+                            const validation = validateSquadReadiness(squads[m.id] || [], squadRoles[m.id] || {});
+                            if (validation.ok) return null;
+                            return (
+                              <div className="mb-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3">
+                                <p className="text-amber-300 text-xs font-bold mb-2 flex items-center gap-1.5">
+                                  <span>⚠️</span>
+                                  <span>Before opening the Field Editor, fix:</span>
+                                </p>
+                                <ul className="space-y-1 ml-1">
+                                  {validation.errors.map((err, i) => (
+                                    <li key={i} className="text-amber-200 text-[11px] flex items-start gap-1.5">
+                                      <span className="text-amber-400 mt-0.5">•</span>
+                                      <span>{err}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            );
+                          })()}
+
                           {/* Action buttons — visible at top of squad panel when 11+ */}
-                          {(squads[m.id] || []).length >= 11 && isCaptain && (
+                          {(squads[m.id] || []).length >= 11 && isCaptain && (() => {
+                            const validation = validateSquadReadiness(squads[m.id] || [], squadRoles[m.id] || {});
+                            return (
                             <div className="flex flex-wrap gap-2 mb-3 items-center">
                               <button onClick={() => persistSquad(m.id)} className="text-xs px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 font-bold">
                                 💾 Save
@@ -769,11 +830,18 @@ export default function AvailabilityPage() {
                                 {showSquadCard === m.id ? 'Hide Card' : 'View Squad Card'}
                               </button>
                               <button
+                                disabled={!validation.ok}
                                 onClick={async () => {
+                                  if (!validation.ok) return;
                                   await persistSquad(m.id);
                                   router.push(`/c3h/field-editor?match=${m.id}`);
                                 }}
-                                className="text-xs px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30 hover:bg-primary-500/30 font-bold"
+                                title={validation.ok ? 'Save squad and open Field Editor' : validation.errors.join(' • ')}
+                                className={`text-xs px-3 py-1.5 rounded-lg border font-bold transition-colors ${
+                                  validation.ok
+                                    ? 'bg-primary-500/20 text-primary-400 border-primary-500/30 hover:bg-primary-500/30'
+                                    : 'bg-gray-500/10 text-gray-500 border-gray-500/20 cursor-not-allowed'
+                                }`}
                               >
                                 💾 Save &amp; Field Editor →
                               </button>
@@ -816,7 +884,8 @@ export default function AvailabilityPage() {
                                 </span>
                               )}
                             </div>
-                          )}
+                            );
+                          })()}
 
                           {/* Last edited by — visible to captains + board */}
                           {(isCaptain || isBoard) && squadMeta[m.id]?.updatedBy && (

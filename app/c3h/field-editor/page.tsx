@@ -707,6 +707,53 @@ function FieldEditorContent() {
                 {saving && <span className="text-accent-400 text-xs">Saving...</span>}
               </div>
 
+              {/* Squad-readiness banner — captain must designate Bat Sub
+                  (12th man, off field) and WK before the field renders
+                  correctly. Without these the field shows all 12 players. */}
+              {(() => {
+                const issues: string[] = [];
+                if (squad.length > 11) {
+                  issues.push('Designate a Batting Sub on the Dugout — currently 12 players on the field (should be 11; the bat sub is the 12th man, off field).');
+                }
+                if (squad.length >= 11) {
+                  const hasWk = squad.some((p) => squadRoles[p] === 'wk');
+                  if (!hasWk) issues.push('Designate a Wicketkeeper (WK) on the Dugout.');
+                  const hasBowlSub = squad.some((p) => squadRoles[p] === 'bowl-sub');
+                  // Only flag bowl-sub when total squad is 12 (LPL-style); we
+                  // infer that from the field count being 12 OR bat-sub being
+                  // the only one filtered out (squad=11 and bat-sub assigned).
+                  const batSubAssigned = Object.values(squadRoles).includes('bat-sub');
+                  if (!hasBowlSub && (squad.length === 12 || batSubAssigned)) {
+                    issues.push('Designate a Bowling Sub on the Dugout.');
+                  }
+                }
+                if (issues.length === 0) return null;
+                return (
+                  <div className="mb-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <p className="text-amber-300 text-xs font-bold flex items-center gap-1.5">
+                        <span>⚠️</span>
+                        <span>Squad incomplete — fix on the Dugout:</span>
+                      </p>
+                      <Link
+                        href="/c3h/availability"
+                        className="text-amber-200 text-[10px] underline hover:text-amber-100 whitespace-nowrap"
+                      >
+                        Go to Dugout →
+                      </Link>
+                    </div>
+                    <ul className="space-y-1 ml-1">
+                      {issues.map((err, i) => (
+                        <li key={i} className="text-amber-200 text-[11px] flex items-start gap-1.5">
+                          <span className="text-amber-400 mt-0.5">•</span>
+                          <span>{err}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })()}
+
               {/* Scenario tabs — 4 separate field configs saved per match */}
               <div className="mb-3">
                 <div className="flex items-center justify-between mb-1.5">
