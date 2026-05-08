@@ -8,41 +8,51 @@ export default function LegalDocuments() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
-  const GOOGLE_FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSeER8z1nKUCUfuRZdIUDEQ0qvHIvp-XtwufQHALyt3hWUBtVA/formResponse";
-  const ENTRY_IDS = {
-    name: "entry.1917539462",
-    email: "entry.1606284375",
-    document: "entry.2112366391",
-    reason: "entry.1857964256",
-  };
+  // Document requests are routed by mailto: directly to the Club's
+  // Workspace inbox. This is more reliable than third-party form
+  // services (which can silently break) and ensures the requester
+  // and the Club both have a permanent email record.
+  const CLUB_INBOX = 'contact@challengerscc.ca';
 
-  const handleRequest = async (e: React.FormEvent) => {
+  const handleRequest = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitMessage('');
 
     try {
-      const formBody = new URLSearchParams();
-      formBody.append(ENTRY_IDS.name, formData.name);
-      formBody.append(ENTRY_IDS.email, formData.email);
-      formBody.append(ENTRY_IDS.document, requestingDoc || '');
-      formBody.append(ENTRY_IDS.reason, formData.reason);
+      const subject = `Document Request — ${requestingDoc || 'Unspecified Document'}`;
+      const body = [
+        `Hello Challengers Cricket Club,`,
+        ``,
+        `I would like to request a copy of the following document:`,
+        ``,
+        `Document: ${requestingDoc || 'Unspecified'}`,
+        ``,
+        `Requester details:`,
+        `  Name: ${formData.name}`,
+        `  Email: ${formData.email}`,
+        ``,
+        `Reason for the request:`,
+        `${formData.reason}`,
+        ``,
+        `Thank you,`,
+        `${formData.name}`,
+      ].join('\n');
 
-      await fetch(GOOGLE_FORM_ACTION, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: formBody.toString(),
-      });
+      const mailtoLink = `mailto:${CLUB_INBOX}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      // Open the user's default email client. They review + send the
+      // pre-filled email; the request lands directly in the Club's
+      // contact@challengerscc.ca inbox.
+      window.location.href = mailtoLink;
 
-      setSubmitMessage('Request submitted! We will verify your request and send the document to your email within 1-2 business days.');
+      setSubmitMessage('Your email client has opened with a pre-filled request. Please review and send the email to complete your request. We will reply within 1–2 business days.');
       setFormData({ name: '', email: '', reason: '' });
       setTimeout(() => {
         setRequestingDoc(null);
         setSubmitMessage('');
-      }, 5000);
+      }, 8000);
     } catch {
-      setSubmitMessage('Something went wrong. Please email us directly at contact@challengerscc.ca');
+      setSubmitMessage(`Could not open your email client. Please email us directly at ${CLUB_INBOX} with your name, the document name, and the reason for your request.`);
     } finally {
       setIsSubmitting(false);
     }
@@ -185,8 +195,17 @@ export default function LegalDocuments() {
 
               <div className="mb-6">
                 <h3 className="text-xl font-bold mb-2">Request: <span className="gradient-text">{requestingDoc}</span></h3>
-                <p className="text-sm text-gray-400">
-                  Please provide your details below. Upon verification of your request, the document will be sent to your email within 1-2 business days.
+                <p className="text-sm text-gray-400 mb-2">
+                  Please complete the form below. When you click <strong className="text-white">Send Request</strong>,
+                  your default email client will open with a pre-filled email addressed to{' '}
+                  <code className="text-primary-400">contact@challengerscc.ca</code>. Review the email and click
+                  Send to complete your request.
+                </p>
+                <p className="text-xs text-gray-500">
+                  Public documents (Bylaws, Privacy Policy, Code of Conduct, Financial Policy) are also viewable
+                  directly without a request. The Certificate of Incorporation can also be retrieved from{' '}
+                  <a href="https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/fdrlCrpSrch.html" target="_blank" rel="noopener noreferrer" className="text-primary-400 underline hover:text-primary-300">Corporations Canada</a>{' '}
+                  by searching corporation #1746974-8.
                 </p>
               </div>
 
@@ -238,10 +257,23 @@ export default function LegalDocuments() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-3 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    className="w-full py-3 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 inline-flex items-center justify-center gap-2"
                   >
-                    {isSubmitting ? 'Submitting...' : 'Submit Request'}
+                    {isSubmitting ? (
+                      'Opening email client…'
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        Send Request via Email
+                      </>
+                    )}
                   </button>
+                  <p className="text-[11px] text-gray-500 text-center -mt-2">
+                    Or email us directly at{' '}
+                    <a href={`mailto:${CLUB_INBOX}`} className="text-primary-400 hover:text-primary-300 underline">{CLUB_INBOX}</a>
+                  </p>
                 </form>
               )}
 
