@@ -32,6 +32,26 @@ export default function VolunteerAgreementPage() {
               This Agreement is made between Challengers Cricket Club (&ldquo;the Club&rdquo;) and the individual signing below (&ldquo;the Volunteer&rdquo;). Please read it carefully before signing. By signing, the Volunteer confirms they understand and accept the terms below.
             </p>
 
+            <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-4">
+              <p className="text-sm font-bold text-amber-300 mb-2 flex items-center gap-2">
+                <span>⏰</span>
+                <span>Signing deadline — 30 May 2026</span>
+              </p>
+              <p className="text-sm text-amber-100 leading-relaxed mb-2">
+                All players, officers, directors, and volunteers are required to sign this Volunteer
+                Agreement (and the related Liability Waiver, Code of Conduct, and Photography Consent) by
+                <strong className="text-white"> 30 May 2026</strong>.
+              </p>
+              <p className="text-sm text-amber-100 leading-relaxed">
+                Members who have not signed by the deadline are <strong className="text-white">not
+                entitled to</strong>: expense reimbursement from the Club; inclusion in match squads;
+                Club-issued gear or jerseys; recognition, awards, or benefits paid for by the Club; or any
+                other Club-issued entitlement that depends on volunteer status. Members who continue to
+                participate without signing do so at their own risk and outside the protections of this
+                Agreement, the Liability Waiver, and the Conflict of Interest Policy.
+              </p>
+            </div>
+
             <hr className="border-white/10" />
 
             <section>

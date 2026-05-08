@@ -79,6 +79,19 @@ export default function FinancialPolicyPage() {
               </ol>
               <p className="text-sm mt-2"><strong className="text-white">Reimbursement is not compensation.</strong> It does not create an employment relationship. It is reimbursement of money the volunteer has already spent on the Club&apos;s behalf.</p>
 
+              <div className="mt-4 rounded-lg border border-red-500/40 bg-red-500/5 p-3">
+                <p className="text-xs uppercase tracking-wider text-red-300 font-bold mb-1.5">Eligibility — signed Volunteer Agreement required</p>
+                <p className="text-sm text-gray-300 leading-relaxed">
+                  Reimbursement is available only to individuals who have signed the Club&apos;s
+                  {' '}<Link href="/legal/volunteer-agreement" className="text-primary-400 underline hover:text-primary-300">Volunteer Agreement</Link>{' '}
+                  by the deadline of <strong className="text-white">30 May 2026</strong>. Members who have not
+                  signed by that date are not entitled to expense reimbursement, squad selection, Club gear,
+                  or any other Club-issued benefit. Expenses incurred before signing — even by a willing
+                  volunteer — are not automatically reimbursable; pre-deadline expenses may be reimbursed
+                  only at the board&apos;s discretion and once all required agreements are signed.
+                </p>
+              </div>
+
               <div className="mt-4 rounded-lg border border-amber-500/40 bg-amber-500/5 p-3">
                 <p className="text-xs uppercase tracking-wider text-amber-300 font-bold mb-1.5">Reimbursement payment routing</p>
                 <p className="text-sm text-gray-300 leading-relaxed mb-2">

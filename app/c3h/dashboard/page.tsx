@@ -89,14 +89,19 @@ export default function DashboardPage() {
                 <div className="text-3xl">📝</div>
                 <div className="flex-1">
                   <h2 className="text-xl font-bold text-white mb-1">Member Agreements</h2>
-                  <p className="text-amber-400 text-xs font-medium mb-3">Required Documents · E-Sign</p>
-                  <p className="text-gray-400 text-sm mb-4">
+                  <p className="text-amber-400 text-xs font-medium mb-3">Required Documents · E-Sign by 30 May 2026</p>
+                  <p className="text-gray-400 text-sm mb-3">
                     Sign your <strong className="text-white">Volunteer Agreement</strong>, <strong className="text-white">Liability Waiver</strong>,{' '}
-                    <strong className="text-white">Code of Conduct</strong>, and <strong className="text-white">Photography Consent</strong>{' '}
-                    before participating in matches. Each takes about 2 minutes — you can sign by typing your name or drawing a signature.
+                    <strong className="text-white">Code of Conduct</strong>, and <strong className="text-white">Photography Consent</strong>.
+                    Each takes about 2 minutes — type your name or draw a signature on screen.
+                  </p>
+                  <p className="text-amber-200/90 text-xs leading-relaxed mb-4">
+                    <strong className="text-amber-200">Deadline 30 May 2026.</strong> Members who haven&apos;t
+                    signed by the deadline are not entitled to expense reimbursement, squad selection, Club
+                    gear, or other Club benefits.
                   </p>
                   <span className="text-xs px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold uppercase tracking-wider">
-                    Required for all players
+                    Required by 30 May
                   </span>
                 </div>
               </div>
