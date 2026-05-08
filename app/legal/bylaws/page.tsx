@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import PrintButton from '../_shared/PrintButton';
 
 export const metadata = {
   title: 'Constitution & By-Laws — Challengers Cricket Club',
@@ -19,7 +20,7 @@ export default function BylawsPage() {
             All governance documents
           </Link>
 
-          <div className="text-center mb-10">
+          <div className="text-center mb-6">
             <span className="text-3xl">📜</span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-3 mb-3">Constitution &amp; By-Laws</h1>
             <p className="text-sm text-gray-500">
@@ -28,6 +29,11 @@ export default function BylawsPage() {
             <p className="text-xs text-gray-600 mt-1">
               Incorporated under the <em>Canada Not-for-profit Corporations Act</em> on 12 November 2025 · CRA Business Number 758650832
             </p>
+          </div>
+
+          {/* Print / Save as PDF button — hidden on printed copy */}
+          <div className="flex justify-center mb-8 print:hidden">
+            <PrintButton label="🖨️ Print or Save as PDF" />
           </div>
 
           {/* Transparency notice — current officer onboarding status */}
@@ -111,6 +117,18 @@ export default function BylawsPage() {
               <p>4.5 A vacancy on the Board may be filled for the remainder of the term by the remaining Directors, provided a quorum of Directors remains in office.</p>
               <p>4.6 The members may, by Ordinary Resolution at a special meeting, remove any Director before the expiration of the Director&apos;s term of office, and may elect any person in their stead for the remainder of the term.</p>
               <p>4.7 Any two (2) officer positions may be held by the same person, except the offices of President and Vice-President.</p>
+              <p>4.8 <strong className="text-white">Officer Appointment by the Board.</strong> Officers of the Corporation are appointed by the Board of Directors. An appointment becomes effective only upon the appointee&apos;s e-signed acceptance of the Officer Appointment Letter via the Club&apos;s Officer Hub. An appointment that is not accepted within thirty (30) days of being communicated to the appointee shall lapse for non-acceptance and the position shall be deemed vacant.</p>
+              <p>4.9 <strong className="text-white">Officer Removal by Director Vote.</strong> Any officer of the Corporation, whether or not they have e-signed the Officer Appointment Letter, may be removed from office at any time, with or without cause, by an Ordinary Resolution of the Board of Directors (a majority of votes cast at a duly-called meeting of the Board at which a quorum is present). The procedure shall be:</p>
+              <ul className="list-disc list-inside ml-4 space-y-1">
+                <li>(a) Any Director may propose a resolution to remove an officer, by raising the matter at a regular meeting of the Board or by requesting a special meeting under Article VI;</li>
+                <li>(b) The officer in question shall be given reasonable written notice of the proposed resolution and shall be afforded an opportunity to respond, in writing or in person, prior to the vote, except where the Board determines that immediate removal is necessary to protect the interests of the Corporation;</li>
+                <li>(c) Where a Director also serves as the officer being considered for removal, that Director shall recuse from the vote;</li>
+                <li>(d) The Board may consider grounds for removal including, but not limited to: failure to perform the duties of the role; breach of the <Link href="/legal/code-of-conduct" className="text-primary-400 underline hover:text-primary-300">Code of Conduct</Link> or the <Link href="/legal/conflict-of-interest" className="text-primary-400 underline hover:text-primary-300">Conflict of Interest Policy</Link>; refusal to follow proper Club procedures (including banking, financial controls, and signing protocols); failure to e-sign required governance documents by published deadlines; conduct detrimental to the Corporation; or any other reason the Board determines is in the best interests of the Corporation;</li>
+                <li>(e) Removal is effective immediately upon the resolution being passed, unless the resolution specifies a later effective date;</li>
+                <li>(f) The Board may appoint a replacement officer at the same meeting or at any subsequent meeting, by simple majority vote.</li>
+              </ul>
+              <p>4.10 <strong className="text-white">Removal of a Director.</strong> A Director (as distinct from an officer) may be removed only by Ordinary Resolution of the members at a special meeting called for that purpose, in accordance with Article 4.6 and the CNCA. The Board cannot, by resolution alone, remove a Director.</p>
+              <p>4.11 <strong className="text-white">Final settlement on removal.</strong> An officer removed under Article 4.9, or a Director removed under Article 4.10, shall remain bound by the survival provisions of the <Link href="/legal/volunteer-agreement" className="text-primary-400 underline hover:text-primary-300">Volunteer Agreement</Link> (Section 2 — No Compensation; survives departure) and the Officer Appointment Letter Section 5 (Final settlement on departure). Outstanding documented out-of-pocket expense claims approved before removal remain repayable in accordance with the <Link href="/legal/financial-policy" className="text-primary-400 underline hover:text-primary-300">Financial Policy</Link>; new claims must be filed within 30 days of removal or are forfeit. No claim for retroactive compensation, fees, honoraria, or remuneration may be raised by or on behalf of a removed officer or Director, in accordance with Article XVI.</p>
             </section>
 
             <section>
@@ -230,6 +248,61 @@ export default function BylawsPage() {
       </section>
 
       <Footer />
+
+      {/* Print-friendly styles — when printing or saving as PDF, hide
+          chrome (nav, footer, print button), force a white background,
+          dark text, normal weights, and add page breaks at sensible
+          spots so each Article fits cleanly on a printed page. */}
+      <style jsx global>{`
+        @media print {
+          @page {
+            size: letter;
+            margin: 0.75in 0.6in;
+          }
+          html, body {
+            background: white !important;
+            color: black !important;
+          }
+          .glass {
+            background: white !important;
+            border-color: #ccc !important;
+            box-shadow: none !important;
+          }
+          /* Make the body text dark and readable on print */
+          h1, h2, h3, h4, h5, h6,
+          p, li, span, strong, em, code {
+            color: black !important;
+          }
+          /* Subtitle/note text in slightly muted grey */
+          .text-gray-500, .text-gray-600 {
+            color: #444 !important;
+          }
+          /* Yellow highlight blocks become bordered boxes */
+          .bg-amber-500\\/10, .bg-amber-500\\/5,
+          .bg-accent-500\\/10, .bg-accent-500\\/5 {
+            background: white !important;
+            border: 1px solid #999 !important;
+          }
+          .text-amber-300, .text-amber-100, .text-amber-200,
+          .text-accent-400, .text-accent-300 {
+            color: black !important;
+          }
+          /* Links: keep underline, drop colour for clarity */
+          a {
+            color: black !important;
+            text-decoration: underline !important;
+          }
+          /* Avoid orphan headings — try to keep heading + first paragraph together */
+          h2, h3 {
+            page-break-after: avoid;
+            break-after: avoid;
+          }
+          section {
+            page-break-inside: auto;
+            break-inside: auto;
+          }
+        }
+      `}</style>
     </div>
   );
 }
