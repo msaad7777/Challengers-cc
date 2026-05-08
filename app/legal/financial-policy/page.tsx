@@ -74,8 +74,9 @@ export default function FinancialPolicyPage() {
               <ol className="space-y-2 mt-2 text-sm list-decimal list-inside ml-2">
                 <li><strong className="text-white">Get prior approval</strong> from a board member, in writing (email or WhatsApp), <em>before</em> spending the money. This is critical — un-approved expenses are not guaranteed reimbursement.</li>
                 <li><strong className="text-white">Keep the original receipt</strong> with date, item, and amount visible.</li>
-                <li><strong className="text-white">Submit the receipt</strong> within 30 days, either by email to <a href="mailto:contact@challengerscc.ca" className="text-primary-400 underline hover:text-primary-300 break-all">contact@challengerscc.ca</a> or in person to the Treasurer.</li>
+                <li><strong className="text-white">Submit the receipt within 60 days</strong> of the date the expense was incurred, either by email to <a href="mailto:contact@challengerscc.ca" className="text-primary-400 underline hover:text-primary-300 break-all">contact@challengerscc.ca</a> or in person to the Treasurer. Submissions after the 60-day window are <strong className="text-white">forfeit</strong> and may be paid only at the board&apos;s sole discretion.</li>
                 <li>Reimbursement is paid by e-Transfer or cheque within 14 days of approval.</li>
+                <li><strong className="text-white">Final claim window on departure.</strong> Any outstanding reimbursement claim must be submitted within thirty (30) days of the volunteer ceasing to participate in the Club. After that window, any further reimbursement claim against the Club is waived.</li>
               </ol>
               <p className="text-sm mt-2"><strong className="text-white">Reimbursement is not compensation.</strong> It does not create an employment relationship. It is reimbursement of money the volunteer has already spent on the Club&apos;s behalf.</p>
 
@@ -119,6 +120,31 @@ export default function FinancialPolicyPage() {
                 <li>The Club does not pay any individual a wage, salary, fee, honorarium, or stipend for services rendered.</li>
                 <li>The Club does not engage independent contractors who invoice for hours worked. (Exception: arms-length suppliers like printers, venue operators, or insurance brokers, paid for goods or third-party services delivered, are not contractors of the Club&apos;s personal labour.)</li>
                 <li>If the Club ever needs to pay an individual for skilled work it cannot get donated (e.g. a one-time legal review), this requires <strong className="text-white">advance board approval, a written quote, and a written engagement letter</strong> documenting the arms-length nature of the engagement.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-2">No retroactive compensation</h2>
+              <p className="text-sm">
+                The Club <strong className="text-white">does not, and shall not</strong>, pay retroactive
+                compensation, fees, honoraria, salary, or remuneration to any individual for past volunteer
+                service rendered to the Club, regardless of the title held (Director, Officer, Treasurer,
+                Secretary, Captain, Vice-Captain, Coach, Scorer, committee member, or any other role), the
+                hours invested, the work delivered, the fundraising secured, or the outcomes achieved.
+              </p>
+              <ul className="space-y-2 mt-2 text-sm list-disc list-inside ml-2">
+                <li>Past service is treated as fully volunteer and finally settled by the Volunteer&apos;s signature on the
+                  {' '}<Link href="/legal/volunteer-agreement" className="text-primary-400 underline hover:text-primary-300">Volunteer Agreement</Link>{' '}
+                  (Section 2 — No Compensation). Holding any title within the Club does not create an entitlement to retrospective payment.</li>
+                <li>A future board may not, by resolution or member vote, retroactively pay a former volunteer
+                  for past service. Any future engagement of an individual for paid work must be a
+                  <strong className="text-white"> fresh, forward-going, arms-length engagement</strong> with
+                  prior advance board approval, written engagement letter, conflict-of-interest disclosure,
+                  and arms-length pricing — never a retrospective payment for past unpaid time.</li>
+                <li>Documented out-of-pocket expenses already approved and recorded on the Schedule of Founder
+                  Advances remain repayable to the volunteer&apos;s personal account when funds permit. This
+                  is reimbursement (return of money already spent on the Club&apos;s behalf), not
+                  compensation.</li>
               </ul>
             </section>
 

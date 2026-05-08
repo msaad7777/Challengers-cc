@@ -65,6 +65,8 @@ export default function VolunteerAgreementPage() {
                 <li>The Volunteer will receive <strong className="text-white">no wages, salary, fees, vacation pay, sick pay, severance, or benefits</strong> in connection with their volunteer service to the Club.</li>
                 <li>The Volunteer acknowledges the Club is an Ontario Not-for-Profit Corporation and operates entirely on volunteer effort and member contributions. The Club has no capacity to pay any individual for services rendered.</li>
                 <li>The Volunteer waives, both now and forever, any and all claims for past, present, or future compensation arising from any work, contribution, or service offered to the Club — including (without limitation) playing, coaching, scoring, photography, videography, broadcasting, web/app development, social-media management, sponsor outreach, governance, administration, or any other contribution.</li>
+                <li><strong className="text-white">No retroactive claim based on role or hours.</strong> The Volunteer agrees that holding any title or role within the Club — including but not limited to <em>Director, Officer, Treasurer, Secretary, Captain, Vice-Captain, Coach, Scorer, or any committee position</em> — does not, and shall never, give rise to a claim for retrospective compensation, fees, honoraria, or remuneration. The Volunteer&apos;s signature below is a <strong className="text-white">full and final settlement</strong> of any claim arising from service to the Club from the date of joining through the date of signing, and a continuing waiver for all service rendered thereafter. Hours invested, work performed, results delivered, fundraising secured, and outcomes achieved are all contributed on a volunteer basis and create no entitlement to payment now or in the future.</li>
+                <li><strong className="text-white">Permanent effect on departure.</strong> The waivers and acknowledgements in this Section 2 survive the Volunteer&apos;s departure from the Club for any reason — resignation, removal, end of term, dispute, or otherwise. A former Volunteer who has signed this Agreement may not, after departure, raise a new claim for compensation, retroactive payment, or remuneration based on past volunteer service.</li>
               </ul>
             </section>
 
@@ -103,6 +105,13 @@ export default function VolunteerAgreementPage() {
             <section>
               <h2 className="text-lg font-bold text-white mb-2">5. Expense Reimbursement</h2>
               <p className="text-sm">The Volunteer may, with prior board approval and supporting receipts, be reimbursed for direct out-of-pocket expenses incurred on behalf of the Club (e.g. mileage, equipment, materials). Reimbursement is not compensation. Without an original receipt and prior approval, no reimbursement will be paid.</p>
+              <ul className="space-y-2 mt-2 text-sm list-disc list-inside ml-2">
+                <li><strong className="text-white">Claim window — 60 days.</strong> Reimbursement requests must be submitted in writing (with receipts) within sixty (60) days of the date the expense was incurred. Requests submitted after that window are forfeit and may be paid only at the board&apos;s sole discretion.</li>
+                <li><strong className="text-white">Routing.</strong> Reimbursements are paid only to the personal bank account or e-Transfer email of the Volunteer who personally incurred the expense — never to a corporation, partnership, or other entity controlled by the Volunteer. See the Club&apos;s
+                  <Link href="/legal/financial-policy" className="text-primary-400 hover:text-primary-300 underline mx-1">Financial Policy</Link>.
+                </li>
+                <li><strong className="text-white">Final settlement on departure.</strong> When a Volunteer ceases to participate in the Club for any reason, any outstanding reimbursement claim must be submitted within thirty (30) days of departure. After that date, the Volunteer waives any further reimbursement claim against the Club, and the financial relationship is considered fully and finally settled.</li>
+              </ul>
             </section>
 
             <section>

@@ -92,11 +92,32 @@ export default function OfficerAppointment({ officerName, role, effectiveFrom, r
         repayable.
       </p>
 
-      <h3 className="text-base font-bold text-white mt-4">5. Termination</h3>
+      <h3 className="text-base font-bold text-white mt-4">5. Termination &amp; final settlement</h3>
       <p>
         Either party may end the appointment at any time, in accordance with Bylaws Article 5.3 and Section 4
         of the Volunteer Agreement.
       </p>
+      <p className="mt-2">
+        <strong className="text-white">Final settlement on departure.</strong> When the Officer ceases to
+        hold this role for any reason — resignation, removal, end of term, dispute, or otherwise — the
+        following take effect immediately and survive departure:
+      </p>
+      <ul className="list-disc list-inside ml-2 space-y-1 mt-1">
+        <li>Any outstanding reimbursement claim already approved or recorded on the Schedule of Founder
+          Advances remains repayable to the former Officer&apos;s personal account, when funds permit.</li>
+        <li>Any new reimbursement claim arising from the Officer&apos;s service must be submitted in writing
+          (with receipts, prior approval evidence, and personal-account routing) within
+          <strong className="text-white"> thirty (30) days of departure</strong>. Claims raised after that
+          window are forfeit.</li>
+        <li>The former Officer <strong className="text-white">waives all claims</strong> against the Club for
+          compensation, fees, honoraria, retroactive payment, or remuneration arising from the volunteer
+          service rendered while in this role. The waivers in the Volunteer Agreement Section 2 (No
+          Compensation) survive departure and are reaffirmed by stepping down.</li>
+        <li>Holding this Officer title — Treasurer, Secretary, Captain, or otherwise — does not, and shall
+          never, give rise to a retrospective claim for payment based on the title itself, hours worked,
+          fundraising delivered, or work product created. All such service is contributed on a volunteer
+          basis under <Link href="/legal/volunteer-agreement" className="text-primary-400 hover:text-primary-300 underline">Volunteer Agreement</Link> Section 2.</li>
+      </ul>
 
       <h3 className="text-base font-bold text-white mt-4">6. Indemnification</h3>
       <p>
