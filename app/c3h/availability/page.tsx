@@ -7,6 +7,7 @@ import { createPortal } from 'react-dom';
 import { db, firebaseAuthReady } from '@/lib/firebase';
 import { collection, doc, setDoc, updateDoc, getDocs } from 'firebase/firestore';
 import { isC3HBoard, isC3HCaptain, isC3HSquadViewer } from '@/lib/c3h-access';
+import { EMAIL_TO_PLAYER } from '@/lib/c3h-roster';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
@@ -85,50 +86,8 @@ const SHORT_NAMES: Record<string, string> = {
 const shortName = (fullName: string) => SHORT_NAMES[fullName] || fullName.split(' ')[0];
 
 // Map all emails (board + personal) to a single player name
-const EMAIL_TO_PLAYER: Record<string, string> = {
-  'contact@challengerscc.ca': 'Mohammed Saad',
-  'saad@challengerscc.ca': 'Mohammed Saad',
-  'mbadru3434@gmail.com': 'Mohammed Saad',
-  'tarek@challengerscc.ca': 'Tarek Islam',
-  'monirulislambd64@gmail.com': 'Tarek Islam',
-  'gokul@challengerscc.ca': 'Gokul Prakash',
-  'gokulprakash663@gmail.com': 'Gokul Prakash',
-  'qaiser@challengerscc.ca': 'Qaiser Mahmood',
-  'qureshiqaiser007@gmail.com': 'Qaiser Mahmood',
-  'madhu@challengerscc.ca': 'Madhu Reddy',
-  'vantarimadhu@gmail.com': 'Madhu Reddy',
-  'ankush@challengerscc.ca': 'Ankush Arora',
-  '92ankusharora@gmail.com': 'Ankush Arora',
-  'roman@challengerscc.ca': 'Roman Mahmud',
-  'romans987@gmail.com': 'Roman Mahmud',
-  'shariar@challengerscc.ca': 'Syed Shahriar',
-  'syedshahriar77@gmail.com': 'Syed Shahriar',
-  'denisondavis9@gmail.com': 'Denison Davis',
-  'judinthomas96@gmail.com': 'Judin Thomas',
-  'abhishekladva09@gmail.com': 'Abhishek Ladva',
-  'ashvak.realtor07@gmail.com': 'Ashvak Sheik',
-  'bhindadhesi18@gmail.com': 'Bhupinder Singh',
-  'sallu.ahmed8@gmail.com': 'Salman Ahmed',
-  'saiakhira@gmail.com': 'Saikrishna Goriparthi',
-  'farooqchoudhary123@gmail.com': 'Farooq Choudhary',
-  'vijayvyadav1998@gmail.com': 'Vijay Yadav',
-  'rajputshivam9558@gmail.com': 'Shivam Rajput',
-  'shabyansari0023@gmail.com': 'Shoeb Ahmad',
-  'manoharanukuri9@gmail.com': 'Manohar Anukuri',
-  'mohayminul13@gmail.com': 'Mohayminul',
-  'fahadakbar@gmail.com': 'Fahad Aktar',
-  'andrewjebarson18@gmail.com': 'Andrew Jebarson',
-  'tgururaga@gmail.com': 'Guru Raga',
-  '108.noman@gmail.com': 'Noman',
-  'shafiul078.aust@gmail.com': 'Shafiul',
-  'sujelahmed06@gmail.com': 'Sujel Ahmed',
-  'atik1991rah@gmail.com': 'Atik Rahman',
-  'majharulalam456@gmail.com': 'Majharul Alam',
-  'georgefreddy963@gmail.com': 'Fahad Aktar',
-  'siva4593@gmail.com': 'Siva Sriram',
-  'rajath.s.shetty@gmail.com': 'Rajath Shetty',
-  'maaleemq@gmail.com': 'Aleem Quadri',
-};
+// EMAIL_TO_PLAYER lives in lib/c3h-roster.ts so the Field Editor can share it
+// for its access guard without duplicating the map. See import above.
 
 // Roles that can only be held by ONE player at a time per match.
 // (Captain, Vice-Captain, Wicketkeeper, Batting Sub, Bowling Sub.)

@@ -7,6 +7,8 @@ import { db } from '@/lib/firebase';
 import { doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
+import { isC3HBoard } from '@/lib/c3h-access';
+import { resolvePlayerName } from '@/lib/c3h-roster';
 
 interface FieldPlayer {
   name: string;
@@ -340,6 +342,7 @@ function FieldEditorContent() {
   const [activeScenario, setActiveScenario] = useState<ScenarioId>('powerplay');
   const [viewMode, setViewMode] = useState<'edit' | 'compare'>('edit');
   const [squad, setSquad] = useState<string[]>([]);
+  const [fullSquad, setFullSquad] = useState<string[]>([]);
   const [squadRoles, setSquadRoles] = useState<Record<string, string>>({});
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
   const [showNames, setShowNames] = useState(true);
@@ -348,6 +351,10 @@ function FieldEditorContent() {
   const [saving, setSaving] = useState(false);
   const [screenshotMode, setScreenshotMode] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  // Audit-trail metadata from the field-positions Firestore doc — shown
+  // to captains so they can see who last edited the field placement and
+  // when. Mirrors the Dugout's "Last saved by" UX.
+  const [fieldMeta, setFieldMeta] = useState<{ updatedBy?: string; updatedAt?: string } | null>(null);
 
   // Active scenario's players — derived view, not its own state. Mutations
   // route through `setActivePlayers` which writes back into the scenarios map.
@@ -383,22 +390,33 @@ function FieldEditorContent() {
     if (!matchId || !session?.user?.email) return;
 
     const unsub = onSnapshot(doc(db, 'squads', matchId), async (squadSnap) => {
-      const fullSquad = squadSnap.exists()
+      const fullSquadData = squadSnap.exists()
         ? ((squadSnap.data().players || []) as string[])
         : [];
       const newSquadRoles = squadSnap.exists()
         ? ((squadSnap.data().roles || {}) as Record<string, string>)
         : {};
 
-      const fieldingPlayers = fullSquad.filter(
+      const fieldingPlayers = fullSquadData.filter(
         (name) => newSquadRoles[name] !== 'bat-sub',
       );
 
+      setFullSquad(fullSquadData);
       setSquad(fieldingPlayers);
       setSquadRoles(newSquadRoles);
 
       const fieldDoc = await getDoc(doc(db, 'field-positions', matchId));
       const data = fieldDoc.exists() ? fieldDoc.data() : null;
+
+      // Capture audit-trail metadata for the "Last saved by" badge.
+      if (data?.updatedBy || data?.updatedAt) {
+        setFieldMeta({
+          updatedBy: typeof data.updatedBy === 'string' ? data.updatedBy : undefined,
+          updatedAt: typeof data.updatedAt === 'string' ? data.updatedAt : undefined,
+        });
+      } else {
+        setFieldMeta(null);
+      }
 
       // Detect doc shape — new (scenarios map) vs legacy (single players[]).
       const savedScenarios: Partial<ScenarioMap> = data?.scenarios
@@ -460,12 +478,15 @@ function FieldEditorContent() {
       ...scenariosRef.current,
       [activeScenario]: updatedActivePlayers,
     };
+    const updatedAt = new Date().toISOString();
+    const updatedBy = session?.user?.email || '';
     await setDoc(doc(db, 'field-positions', matchId), {
       scenarios: merged,
       leftHanded: leftHandedRef.current,
-      updatedBy: session?.user?.email,
-      updatedAt: new Date().toISOString(),
+      updatedBy,
+      updatedAt,
     });
+    setFieldMeta({ updatedBy, updatedAt });
     setTimeout(() => setSaving(false), 500);
   }, [matchId, session, activeScenario]);
 
@@ -599,6 +620,59 @@ function FieldEditorContent() {
     );
   }
 
+  // Access guard: only the squad-selected players for THIS match + captains
+  // and board members can view the field placement. Other club players don't
+  // see fielding plans for matches they're not part of (per-match privacy).
+  // We wait for the squad doc to load (`loaded` flag) before deciding,
+  // otherwise a fresh page load could deny a legitimate squad member while
+  // the doc is still being fetched.
+  const userEmail = session.user?.email || '';
+  const isBoardMember = isC3HBoard(userEmail);
+  const userPlayerName = resolvePlayerName(userEmail);
+  const isInSquad = userPlayerName ? fullSquad.includes(userPlayerName) : false;
+  if (loaded && !isBoardMember && !isInSquad) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
+        <Navbar />
+        <section className="pt-32 pb-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mx-auto">
+            <Link
+              href="/c3h/dashboard"
+              className="text-gray-500 text-sm hover:text-primary-400 mb-6 inline-flex items-center gap-1"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Back to Dashboard
+            </Link>
+            <div className="glass rounded-2xl p-6 md:p-8 border-2 border-amber-500/40 bg-gradient-to-r from-amber-500/5 to-transparent">
+              <div className="flex items-start gap-3 mb-4">
+                <span className="text-3xl flex-shrink-0">🔒</span>
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-white mb-2">Field placement is squad-only</h2>
+                  <p className="text-sm text-gray-300">
+                    The field positions for this match are visible only to the players selected
+                    in the squad and to the captains/board. If you believe you should be in this
+                    squad, please contact the captain.
+                  </p>
+                </div>
+              </div>
+              <Link
+                href="/c3h/availability"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-105"
+              >
+                View The Dugout
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
   // Gate the field display until the captain has designated the two roles
   // that drive field placement: Wicketkeeper and Bowling Substitute.
   // Batting Substitute is an off-field roster designation and doesn't
@@ -706,6 +780,31 @@ function FieldEditorContent() {
                 </div>
                 {saving && <span className="text-accent-400 text-xs">Saving...</span>}
               </div>
+
+              {/* Last saved by — audit trail of who last edited the field
+                  placement for this match. Mirrors the Dugout's UX. */}
+              {fieldMeta?.updatedBy && (
+                <div className="mb-3 flex items-center gap-2 text-[11px] text-gray-500">
+                  <svg className="w-3 h-3 text-primary-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                  </svg>
+                  <span>
+                    Last saved by <span className="text-gray-300 font-semibold">{fieldMeta.updatedBy}</span>
+                    {fieldMeta.updatedAt && (
+                      <span className="text-gray-600">
+                        {' · '}
+                        {new Date(fieldMeta.updatedAt).toLocaleString('en-CA', {
+                          month: 'short',
+                          day: 'numeric',
+                          hour: 'numeric',
+                          minute: '2-digit',
+                          hour12: true,
+                        })}
+                      </span>
+                    )}
+                  </span>
+                </div>
+              )}
 
               {/* Squad-readiness banner — captain must designate Bat Sub
                   (12th man, off field) and WK before the field renders
