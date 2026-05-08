@@ -30,7 +30,7 @@ export default function FinancialPolicyPage() {
             <section>
               <h2 className="text-lg font-bold text-white mb-2">Principles</h2>
               <ul className="space-y-2 text-sm list-disc list-inside ml-2">
-                <li>The Club is an Ontario Not-for-Profit Corporation. <strong className="text-white">No surplus is distributed to directors, members, or volunteers</strong>. Any surplus is reinvested in club operations.</li>
+                <li>The Club is a <strong className="text-white">Canada Not-for-Profit Corporation</strong> (Corporation #1746974-8, incorporated under the <em>Canada Not-for-profit Corporations Act</em> on 12 November 2025). <strong className="text-white">No surplus is distributed to directors, members, or volunteers.</strong> Any surplus is reinvested in club operations.</li>
                 <li>The Club has <strong className="text-white">no paid staff or contractors</strong>. All operational work is donated by volunteers.</li>
                 <li>All financial transactions are recorded, traceable, and reviewable.</li>
                 <li>Two unrelated signatures (different households, no family relationship) are required for any payment over $500.</li>
@@ -162,7 +162,7 @@ export default function FinancialPolicyPage() {
 
             <section>
               <h2 className="text-lg font-bold text-white mb-2">External review</h2>
-              <p className="text-sm">If the Club&apos;s annual revenue exceeds the threshold required by the Ontario Not-for-Profit Corporations Act (ONCA), the Club will engage an external accountant to review or audit the annual financial statement. Below the threshold, an internal review by a board member who is not a signing authority is sufficient.</p>
+              <p className="text-sm">If the Club&apos;s annual revenue exceeds the threshold required by the <em>Canada Not-for-profit Corporations Act</em> (CNCA) for review-engagement or audit, the Club will engage an external accountant to review or audit the annual financial statement. Below the threshold, an internal review by a board member who is not a signing authority is sufficient.</p>
               <p className="text-sm mt-2">Once CRA charity status is registered, the annual T3010 charity return will also be filed publicly.</p>
             </section>
 

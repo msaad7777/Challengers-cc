@@ -17,7 +17,7 @@ export default function About() {
             <div className="glass rounded-2xl p-8 glass-hover">
               <h3 className="text-2xl font-bold mb-4 text-primary-400">Our Story</h3>
               <p className="text-gray-300 leading-relaxed mb-4">
-                Challengers Cricket Club (Ontario NFP Corporation #1746974-8) was born from a shared vision: to elevate the quality of cricket in London, Ontario.
+                Challengers Cricket Club (Canada Not-for-Profit Corporation #1746974-8, incorporated 12 November 2025) was born from a shared vision: to elevate the quality of cricket in London, Ontario.
                 In 2025, professionals from diverse backgrounds—engineering, finance, technology, healthcare, and
                 education—came together, united by their passion for cricket and commitment to community building.
               </p>
@@ -45,7 +45,7 @@ export default function About() {
                 Our strength lies in our multidisciplinary approach. With professionals from banking, civil engineering,
                 hardware networking, and community services on our board, we bring corporate governance, financial
                 discipline, technical innovation, and community expertise to cricket administration. We&apos;re an
-                Ontario Not-for-Profit Corporation, run entirely by volunteers, and committed to transparency,
+                Canada Not-for-Profit Corporation, run entirely by volunteers, and committed to transparency,
                 professionalism, and sustainable growth that benefits all of London&apos;s cricket community.
               </p>
             </div>

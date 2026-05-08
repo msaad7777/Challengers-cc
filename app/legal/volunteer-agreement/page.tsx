@@ -5,7 +5,7 @@ import SignBlock from './SignBlock';
 
 export const metadata = {
   title: 'Volunteer Agreement — Challengers Cricket Club',
-  description: 'Volunteer Agreement signed by every player, board member, and contributor of Challengers Cricket Club, an Ontario Not-for-Profit Corporation.',
+  description: 'Volunteer Agreement signed by every player, board member, and contributor of Challengers Cricket Club, a Canada Not-for-Profit Corporation.',
 };
 
 export default function VolunteerAgreementPage() {
@@ -23,7 +23,7 @@ export default function VolunteerAgreementPage() {
           <div className="text-center mb-10">
             <span className="text-3xl">🤝</span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-3 mb-3">Volunteer Agreement</h1>
-            <p className="text-sm text-gray-500">Challengers Cricket Club · Ontario NFP Corporation #1746974-8</p>
+            <p className="text-sm text-gray-500">Challengers Cricket Club · Canada Not-for-Profit Corporation #1746974-8 (CNCA, incorporated 12 November 2025)</p>
           </div>
 
           <div className="glass rounded-2xl p-6 sm:p-8 border border-white/10 space-y-6 text-gray-200 leading-relaxed">
@@ -63,7 +63,7 @@ export default function VolunteerAgreementPage() {
               <h2 className="text-lg font-bold text-white mb-2">2. No Compensation</h2>
               <ul className="space-y-2 text-sm list-disc list-inside ml-2">
                 <li>The Volunteer will receive <strong className="text-white">no wages, salary, fees, vacation pay, sick pay, severance, or benefits</strong> in connection with their volunteer service to the Club.</li>
-                <li>The Volunteer acknowledges the Club is an Ontario Not-for-Profit Corporation and operates entirely on volunteer effort and member contributions. The Club has no capacity to pay any individual for services rendered.</li>
+                <li>The Volunteer acknowledges the Club is a Canada Not-for-Profit Corporation operating under the <em>Canada Not-for-profit Corporations Act</em> (CNCA), is registered with Corporations Canada, and operates entirely on volunteer effort and member contributions. The Club is not registered as an employer with the Canada Revenue Agency, has never operated a payroll, has never issued a T4, and has no capacity to pay any individual for services rendered.</li>
                 <li>The Volunteer waives, both now and forever, any and all claims for past, present, or future compensation arising from any work, contribution, or service offered to the Club — including (without limitation) playing, coaching, scoring, photography, videography, broadcasting, web/app development, social-media management, sponsor outreach, governance, administration, or any other contribution.</li>
                 <li><strong className="text-white">No retroactive claim based on role or hours.</strong> The Volunteer agrees that holding any title or role within the Club — including but not limited to <em>Director, Officer, Treasurer, Secretary, Captain, Vice-Captain, Coach, Scorer, or any committee position</em> — does not, and shall never, give rise to a claim for retrospective compensation, fees, honoraria, or remuneration. The Volunteer&apos;s signature below is a <strong className="text-white">full and final settlement</strong> of any claim arising from service to the Club from the date of joining through the date of signing, and a continuing waiver for all service rendered thereafter. Hours invested, work performed, results delivered, fundraising secured, and outcomes achieved are all contributed on a volunteer basis and create no entitlement to payment now or in the future.</li>
                 <li><strong className="text-white">Permanent effect on departure.</strong> The waivers and acknowledgements in this Section 2 survive the Volunteer&apos;s departure from the Club for any reason — resignation, removal, end of term, dispute, or otherwise. A former Volunteer who has signed this Agreement may not, after departure, raise a new claim for compensation, retroactive payment, or remuneration based on past volunteer service.</li>

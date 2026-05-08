@@ -166,8 +166,8 @@ export default function Navbar() {
           {/* Menu Footer */}
           <div className="p-4 border-t border-white/10">
             <div className="glass rounded-xl p-4 text-center">
-              <p className="text-xs text-gray-400 mb-2">Ontario NFP Corporation</p>
-              <p className="text-xs text-gray-500">#1746974-8</p>
+              <p className="text-xs text-gray-400 mb-2">Canada Not-for-Profit Corporation</p>
+              <p className="text-xs text-gray-500">#1746974-8 · CNCA</p>
             </div>
 
             {/* Social Links */}

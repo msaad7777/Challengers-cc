@@ -51,7 +51,7 @@ export default function LegalDocuments() {
   const documents = [
     {
       title: "Certificate of Incorporation",
-      description: "Official Ontario NFP Corporation registration (1746974-8)",
+      description: "Official Canada Not-for-Profit Corporation registration (1746974-8) under CNCA",
       icon: "📜",
       tag: "Legal",
       requestable: true,
@@ -90,7 +90,7 @@ export default function LegalDocuments() {
             Legal <span className="gradient-text">Documents</span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Transparency and accountability as a registered Ontario non-profit corporation
+            Transparency and accountability as a federally-registered Not-for-Profit Corporation
           </p>
           <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto rounded-full mt-6"></div>
         </div>
@@ -105,7 +105,7 @@ export default function LegalDocuments() {
             </div>
             <div className="text-left">
               <div className="text-sm text-gray-400">Verified Organization</div>
-              <div className="text-lg font-bold gradient-text">Registered Ontario NFP Corporation</div>
+              <div className="text-lg font-bold gradient-text">Registered Canada Not-for-Profit Corporation</div>
               <div className="text-xs text-gray-500">Corporation Number: 1746974-8</div>
             </div>
           </div>

@@ -212,7 +212,7 @@ export default function SponsorshipPage() {
                 </svg>
               </div>
               <h3 className="text-lg font-bold mb-2">Tax Benefits</h3>
-              <p className="text-sm text-gray-400">Registered Ontario non-profit corporation</p>
+              <p className="text-sm text-gray-400">Registered Canada Not-for-Profit Corporation (CNCA #1746974-8)</p>
             </div>
 
             <div className="glass rounded-2xl p-6 glass-hover">
@@ -445,7 +445,7 @@ export default function SponsorshipPage() {
                 <div>
                   <h4 className="font-semibold mb-2 text-accent-400">Sponsorship Terms &amp; Expectations</h4>
                   <p className="text-sm text-gray-400 mb-3">
-                    Challengers Cricket Club is a registered Ontario non-profit corporation. Sponsorship is a community contribution
+                    Challengers Cricket Club is a registered Canada Not-for-Profit Corporation. Sponsorship is a community contribution
                     that supports cricket development — it is not a commercial advertising or lead-generation contract.
                   </p>
                   <div className="space-y-3">

@@ -89,7 +89,7 @@ export default function VerifiedNonprofit() {
       </div>
 
       <p className="text-xs text-gray-500">
-        Ontario NFP Corporation #1746974-8
+        Canada Not-for-Profit Corporation #1746974-8
       </p>
     </div>
   );

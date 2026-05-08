@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 
 export const metadata = {
   title: 'Bylaws (Draft) — Challengers Cricket Club',
-  description: 'Bylaws of Challengers Cricket Club, an Ontario Not-for-Profit Corporation. Starter draft pending legal review.',
+  description: 'Bylaws of Challengers Cricket Club, a Canada Not-for-Profit Corporation incorporated under the Canada Not-for-profit Corporations Act. Starter draft pending legal review.',
 };
 
 export default function BylawsPage() {
@@ -22,7 +22,7 @@ export default function BylawsPage() {
           <div className="text-center mb-10">
             <span className="text-3xl">📜</span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-3 mb-3">Bylaws</h1>
-            <p className="text-sm text-gray-500">Challengers Cricket Club · Ontario NFP Corporation #1746974-8</p>
+            <p className="text-sm text-gray-500">Challengers Cricket Club · Canada Not-for-Profit Corporation #1746974-8 (CNCA, incorporated 12 November 2025)</p>
           </div>
 
           <div className="rounded-2xl p-5 mb-8 border-2 border-accent-500/40 bg-accent-500/10">
@@ -39,7 +39,7 @@ export default function BylawsPage() {
             <section>
               <h2 className="text-lg font-bold text-white mb-2">Article 1 — Name and Office</h2>
               <p>1.1 The name of the corporation is <strong className="text-white">Challengers Cricket Club</strong>.</p>
-              <p>1.2 The corporation is incorporated under the Ontario Not-for-Profit Corporations Act (ONCA) as Ontario Corporation Number 1746974-8, dated 11 November 2025.</p>
+              <p>1.2 The corporation is incorporated under the <em>Canada Not-for-profit Corporations Act</em> (&ldquo;CNCA&rdquo;) as Canada Corporation Number 1746974-8, dated 12 November 2025. The registered office is in London, Ontario, Canada. The Club is registered (or, where required, will register) as an extra-provincial corporation under the Ontario Business Corporations framework so that it may carry on its activities in Ontario.</p>
               <p>1.3 The registered office of the Club is located in London, Ontario, Canada, at the address recorded with the Ontario Business Registry.</p>
             </section>
 
@@ -73,9 +73,9 @@ export default function BylawsPage() {
               <h2 className="text-lg font-bold text-white mb-2">Article 4 — Directors</h2>
               <p>4.1 The Club is governed by a Board of Directors of between three and nine directors.</p>
               <p>4.2 Directors are elected by the members at the Annual General Meeting (AGM) for a term of two years. Directors may serve consecutive terms.</p>
-              <p>4.3 Directors must be members of the Club, at least 18 years of age, and not bankrupt or otherwise disqualified under ONCA.</p>
+              <p>4.3 Directors must be members of the Club, at least 18 years of age, and not bankrupt or otherwise disqualified under CNCA.</p>
               <p>4.4 <strong className="text-white">Directors serve without compensation</strong>. Reasonable expenses incurred on Club business may be reimbursed under the Financial Policy.</p>
-              <p>4.5 A director may resign by written notice. The board may declare a director&apos;s seat vacant if the director: misses three consecutive board meetings without cause; is found to have materially breached this Code of Conduct or the Conflict of Interest Policy; or becomes disqualified under ONCA.</p>
+              <p>4.5 A director may resign by written notice. The board may declare a director&apos;s seat vacant if the director: misses three consecutive board meetings without cause; is found to have materially breached this Code of Conduct or the Conflict of Interest Policy; or becomes disqualified under CNCA.</p>
               <p>4.6 The board may fill mid-term vacancies by appointment until the next AGM.</p>
             </section>
 
@@ -119,7 +119,7 @@ export default function BylawsPage() {
             <section>
               <h2 className="text-lg font-bold text-white mb-2">Article 8 — Financial Year and Records</h2>
               <p>8.1 The Club&apos;s fiscal year is the calendar year (1 January to 31 December).</p>
-              <p>8.2 The Club&apos;s books, records, minutes, member rolls, and financial statements are maintained in accordance with the Financial Policy and ONCA.</p>
+              <p>8.2 The Club&apos;s books, records, minutes, member rolls, and financial statements are maintained in accordance with the Financial Policy and CNCA.</p>
               <p>8.3 Members may, on reasonable notice, inspect the books and records of the Club, except for confidential personal information of other members.</p>
             </section>
 
@@ -150,7 +150,7 @@ export default function BylawsPage() {
             <section>
               <h2 className="text-lg font-bold text-white mb-2">Article 12 — Dissolution</h2>
               <p>12.1 If the Club is dissolved, after payment of all liabilities, the remaining assets shall be distributed to one or more charitable or not-for-profit organizations whose purposes align with those of the Club, as determined by the members at the meeting authorizing dissolution.</p>
-              <p>12.2 <strong className="text-white">No remaining assets shall be distributed to members, directors, or officers</strong>. This article complies with ONCA and Canada Revenue Agency requirements for non-profit and charitable organizations.</p>
+              <p>12.2 <strong className="text-white">No remaining assets shall be distributed to members, directors, or officers</strong>. This article complies with CNCA and Canada Revenue Agency requirements for non-profit and charitable organizations.</p>
               <p>12.3 For the avoidance of doubt: the software, source code, and infrastructure described in Article 10 are <strong className="text-white">not assets of the Club</strong>. They cannot be transferred to a successor organization on dissolution because they were never owned by the Club. The licence granted under Article 10.2 may be transferred to a successor not-for-profit organization only with the written consent of Mohammed Saad.</p>
             </section>
 

@@ -328,7 +328,7 @@ export default function LookingForSponsorsPage() {
               Important <span className="gradient-text">Sponsorship Terms</span>
             </h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              As a registered Ontario non-profit corporation, we want to be fully transparent about what sponsorship means
+              As a registered Canada Not-for-Profit Corporation, we want to be fully transparent about what sponsorship means
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto rounded-full mt-6"></div>
           </div>

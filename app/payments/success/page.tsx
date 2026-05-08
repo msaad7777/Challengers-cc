@@ -107,7 +107,7 @@ function SuccessContent() {
                     />
                   </div>
                   <h2 className="text-xl print:text-lg font-bold">Challengers Cricket Club</h2>
-                  <p className="text-sm print:text-xs text-gray-400">Ontario NFP Corporation #1746974-8</p>
+                  <p className="text-sm print:text-xs text-gray-400">Canada Not-for-Profit Corporation #1746974-8</p>
                   <p className="text-sm print:text-xs text-gray-400">contact@challengerscc.ca | challengerscc.ca</p>
                 </div>
 

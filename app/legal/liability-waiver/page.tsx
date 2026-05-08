@@ -23,7 +23,7 @@ export default function LiabilityWaiverPage() {
           <div className="text-center mb-10">
             <span className="text-3xl">🏏</span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-3 mb-3">Liability Waiver</h1>
-            <p className="text-sm text-gray-500">Challengers Cricket Club · Ontario NFP Corporation #1746974-8</p>
+            <p className="text-sm text-gray-500">Challengers Cricket Club · Canada Not-for-Profit Corporation #1746974-8 (CNCA, incorporated 12 November 2025)</p>
           </div>
 
           <div className="rounded-2xl p-5 mb-8 border-2 border-red-500/40 bg-red-500/5">

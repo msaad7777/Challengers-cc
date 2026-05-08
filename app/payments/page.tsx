@@ -159,7 +159,7 @@ export default function PaymentsPage() {
               <div className="mt-4 pt-4 border-t border-white/10">
                 <p className="text-xs text-gray-500 break-words">
                   <strong>Challengers Cricket Club</strong><br />
-                  Ontario NFP Corporation #1746974-8<br />
+                  Canada Not-for-Profit Corporation #1746974-8<br />
                   <a href="mailto:contact@challengerscc.ca" className="break-all hover:text-gray-400">contact@challengerscc.ca</a>
                 </p>
               </div>

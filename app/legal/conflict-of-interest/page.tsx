@@ -5,7 +5,7 @@ import SignBlock from './SignBlock';
 
 export const metadata = {
   title: 'Conflict of Interest Policy — Challengers Cricket Club',
-  description: 'Director and officer Conflict of Interest Policy for Challengers Cricket Club, an Ontario Not-for-Profit Corporation.',
+  description: 'Director and officer Conflict of Interest Policy for Challengers Cricket Club, a Canada Not-for-Profit Corporation.',
 };
 
 export default function ConflictOfInterestPage() {
@@ -30,7 +30,7 @@ export default function ConflictOfInterestPage() {
 
             <section>
               <h2 className="text-lg font-bold text-white mb-2">Purpose</h2>
-              <p className="text-sm">This Policy ensures that Challengers Cricket Club&apos;s directors, officers, and committee members make decisions in the best interests of the Club — not their personal, family, or business interests. It protects the Club&apos;s reputation, complies with the Ontario Not-for-Profit Corporations Act, and prepares the Club for CRA charity registration.</p>
+              <p className="text-sm">This Policy ensures that Challengers Cricket Club&apos;s directors, officers, and committee members make decisions in the best interests of the Club — not their personal, family, or business interests. It protects the Club&apos;s reputation, complies with the <em>Canada Not-for-profit Corporations Act</em> (CNCA), and prepares the Club for CRA charity registration.</p>
             </section>
 
             <section>

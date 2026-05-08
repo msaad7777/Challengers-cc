@@ -29,7 +29,7 @@ export default function PrivacyPolicyPage() {
 
             <section>
               <h2 className="text-lg font-bold text-white mb-2">Who we are</h2>
-              <p className="text-sm">Challengers Cricket Club (&ldquo;the Club,&rdquo; &ldquo;we,&rdquo; &ldquo;us&rdquo;) is an Ontario Not-for-Profit Corporation (#1746974-8) based in London, Ontario, Canada. We operate a cricket club for newcomer Canadians and the wider London community. This Privacy Policy explains how we handle personal information.</p>
+              <p className="text-sm">Challengers Cricket Club (&ldquo;the Club,&rdquo; &ldquo;we,&rdquo; &ldquo;us&rdquo;) is a <strong className="text-white">Canada Not-for-Profit Corporation</strong> (Corporation #1746974-8, incorporated under the <em>Canada Not-for-profit Corporations Act</em> on 12 November 2025), based in London, Ontario, Canada. We operate a cricket club for newcomer Canadians and the wider London community on a strictly volunteer basis. This Privacy Policy explains how we handle personal information.</p>
               <p className="text-sm mt-2">We are committed to compliance with the federal <strong className="text-white">Personal Information Protection and Electronic Documents Act (PIPEDA)</strong>.</p>
             </section>
 
@@ -54,7 +54,7 @@ export default function PrivacyPolicyPage() {
                 <li>To process payments for registration, fees, and sponsorships</li>
                 <li>To produce season recaps, blog posts, livestreams, and social media content</li>
                 <li>To report aggregate impact metrics to sponsors and grant funders</li>
-                <li>To comply with regulatory requirements (e.g. CRA, Ontario NFP filings)</li>
+                <li>To comply with regulatory requirements (e.g. CRA, federal Corporations Canada filings, Ontario extra-provincial filings)</li>
                 <li>To respond to inquiries from the public, sponsors, and partners</li>
               </ul>
             </section>

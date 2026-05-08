@@ -377,7 +377,7 @@ export const blogPosts: BlogPost[] = [
 
       <h2 class="text-2xl font-bold text-white mt-8 mb-3">What this means for Challengers</h2>
       <p class="text-gray-300 leading-relaxed mb-4">
-        Since incorporating as an Ontario Not-for-Profit Corporation in November 2025, Challengers has built — almost entirely on volunteer time — the infrastructure of a serious community club:
+        Since incorporating as a Canada Not-for-Profit Corporation in November 2025, Challengers has built — almost entirely on volunteer time — the infrastructure of a serious community club:
       </p>
       <ul class="space-y-2 text-gray-300 mb-6 ml-4">
         <li>✅ Two competitive league entries (LCL T30 + LPL T30) for the 2026 season</li>
@@ -613,7 +613,7 @@ export const blogPosts: BlogPost[] = [
       <h3 class="text-2xl font-bold text-white mb-4">Why RabyIT Chose Challengers</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         RabyIT's team understands the importance of community investment. By partnering with a registered
-        Ontario non-profit corporation, they are supporting youth development, diversity in sport, and
+        Canada Not-for-Profit Corporation, they are supporting community development, diversity in sport, and
         healthy recreation for families in London. Their sponsorship directly funds equipment, venue
         bookings, and player development programs.
       </p>
