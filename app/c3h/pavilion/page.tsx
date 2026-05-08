@@ -19,7 +19,9 @@ import {
   C3H_DIRECTOR_ROSTER,
   C3H_OFFICER_ROSTER,
   isC3HDirector,
+  isC3HOfficer,
   resolveDirectorWorkspaceEmail,
+  resolveOfficerWorkspaceEmail,
 } from '@/lib/c3h-access';
 import Navbar from '@/components/Navbar';
 import { GOVERNANCE_DOCS, LICENSOR, type GovernanceDoc } from './governanceDocs';
@@ -73,7 +75,7 @@ export default function PavilionPage() {
 
   useEffect(() => {
     if (!session?.user?.email) return;
-    if (!isC3HDirector(session.user.email)) return;
+    if (!isC3HDirector(session.user.email) && !isC3HOfficer(session.user.email)) return;
     const q = query(collection(db, SIG_COLLECTION), where('docId', 'in', GOVERNANCE_DOCS.map(d => d.id)));
     const unsub = onSnapshot(q, (snap) => {
       const map: Record<string, SignatureRecord> = {};
@@ -92,7 +94,7 @@ export default function PavilionPage() {
   // needed.
   useEffect(() => {
     if (!session?.user?.email) return;
-    if (!isC3HDirector(session.user.email)) return;
+    if (!isC3HDirector(session.user.email) && !isC3HOfficer(session.user.email)) return;
     getDocs(collection(db, 'volunteer_agreement_signatures'))
       .then((snap) => {
         const emails = new Set<string>();
@@ -121,9 +123,28 @@ export default function PavilionPage() {
   }, [session?.user?.email]);
 
   const userEmail = session?.user?.email || '';
-  const userWorkspaceEmail = useMemo(() => resolveDirectorWorkspaceEmail(userEmail), [userEmail]);
+  const isDirector = isC3HDirector(userEmail);
+  const isOfficer = isC3HOfficer(userEmail);
+  // Pavilion gates governance reading to directors + officers; only directors
+  // can sign corporate-binding documents and vote on board resolutions.
+  const canSign = isDirector;
+  const canVote = isDirector;
+
+  // Resolve canonical workspace email for whichever role the user holds.
+  // Used as the key for signature records (directors only sign here, but
+  // officers still need a stable identity for read-only context).
+  const userWorkspaceEmail = useMemo(
+    () =>
+      resolveDirectorWorkspaceEmail(userEmail) ??
+      resolveOfficerWorkspaceEmail(userEmail) ??
+      null,
+    [userEmail],
+  );
   const userRosterEntry = useMemo(
-    () => C3H_DIRECTOR_ROSTER.find((d) => d.workspaceEmail === userWorkspaceEmail),
+    () =>
+      C3H_DIRECTOR_ROSTER.find((d) => d.workspaceEmail === userWorkspaceEmail) ??
+      C3H_OFFICER_ROSTER.find((o) => o.workspaceEmail === userWorkspaceEmail) ??
+      null,
     [userWorkspaceEmail],
   );
 
@@ -136,19 +157,21 @@ export default function PavilionPage() {
   }
   if (!session) return null;
 
-  // Hard gate: only directors may enter the Pavilion.
-  if (!isC3HDirector(userEmail)) {
+  // Pavilion is open to directors (full access — sign + vote) and officers
+  // (read-only — see governance docs, who has signed, what resolutions
+  // exist). Players have no access.
+  if (!isDirector && !isOfficer) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
         <Navbar />
         <div className="pt-32 px-6 max-w-xl mx-auto text-center">
           <div className="glass rounded-2xl p-8 border border-white/10">
             <div className="text-3xl mb-3">🏛️</div>
-            <h1 className="text-2xl font-bold text-white mb-2">The Pavilion is for directors</h1>
+            <h1 className="text-2xl font-bold text-white mb-2">The Pavilion is for directors and officers</h1>
             <p className="text-sm text-gray-400 mb-4">
               You&apos;re signed in as <code className="text-primary-400">{userEmail}</code>, but this page is only
-              accessible to the elected directors of Challengers Cricket Club. If you should have access, please
-              contact <a href="mailto:contact@challengerscc.ca" className="text-primary-400 underline">contact@challengerscc.ca</a>.
+              accessible to the elected directors and appointed officers of Challengers Cricket Club. If you should
+              have access, please contact <a href="mailto:contact@challengerscc.ca" className="text-primary-400 underline">contact@challengerscc.ca</a>.
             </p>
             <button
               onClick={() => router.push('/c3h/dashboard')}
@@ -236,14 +259,33 @@ export default function PavilionPage() {
               <h1 className="text-3xl md:text-4xl font-bold text-white">The Pavilion</h1>
             </div>
             <p className="text-gray-400 text-sm">
-              Director-only governance hub for Challengers Cricket Club. Sign resolutions and corporate
-              agreements electronically. All signatures are timestamped and stored in the Club&apos;s permanent
+              Governance hub for Challengers Cricket Club. Directors sign corporate agreements and vote on
+              board resolutions; officers (Treasurer, Secretary, Captain) have read-only access for
+              transparency. All signatures and votes are timestamped and stored in the Club&apos;s permanent
               governance ledger.
             </p>
             <p className="text-gray-500 text-xs mt-2">
               You are signed in as <strong className="text-white">{userRosterEntry?.name}</strong> ({userRosterEntry?.role}) — <code className="text-primary-400">{userWorkspaceEmail}</code>.
             </p>
           </div>
+
+          {/* Read-only banner for officers — makes the access mode unambiguous
+              before they wonder why the Sign / Vote buttons are disabled. */}
+          {!isDirector && isOfficer && (
+            <div className="mb-6 rounded-xl bg-amber-500/5 border border-amber-500/30 p-4">
+              <p className="text-sm font-bold text-amber-300 mb-1 flex items-center gap-2">
+                <span>🔒</span>
+                <span>Read-only access — Officer view</span>
+              </p>
+              <p className="text-xs text-amber-100 leading-relaxed">
+                You can read all governance documents and see who has signed and how votes are tracking.
+                Signing corporate-binding agreements (IP Ownership, Software Licence Agreement) and voting on
+                board resolutions are reserved for the Club&apos;s elected directors under the Bylaws. This
+                read-only view is for Officer transparency and oversight of governance, not corporate
+                authority.
+              </p>
+            </div>
+          )}
 
           {/* My Volunteer Agreement status — every member (including directors)
               should sign this. Show a clear CTA if the current user hasn't yet. */}
@@ -341,7 +383,11 @@ export default function PavilionPage() {
                           Public version ↗
                         </a>
                       )}
-                      {isConflicted ? (
+                      {!canSign ? (
+                        <span className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-gray-400">
+                          🔒 Read-only · Directors sign this document
+                        </span>
+                      ) : isConflicted ? (
                         <span className="px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-sm text-amber-300">
                           You are recused (conflict of interest declared)
                         </span>
@@ -561,6 +607,7 @@ export default function PavilionPage() {
                 userEmail={userEmail}
                 userWorkspaceEmail={userWorkspaceEmail}
                 userName={userRosterEntry.name}
+                canVote={canVote}
               />
             )}
           </div>

@@ -64,9 +64,14 @@ type Props = {
   userEmail: string;
   userWorkspaceEmail: string;
   userName: string;
+  // True only for directors. Officers and other read-only viewers see
+  // the resolutions list but cannot propose, vote, or close.
+  canVote?: boolean;
 };
 
-export default function Resolutions({ userEmail, userWorkspaceEmail, userName }: Props) {
+export default function Resolutions({
+  userEmail, userWorkspaceEmail, userName, canVote = true,
+}: Props) {
   const [resolutions, setResolutions] = useState<Resolution[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -136,12 +141,14 @@ export default function Resolutions({ userEmail, userWorkspaceEmail, userName }:
             financial decisions, governance amendments, and ad-hoc votes. Each resolution records every director&apos;s vote with timestamp.
           </p>
         </div>
-        <button
-          onClick={() => setShowForm((s) => !s)}
-          className="px-4 py-2 rounded-lg bg-primary-500 text-black font-semibold text-sm hover:bg-primary-400 transition-all"
-        >
-          {showForm ? 'Cancel' : '+ Propose resolution'}
-        </button>
+        {canVote && (
+          <button
+            onClick={() => setShowForm((s) => !s)}
+            className="px-4 py-2 rounded-lg bg-primary-500 text-black font-semibold text-sm hover:bg-primary-400 transition-all"
+          >
+            {showForm ? 'Cancel' : '+ Propose resolution'}
+          </button>
+        )}
       </div>
 
       {showForm && (
@@ -178,6 +185,7 @@ export default function Resolutions({ userEmail, userWorkspaceEmail, userName }:
                   onVote={(vote, comment) => submitVote(r, vote, comment)}
                   onClose={() => closeResolution(r)}
                   busy={busy === r.id}
+                  roleCanVote={canVote}
                 />
               ))}
             </div>
@@ -204,6 +212,7 @@ export default function Resolutions({ userEmail, userWorkspaceEmail, userName }:
                   onVote={() => {}}
                   onClose={() => {}}
                   busy={false}
+                  roleCanVote={canVote}
                 />
               ))}
             </div>
@@ -226,6 +235,7 @@ function ResolutionCard({
   res, expanded, onToggle,
   userEmail, userWorkspaceEmail, userName,
   voting, setVoting, onVote, onClose, busy,
+  roleCanVote,
 }: {
   res: Resolution;
   expanded: boolean;
@@ -238,6 +248,10 @@ function ResolutionCard({
   onVote: (vote: Vote['vote'], comment: string) => void;
   onClose: () => void;
   busy: boolean;
+  // Role-based voting permission. False for officers / read-only viewers,
+  // true for directors. Combines with the existing per-resolution
+  // canVote (open + not recused + not expired) below.
+  roleCanVote: boolean;
 }) {
   const votes = res.votes ?? {};
   const allDirectors = C3H_DIRECTOR_ROSTER;
@@ -263,7 +277,9 @@ function ResolutionCard({
   const isProposer = res.proposedByEmail === userWorkspaceEmail;
   const isRecused = recused.includes(userWorkspaceEmail);
   const expired = isExpired(res.deadline);
-  const canVote = res.status === 'open' && !isRecused && !expired;
+  // Final voting permission combines role (director vs officer/read-only)
+  // with per-resolution state (open + not recused + not expired).
+  const canVote = roleCanVote && res.status === 'open' && !isRecused && !expired;
   const passedThreshold = tally.yes > required.length / 2;
 
   return (
@@ -420,7 +436,14 @@ function ResolutionCard({
             </div>
           )}
 
-          {isRecused && res.status === 'open' && (
+          {!roleCanVote && res.status === 'open' && (
+            <p className="text-xs text-gray-500 italic">
+              🔒 Read-only — only directors vote on board resolutions. Officers and other read-only viewers
+              can see the resolution and the running tally for transparency.
+            </p>
+          )}
+
+          {roleCanVote && isRecused && res.status === 'open' && (
             <p className="text-xs text-amber-300 italic">
               You are recused on this resolution (conflict of interest declared). You cannot vote.
             </p>
@@ -432,8 +455,8 @@ function ResolutionCard({
             </p>
           )}
 
-          {/* Proposer can close */}
-          {isProposer && res.status === 'open' && (
+          {/* Proposer can close — only if they still have role-based voting rights */}
+          {isProposer && res.status === 'open' && roleCanVote && (
             <div className="pt-2">
               <button
                 type="button"
