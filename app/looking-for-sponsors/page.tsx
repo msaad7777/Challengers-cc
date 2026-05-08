@@ -28,13 +28,14 @@ export default function LookingForSponsorsPage() {
             </h1>
 
             <p className="text-xl sm:text-2xl text-gray-300 mb-4 max-w-3xl mx-auto">
-              Join Us in Supporting Community, Youth, and Cricket Excellence
+              Join Us in Supporting Community Cricket in London, Ontario
             </p>
 
             <p className="text-lg text-gray-400 max-w-3xl mx-auto">
-              Challengers Cricket Club, established in 2025, is a registered Ontario non-profit corporation
-              dedicated to fostering cricket development, promoting diversity, and building community connections
-              in London, Ontario. We are seeking sponsors for our 2026 season to help grow the sport we love.
+              Challengers Cricket Club, established in 2025, is a Not-for-Profit Corporation dedicated to
+              fostering cricket development, promoting diversity, and building community connections in
+              London, Ontario. We are seeking sponsors for our 2026 season to help grow the sport we love.
+              We are not a registered charity and do not issue charitable tax receipts.
             </p>
           </div>
         </div>

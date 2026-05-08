@@ -22,10 +22,10 @@ export default function About() {
                 education—came together, united by their passion for cricket and commitment to community building.
               </p>
               <p className="text-gray-300 leading-relaxed">
-                What makes us unique is our diversity of experience. From former first-class cricketers to seasoned
-                club administrators, from IT specialists to community organizers, each board member brings specialized
-                expertise. Together, we combine strategic thinking, technical knowledge, and grassroots experience to
-                create a professionally run, community-focused cricket club that London deserves.
+                What makes us unique is our diversity of experience. Each board member brings expertise from
+                their own field — banking, civil engineering, healthcare, technology, and community services —
+                and a long-standing love of the game. Together, we combine strategic thinking, technical
+                knowledge, and grassroots experience to build a community-focused cricket club for London.
               </p>
             </div>
 
@@ -72,8 +72,8 @@ export default function About() {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-lg mb-1">Elite Training</h4>
-                      <p className="text-gray-400 text-sm">Professional coaching and development programs for all ages</p>
+                      <h4 className="font-semibold text-lg mb-1">Saturday Practice</h4>
+                      <p className="text-gray-400 text-sm">Volunteer-led practice sessions and match-day reflections through the season</p>
                     </div>
                   </div>
 
@@ -101,15 +101,20 @@ export default function About() {
                     </div>
                   </div>
 
-                  <div className="flex gap-4">
+                  <div className="flex gap-4 relative">
                     <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-accent-500/10 border border-accent-500/30 flex items-center justify-center">
                       <svg className="w-6 h-6 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-lg mb-1">Youth Development</h4>
-                      <p className="text-gray-400 text-sm">Dedicated programs to nurture the next generation of cricketers</p>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="font-semibold text-lg">Youth Development</h4>
+                        <span className="text-[10px] uppercase tracking-wider font-semibold text-accent-300 bg-accent-500/20 border border-accent-500/40 rounded-full px-2 py-0.5">
+                          Coming Soon
+                        </span>
+                      </div>
+                      <p className="text-gray-400 text-sm">A future program for younger players is in planning. Not currently active.</p>
                     </div>
                   </div>
                 </div>

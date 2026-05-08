@@ -78,6 +78,25 @@ export default function FinancialPolicyPage() {
                 <li>Reimbursement is paid by e-Transfer or cheque within 14 days of approval.</li>
               </ol>
               <p className="text-sm mt-2"><strong className="text-white">Reimbursement is not compensation.</strong> It does not create an employment relationship. It is reimbursement of money the volunteer has already spent on the Club&apos;s behalf.</p>
+
+              <div className="mt-4 rounded-lg border border-amber-500/40 bg-amber-500/5 p-3">
+                <p className="text-xs uppercase tracking-wider text-amber-300 font-bold mb-1.5">Reimbursement payment routing</p>
+                <p className="text-sm text-gray-300 leading-relaxed mb-2">
+                  Reimbursements are paid only to the personal bank account or e-Transfer email of the
+                  individual who personally incurred the expense. The Club does not route reimbursements through
+                  corporations, partnerships, or other entities controlled by the recipient — regardless of
+                  preference, convenience, or internal accounting reasons on the recipient&apos;s side. This
+                  applies equally to all directors, officers, captains, players, and volunteers.
+                </p>
+                <p className="text-sm text-gray-300 leading-relaxed">
+                  If an expense was paid from a corporate or third-party account, that entity must invoice the
+                  Club as a vendor under arms-length terms (see <em>No payment for services</em> below) — it is
+                  not handled as a personal reimbursement. Any exception to this rule requires advance board
+                  approval recorded in the minutes, with the conflicted recipient recused from the vote, and is
+                  treated as a related-party vendor transaction under the
+                  {' '}<Link href="/legal/conflict-of-interest" className="text-primary-400 underline hover:text-primary-300">Conflict of Interest Policy</Link>.
+                </p>
+              </div>
             </section>
 
             <section>

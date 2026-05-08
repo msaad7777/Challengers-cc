@@ -424,9 +424,11 @@ export default function SponsorshipPage() {
                 <div>
                   <h4 className="font-semibold mb-2 text-primary-400">Payment Receipts</h4>
                   <p className="text-sm text-gray-400">
-                    Official payment receipts are provided for all sponsorship contributions via email within 2 business days of payment confirmation.
-                    As a registered Ontario non-profit corporation, sponsor contributions may be claimed as a business expense.
-                    Challengers Cricket Club is not yet a registered charity and does not issue CRA charitable tax receipts.
+                    Official payment receipts are provided for all sponsorship contributions via email within
+                    2 business days of payment confirmation. Challengers Cricket Club is a Not-for-Profit
+                    Corporation. We are not a registered charity with the Canada Revenue Agency, and we do not
+                    issue charitable tax receipts. For the tax treatment of any contribution, please consult
+                    your own accountant or tax adviser.
                   </p>
                 </div>
               </div>

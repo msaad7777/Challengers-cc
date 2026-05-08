@@ -73,13 +73,26 @@ export default function PrivacyPolicyPage() {
 
             <section>
               <h2 className="text-lg font-bold text-white mb-2">Who operates this platform</h2>
-              <p className="text-sm">The Club&apos;s public website at <code className="text-primary-400">challengerscc.ca</code> and the C3H members&apos; portal are <strong className="text-white">operated on behalf of the Club</strong> by <strong className="text-white">Mohammed Saad</strong>, who authored the software personally and pays for the underlying cloud infrastructure (Vercel, Firebase, NextAuth/Google sign-in) at no cost to the Club. Full details of this arrangement are set out in the <Link href="/legal/ip-ownership" className="text-primary-400 underline hover:text-primary-300">Software &amp; IP Ownership Acknowledgement</Link>.</p>
+              <p className="text-sm">
+                The Club&apos;s public website at <code className="text-primary-400">challengerscc.ca</code>
+                and the C3H members&apos; portal are <strong className="text-white">operated on behalf of the
+                Club</strong> by <strong className="text-white">Mohammed Saad</strong>, who authored the
+                software personally. The source-code and web-hosting accounts (GitHub for source control,
+                Vercel for production hosting) are registered to him personally and paid for by him.
+                {' '}<strong className="text-white">The Firebase / Google Cloud project that stores all member
+                data and personal information</strong> — project ID
+                {' '}<code className="text-primary-400">challengers-c3h</code> — is owned and administered by
+                the Club, through the <strong className="text-white">contact@challengerscc.ca</strong>
+                {' '}Google Workspace account (Owner role in the Google Cloud Console). Full details of this
+                arrangement are set out in the
+                {' '}<Link href="/legal/ip-ownership" className="text-primary-400 underline hover:text-primary-300">Software &amp; IP Ownership Acknowledgement</Link>.
+              </p>
               <p className="text-sm mt-2">For PIPEDA purposes:</p>
               <ul className="space-y-2 mt-2 text-sm list-disc list-inside ml-2">
-                <li><strong className="text-white">Challengers Cricket Club is the data controller</strong> — we decide what personal information is collected and why.</li>
-                <li><strong className="text-white">Mohammed Saad is the data processor</strong> — he operates the platform on our instructions and may not use member data for any other purpose.</li>
+                <li><strong className="text-white">Challengers Cricket Club is the data controller</strong> — we decide what personal information is collected, why, and how long it is retained. The Firebase / Firestore project that stores it is registered to and administered by the Club.</li>
+                <li><strong className="text-white">Mohammed Saad is the data processor</strong> — he operates the platform on the Club&apos;s instructions and may not use member data for any other purpose. He does not own the data, the Firebase project, or any administrative claim on personal information stored there. His access is operational only and may be revoked at any time by board resolution.</li>
                 <li>Mohammed Saad is contractually prohibited from using Club member data to train artificial intelligence models, demonstrate to other clubs, or build commercial products. Member data may not be re-used in any future commercial offering — by him or by any corporation he owns — without each member&apos;s explicit consent and a separate Data Processing Agreement.</li>
-                <li>Sub-processors used to deliver the platform (each subject to their own privacy practices): <strong className="text-white">Vercel</strong> (web hosting), <strong className="text-white">Google Cloud / Firebase</strong> (database, authentication), <strong className="text-white">Stripe</strong> (payments), <strong className="text-white">Zeffy</strong> (donations, when active), <strong className="text-white">YouTube</strong> (video hosting).</li>
+                <li>Sub-processors used to deliver the platform (each subject to their own privacy practices): <strong className="text-white">Vercel</strong> (web hosting, source code only — no member data), <strong className="text-white">Google Cloud / Firebase</strong> (Club-owned project; database, authentication, file storage), <strong className="text-white">Stripe</strong> (payments), <strong className="text-white">Zeffy</strong> (donations, when active), <strong className="text-white">YouTube</strong> (video hosting).</li>
               </ul>
               <p className="text-sm mt-2">A formal Software Licence Agreement (which includes data processing terms) between the Club and Mohammed Saad is being executed and will be e-signed by the directors via the C3H Pavilion governance module. Until then, this Privacy Policy and the IP Ownership Acknowledgement constitute the public record of the arrangement.</p>
             </section>
