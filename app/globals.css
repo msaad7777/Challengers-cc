@@ -67,3 +67,58 @@
 .animate-marquee:hover {
   animation-play-state: paused;
 }
+
+/* Print / Save-as-PDF styles for /legal/* pages.
+   Applies to every legal-document page that imports the PrintButton —
+   strips the dark theme, forces white background + black text, hides
+   navbar/footer/buttons, sets letter-size pages with 0.75in margins. */
+@media print {
+  @page {
+    size: letter;
+    margin: 0.75in 0.6in;
+  }
+  html, body {
+    background: white !important;
+    color: black !important;
+  }
+  .glass {
+    background: white !important;
+    border-color: #ccc !important;
+    box-shadow: none !important;
+  }
+  /* Body text: dark and readable */
+  h1, h2, h3, h4, h5, h6,
+  p, li, span, strong, em, code {
+    color: black !important;
+  }
+  /* Subtitles in slightly muted grey */
+  .text-gray-500, .text-gray-600 {
+    color: #444 !important;
+  }
+  /* Highlight blocks become bordered boxes */
+  .bg-amber-500\/10, .bg-amber-500\/5,
+  .bg-accent-500\/10, .bg-accent-500\/5,
+  .bg-primary-500\/10, .bg-primary-500\/5 {
+    background: white !important;
+    border: 1px solid #999 !important;
+  }
+  .text-amber-300, .text-amber-100, .text-amber-200,
+  .text-accent-400, .text-accent-300,
+  .text-primary-300, .text-primary-400 {
+    color: black !important;
+  }
+  /* Links: keep underline for legibility */
+  a {
+    color: black !important;
+    text-decoration: underline !important;
+  }
+  /* Avoid orphan headings */
+  h2, h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  section {
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+}

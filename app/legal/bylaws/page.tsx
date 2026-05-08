@@ -128,14 +128,16 @@ export default function BylawsPage() {
               <ul className="list-disc list-inside ml-4 space-y-1">
                 <li>(a) Any Director may propose a resolution to remove an officer, by raising the matter at a regular meeting of the Board or by requesting a special meeting under Article VI;</li>
                 <li>(b) The officer in question shall be given reasonable written notice of the proposed resolution and shall be afforded an opportunity to respond, in writing or in person, prior to the vote, except where the Board determines that immediate removal is necessary to protect the interests of the Corporation;</li>
-                <li>(c) <strong className="text-white">Recusal — protected against bad-faith motions.</strong> Where the officer being considered for removal is also a Director, that Director may be required to recuse from the removal vote concerning themselves <strong className="text-white">only after</strong> the Board, by majority vote of the OTHER Directors, has first determined that there are documented good-faith grounds for the proposed removal. Mere accusation, unsupported allegation, threat, or retaliatory motion does not trigger recusal. The threshold determination of merit is itself an Ordinary Resolution of the non-conflicted Directors, taken on the documentary evidence presented;</li>
+                <li>(c) <strong className="text-white">Recusal — by self-disclosure only, consistent with CNCA s. 141.</strong> Where the officer being considered for removal is also a Director, that Director may, in their own discretion and consistent with their fiduciary duty under CNCA s. 148, choose to disclose a material interest under CNCA s. 141 and recuse themselves from voting on the specific resolution concerning their own officer position. <strong className="text-white">Recusal is self-applied by the Director, not imposed by other Directors, by the proposing Director, or by any external party.</strong> Mere accusation, threat, unsupported allegation, retaliatory motion, or other Directors&apos; vote does not strip a Director&apos;s right to vote, including on a motion concerning their own officer position. A Director who chooses not to recuse retains their full voting rights on the resolution; the consequences of that choice are governed by the Director&apos;s fiduciary duties under CNCA, enforceable only through the statutory remedies available to members and the Corporation;</li>
                 <li>(d) The Board may consider grounds for removal including, but not limited to: failure to perform the duties of the role; breach of the <Link href="/legal/code-of-conduct" className="text-primary-400 underline hover:text-primary-300">Code of Conduct</Link> or the <Link href="/legal/conflict-of-interest" className="text-primary-400 underline hover:text-primary-300">Conflict of Interest Policy</Link>; refusal to follow proper Club procedures (including banking, financial controls, and signing protocols); failure to e-sign required governance documents by published deadlines; conduct detrimental to the Corporation; or any other reason the Board determines is in the best interests of the Corporation;</li>
                 <li>(e) Removal is effective immediately upon the resolution being passed, unless the resolution specifies a later effective date;</li>
                 <li>(f) <strong className="text-white">Replacement is &ldquo;in progress&rdquo; — never automatic.</strong> The Board shall determine whether and when to appoint a replacement officer. Replacement appointments are not automatic and may take time to identify a suitable candidate. The Board may leave a position vacant, designate it as &ldquo;in progress&rdquo; or &ldquo;in transition&rdquo;, or operate without that role for as long as the Board determines is in the best interests of the Corporation. The duties of a vacant officer position may, in the interim, be performed by the remaining officers or by the Board collectively. No individual is entitled to be appointed to a vacant position by virtue of seniority, candidacy, or any other claim.</li>
               </ul>
-              <p>4.10 <strong className="text-white">Removal of a Director.</strong> A Director (as distinct from an officer) may be removed only by Ordinary Resolution of the members at a special meeting called for that purpose, in accordance with Article 4.6 and the CNCA. The Board cannot, by resolution alone, remove a Director. A Director&apos;s right to vote at meetings of the Board cannot be stripped by accusation or motion; only the documented good-faith recusal procedure in Article 4.9(c) — or the formal removal procedure of Article 4.6 — affects a Director&apos;s voting rights, and even then only on the specific motion to which the conflict relates.</p>
+              <p>4.10 <strong className="text-white">Removal of a Director — CNCA s. 130.</strong> A Director (as distinct from an officer) may be removed only by Ordinary Resolution of the members at a special meeting called for that purpose, in accordance with Article 4.6 and CNCA s. 130. The Board cannot, by resolution alone, remove a Director.</p>
+              <p>4.10.1 <strong className="text-white">Statutory protection of voting rights.</strong> A Director&apos;s right to vote at meetings of the Board is a statutory right under CNCA s. 143 and cannot be stripped, suspended, or curtailed by accusation, threat, allegation, or motion of other Directors, members, officers, or any external party. The only mechanisms that lawfully affect a Director&apos;s voting rights are: (i) the Director&apos;s own self-disclosed material interest under CNCA s. 141, and only on the specific resolution to which that interest relates; (ii) the Director&apos;s removal by member Ordinary Resolution under CNCA s. 130; (iii) the Director&apos;s resignation; or (iv) the Director&apos;s automatic disqualification under CNCA s. 126(3) (e.g., bankruptcy, incapacity, age under 18). No other procedure — internal or external — can affect a Director&apos;s statutory voting rights.</p>
+              <p>4.10.2 <strong className="text-white">Investigation does not affect voting rights.</strong> If allegations are raised against a Director, the Board may investigate the matter or refer it to members for consideration at a special meeting; however, the accused Director retains their full voting rights throughout any such investigation or proceeding, until and unless removal is lawfully effected under Article 4.10. Pending allegations do not constitute grounds for recusal under CNCA s. 141 unless the Director themselves discloses a material interest in the specific transaction at issue.</p>
               <p>4.11 <strong className="text-white">Final settlement on removal.</strong> An officer removed under Article 4.9, or a Director removed under Article 4.10, shall remain bound by the survival provisions of the <Link href="/legal/volunteer-agreement" className="text-primary-400 underline hover:text-primary-300">Volunteer Agreement</Link> (Section 2 — No Compensation; survives departure) and the Officer Appointment Letter Section 5 (Final settlement on departure). Outstanding documented out-of-pocket expense claims approved before removal remain repayable in accordance with the <Link href="/legal/financial-policy" className="text-primary-400 underline hover:text-primary-300">Financial Policy</Link>; new claims must be filed within 30 days of removal or are forfeit. No claim for retroactive compensation, fees, honoraria, or remuneration may be raised by or on behalf of a removed officer or Director, in accordance with Article XVI.</p>
-              <p>4.12 <strong className="text-white">Protection against bad-faith motions and false claims.</strong> No motion to remove a Director or officer, no motion to recuse a Director or officer from voting, and no motion to discipline or expel a member shall be entertained unless: (a) it is made in good faith with the best interests of the Corporation in view; (b) it is supported by documented evidence; and (c) it is not retaliatory or punitive in nature. The Board may, by majority vote, dismiss any motion that fails to meet these criteria. A pattern of bad-faith motions or knowingly false claims by an individual may itself constitute grounds for that individual&apos;s removal under Article 4.9 or expulsion under Article 3.6. A Director&apos;s ordinary voting rights at the Board cannot be stripped, suspended, or curtailed on the basis of unproven allegations or threats; only documented, good-faith motions taken under proper procedure can affect those rights, and only with respect to the specific resolution to which a documented conflict applies.</p>
+              <p>4.12 <strong className="text-white">Protection against bad-faith motions and false claims.</strong> Consistent with Article 4.10.1 and the fiduciary duties imposed on Directors by CNCA s. 148 (to act honestly and in good faith with a view to the best interests of the Corporation), no motion to remove an officer, to discipline a member, or to call a special meeting for the removal of a Director shall be entertained unless: (a) it is made in good faith with the best interests of the Corporation in view; (b) it is supported by documented evidence; and (c) it is not retaliatory or punitive in nature. The Board may, by majority vote of the non-conflicted Directors, dismiss any motion that fails to meet these criteria. A pattern of bad-faith motions or knowingly false claims by any individual is itself a breach of fiduciary duty (in the case of a Director) or a breach of the Code of Conduct (in any other case) and may constitute grounds for that individual&apos;s removal under Article 4.9, expulsion under Article 3.6, or referral to members for consideration of removal as a Director under Article 4.10. <strong className="text-white">For the avoidance of doubt: this Article does not, and cannot, override the statutory protections of CNCA s. 130, s. 141, and s. 143; a Director&apos;s right to vote remains intact except as expressly affected by those provisions.</strong></p>
             </section>
 
             <section>
@@ -255,61 +257,6 @@ export default function BylawsPage() {
       </section>
 
       <Footer />
-
-      {/* Print-friendly styles — when printing or saving as PDF, hide
-          chrome (nav, footer, print button), force a white background,
-          dark text, normal weights, and add page breaks at sensible
-          spots so each Article fits cleanly on a printed page. */}
-      <style jsx global>{`
-        @media print {
-          @page {
-            size: letter;
-            margin: 0.75in 0.6in;
-          }
-          html, body {
-            background: white !important;
-            color: black !important;
-          }
-          .glass {
-            background: white !important;
-            border-color: #ccc !important;
-            box-shadow: none !important;
-          }
-          /* Make the body text dark and readable on print */
-          h1, h2, h3, h4, h5, h6,
-          p, li, span, strong, em, code {
-            color: black !important;
-          }
-          /* Subtitle/note text in slightly muted grey */
-          .text-gray-500, .text-gray-600 {
-            color: #444 !important;
-          }
-          /* Yellow highlight blocks become bordered boxes */
-          .bg-amber-500\\/10, .bg-amber-500\\/5,
-          .bg-accent-500\\/10, .bg-accent-500\\/5 {
-            background: white !important;
-            border: 1px solid #999 !important;
-          }
-          .text-amber-300, .text-amber-100, .text-amber-200,
-          .text-accent-400, .text-accent-300 {
-            color: black !important;
-          }
-          /* Links: keep underline, drop colour for clarity */
-          a {
-            color: black !important;
-            text-decoration: underline !important;
-          }
-          /* Avoid orphan headings — try to keep heading + first paragraph together */
-          h2, h3 {
-            page-break-after: avoid;
-            break-after: avoid;
-          }
-          section {
-            page-break-inside: auto;
-            break-inside: auto;
-          }
-        }
-      `}</style>
     </div>
   );
 }
