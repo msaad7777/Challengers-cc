@@ -162,3 +162,23 @@ export const resolveOfficerWorkspaceEmail = (email?: string | null): string | nu
   );
   return match?.workspaceEmail ?? null;
 };
+
+// ── Governance readers ────────────────────────────────────────────────
+// Subset of officers who get READ-ONLY access to the Pavilion governance
+// documents. Today this is the Treasurer and the Secretary only — they
+// need to see the IP Ownership and Software Licence Agreement to do
+// their roles, but they DO NOT see the signing trackers or the board
+// resolutions (those remain director-only).
+//
+// Captains are NOT governance readers; they are operational role-holders
+// who use the Officer Hub for their own appointment letter only.
+const GOVERNANCE_READER_ROLES = new Set<string>(['Secretary', 'Treasurer']);
+
+export const isC3HGovernanceReader = (email?: string | null) => {
+  const lower = lc(email);
+  return C3H_OFFICER_ROSTER.some(
+    o =>
+      GOVERNANCE_READER_ROLES.has(o.role) &&
+      (o.workspaceEmail === lower || o.personalEmail?.toLowerCase() === lower),
+  );
+};

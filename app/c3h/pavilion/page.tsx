@@ -19,7 +19,7 @@ import {
   C3H_DIRECTOR_ROSTER,
   C3H_OFFICER_ROSTER,
   isC3HDirector,
-  isC3HOfficer,
+  isC3HGovernanceReader,
   resolveDirectorWorkspaceEmail,
   resolveOfficerWorkspaceEmail,
 } from '@/lib/c3h-access';
@@ -75,7 +75,7 @@ export default function PavilionPage() {
 
   useEffect(() => {
     if (!session?.user?.email) return;
-    if (!isC3HDirector(session.user.email) && !isC3HOfficer(session.user.email)) return;
+    if (!isC3HDirector(session.user.email) && !isC3HGovernanceReader(session.user.email)) return;
     const q = query(collection(db, SIG_COLLECTION), where('docId', 'in', GOVERNANCE_DOCS.map(d => d.id)));
     const unsub = onSnapshot(q, (snap) => {
       const map: Record<string, SignatureRecord> = {};
@@ -94,7 +94,7 @@ export default function PavilionPage() {
   // needed.
   useEffect(() => {
     if (!session?.user?.email) return;
-    if (!isC3HDirector(session.user.email) && !isC3HOfficer(session.user.email)) return;
+    if (!isC3HDirector(session.user.email) && !isC3HGovernanceReader(session.user.email)) return;
     getDocs(collection(db, 'volunteer_agreement_signatures'))
       .then((snap) => {
         const emails = new Set<string>();
@@ -124,11 +124,15 @@ export default function PavilionPage() {
 
   const userEmail = session?.user?.email || '';
   const isDirector = isC3HDirector(userEmail);
-  const isOfficer = isC3HOfficer(userEmail);
-  // Pavilion gates governance reading to directors + officers; only directors
-  // can sign corporate-binding documents and vote on board resolutions.
+  const isGovernanceReader = isC3HGovernanceReader(userEmail);
+  // Pavilion is open to directors (full) + governance readers (Treasurer +
+  // Secretary, docs only — no signing trackers, no resolutions). Captains
+  // and players have no Pavilion access.
   const canSign = isDirector;
   const canVote = isDirector;
+  // Trackers (director status grid, officer onboarding tracker, per-doc
+  // sign-status grid) and Board Resolutions are director-only views.
+  const canSeeTrackers = isDirector;
 
   // Resolve canonical workspace email for whichever role the user holds.
   // Used as the key for signature records (directors only sign here, but
@@ -157,21 +161,23 @@ export default function PavilionPage() {
   }
   if (!session) return null;
 
-  // Pavilion is open to directors (full access — sign + vote) and officers
-  // (read-only — see governance docs, who has signed, what resolutions
-  // exist). Players have no access.
-  if (!isDirector && !isOfficer) {
+  // Pavilion is open to directors (full access — sign + vote) and the
+  // Treasurer + Secretary (read-only — governance documents only, no
+  // signing trackers, no board resolutions). Captains and players have
+  // no Pavilion access.
+  if (!isDirector && !isGovernanceReader) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
         <Navbar />
         <div className="pt-32 px-6 max-w-xl mx-auto text-center">
           <div className="glass rounded-2xl p-8 border border-white/10">
             <div className="text-3xl mb-3">🏛️</div>
-            <h1 className="text-2xl font-bold text-white mb-2">The Pavilion is for directors and officers</h1>
+            <h1 className="text-2xl font-bold text-white mb-2">The Pavilion is for directors, Treasurer, and Secretary</h1>
             <p className="text-sm text-gray-400 mb-4">
               You&apos;re signed in as <code className="text-primary-400">{userEmail}</code>, but this page is only
-              accessible to the elected directors and appointed officers of Challengers Cricket Club. If you should
-              have access, please contact <a href="mailto:contact@challengerscc.ca" className="text-primary-400 underline">contact@challengerscc.ca</a>.
+              accessible to the Club&apos;s elected directors plus the Treasurer and Secretary, who have read-only
+              access to governance documents. If you should have access, please contact{' '}
+              <a href="mailto:contact@challengerscc.ca" className="text-primary-400 underline">contact@challengerscc.ca</a>.
             </p>
             <button
               onClick={() => router.push('/c3h/dashboard')}
@@ -260,29 +266,30 @@ export default function PavilionPage() {
             </div>
             <p className="text-gray-400 text-sm">
               Governance hub for Challengers Cricket Club. Directors sign corporate agreements and vote on
-              board resolutions; officers (Treasurer, Secretary, Captain) have read-only access for
-              transparency. All signatures and votes are timestamped and stored in the Club&apos;s permanent
-              governance ledger.
+              board resolutions; the Treasurer and Secretary have read-only access to the governance
+              documents themselves. All signatures and votes are timestamped and stored in the Club&apos;s
+              permanent governance ledger.
             </p>
             <p className="text-gray-500 text-xs mt-2">
               You are signed in as <strong className="text-white">{userRosterEntry?.name}</strong> ({userRosterEntry?.role}) — <code className="text-primary-400">{userWorkspaceEmail}</code>.
             </p>
           </div>
 
-          {/* Read-only banner for officers — makes the access mode unambiguous
-              before they wonder why the Sign / Vote buttons are disabled. */}
-          {!isDirector && isOfficer && (
+          {/* Read-only banner for Treasurer / Secretary — makes the limited
+              access mode unambiguous. They see the governance documents
+              themselves but not the signing trackers or the board
+              resolutions. */}
+          {!isDirector && isGovernanceReader && (
             <div className="mb-6 rounded-xl bg-amber-500/5 border border-amber-500/30 p-4">
               <p className="text-sm font-bold text-amber-300 mb-1 flex items-center gap-2">
                 <span>🔒</span>
-                <span>Read-only access — Officer view</span>
+                <span>Read-only access — Treasurer / Secretary view</span>
               </p>
               <p className="text-xs text-amber-100 leading-relaxed">
-                You can read all governance documents and see who has signed and how votes are tracking.
-                Signing corporate-binding agreements (IP Ownership, Software Licence Agreement) and voting on
-                board resolutions are reserved for the Club&apos;s elected directors under the Bylaws. This
-                read-only view is for Officer transparency and oversight of governance, not corporate
-                authority.
+                You can read the Club&apos;s governance documents (IP Ownership, Software Licence Agreement,
+                etc.) for visibility into the Club&apos;s legal framework. Signing trackers, the director
+                onboarding tracker, and board resolutions are reserved for the elected directors under the
+                Bylaws and are not shown in this view.
               </p>
             </div>
           )}
@@ -497,7 +504,8 @@ export default function PavilionPage() {
                       );
                     })()}
 
-                    {/* Sign-status grid */}
+                    {/* Sign-status grid — director-only view */}
+                    {canSeeTrackers && (
                     <div>
                       <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">Director status</p>
                       <div className="grid sm:grid-cols-2 gap-2">
@@ -549,6 +557,7 @@ export default function PavilionPage() {
                         </p>
                       )}
                     </div>
+                    )}
 
                   </article>
                 );
@@ -556,7 +565,8 @@ export default function PavilionPage() {
             </div>
           )}
 
-          {/* Officer & captain onboarding */}
+          {/* Officer & captain onboarding — director-only view */}
+          {canSeeTrackers && (
           <div className="mt-10">
             <h2 className="text-xl font-bold text-white mb-1">Officer &amp; captain onboarding</h2>
             <p className="text-sm text-gray-400 mb-4">
@@ -599,18 +609,21 @@ export default function PavilionPage() {
               </p>
             </div>
           </div>
+          )}
 
-          {/* Board Resolutions + voting */}
-          <div className="mt-10 glass rounded-2xl p-6 border border-white/10">
-            {userWorkspaceEmail && userRosterEntry && (
-              <Resolutions
-                userEmail={userEmail}
-                userWorkspaceEmail={userWorkspaceEmail}
-                userName={userRosterEntry.name}
-                canVote={canVote}
-              />
-            )}
-          </div>
+          {/* Board Resolutions + voting — director-only view */}
+          {canSeeTrackers && (
+            <div className="mt-10 glass rounded-2xl p-6 border border-white/10">
+              {userWorkspaceEmail && userRosterEntry && (
+                <Resolutions
+                  userEmail={userEmail}
+                  userWorkspaceEmail={userWorkspaceEmail}
+                  userName={userRosterEntry.name}
+                  canVote={canVote}
+                />
+              )}
+            </div>
+          )}
 
           <div className="mt-10 rounded-xl bg-amber-500/5 border border-amber-500/20 p-4 text-sm text-amber-200">
             <strong className="text-amber-300">A note on e-signatures.</strong> This Pavilion records electronic

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import PublicLiveScore from '@/components/PublicLiveScore';
-import { isC3HAdmin, isC3HBoard, isC3HDirector, isC3HOfficer } from '@/lib/c3h-access';
+import { isC3HAdmin, isC3HBoard, isC3HDirector, isC3HOfficer, isC3HGovernanceReader } from '@/lib/c3h-access';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -30,6 +30,7 @@ export default function DashboardPage() {
   const isBoard = isC3HBoard(session.user?.email);
   const isDirector = isC3HDirector(session.user?.email);
   const isOfficer = isC3HOfficer(session.user?.email);
+  const isGovernanceReader = isC3HGovernanceReader(session.user?.email);
   const isAdmin = isC3HAdmin(session.user?.email);
   const userName = session.user?.name || 'Player';
   const userImage = session.user?.image || '';
@@ -253,8 +254,8 @@ export default function DashboardPage() {
               </a>
             )}
 
-            {/* The Pavilion — Directors (full access) + Officers (read-only) */}
-            {(isDirector || isOfficer) && (
+            {/* The Pavilion — Directors (full access) + Treasurer/Secretary (read-only docs) */}
+            {(isDirector || isGovernanceReader) && (
               <a href="/c3h/pavilion" className="glass rounded-2xl p-6 border-2 border-accent-500/20 hover:border-accent-500/50 transition-all duration-300 block">
                 <div className="text-3xl mb-3">🏛️</div>
                 <h2 className="text-xl font-bold text-white mb-1">The Pavilion</h2>
@@ -264,7 +265,7 @@ export default function DashboardPage() {
                 <p className="text-gray-400 text-sm mb-4">
                   {isDirector
                     ? 'Read corporate agreements, sign with typed or drawn signature, see which directors have signed and which are pending.'
-                    : 'Read all corporate governance documents and see signing status. Signing and voting are reserved for the Club’s elected directors.'}
+                    : 'Read the Club’s governance documents (IP Ownership, Software Licence Agreement) for visibility into the legal framework. Signing trackers and board resolutions are reserved for directors.'}
                 </p>
                 <span className={`text-xs px-3 py-1 rounded-full ${isDirector ? 'bg-accent-500/20 text-accent-400 border border-accent-500/30' : 'bg-white/5 text-gray-400 border border-white/10'}`}>
                   {isDirector ? 'Open' : 'Read-only'}
