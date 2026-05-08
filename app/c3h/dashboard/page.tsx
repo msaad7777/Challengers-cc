@@ -79,6 +79,29 @@ export default function DashboardPage() {
           {/* Modules Grid */}
           <div className="grid sm:grid-cols-2 gap-6">
 
+            {/* Member Agreements — Required for all members. Listed first
+                so new players see what to sign before anything else. */}
+            <a
+              href="/legal"
+              className="glass rounded-2xl p-6 border-2 border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 block sm:col-span-2"
+            >
+              <div className="flex items-start gap-4">
+                <div className="text-3xl">📝</div>
+                <div className="flex-1">
+                  <h2 className="text-xl font-bold text-white mb-1">Member Agreements</h2>
+                  <p className="text-amber-400 text-xs font-medium mb-3">Required Documents · E-Sign</p>
+                  <p className="text-gray-400 text-sm mb-4">
+                    Sign your <strong className="text-white">Volunteer Agreement</strong>, <strong className="text-white">Liability Waiver</strong>,{' '}
+                    <strong className="text-white">Code of Conduct</strong>, and <strong className="text-white">Photography Consent</strong>{' '}
+                    before participating in matches. Each takes about 2 minutes — you can sign by typing your name or drawing a signature.
+                  </p>
+                  <span className="text-xs px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold uppercase tracking-wider">
+                    Required for all players
+                  </span>
+                </div>
+              </div>
+            </a>
+
             {/* Events & Calendar */}
             <a href="/c3h/events" className="glass rounded-2xl p-6 border-2 border-accent-500/20 hover:border-accent-500/50 transition-all duration-300 block">
               <div className="text-3xl mb-3">📅</div>

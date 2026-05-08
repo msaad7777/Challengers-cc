@@ -1,15 +1,29 @@
+type ProgramStatus = "active" | "planned";
+
+interface Program {
+  title: string;
+  subtitle: string;
+  description: string;
+  features: string[];
+  status: ProgramStatus;
+  icon: React.ReactNode;
+  gradient: string;
+  glowColor: string;
+}
+
 export default function Programs() {
-  const programs = [
+  const programs: Program[] = [
     {
       title: "London Challengers",
-      subtitle: "Main Team",
-      description: "Our flagship competitive team representing London in regional and provincial tournaments. For experienced players ready to take on the best.",
+      subtitle: "Adult Competitive Squad",
+      description: "Our adult squad playing competitive league cricket in London — LCL T30 and LPL T20. Open to experienced players ready to compete.",
       features: [
-        "Competitive league matches",
-        "Provincial tournaments",
-        "Professional coaching staff",
-        "Team fitness programs"
+        "LCL T30 league matches",
+        "LPL T20 league matches",
+        "Saturday practice sessions",
+        "Match-day analysis"
       ],
+      status: "active",
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
@@ -20,14 +34,10 @@ export default function Programs() {
     },
     {
       title: "Youth Development",
-      subtitle: "U15 / U19 Programs",
-      description: "Comprehensive training programs designed to nurture young talent. Learn fundamentals, build skills, and develop a love for cricket.",
-      features: [
-        "Age-appropriate coaching",
-        "Skill development focus",
-        "Character building",
-        "Pathway to main team"
-      ],
+      subtitle: "Coming Soon",
+      description: "We're working toward launching coaching programs for younger players in future seasons. This program is not currently active — sign up below to be the first to know when it launches.",
+      features: [],
+      status: "planned",
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -38,14 +48,15 @@ export default function Programs() {
     },
     {
       title: "Community Cricket",
-      subtitle: "Friendly Matches",
-      description: "Casual cricket for those who love the game. Social matches, weekend games, and community events. All skill levels welcome.",
+      subtitle: "Practice + Friendlies",
+      description: "Casual Saturday practice sessions and friendly matches throughout the season. All skill levels welcome — newcomers, returning players, and first-timers alike.",
       features: [
-        "Relaxed atmosphere",
-        "Weekend matches",
-        "Social events",
-        "Beginner-friendly"
+        "Saturday practice (May–September)",
+        "Friendly matches",
+        "All skill levels welcome",
+        "Beginner-friendly atmosphere"
       ],
+      status: "active",
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -87,6 +98,13 @@ export default function Programs() {
             >
               {/* Card */}
               <div className="glass rounded-2xl p-8 h-full flex flex-col relative overflow-hidden border-2 border-white/5 hover:border-white/20 transition-all duration-500">
+                {/* Status Badge */}
+                {program.status === "planned" && (
+                  <div className="absolute top-4 right-4 px-3 py-1 bg-accent-500/20 border border-accent-500/40 rounded-full text-xs font-semibold text-accent-300 uppercase tracking-wider">
+                    Coming Soon
+                  </div>
+                )}
+
                 {/* Hover Gradient Overlay */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${program.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
 
@@ -109,21 +127,28 @@ export default function Programs() {
                 </p>
 
                 {/* Features */}
-                <ul className="space-y-3 mb-6">
-                  {program.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <svg className="w-5 h-5 text-primary-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="text-sm text-gray-300">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                {program.features.length > 0 && (
+                  <ul className="space-y-3 mb-6">
+                    {program.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <svg className="w-5 h-5 text-primary-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-sm text-gray-300">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
 
                 {/* CTA */}
-                <button className="w-full py-3 glass glass-hover rounded-lg font-semibold text-sm group-hover:bg-white/10 transition-all duration-300">
-                  <span className="gradient-text">Learn More</span>
-                </button>
+                <a
+                  href="#interest-section"
+                  className="w-full py-3 glass glass-hover rounded-lg font-semibold text-sm group-hover:bg-white/10 transition-all duration-300 text-center"
+                >
+                  <span className="gradient-text">
+                    {program.status === "planned" ? "Notify Me When Available" : "Express Interest"}
+                  </span>
+                </a>
 
                 {/* Glow Effect */}
                 <div className={`absolute -inset-px bg-gradient-to-br ${program.gradient} rounded-2xl opacity-0 group-hover:opacity-20 blur transition-opacity duration-500 -z-10`}></div>
