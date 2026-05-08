@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import PrintButton from '../_shared/PrintButton';
+import GovernanceStatusCallout from '../_shared/GovernanceStatusCallout';
 
 export const metadata = {
   title: 'Privacy Policy — Challengers Cricket Club',
@@ -19,11 +21,19 @@ export default function PrivacyPolicyPage() {
             All governance documents
           </Link>
 
-          <div className="text-center mb-10">
+          <div className="text-center mb-6">
             <span className="text-3xl">🔒</span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-3 mb-3">Privacy Policy</h1>
             <p className="text-sm text-gray-500">Challengers Cricket Club · Effective 30 April 2026</p>
           </div>
+
+          {/* Print / Save as PDF — hidden on printed copy */}
+          <div className="flex justify-center mb-6 print:hidden">
+            <PrintButton label="🖨️ Print or Save as PDF" />
+          </div>
+
+          {/* Governance status callout — shared with Bylaws + Financial Policy */}
+          <GovernanceStatusCallout />
 
           <div className="glass rounded-2xl p-6 sm:p-8 border border-white/10 space-y-6 text-gray-200 leading-relaxed">
 

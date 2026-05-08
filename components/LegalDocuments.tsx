@@ -57,27 +57,28 @@ export default function LegalDocuments() {
       requestable: true,
     },
     {
-      title: "Club Bylaws",
-      description: "Organizational structure and governance rules",
+      title: "Constitution & By-Laws",
+      description: "Federal CNCA Constitution and By-Laws — published openly for transparency",
       icon: "⚖️",
       tag: "Governance",
-      requestable: true,
+      requestable: false,
+      viewUrl: "/legal/bylaws",
     },
     {
       title: "Privacy Policy",
-      description: "How we collect, use, and protect your information",
+      description: "How we collect, use, and protect personal information (PIPEDA-aligned)",
       icon: "🔒",
       tag: "Policy",
       requestable: false,
-      viewUrl: "/documents/privacy-policy.html",
+      viewUrl: "/legal/privacy",
     },
     {
-      title: "Terms of Service",
-      description: "Terms and conditions for club membership and services",
-      icon: "📋",
+      title: "Code of Conduct",
+      description: "Standards of behaviour for players, officers, and volunteers",
+      icon: "🤝",
       tag: "Policy",
       requestable: false,
-      viewUrl: "/documents/terms-of-service.html",
+      viewUrl: "/legal/code-of-conduct",
     }
   ];
 
@@ -152,8 +153,6 @@ export default function LegalDocuments() {
               ) : doc.viewUrl ? (
                 <a
                   href={doc.viewUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold text-sm hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
