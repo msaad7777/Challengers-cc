@@ -131,6 +131,15 @@ const DOCS: DocConfig[] = [
     priority: 'IP / governance · signed in Pavilion',
     minRole: 'public',
   },
+  {
+    slug: 'terms-of-service',
+    title: 'Terms of Service',
+    summary: 'Terms governing use of challengerscc.ca and the C3H portal. Discloses ownership of source code (Saad personally), Club ownership of member data (Firebase project administered through contact@challengerscc.ca), and the related-party Conflict of Interest framework.',
+    audience: 'Public',
+    icon: '📋',
+    priority: 'Public',
+    minRole: 'public',
+  },
 ];
 
 // Filter docs based on the user's role. Public docs visible to everyone;

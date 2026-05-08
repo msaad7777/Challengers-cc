@@ -108,6 +108,46 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section>
+              <h2 className="text-lg font-bold text-white mb-2">Conflict of interest disclosure</h2>
+              <p className="text-sm">
+                Mohammed Saad is both a co-founding <strong className="text-white">director</strong> of
+                Challengers Cricket Club and the <strong className="text-white">personal author and copyright
+                owner</strong> of the platform that operates the Club&apos;s website and members&apos; portal,
+                and acts as the <strong className="text-white">data processor</strong> on the Club&apos;s
+                instructions. This is a related-party arrangement and a conflict of interest under the
+                Club&apos;s
+                {' '}<Link href="/legal/conflict-of-interest" className="text-primary-400 underline hover:text-primary-300">Conflict of Interest Policy</Link>.
+              </p>
+              <p className="text-sm mt-2">
+                The conflict has been declared in writing to the Board. Mohammed Saad has abstained, and will
+                continue to abstain, from any board vote concerning: (a) the Club&apos;s licence to use the
+                platform; (b) the Software Licence Agreement; (c) variations or amendments to the data
+                processing relationship; (d) any board resolution affecting the
+                {' '}<Link href="/legal/ip-ownership" className="text-primary-400 underline hover:text-primary-300">IP Ownership Acknowledgement</Link>;
+                or (e) the IP and data clauses of the
+                {' '}<Link href="/legal/bylaws" className="text-primary-400 underline hover:text-primary-300">By-Laws</Link>{' '}
+                (Articles XIV and XV).
+              </p>
+              <p className="text-sm mt-2">
+                The Corporation&apos;s ownership of all member data is constitutionally entrenched in
+                {' '}<Link href="/legal/bylaws" className="text-primary-400 underline hover:text-primary-300">By-Laws Article XV</Link>{' '}
+                (&ldquo;Member Data and Club-Owned Cloud Infrastructure&rdquo;). That Article makes explicit
+                that the Firebase / Google Cloud project storing all personal information is registered to
+                and administered by the Club through the
+                {' '}<strong className="text-white">contact@challengerscc.ca</strong> Google Workspace
+                account, and that no Director, Officer, member, or developer holds any administrative claim
+                on personal information stored there.
+              </p>
+              <p className="text-sm mt-2">
+                <strong className="text-white">Interim Privacy Officer.</strong> Mohammed Saad is the
+                Privacy Officer named below as an interim arrangement until the Secretary role is formally
+                accepted via signed Officer Appointment Letter. Once a Secretary is in place, Privacy
+                Officer responsibilities will transfer accordingly. This arrangement, including any conflict
+                of interest implications, is disclosed for transparency.
+              </p>
+            </section>
+
+            <section>
               <h2 className="text-lg font-bold text-white mb-2">Who we share it with</h2>
               <p className="text-sm">We do <strong className="text-white">not sell or rent</strong> personal information. We share it only as follows:</p>
               <ul className="space-y-2 mt-2 text-sm list-disc list-inside ml-2">
@@ -177,7 +217,16 @@ export default function PrivacyPolicyPage() {
 
             <hr className="border-white/10" />
 
-            <p className="text-xs text-gray-500 italic">Document version: v1.0 · 30 April 2026 · Pending legal review.</p>
+            <p className="text-xs text-gray-500 italic">
+              Document version: v1.1 · Effective 8 May 2026 · Pending pro-bono lawyer review.
+              <br />
+              v1.1 (2026-05-08) — adds explicit Conflict of Interest disclosure section (Mohammed Saad as
+              Director + author + data processor); cross-references By-Laws Articles XIV (Software/IP) and XV
+              (Member Data and Club-Owned Cloud Infrastructure); discloses interim Privacy Officer arrangement
+              pending formal Secretary onboarding; aligns with the federally-incorporated CNCA framework.
+              <br />
+              v1.0 (2026-04-30) — initial Privacy Policy adopted by the Board.
+            </p>
           </div>
         </div>
       </section>
