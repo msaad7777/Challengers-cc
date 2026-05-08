@@ -79,7 +79,7 @@ export default function BylawsPage() {
             <section>
               <h2 className="text-lg font-bold text-white mb-2">Article I — Name and Address</h2>
               <p>1.1 The name of the organization shall be &ldquo;Challengers Cricket Club&rdquo; (the &ldquo;Corporation&rdquo;).</p>
-              <p>1.2 The principal mailing address of the Club shall be: 3228 Meadowgate Blvd, London, ON N6M 0B7.</p>
+              <p>1.2 The principal mailing address of the Club is: <strong className="text-white">790 Capulet Lane, Unit 907, London, ON N6H 0J8</strong>. The mailing address of an NFP under the CNCA is permitted to be the home address of a director and may be changed from time to time by Board resolution; any change is filed with Corporations Canada. The current address is the residence of the Club&apos;s incumbent Director, Mohammed Saad.</p>
               <p>1.3 The Corporation is incorporated under the <em>Canada Not-for-profit Corporations Act</em> (CNCA) as Corporation Number 1746974-8, dated 12 November 2025. The Corporation is registered (or, where required, will register) as an extra-provincial corporation in Ontario so that it may carry on its activities in the Province of Ontario.</p>
             </section>
 
@@ -240,7 +240,8 @@ export default function BylawsPage() {
 
             {/* Footer */}
             <p className="text-xs text-gray-500 italic">
-              Document version: v2.0 (2026-05-08) · Pending pro-bono lawyer review and member confirmation at first AGM. <br />
+              Document version: v2.1 (2026-05-08) · Pending pro-bono lawyer review and member confirmation at first AGM. <br />
+              v2.1 (2026-05-08) — Article 1.2 mailing address updated from 3228 Meadowgate Blvd, London, ON N6M 0B7 to <strong className="text-gray-400">790 Capulet Lane, Unit 907, London, ON N6H 0J8</strong> (residence of incumbent Director Mohammed Saad). Address change to be filed with Corporations Canada by the Secretary or designated Director. Article 4.9 / 4.10 / 4.10.1 / 4.10.2 / 4.12 strengthened to align with CNCA s. 130 / 141 / 143 statutory voting-rights protections. <br />
               v2.0 (2026-05-08) — restructures the Constitution &amp; By-Laws to match the federally-incorporated framework under CNCA, adds Articles XIV (Software/IP), XV (Data + Cloud Infrastructure), and XVI (Volunteer Status — Express); harmonises with the Corporations Canada profile that lists the five directors of the Corporation as Mohammed Saad, Ankush Arora, Md Monirul Islam, Sazzad Mahmud, and Gokul Prakash. Officer onboarding is in progress; no officer has yet formally e-signed and accepted their Officer Appointment Letter under CNCA. <br />
               The Board will adopt these By-Laws by formal resolution and confirm them at the first members&apos; meeting (Annual General Meeting), to be held no later than 11 February 2027 (15 months after incorporation per CNCA). The signed By-Laws will then be filed with Corporations Canada under CNCA s. 152.
             </p>

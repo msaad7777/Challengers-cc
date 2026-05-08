@@ -74,10 +74,28 @@ export default function CodeOfConductPage() {
                 <li>Sexual harassment or sexual misconduct of any kind</li>
                 <li>Discrimination, hate speech, or slurs targeting protected characteristics</li>
                 <li>Bullying or repeated targeted abuse of a teammate, opponent, or official</li>
+                <li><strong className="text-white">Threats — financial, legal, or reputational — directed at any director, officer, member, or volunteer of the Club.</strong> This includes threats to file frivolous legal action, threats to remove a director without proper procedure, threats to publicly damage someone&apos;s reputation, and threats made to extract personal benefit (e.g., compensation, access, or special treatment) from the Club.</li>
+                <li><strong className="text-white">Knowingly false claims or bad-faith motions</strong> against any director, officer, member, or volunteer. A pattern of unsupported allegations, retaliatory motions, or fabricated grievances is itself a violation of this Code regardless of the role of the person making the claims.</li>
+                <li><strong className="text-white">Demanding unauthorized access to Club banking, financial accounts, or personal credentials of another member, director, or officer.</strong> Proper banking procedure requires in-person attendance at the bank with valid identification; it cannot be substituted by sharing of personal banking credentials.</li>
+                <li><strong className="text-white">Misuse of confidential Club information</strong> (member contact details, financial records, internal communications, governance documents) for personal benefit, intimidation, or to gain leverage in disputes.</li>
                 <li>Theft from the Club, members, sponsors, or venues</li>
                 <li>Match-fixing, illegal betting on Club matches, or related corruption</li>
                 <li>Bringing illegal substances to Club events</li>
                 <li>Any criminal conduct that brings the Club into disrepute</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-2">Bad-faith claims and protection of governance</h2>
+              <p className="text-sm">
+                The Club takes seriously the protection of its governance structure from bad-faith conduct.
+                The following principles apply:
+              </p>
+              <ul className="space-y-2 mt-2 text-sm list-disc list-inside ml-2">
+                <li><strong className="text-white">Reports made in good faith are protected.</strong> No one will be retaliated against for raising a legitimate concern about behaviour, governance, finances, or safety.</li>
+                <li><strong className="text-white">Reports made in bad faith are themselves a violation.</strong> Knowingly false claims, fabricated grievances, retaliatory motions, or weaponized allegations made to extract personal benefit, silence a director, or damage another member&apos;s reputation are violations of this Code and grounds for discipline up to and including expulsion.</li>
+                <li><strong className="text-white">A director&apos;s statutory voting rights cannot be stripped by accusation.</strong> Per the <Link href="/legal/bylaws" className="text-primary-400 underline hover:text-primary-300">By-Laws Article 4.10.1</Link> and the federal <em>Canada Not-for-profit Corporations Act</em> (CNCA s. 130, s. 141, s. 143), a Director&apos;s right to vote at meetings of the Board is statutory and cannot be removed by accusation, threat, or motion of other Directors. A pattern of attempting to circumvent these statutory protections is itself a violation of this Code.</li>
+                <li><strong className="text-white">Proper procedure is required for disputes.</strong> Disagreements about Club operations, finances, or governance are raised through the board (via the President or any director) or through this Code&apos;s reporting channels — not through threats, public pressure, or unilateral action by individuals.</li>
               </ul>
             </section>
 
@@ -128,7 +146,17 @@ export default function CodeOfConductPage() {
 
             <hr className="border-white/10" />
 
-            <p className="text-xs text-gray-500 italic">Document version: v1.0 · 30 April 2026 · Pending legal review.</p>
+            <p className="text-xs text-gray-500 italic">
+              Document version: v1.1 · Effective 8 May 2026 · Pending pro-bono lawyer review.
+              <br />
+              v1.1 (2026-05-08) — adds explicit zero-tolerance items for threats (financial, legal,
+              reputational), knowingly false claims and bad-faith motions, demanding unauthorized access to
+              banking or personal credentials, and misuse of confidential Club information. New &ldquo;Bad-faith
+              claims and protection of governance&rdquo; section affirms statutory CNCA protections of director
+              voting rights and reaffirms that bad-faith reports are themselves a violation.
+              <br />
+              v1.0 (2026-04-30) — initial Code of Conduct adopted by the Board.
+            </p>
           </div>
         </div>
       </section>
