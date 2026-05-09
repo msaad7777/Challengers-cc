@@ -189,6 +189,41 @@ export default function FinancialPolicyPage() {
             </section>
 
             <section>
+              <h2 className="text-lg font-bold text-white mb-2">Books integrity — separation of duties</h2>
+              <p className="text-sm">
+                To prevent any individual — including the Treasurer or any other officer — from
+                unilaterally creating, modifying, or disputing financial records to advance a personal
+                claim, the Club operates the following separation-of-duties controls:
+              </p>
+              <ul className="space-y-2 mt-2 text-sm list-disc list-inside ml-2">
+                <li><strong className="text-white">Source documentation required.</strong> Every entry in the Club&apos;s books — income, expense, reimbursement, transfer — must be backed by a source document: a bank statement, a payment-processor record, a vendor invoice, an original receipt, or a signed Schedule of Founder Advances entry. Unsupported entries are not accepted into the official record.</li>
+                <li><strong className="text-white">Recording vs. authorizing vs. reconciling.</strong> The person who records a transaction in the books must not be the same person who unilaterally authorized it. Any expense over $200 requires advance written authorization (email or WhatsApp) by a director who is not the recorder. Bank reconciliation is performed monthly by a director who is not a primary signatory of the bank account, providing an independent check.</li>
+                <li><strong className="text-white">No unilateral retroactive entries.</strong> Historical entries — entries dated more than 60 days in the past — may not be added or modified by any single person. Backfill of older transactions requires (a) source documentation as in the first bullet, and (b) sign-off by the President or another director who was not involved in the original transaction.</li>
+                <li><strong className="text-white">Audit trail of changes.</strong> The Club&apos;s accounting system (Wave Accounting) maintains a change-log of all entries. Any entry that is later modified retains its original record alongside the modification, with the date and user who made the change. The Treasurer may not delete or overwrite historical entries.</li>
+                <li><strong className="text-white">Year-end statements.</strong> The annual financial statement is prepared by the Treasurer, reviewed by a director who is not a primary signatory, and adopted by Board resolution. No year-end statement that includes contested or undocumented entries shall be adopted without first being separately reviewed and resolved by the Board.</li>
+                <li><strong className="text-white">No self-claimed contribution adjustments.</strong> No officer or director may, on their own initiative, add an entry to the books that records a personal contribution (cash, in-kind, or otherwise) to the Club without (a) source documentation as above, and (b) acknowledgement by another director that the contribution was actually made. Self-asserted contribution claims that lack source documentation are not entered into the official record and do not establish a debt of the Club to that individual.</li>
+                <li><strong className="text-white">Disputed entries.</strong> If two members of the Club disagree about whether a transaction occurred, was authorized, or has been settled, the matter is referred to the Board for review. The Board reviews the source documentation and decides by majority vote whether the entry is recorded, modified, or removed. The disputed entry is not used as the basis for any payment claim until resolved.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-2">Recognition is not compensation</h2>
+              <p className="text-sm">
+                The Club celebrates and recognizes its volunteers. Recognition takes the form of public
+                thank-yous, mentions in newsletters or social-media posts, end-of-season acknowledgements,
+                board-resolution commendations, and (where the Board determines appropriate) named awards
+                or commemorative items of nominal value (e.g. a thank-you plaque). Recognition is separate
+                from, and does not give rise to, any entitlement to compensation, fees, honoraria, or
+                remuneration of any kind.
+              </p>
+              <ul className="space-y-2 mt-2 text-sm list-disc list-inside ml-2">
+                <li><strong className="text-white">Recognition is awarded by the Board, not self-claimed.</strong> Decisions about who receives Club recognition are made by the Board, not by the recipient asserting it for themselves. A volunteer publicly asserting their own contributions in order to extract benefit, advance a payment claim, or pressure the Board is not seeking recognition — they are using the language of recognition as leverage, which under the <Link href="/legal/code-of-conduct" className="text-primary-400 underline hover:text-primary-300">Code of Conduct</Link> may itself be a violation.</li>
+                <li><strong className="text-white">Recognition creates no entitlement to payment.</strong> A volunteer who has been publicly recognized has not, by virtue of that recognition, established any claim to compensation, fees, or special treatment by the Club. The volunteer-only framework of <Link href="/legal/bylaws" className="text-primary-400 underline hover:text-primary-300">By-Laws Article XVI</Link> applies regardless of how prominent or widely-recognized any individual contribution has been.</li>
+                <li><strong className="text-white">Multiple volunteers, multiple contributions.</strong> The Club&apos;s success is the product of many volunteers&apos; contributions across many roles — coaching, scoring, captaining, treasury, secretarial work, sponsorship outreach, software, communications, equipment management, jersey production, indoor practice coordination, and more. The Board recognizes that no single individual&apos;s contribution defines the Club, and recognition is given proportionally and inclusively rather than disproportionately to any one person.</li>
+              </ul>
+            </section>
+
+            <section>
               <h2 className="text-lg font-bold text-white mb-2">Annual reporting</h2>
               <p className="text-sm">At the end of each fiscal year (calendar year for now), the Treasurer prepares:</p>
               <ul className="space-y-2 mt-2 text-sm list-disc list-inside ml-2">
@@ -218,7 +253,21 @@ export default function FinancialPolicyPage() {
 
             <hr className="border-white/10" />
 
-            <p className="text-xs text-gray-500 italic">Document version: v1.0 · 30 April 2026 · Pending legal review.</p>
+            <p className="text-xs text-gray-500 italic">
+              Document version: v1.1 · Effective 9 May 2026 · Pending pro-bono lawyer review.
+              <br />
+              v1.1 (2026-05-09) — adds &ldquo;Member fees — variable, set by Board, fund operations&rdquo;
+              section; tightens reimbursement to require 60-day claim window + personal-account routing only +
+              eligibility tied to signed Volunteer Agreement; adds &ldquo;No retroactive compensation&rdquo;
+              section closing the historical-claim loophole; adds &ldquo;Books integrity — separation of
+              duties&rdquo; section with source-documentation, no-unilateral-retroactive-entries, audit-trail,
+              year-end-review, no-self-claimed-contribution-adjustments, and disputed-entry rules; adds
+              &ldquo;Recognition is not compensation&rdquo; section clarifying that recognition is awarded
+              by the Board (not self-claimed), creates no entitlement to payment, and is given proportionally
+              across all volunteers.
+              <br />
+              v1.0 (2026-04-30) — initial Financial Policy adopted by the Board.
+            </p>
           </div>
         </div>
       </section>
