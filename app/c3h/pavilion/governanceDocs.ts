@@ -64,14 +64,14 @@ export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
   },
   {
     id: 'lod-cibc-gokul-qaiser-2026',
-    version: '1.0',
-    title: 'Letter of Direction — CIBC Signing Authority Panel (Gokul Prakash + Qaiser Qureshi)',
+    version: '2.0',
+    title: 'Letter of Direction — CIBC Signing Authorities (Gokul Prakash + Qaiser Qureshi)',
     shortTitle: 'Letter of Direction — CIBC',
     effective: '2026-05-20',
     inline: 'lod-cibc-gokul-qaiser-2026',
     printUrl: '/c3h/pavilion/print/lod-cibc',
     summary:
-      'Directs CIBC to add Gokul Prakash (Director) and Qaiser Qureshi (Treasurer, non-director officer) to the three-person signing authority panel on the Club’s operating account (transit 04582, account ending ****1517), in addition to Mohammed Saad who is already on file. Both new authorities serve in a strictly volunteer capacity. The account continues to operate under the Club’s dual-signatory governance policy. Must be signed by all five directors before being submitted to CIBC.',
+      'Short, bank-focused Letter directing CIBC to add Gokul Prakash and Qaiser Qureshi as signing authorities on the Club\'s operating account (transit 04582, account ending ****1517); Mohammed Saad remains as an existing signing authority. Confirms the Club is a volunteer-run NFP with no employment relationship to any signing authority. Bank collects personal identification at the branch — no DOB / home address / mobile included in the Letter. Must be signed by all five directors before being submitted. (v2.0 simplifies the v1.0 draft, which included internal governance clauses CIBC doesn\'t need.)',
     whoMustSign: 'all-directors',
   },
 ];
