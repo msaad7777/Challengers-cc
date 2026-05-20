@@ -10,7 +10,12 @@ export type GovernanceDoc = {
   shortTitle: string;
   effective: string; // ISO date
   publicUrl?: string; // If the document text is published on /legal/*
-  inline?: 'service-agreement'; // If the body is rendered inline by an inline component
+  inline?: 'service-agreement' | 'lod-cibc-gokul-qaiser-2026'; // If the body is rendered inline by an inline component
+  // If set, the Pavilion shows a "Print / export signed PDF" button that
+  // links to this route. The route is responsible for pulling sigs from
+  // governance_signatures and rendering a print-ready white-paper version
+  // of the document. Currently used by the LoD only.
+  printUrl?: string;
   summary: string;
   whoMustSign: 'all-directors' | 'all-directors-except-conflicted';
   conflictedSigners?: readonly string[]; // workspace emails recused from CCC-side signing
@@ -56,6 +61,18 @@ export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
     whoMustSign: 'all-directors-except-conflicted',
     conflictedSigners: ['saad@challengerscc.ca'],
     requiresLicensorSignature: true,
+  },
+  {
+    id: 'lod-cibc-gokul-qaiser-2026',
+    version: '1.0',
+    title: 'Letter of Direction — CIBC Signing Authority Panel (Gokul Prakash + Qaiser Qureshi)',
+    shortTitle: 'Letter of Direction — CIBC',
+    effective: '2026-05-20',
+    inline: 'lod-cibc-gokul-qaiser-2026',
+    printUrl: '/c3h/pavilion/print/lod-cibc',
+    summary:
+      'Directs CIBC to add Gokul Prakash (Director) and Qaiser Qureshi (Treasurer, non-director officer) to the three-person signing authority panel on the Club’s operating account (transit 04582, account ending ****1517), in addition to Mohammed Saad who is already on file. Both new authorities serve in a strictly volunteer capacity. The account continues to operate under the Club’s dual-signatory governance policy. Must be signed by all five directors before being submitted to CIBC.',
+    whoMustSign: 'all-directors',
   },
 ];
 

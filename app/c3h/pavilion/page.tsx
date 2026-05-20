@@ -27,6 +27,7 @@ import Navbar from '@/components/Navbar';
 import { GOVERNANCE_DOCS, LICENSOR, type GovernanceDoc } from './governanceDocs';
 import SignaturePad, { type SignatureResult } from './SignaturePad';
 import ServiceAgreement from './ServiceAgreement';
+import LetterOfDirection from './LetterOfDirection';
 import Resolutions from './Resolutions';
 
 type SignatureRecord = {
@@ -390,6 +391,16 @@ export default function PavilionPage() {
                           Public version ↗
                         </a>
                       )}
+                      {gd.printUrl && (
+                        <a
+                          href={gd.printUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-4 py-2 rounded-lg bg-accent-500/10 border border-accent-500/40 text-sm text-accent-300 hover:bg-accent-500/20 transition-all"
+                        >
+                          {fullySigned ? '🖨️ Print signed PDF ↗' : '🖨️ Preview / print ↗'}
+                        </a>
+                      )}
                       {!canSign ? (
                         <span className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-gray-400">
                           🔒 Read-only · Directors sign this document
@@ -417,6 +428,8 @@ export default function PavilionPage() {
                       <div className="rounded-xl bg-black/30 border border-white/10 p-5 mb-4 max-h-[420px] overflow-y-auto">
                         {gd.inline === 'service-agreement' ? (
                           <ServiceAgreement />
+                        ) : gd.inline === 'lod-cibc-gokul-qaiser-2026' ? (
+                          <LetterOfDirection />
                         ) : gd.publicUrl ? (
                           <p className="text-sm text-gray-400 italic">
                             The full text of this document is published publicly at{' '}
