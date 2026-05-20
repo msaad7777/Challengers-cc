@@ -1,34 +1,51 @@
 <!DOCTYPE html>
 <!--
-  Letter of Direction — Addition of Bank Signing Authority
+  Letter of Direction — Establishment of Three-Person Signing Authority Panel
   Challengers Cricket Club | Canada NFP #1746974-8
+
+  This is a SINGLE letter that establishes the new three-person signing
+  authority panel on the Corporation's CIBC operating account:
+
+      Existing:  Mohammed Saad  (already on file with the bank)
+      Adding:    Gokul Prakash
+      Adding:    Qaiser Qureshi  (Treasurer)
+
+  All three serve in a VOLUNTEER capacity — this is explicitly stated in
+  the body to align with NFP governance norms and to make clear to the
+  bank that no signing authority is acting in a paid/employee capacity.
 
   USAGE
   -----
-  1. Duplicate this file for each recipient:
-       cp letter-of-direction-template.html letter-of-direction-gokul-cibc-2026.html
-       cp letter-of-direction-template.html letter-of-direction-qaiser-cibc-2026.html
-  2. Open each copy and find-and-replace the {{PLACEHOLDERS}} below.
-  3. Open in a browser → Cmd+P (Mac) / Ctrl+P (Win) → Save as PDF.
-  4. Print the PDF, collect wet signatures from all 5 directors, scan, and
-     email the signed scan to the recipient's personal Gmail along with the
-     instruction to take it to a CIBC branch.
+  1. Open this file in a browser, find-and-replace the {{PLACEHOLDERS}}.
+  2. Cmd+P (Mac) / Ctrl+P (Win) → Save as PDF.
+  3. Print → collect wet signatures from all 5 directors → scan.
+  4. Email the signed scan to:
+       - gokulprakash663@gmail.com  (Gokul, for his branch visit)
+       - qureshiqaiser007@gmail.com (Qaiser, for his branch visit)
+     Each will present the signed letter + valid government photo ID at
+     a CIBC branch to complete bank-side verification.
 
   Placeholders to fill in:
-    {{LETTER_DATE}}                  e.g. May 20, 2026
-    {{BANK_BRANCH_NAME}}             e.g. CIBC — London Main Branch
-    {{BANK_BRANCH_ADDRESS}}          full street address of the branch
-    {{ACCOUNT_NUMBER_LAST_4}}        last 4 digits of the operating account
-    {{RECIPIENT_FULL_LEGAL_NAME}}    full name as it appears on government ID
-    {{RECIPIENT_DATE_OF_BIRTH}}      YYYY-MM-DD
-    {{RECIPIENT_HOME_ADDRESS}}       full mailing address
-    {{RECIPIENT_PHONE}}              mobile (this is the OTP destination)
-    {{RECIPIENT_EMAIL}}              personal Gmail
-    {{EFFECTIVE_DATE}}               date the authority becomes active
+    {{LETTER_DATE}}                       e.g. May 20, 2026
+    {{BANK_BRANCH_NAME}}                  e.g. CIBC — London Main Branch
+    {{BANK_BRANCH_ADDRESS}}               full street address of the branch
+    {{ACCOUNT_NUMBER_LAST_4}}             last 4 digits of the operating account
+    {{EFFECTIVE_DATE}}                    date the new panel takes effect
 
-  Director addresses are not in the template — directors sign and print
-  their own name; the registered office (790 Capulet Lane) is sufficient
-  as the corporation's address for the bank's purposes.
+    For Gokul (new addition #1):
+      {{GOKUL_FULL_LEGAL_NAME}}           full name as on government ID
+      {{GOKUL_DATE_OF_BIRTH}}             YYYY-MM-DD
+      {{GOKUL_HOME_ADDRESS}}              full mailing address
+      {{GOKUL_PHONE}}                     mobile (this is the OTP destination)
+
+    For Qaiser (new addition #2):
+      {{QAISER_FULL_LEGAL_NAME}}          full name as on government ID
+      {{QAISER_DATE_OF_BIRTH}}            YYYY-MM-DD
+      {{QAISER_HOME_ADDRESS}}             full mailing address
+      {{QAISER_PHONE}}                    mobile (this is the OTP destination)
+
+  Saad's identification details are already on file at CIBC and are
+  intentionally not repeated in the letter.
 -->
 <html lang="en">
 <head>
@@ -117,30 +134,66 @@
   p { margin-bottom: 14px; font-size: 13.5px; }
   p strong { color: #111; }
 
-  /* Recipient details box */
-  .details-box {
+  /* Signing authority blocks */
+  .authority-block {
     border: 1px solid #d9e6df;
     border-radius: 6px;
-    padding: 16px 18px;
-    margin: 16px 0 20px;
+    padding: 14px 18px;
+    margin: 12px 0;
     background: #fafdfb;
     font-size: 13px;
+    page-break-inside: avoid;
   }
-  .details-box .row {
+  .authority-block.existing {
+    background: #fafafa;
+    border-style: dashed;
+  }
+  .authority-block .auth-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2eee7;
+  }
+  .authority-block .auth-name {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #111;
+  }
+  .authority-block .auth-status {
+    font-size: 11px;
+    font-weight: 600;
+    color: #0d9668;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .authority-block.existing .auth-status {
+    color: #777;
+  }
+  .authority-block .row {
     display: grid;
-    grid-template-columns: 180px 1fr;
-    padding: 5px 0;
-    border-bottom: 1px dotted #e2eee7;
+    grid-template-columns: 170px 1fr;
+    padding: 4px 0;
   }
-  .details-box .row:last-child { border-bottom: none; }
-  .details-box .label { color: #555; font-weight: 600; }
-  .details-box .value { color: #111; }
+  .authority-block .label { color: #555; font-weight: 600; }
+  .authority-block .value { color: #111; }
 
   ol.numbered {
     margin: 4px 0 16px 18px;
     font-size: 13.5px;
   }
   ol.numbered li { margin-bottom: 8px; }
+
+  .volunteer-callout {
+    margin: 18px 0;
+    padding: 14px 16px;
+    background: #fef9ec;
+    border-left: 3px solid #eab308;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .volunteer-callout strong { color: #8a5e00; }
 
   /* Signature blocks */
   .signatures-header {
@@ -156,9 +209,7 @@
     gap: 28px 36px;
     margin-top: 22px;
   }
-  .sig-block {
-    page-break-inside: avoid;
-  }
+  .sig-block { page-break-inside: avoid; }
   .sig-line {
     border-bottom: 1.5px solid #222;
     height: 56px;
@@ -239,13 +290,11 @@
   </div>
 
   <div class="subject">
-    Re: Letter of Direction — Addition of Signing Authority<br>
+    Re: Letter of Direction — Establishment of Three-Person Signing Authority Panel<br>
     Account ending in <strong>****{{ACCOUNT_NUMBER_LAST_4}}</strong> — Challengers Cricket Club
   </div>
 
-  <p>
-    To Whom It May Concern,
-  </p>
+  <p>To Whom It May Concern,</p>
 
   <p>
     This letter is provided by the Board of Directors of <strong>Challengers Cricket Club</strong>
@@ -256,55 +305,94 @@
 
   <p>
     The undersigned, being all of the directors of the Corporation, hereby <strong>direct and
-    authorize</strong> the Canadian Imperial Bank of Commerce to add the following individual as a
-    signing authority on the Corporation&rsquo;s operating account identified above, effective
-    on or after the Effective Date set out below:
+    authorize</strong> the Canadian Imperial Bank of Commerce to establish, effective on or after
+    the Effective Date set out below, the following three-person signing authority panel on the
+    operating account identified above:
   </p>
 
-  <div class="details-box">
-    <div class="row"><div class="label">Full legal name</div><div class="value">{{RECIPIENT_FULL_LEGAL_NAME}}</div></div>
-    <div class="row"><div class="label">Date of birth</div><div class="value">{{RECIPIENT_DATE_OF_BIRTH}}</div></div>
-    <div class="row"><div class="label">Home address</div><div class="value">{{RECIPIENT_HOME_ADDRESS}}</div></div>
-    <div class="row"><div class="label">Mobile (for OTP)</div><div class="value">{{RECIPIENT_PHONE}}</div></div>
-    <div class="row"><div class="label">Email</div><div class="value">{{RECIPIENT_EMAIL}}</div></div>
-    <div class="row"><div class="label">Effective date</div><div class="value">{{EFFECTIVE_DATE}}</div></div>
+  <!-- Existing: Saad (already on file) -->
+  <div class="authority-block existing">
+    <div class="auth-header">
+      <div class="auth-name">Mohammed Saad</div>
+      <div class="auth-status">Existing — already on file</div>
+    </div>
+    <div class="row"><div class="label">Role with Corporation</div><div class="value">Director</div></div>
+    <div class="row"><div class="label">Capacity</div><div class="value">Volunteer (uncompensated)</div></div>
+    <div class="row"><div class="label">Identification</div><div class="value">Already on file with CIBC; no further verification requested</div></div>
   </div>
 
-  <p>
-    The Corporation further confirms the following with respect to this account:
-  </p>
+  <!-- Adding: Gokul -->
+  <div class="authority-block">
+    <div class="auth-header">
+      <div class="auth-name">Gokul Prakash</div>
+      <div class="auth-status">Being added</div>
+    </div>
+    <div class="row"><div class="label">Role with Corporation</div><div class="value">Director</div></div>
+    <div class="row"><div class="label">Capacity</div><div class="value">Volunteer (uncompensated)</div></div>
+    <div class="row"><div class="label">Full legal name</div><div class="value">{{GOKUL_FULL_LEGAL_NAME}}</div></div>
+    <div class="row"><div class="label">Date of birth</div><div class="value">{{GOKUL_DATE_OF_BIRTH}}</div></div>
+    <div class="row"><div class="label">Home address</div><div class="value">{{GOKUL_HOME_ADDRESS}}</div></div>
+    <div class="row"><div class="label">Mobile (for OTP)</div><div class="value">{{GOKUL_PHONE}}</div></div>
+    <div class="row"><div class="label">Email</div><div class="value">gokulprakash663@gmail.com</div></div>
+  </div>
+
+  <!-- Adding: Qaiser -->
+  <div class="authority-block">
+    <div class="auth-header">
+      <div class="auth-name">Qaiser Qureshi</div>
+      <div class="auth-status">Being added</div>
+    </div>
+    <div class="row"><div class="label">Role with Corporation</div><div class="value">Treasurer (non-director officer)</div></div>
+    <div class="row"><div class="label">Capacity</div><div class="value">Volunteer (uncompensated)</div></div>
+    <div class="row"><div class="label">Full legal name</div><div class="value">{{QAISER_FULL_LEGAL_NAME}}</div></div>
+    <div class="row"><div class="label">Date of birth</div><div class="value">{{QAISER_DATE_OF_BIRTH}}</div></div>
+    <div class="row"><div class="label">Home address</div><div class="value">{{QAISER_HOME_ADDRESS}}</div></div>
+    <div class="row"><div class="label">Mobile (for OTP)</div><div class="value">{{QAISER_PHONE}}</div></div>
+    <div class="row"><div class="label">Email</div><div class="value">qureshiqaiser007@gmail.com</div></div>
+  </div>
+
+  <p style="margin-top:18px;"><strong>Effective date of this panel:</strong> {{EFFECTIVE_DATE}}.</p>
+
+  <div class="volunteer-callout">
+    <strong>Volunteer Capacity.</strong> Each individual named above serves the Corporation in a
+    strictly volunteer capacity, without compensation, salary, fees, or any other form of payment
+    from the Corporation. None of the named signing authorities is an employee of the Corporation.
+    Each acts in good faith on behalf of the Corporation in furtherance of its charitable and
+    community-sport purposes, and is bound by the bylaws, policies, and dual-signatory governance
+    policy established by the Board of Directors.
+  </div>
+
+  <p>The Corporation further confirms the following with respect to this account:</p>
 
   <ol class="numbered">
     <li>
-      The account operates under a <strong>dual-signatory governance policy</strong>. The addition
-      of the individual named above does not displace any existing signing authority and does not
-      grant unilateral transaction rights; transactions remain subject to the Corporation&rsquo;s
-      internal approval policy as established by the Board.
+      The account operates under a <strong>dual-signatory governance policy</strong>. No single
+      signing authority on the panel above shall have unilateral transaction rights beyond
+      ordinary day-to-day operating disbursements as defined in the Corporation&rsquo;s
+      Financial Policy; all material transactions are subject to the Board&rsquo;s internal
+      approval policy.
     </li>
     <li>
-      The named individual shall be issued their own debit card and their own online-banking
-      credentials. One-time passcodes shall be sent to the mobile number listed above. The
-      individual shall not share credentials with any other signing authority.
+      Each named signing authority shall be issued their own debit card and their own
+      online-banking credentials. One-time passcodes shall be sent to each individual&rsquo;s
+      mobile number listed above. No signing authority shall share credentials with any other.
     </li>
     <li>
-      Monthly account statements shall continue to be made available to all directors of the
-      Corporation as part of its standard governance practice.
+      Monthly account statements shall be made available to all directors of the Corporation
+      as part of its standard governance practice.
     </li>
     <li>
-      This Letter of Direction supersedes no prior authorization on file; it is additive only.
+      This Letter of Direction is <strong>additive</strong> with respect to Gokul Prakash and
+      Qaiser Qureshi; it does not displace Mohammed Saad&rsquo;s existing signing authority.
       The Corporation will provide a separate written direction in the event any signing
       authority is to be removed or replaced.
     </li>
   </ol>
 
   <p>
-    The individual named above will present themselves at a CIBC branch with valid
-    government-issued photo identification to complete any verification required by the bank
-    prior to access being granted.
-  </p>
-
-  <p>
-    Signed by all directors of the Corporation:
+    Each individual being added (Gokul Prakash and Qaiser Qureshi) will present themselves at a
+    CIBC branch with valid government-issued photo identification to complete any bank-side
+    verification required prior to their access being activated.
   </p>
 
   <div class="signatures-header">
