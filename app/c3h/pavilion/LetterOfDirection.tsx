@@ -153,32 +153,45 @@ export default function LetterOfDirection() {
 
         <ol className="list-decimal list-inside ml-2 space-y-2 text-sm">
           <li>
-            The account operates under a <strong className="text-white">dual-signatory governance policy</strong>. No
-            single signing authority on the panel shall have unilateral transaction rights beyond ordinary day-to-day
-            operating disbursements as defined in the Corporation&apos;s Financial Policy. All material transactions
-            are subject to the Board&apos;s internal approval policy.
+            <strong className="text-white">Equal and optional signing authorities.</strong> All three named signing
+            authorities — Mohammed Saad, Gokul Prakash, and Qaiser Qureshi — are equal and optional signing
+            authorities on this account. Each holds <strong className="text-white">equivalent legal authority and
+            equivalent operational rights</strong> to act on, maintain, and transact on the account on behalf of the
+            Corporation. No signing authority is senior, subordinate, or in any way superior to any other; the panel
+            members are interchangeable in standing.
           </li>
           <li>
-            Each named signing authority shall be issued their own debit card and their own online-banking
-            credentials. One-time passcodes shall be sent to each individual&apos;s registered mobile number. No
-            signing authority shall share credentials with any other.
+            <strong className="text-white">Separate cards, credentials, and OTPs.</strong> Each of the three signing
+            authorities shall be issued (a) their own separate physical debit card linked to the account, (b) their
+            own separate online-banking credentials (username and password), and (c) their own separate one-time
+            passcode (OTP) destination set to their personal registered mobile number. No signing authority shall
+            share, use, or have access to any other signing authority&apos;s card or credentials. Each authority
+            operates independently in their own login session.
           </li>
           <li>
-            Monthly account statements shall be made available to all directors of the Corporation as part of its
-            standard governance practice. The Treasurer (Qaiser Qureshi) is the officer of the Corporation responsible
-            for reviewing those statements and reporting to the Board.
+            <strong className="text-white">Dual-signatory governance policy.</strong> The account operates under a
+            dual-signatory governance policy. No single signing authority shall have unilateral transaction rights
+            beyond ordinary day-to-day operating disbursements as defined in the Corporation&apos;s Financial Policy.
+            All material transactions are subject to the Board&apos;s internal approval policy.
           </li>
           <li>
-            This Letter of Direction is <strong className="text-white">additive</strong> with respect to Gokul Prakash
-            and Qaiser Qureshi; it does not displace Mohammed Saad&apos;s existing signing authority. Any future
-            removal or replacement of a signing authority will be effected by a separate written direction signed by
-            all then-current directors of the Corporation.
+            <strong className="text-white">Monthly statements and Treasurer responsibility.</strong> Monthly account
+            statements shall be made available to all directors of the Corporation as part of its standard governance
+            practice. The Treasurer (Qaiser Qureshi) is the officer of the Corporation responsible for reviewing
+            those statements and reporting to the Board.
           </li>
           <li>
-            CIBC display behaviour with respect to transaction-initiator names on account statements (where the name of
-            the authority who initiated a transaction may be shown) is acknowledged by the Corporation as a bank-side
-            display convention; the operating account remains, in fact and in law, the property and operating account
-            of the Corporation, not of any individual signing authority.
+            <strong className="text-white">Additive direction.</strong> This Letter of Direction is additive with
+            respect to Gokul Prakash and Qaiser Qureshi; it does not displace Mohammed Saad&apos;s existing signing
+            authority. Any future removal or replacement of a signing authority will be effected by a separate written
+            direction signed by all then-current directors of the Corporation.
+          </li>
+          <li>
+            <strong className="text-white">CIBC display behaviour.</strong> CIBC display behaviour with respect to
+            transaction-initiator names on account statements (where the name of the authority who initiated a
+            transaction may be shown) is acknowledged by the Corporation as a bank-side display convention; the
+            operating account remains, in fact and in law, the property and operating account of the Corporation,
+            not of any individual signing authority.
           </li>
         </ol>
 
