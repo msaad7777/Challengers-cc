@@ -79,13 +79,15 @@ export const isC3HSquadViewer = (email?: string | null) =>
 // included so directors can sign in either way; the canonical identity
 // for the governance ledger is always the workspace email.
 //
-// Sazzad's personal Gmail and his @challengerscc.ca workspace email
-// are pending confirmation by the user — placeholder values used here.
+// Sazzad Mahmud goes by "Roman"; his workspace email is roman@challengerscc.ca
+// and his personal Gmail is romans987@gmail.com. The display name on the
+// roster stays "Sazzad Mahmud" so the Pavilion and bank-bound LoDs match
+// his legal name as recorded in the federal corporate filing.
 export const C3H_DIRECTOR_EMAILS: readonly string[] = [
   'saad@challengerscc.ca',     'mbadru3434@gmail.com',
   'ankush@challengerscc.ca',   '92ankusharora@gmail.com',
   'tarek@challengerscc.ca',    'monirulislambd64@gmail.com',
-  'sazzad@challengerscc.ca',   // personal Gmail TBC
+  'roman@challengerscc.ca',    'romans987@gmail.com',         // Sazzad Mahmud (goes by "Roman")
   'gokul@challengerscc.ca',    'gokulprakash663@gmail.com',
 ];
 
@@ -107,7 +109,7 @@ export const C3H_DIRECTOR_ROSTER: readonly DirectorEntry[] = [
   { workspaceEmail: 'saad@challengerscc.ca',   personalEmail: 'mbadru3434@gmail.com',       name: 'Mohammed Saad',     role: 'Director' },
   { workspaceEmail: 'ankush@challengerscc.ca', personalEmail: '92ankusharora@gmail.com',    name: 'Ankush Arora',      role: 'Director' },
   { workspaceEmail: 'tarek@challengerscc.ca',  personalEmail: 'monirulislambd64@gmail.com', name: 'Md Monirul Islam',  role: 'Director' },
-  { workspaceEmail: 'sazzad@challengerscc.ca',                                                name: 'Sazzad Mahmud',     role: 'Director' },
+  { workspaceEmail: 'roman@challengerscc.ca',  personalEmail: 'romans987@gmail.com',          name: 'Sazzad Mahmud',     role: 'Director' },
   { workspaceEmail: 'gokul@challengerscc.ca',  personalEmail: 'gokulprakash663@gmail.com',  name: 'Gokul Prakash',     role: 'Director' },
 ];
 

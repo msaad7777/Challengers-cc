@@ -77,7 +77,7 @@ describe('c3h-access predicates', () => {
       'saad@challengerscc.ca',
       'ankush@challengerscc.ca',
       'tarek@challengerscc.ca',
-      'sazzad@challengerscc.ca',
+      'roman@challengerscc.ca',
       'gokul@challengerscc.ca',
     ];
 
@@ -91,9 +91,12 @@ describe('c3h-access predicates', () => {
       expect(isC3HDirector('shariar@challengerscc.ca')).toBe(false);
     });
 
-    it('rejects Roman (removed from director list 2026-05-05)', () => {
-      expect(isC3HDirector('roman@challengerscc.ca')).toBe(false);
-      expect(isC3HDirector('romans987@gmail.com')).toBe(false);
+    it('accepts Roman (Sazzad Mahmud, both workspace + personal Gmail)', () => {
+      // Sazzad Mahmud goes by "Roman" — his workspace email is roman@,
+      // his personal Gmail is romans987@gmail.com. Both should match
+      // the director predicate.
+      expect(isC3HDirector('roman@challengerscc.ca')).toBe(true);
+      expect(isC3HDirector('romans987@gmail.com')).toBe(true);
     });
 
     it('rejects shared contact inbox', () => {

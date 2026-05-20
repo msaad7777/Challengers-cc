@@ -49,7 +49,7 @@ service cloud.firestore {
         'saad@challengerscc.ca',
         'ankush@challengerscc.ca',
         'tarek@challengerscc.ca',
-        'sazzad@challengerscc.ca',
+        'roman@challengerscc.ca',
         'gokul@challengerscc.ca'
       ];
     }

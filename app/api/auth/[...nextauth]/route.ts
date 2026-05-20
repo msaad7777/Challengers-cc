@@ -9,7 +9,8 @@ const BOARD_EMAILS = [
   'saad@challengerscc.ca',
   'ankush@challengerscc.ca',
   'tarek@challengerscc.ca',
-  'sazzad@challengerscc.ca',
+  'roman@challengerscc.ca',        // Sazzad Mahmud (goes by "Roman")
+  // (his personal Gmail romans987@gmail.com is added below alongside the others)
   'gokul@challengerscc.ca',
   // Officers (non-director)
   'madhu@challengerscc.ca',
@@ -23,8 +24,7 @@ const BOARD_EMAILS = [
   'vantarimadhu@gmail.com',        // Madhu
   '92ankusharora@gmail.com',       // Ankush
   'syedshahriar77@gmail.com',      // Shahriar
-  // Sazzad's personal Gmail TBC — workspace email above will work via the
-  // @challengerscc.ca catch-all in getUserRole().
+  'romans987@gmail.com',           // Roman (Sazzad Mahmud)
 ];
 
 // Whitelisted player Gmail accounts (non-board players only)
