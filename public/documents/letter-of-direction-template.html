@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<!--
+  Letter of Direction — Addition of Bank Signing Authority
+  Challengers Cricket Club | Canada NFP #1746974-8
+
+  USAGE
+  -----
+  1. Duplicate this file for each recipient:
+       cp letter-of-direction-template.html letter-of-direction-gokul-cibc-2026.html
+       cp letter-of-direction-template.html letter-of-direction-qaiser-cibc-2026.html
+  2. Open each copy and find-and-replace the {{PLACEHOLDERS}} below.
+  3. Open in a browser → Cmd+P (Mac) / Ctrl+P (Win) → Save as PDF.
+  4. Print the PDF, collect wet signatures from all 5 directors, scan, and
+     email the signed scan to the recipient's personal Gmail along with the
+     instruction to take it to a CIBC branch.
+
+  Placeholders to fill in:
+    {{LETTER_DATE}}                  e.g. May 20, 2026
+    {{BANK_BRANCH_NAME}}             e.g. CIBC — London Main Branch
+    {{BANK_BRANCH_ADDRESS}}          full street address of the branch
+    {{ACCOUNT_NUMBER_LAST_4}}        last 4 digits of the operating account
+    {{RECIPIENT_FULL_LEGAL_NAME}}    full name as it appears on government ID
+    {{RECIPIENT_DATE_OF_BIRTH}}      YYYY-MM-DD
+    {{RECIPIENT_HOME_ADDRESS}}       full mailing address
+    {{RECIPIENT_PHONE}}              mobile (this is the OTP destination)
+    {{RECIPIENT_EMAIL}}              personal Gmail
+    {{EFFECTIVE_DATE}}               date the authority becomes active
+
+  Director addresses are not in the template — directors sign and print
+  their own name; the registered office (790 Capulet Lane) is sufficient
+  as the corporation's address for the bank's purposes.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Letter of Direction — Challengers Cricket Club</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: #1a1a1a;
+    line-height: 1.6;
+    background: #f4f4f4;
+  }
+
+  .page {
+    max-width: 800px;
+    margin: 24px auto;
+    padding: 56px 64px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    page-break-after: always;
+  }
+  .page:last-child { page-break-after: avoid; }
+
+  /* Letterhead */
+  .letterhead {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding-bottom: 18px;
+    border-bottom: 3px solid #10b981;
+    margin-bottom: 28px;
+  }
+  .letterhead img {
+    height: 64px;
+    width: auto;
+  }
+  .letterhead .org-name {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0d9668;
+    letter-spacing: -0.5px;
+  }
+  .letterhead .org-meta {
+    font-size: 11px;
+    color: #555;
+    line-height: 1.45;
+    margin-top: 4px;
+  }
+  .letterhead .org-meta a { color: #555; text-decoration: none; }
+  .header-accent {
+    height: 2px;
+    background: linear-gradient(to right, #10b981, #eab308);
+    margin: 0 0 28px;
+    border-radius: 1px;
+  }
+
+  /* Letter body */
+  .date-line {
+    text-align: right;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: #333;
+  }
+  .addressee {
+    margin-bottom: 24px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .addressee strong { color: #111; }
+
+  .subject {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    padding: 10px 14px;
+    background: #f7faf8;
+    border-left: 3px solid #10b981;
+    color: #0d9668;
+  }
+
+  p { margin-bottom: 14px; font-size: 13.5px; }
+  p strong { color: #111; }
+
+  /* Recipient details box */
+  .details-box {
+    border: 1px solid #d9e6df;
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin: 16px 0 20px;
+    background: #fafdfb;
+    font-size: 13px;
+  }
+  .details-box .row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    padding: 5px 0;
+    border-bottom: 1px dotted #e2eee7;
+  }
+  .details-box .row:last-child { border-bottom: none; }
+  .details-box .label { color: #555; font-weight: 600; }
+  .details-box .value { color: #111; }
+
+  ol.numbered {
+    margin: 4px 0 16px 18px;
+    font-size: 13.5px;
+  }
+  ol.numbered li { margin-bottom: 8px; }
+
+  /* Signature blocks */
+  .signatures-header {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px dashed #c8c8c8;
+    font-size: 13px;
+    color: #444;
+  }
+  .signatures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 36px;
+    margin-top: 22px;
+  }
+  .sig-block {
+    page-break-inside: avoid;
+  }
+  .sig-line {
+    border-bottom: 1.5px solid #222;
+    height: 56px;
+    margin-bottom: 6px;
+  }
+  .sig-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111;
+  }
+  .sig-role {
+    font-size: 11.5px;
+    color: #555;
+    margin-top: 2px;
+  }
+  .sig-date-line {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 11.5px;
+    color: #555;
+  }
+  .sig-date-fill {
+    flex: 1;
+    border-bottom: 1px solid #999;
+    height: 14px;
+  }
+
+  .footer-note {
+    margin-top: 36px;
+    padding-top: 14px;
+    border-top: 1px solid #eee;
+    font-size: 10.5px;
+    color: #777;
+    line-height: 1.5;
+  }
+
+  /* Print */
+  @page {
+    size: letter;
+    margin: 0.5in;
+  }
+  @media print {
+    body { background: #fff; }
+    .page {
+      box-shadow: none;
+      margin: 0;
+      padding: 0;
+      max-width: 100%;
+    }
+    a { color: #1a1a1a; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="letterhead">
+    <img src="/ccc-logo.png" alt="Challengers Cricket Club">
+    <div>
+      <div class="org-name">Challengers Cricket Club</div>
+      <div class="org-meta">
+        Canada Not-for-Profit Corporation #1746974-8 (incorporated 12 November 2025)<br>
+        Registered office: 790 Capulet Lane, Unit 907, London, ON  N6H 0J8<br>
+        <a href="mailto:contact@challengerscc.ca">contact@challengerscc.ca</a> &nbsp;·&nbsp; challengerscc.ca
+      </div>
+    </div>
+  </div>
+  <div class="header-accent"></div>
+
+  <div class="date-line">{{LETTER_DATE}}</div>
+
+  <div class="addressee">
+    <strong>{{BANK_BRANCH_NAME}}</strong><br>
+    Canadian Imperial Bank of Commerce<br>
+    {{BANK_BRANCH_ADDRESS}}
+  </div>
+
+  <div class="subject">
+    Re: Letter of Direction — Addition of Signing Authority<br>
+    Account ending in <strong>****{{ACCOUNT_NUMBER_LAST_4}}</strong> — Challengers Cricket Club
+  </div>
+
+  <p>
+    To Whom It May Concern,
+  </p>
+
+  <p>
+    This letter is provided by the Board of Directors of <strong>Challengers Cricket Club</strong>
+    (the &ldquo;Corporation&rdquo;), a Canada Not-for-Profit Corporation incorporated under the
+    <em>Canada Not-for-Profit Corporations Act</em> (Corporation #1746974-8), having its registered
+    office at 790 Capulet Lane, Unit 907, London, Ontario  N6H 0J8.
+  </p>
+
+  <p>
+    The undersigned, being all of the directors of the Corporation, hereby <strong>direct and
+    authorize</strong> the Canadian Imperial Bank of Commerce to add the following individual as a
+    signing authority on the Corporation&rsquo;s operating account identified above, effective
+    on or after the Effective Date set out below:
+  </p>
+
+  <div class="details-box">
+    <div class="row"><div class="label">Full legal name</div><div class="value">{{RECIPIENT_FULL_LEGAL_NAME}}</div></div>
+    <div class="row"><div class="label">Date of birth</div><div class="value">{{RECIPIENT_DATE_OF_BIRTH}}</div></div>
+    <div class="row"><div class="label">Home address</div><div class="value">{{RECIPIENT_HOME_ADDRESS}}</div></div>
+    <div class="row"><div class="label">Mobile (for OTP)</div><div class="value">{{RECIPIENT_PHONE}}</div></div>
+    <div class="row"><div class="label">Email</div><div class="value">{{RECIPIENT_EMAIL}}</div></div>
+    <div class="row"><div class="label">Effective date</div><div class="value">{{EFFECTIVE_DATE}}</div></div>
+  </div>
+
+  <p>
+    The Corporation further confirms the following with respect to this account:
+  </p>
+
+  <ol class="numbered">
+    <li>
+      The account operates under a <strong>dual-signatory governance policy</strong>. The addition
+      of the individual named above does not displace any existing signing authority and does not
+      grant unilateral transaction rights; transactions remain subject to the Corporation&rsquo;s
+      internal approval policy as established by the Board.
+    </li>
+    <li>
+      The named individual shall be issued their own debit card and their own online-banking
+      credentials. One-time passcodes shall be sent to the mobile number listed above. The
+      individual shall not share credentials with any other signing authority.
+    </li>
+    <li>
+      Monthly account statements shall continue to be made available to all directors of the
+      Corporation as part of its standard governance practice.
+    </li>
+    <li>
+      This Letter of Direction supersedes no prior authorization on file; it is additive only.
+      The Corporation will provide a separate written direction in the event any signing
+      authority is to be removed or replaced.
+    </li>
+  </ol>
+
+  <p>
+    The individual named above will present themselves at a CIBC branch with valid
+    government-issued photo identification to complete any verification required by the bank
+    prior to access being granted.
+  </p>
+
+  <p>
+    Signed by all directors of the Corporation:
+  </p>
+
+  <div class="signatures-header">
+    By signing below, each of the undersigned confirms that they are a current director of the
+    Corporation and that they have authorized this direction on behalf of the Corporation:
+  </div>
+
+  <div class="signatures">
+
+    <div class="sig-block">
+      <div class="sig-line"></div>
+      <div class="sig-name">Mohammed Saad</div>
+      <div class="sig-role">Director</div>
+      <div class="sig-date-line"><span>Date:</span><span class="sig-date-fill"></span></div>
+    </div>
+
+    <div class="sig-block">
+      <div class="sig-line"></div>
+      <div class="sig-name">Ankush Arora</div>
+      <div class="sig-role">Director</div>
+      <div class="sig-date-line"><span>Date:</span><span class="sig-date-fill"></span></div>
+    </div>
+
+    <div class="sig-block">
+      <div class="sig-line"></div>
+      <div class="sig-name">Md Monirul Islam (Tarek)</div>
+      <div class="sig-role">Director</div>
+      <div class="sig-date-line"><span>Date:</span><span class="sig-date-fill"></span></div>
+    </div>
+
+    <div class="sig-block">
+      <div class="sig-line"></div>
+      <div class="sig-name">Sazzad Mahmud</div>
+      <div class="sig-role">Director</div>
+      <div class="sig-date-line"><span>Date:</span><span class="sig-date-fill"></span></div>
+    </div>
+
+    <div class="sig-block">
+      <div class="sig-line"></div>
+      <div class="sig-name">Gokul Prakash</div>
+      <div class="sig-role">Director</div>
+      <div class="sig-date-line"><span>Date:</span><span class="sig-date-fill"></span></div>
+    </div>
+
+  </div>
+
+  <div class="footer-note">
+    Issued under seal of the Corporation, in accordance with the bylaws adopted on 25 February 2026
+    (rev. 8 May 2026). For verification of director status please consult the federal corporate
+    profile filed with Corporations Canada under Corporation #1746974-8, or contact the Corporation
+    at contact@challengerscc.ca.
+  </div>
+
+</div>
+</body>
+</html>
