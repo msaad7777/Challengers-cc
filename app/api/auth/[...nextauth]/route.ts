@@ -57,6 +57,7 @@ const PLAYER_EMAILS: string[] = [
   'rajath.s.shetty@gmail.com',
   'maaleemq@gmail.com',
   'thoufeeqmuhammed99@gmail.com',
+  'ameeyasingh1@gmail.com',
 ];
 
 function getUserRole(email: string): 'board' | 'player' | null {
