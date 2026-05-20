@@ -334,10 +334,10 @@ export default function AdminSignaturesPage() {
                                           <img
                                             src={r.signatureData}
                                             alt={`Signature of ${r.signerName ?? 'unknown'}`}
-                                            className="bg-black rounded border border-white/10 max-h-20"
+                                            className="bg-white rounded border border-white/20 max-h-20"
                                           />
                                         ) : r.signatureType === 'typed' ? (
-                                          <p className="text-2xl text-white" style={{ fontFamily: 'Brush Script MT, cursive' }}>
+                                          <p className="inline-block text-2xl text-black bg-white rounded px-3 py-1" style={{ fontFamily: 'Brush Script MT, cursive' }}>
                                             {r.signatureData}
                                           </p>
                                         ) : (

@@ -242,15 +242,15 @@ export default function OfficerHubPage() {
                     <div>
                       <p className="text-xs text-gray-400 print:text-gray-700 uppercase tracking-wider mb-1">Signature</p>
                       {existing.signatureType === 'drawn' ? (
-                        // White ink on transparent. bg-black for screen,
-                        // print:invert + print:bg-white for printed PDF.
+                        // Black ink on white. Renders correctly on both the
+                        // dark Pavilion UI and any printed/light context.
                         <img
                           src={existing.signatureData}
                           alt="Your signature"
-                          className="bg-black rounded border border-white/20 max-h-20 print:invert print:bg-white print:border-black"
+                          className="bg-white rounded border border-white/20 max-h-20"
                         />
                       ) : (
-                        <p className="text-2xl text-white print:text-black" style={{ fontFamily: 'Brush Script MT, cursive' }}>
+                        <p className="inline-block text-2xl text-black bg-white rounded px-3 py-1" style={{ fontFamily: 'Brush Script MT, cursive' }}>
                           {existing.signatureData}
                         </p>
                       )}
@@ -449,10 +449,10 @@ function AdminOfficerHubView({ userEmail, router }: AdminProps) {
                                   <img
                                     src={sig.signatureData}
                                     alt={`Signature of ${o.name}`}
-                                    className="bg-black rounded border border-white/20 max-h-20 print:invert print:bg-white print:border-black"
+                                    className="bg-white rounded border border-white/20 max-h-20"
                                   />
                                 ) : (
-                                  <p className="text-2xl text-white print:text-black" style={{ fontFamily: 'Brush Script MT, cursive' }}>
+                                  <p className="inline-block text-2xl text-black bg-white rounded px-3 py-1" style={{ fontFamily: 'Brush Script MT, cursive' }}>
                                     {sig.signatureData}
                                   </p>
                                 )}

@@ -22,7 +22,12 @@ export default function SignaturePad({ signerName, onSubmit, onCancel, busy }: P
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
   const [hasDrawn, setHasDrawn] = useState(false);
 
-  // ── Canvas setup: high-DPI, white-on-dark stroke ────────────────
+  // ── Canvas setup: high-DPI, black-on-white stroke ───────────────
+  // Black ink on a painted white background so the resulting PNG renders
+  // correctly on ANY display context (the dark Pavilion UI, light document
+  // surfaces like the Letter of Direction, printed PDFs, etc.). White-on-
+  // transparent only works when the display container is dark; black-on-
+  // white is universal.
   useEffect(() => {
     if (tab !== 'draw') return;
     const canvas = canvasRef.current;
@@ -34,10 +39,15 @@ export default function SignaturePad({ signerName, onSubmit, onCancel, busy }: P
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     ctx.scale(dpr, dpr);
+    // Paint the canvas white so toDataURL() captures a white background,
+    // not transparent. Without this, the PNG would be invisible on light
+    // backgrounds.
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, rect.width, rect.height);
     ctx.lineWidth = 2.2;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.strokeStyle = '#ffffff';
+    ctx.strokeStyle = '#000000';
   }, [tab]);
 
   const getPoint = (e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -76,7 +86,12 @@ export default function SignaturePad({ signerName, onSubmit, onCancel, busy }: P
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    // Re-paint the white background after clearing — toDataURL() captures
+    // whatever is on the canvas, so we need to maintain the white fill.
+    const rect = canvas.getBoundingClientRect();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, rect.width, rect.height);
     setHasDrawn(false);
   };
 
@@ -137,8 +152,8 @@ export default function SignaturePad({ signerName, onSubmit, onCancel, busy }: P
           />
           {typed.trim().length >= 2 && (
             <div
-              className="mt-3 px-4 py-6 rounded-lg bg-white/5 border border-white/10 text-center"
-              style={{ fontFamily: 'Brush Script MT, cursive', fontSize: '2rem', color: '#fff' }}
+              className="mt-3 px-4 py-6 rounded-lg bg-white border border-white/20 text-center"
+              style={{ fontFamily: 'Brush Script MT, cursive', fontSize: '2rem', color: '#000' }}
             >
               {typed.trim()}
             </div>
@@ -149,7 +164,7 @@ export default function SignaturePad({ signerName, onSubmit, onCancel, busy }: P
           <label className="text-xs text-gray-400 block mb-1">
             Draw your signature with mouse, trackpad, or finger. Sign as you would on paper.
           </label>
-          <div className="relative rounded-lg bg-black border border-white/10 overflow-hidden" style={{ height: 180 }}>
+          <div className="relative rounded-lg bg-white border border-white/20 overflow-hidden" style={{ height: 180 }}>
             <canvas
               ref={canvasRef}
               onPointerDown={handlePointerDown}
@@ -159,7 +174,7 @@ export default function SignaturePad({ signerName, onSubmit, onCancel, busy }: P
               className="w-full h-full touch-none cursor-crosshair"
             />
             {!hasDrawn && (
-              <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-gray-600 text-sm">
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
                 Sign here
               </div>
             )}
