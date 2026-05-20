@@ -6,21 +6,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Challengers Cricket Club website — London, Ontario. Next.js 15 (App Router), TypeScript strict mode, Tailwind CSS dark theme with glass morphism, Google Forms for inquiries, Stripe-hosted donation page for payments, NextAuth (Google OAuth) + Firestore for the members portal.
 
-**Organization**: Ontario NFP Corporation #1746974-8 | challengerscc.ca | @challengers.cc
+**Organization**: Canada NFP under the CNCA (Corporation #1746974-8, incorporated 12 Nov 2025) | challengerscc.ca | @challengers.cc
 **Emails**: `contact@challengerscc.ca` (official Google Workspace), `challengerscricketclub2026@gmail.com` (legacy Gmail used for SMTP outreach)
 **Reference docs at root**: `GOOGLE_FORMS_SETUP.md` (form setup guide, partially stale), `SPONSORSHIP_OPPORTUNITIES.md`
 
 ## Development Commands
 
 ```bash
-npm install        # Install dependencies
-npm run dev        # Dev server (http://localhost:3000)
-npm run build      # Production build
-npm start          # Production server
-npm run lint       # next lint with next/core-web-vitals preset
+npm install              # Install dependencies
+npm run dev              # Dev server (http://localhost:3000)
+npm run build            # Production build
+npm start                # Production server
+npm run lint             # next lint with next/core-web-vitals preset
+npm test                 # vitest run (jsdom, single pass)
+npm run test:watch       # vitest watch mode
+npm run test:ui          # vitest --ui
+npx vitest tests/matchStats.test.ts             # run a single file
+npx vitest -t "best batter"                     # run by test-name regex
 ```
 
-No test framework is configured. There are no unit or integration tests.
+Vitest is configured in `vitest.config.ts` (jsdom env, globals on, `@/*` alias). Setup file: `tests/setup.ts`. Tests live in `tests/` and cover `lib/c3h-access`, the `app/c3h/lib/` pure modules (matchStats, playerAnalysis, coachInsight), the Pavilion `governanceDocs`, scorer types, and the SignaturePad component. No Next.js / Firestore integration tests — keep `app/c3h/lib/` modules pure so they remain unit-testable without mocking Firebase.
 
 ## Environment Variables
 
@@ -34,7 +39,7 @@ No test framework is configured. There are no unit or integration tests.
 - `NEXTAUTH_URL` — must match deployed origin exactly
 - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — from Google Cloud Console OAuth 2.0
 
-**Firebase config is hardcoded** in `lib/firebase.ts` (project: `challengers-c3h`) — no env var needed for the Firestore client. The Firestore project is the source of truth for all C3H data; security rules live in the Firebase console, not the repo.
+**Firebase config is hardcoded** in `lib/firebase.ts` (project: `challengers-c3h`) — no env var needed for the Firestore client. The Firestore project is the source of truth for all C3H data. Security rules now live in `firestore.rules` at the repo root (deploy via Firebase Console paste or `firebase deploy --only firestore:rules`). The app uses Firebase **anonymous auth** to satisfy `request.auth != null`; real per-user access control happens at the NextAuth layer, so rules only do shape validation, append-only enforcement, and email allowlists — the director allowlist in `firestore.rules` must be kept in sync with `C3H_DIRECTOR_ROSTER` in `lib/c3h-access.ts`.
 
 ## Deployment
 
@@ -63,15 +68,25 @@ The codebase has two distinct sub-apps that share the same components and design
 Two layered access checks:
 
 1. **Login eligibility** — `app/api/auth/[...nextauth]/route.ts` hardcodes `BOARD_EMAILS` + `PLAYER_EMAILS` whitelists. Anything not on either list is rejected at sign-in. Any `@challengerscc.ca` Workspace address is auto-approved as `board`. Sessions are JWT, 30-day max age. Custom `signIn` / `error` pages: `/c3h/login`.
-2. **Board-only UI inside C3H** — `lib/c3h-access.ts` defines four predicates: `isC3HAdmin` (Saad only), `isC3HCaptain` (admin + designated league captains/VCs), `isC3HBoard` (alias for captains today), and `isC3HSquadViewer` (read-only captain view for Treasurer + the shared `contact@` inbox). **This is intentionally narrower than the NextAuth board list**: other club board members (Gokul, Madhu, Ankush, Roman, Qaiser) can sign in as players to mark availability but don't see captain/squad/Pavilion features. When gating a board-only feature, always use `isC3HBoard()` (or `isC3HSquadViewer()` for read-only surfaces) from `lib/c3h-access.ts` — never re-derive from email domain or role string. `contact@challengerscc.ca` is deliberately excluded from `C3H_ADMIN_EMAILS` because the inbox is shared.
+2. **Board-only UI inside C3H** — `lib/c3h-access.ts` is the single source of truth. Predicates:
+   - `isC3HAdmin` — Saad only.
+   - `isC3HCaptain` / `isC3HBoard` — admin + designated league captains/VCs. Use this for any board-only mutation surface.
+   - `isC3HSquadViewer` — read-only captain view for Treasurer + the shared `contact@` inbox.
+   - `isC3HDirector` / `isC3HGovernanceReader` — for Pavilion / governance-signature surfaces, backed by `C3H_DIRECTOR_ROSTER` and `C3H_OFFICER_ROSTER`. Use the `resolveDirectorWorkspaceEmail()` / `resolveOfficerWorkspaceEmail()` helpers to canonicalize a personal-gmail login back to the director's workspace address — Pavilion writes always store the workspace email, never the login email.
+
+   **This is intentionally narrower than the NextAuth board list**: other club board members can sign in as players to mark availability but don't see captain/squad/Pavilion features. Always gate from these predicates — never re-derive from email domain or role string. `contact@challengerscc.ca` is deliberately excluded from `C3H_ADMIN_EMAILS` because the inbox is shared.
+
+   `lib/c3h-roster.ts` is a separate, larger player-roster source used by the availability/squad surfaces — distinct from the director/officer rosters in `c3h-access.ts`.
 
 ### C3H Firestore collections
 
-- `matches` — created by the Scorer; `createdBy` is the scorer's email; `status` includes at least `'playing'`, `'innings_break'`, `'completed'`. `/c3h/live` requires Firestore Security Rules to allow public reads on these three statuses.
+- `matches` — created by the Scorer; `createdBy` is the scorer's email; `status` includes at least `'playing'`, `'innings_break'`, `'completed'`. `/c3h/live` requires Firestore Security Rules to allow public reads on these three statuses (already configured in `firestore.rules` — `matches` allows public read by design).
 - `squads/{matchId}` — `{ players, roles, updatedBy, updatedAt }`. Roles enforce single-holder uniqueness (captain/VC/WK) — auto-heals stale data on read.
 - `availability/{playerName}` — player-keyed (not email-keyed)
 - `field-positions/{matchId}` — Field Editor state
-- `reflections` — Pavilion reflections
+- `reflections` — Nets reflections
+- `governance_signatures` — append-only Pavilion signatures. Doc id encodes `{docId}_{docVersion}_{signerWorkspaceEmail}`; rules enforce append-only (no update, no delete) and director-allowlist on create.
+- `officer_appointments` — Officer Hub appointments produced from the Pavilion flow.
 
 When reading these, prefer `onSnapshot` for live views and `getDocs` for one-shot loads — both patterns are already in use; match the surrounding page's style.
 
@@ -99,7 +114,15 @@ When reading these, prefer `onSnapshot` for live views and `getDocs` for one-sho
 - `/c3h/live` — **publicly readable** read-only scoreboard, subscribes to in-flight `matches` via `onSnapshot`, plus shows the `MatchSummary` card on completed matches. The only `/c3h/*` page that does not require login.
 - `/c3h/nets` — Pavilion reflections + coach-level review form. Match dropdown lists actual completed `matches` from Firestore (not just generic "Practice"); selecting one auto-pulls the player's batting/bowling stats from the match document. Renders `PlayerCoachCard` (per-player rule-based analysis) and an "Auto Coach Insight" derived from the reflection form. Writes to `reflections`.
 - `/c3h/replays` — lists completed matches from Firestore for replay/review.
+- `/c3h/pavilion` — director-only governance hub. Renders the documents listed in `app/c3h/pavilion/governanceDocs.ts` (IP Ownership Acknowledgement, Software Licence Agreement, Resolutions, Letters of Direction). Collects typed or drawn signatures via `SignaturePad.tsx`, writes append-only to `governance_signatures`. Saad has a separate "licensor" signing track because he is the personal IP licensor counterparty and is recused from signing on the CCC side (see `conflictedSigners` + `requiresLicensorSignature` on each `GovernanceDoc`).
+
+  **Letters of Direction (bank signing-authority workflow)**: per CIBC, a signing authority does not need to be a director — any individual approved by the directors can be added by submitting a Letter of Direction signed by all 5 directors. LoDs are modeled as per-recipient `GovernanceDoc` entries (one doc per person being added — e.g. `lod-gokul-cibc-2026`, `lod-qaiser-cibc-2026`). All five directors must sign in the Pavilion; once complete, the signed Letter is exported as a PDF on club letterhead and emailed to the recipient's personal Gmail for in-person submission to the branch. Bank governance policy is **dual-signatory** — additional authorities are added under this policy, not as sole signers. OTPs are tied to the registered signing authority's personal phone (CIBC small-business: no email OTP); each authority gets their own debit card. Transactions in the bank statement display the name of the authority who initiated them — this is a CIBC display behavior and is not editable; the account remains a club account.
+- `/c3h/officer-hub` — director-only officer-appointment UI (`OfficerAppointment.tsx`) backed by `C3H_OFFICER_ROSTER` and writes to `officer_appointments`.
+- `/c3h/admin/signatures` — admin-only Pavilion signature audit / cleanup surface.
+- `/c3h/rulebooks` — static rulebook references.
 - `/c3h/watch`, `/c3h/profile`, `/c3h/events`, `/c3h/field-editor`, `/c3h/receipts`
+
+When adding director / governance work, bump the `version` field on the `GovernanceDoc` rather than mutating in place — bumping the version triggers a fresh re-signing cycle because `governance_signatures` doc ids include the version.
 
 **Per-portal helpers in `app/c3h/lib/`** — all pure-function / pure-component modules; no Firestore reads, so they can run server- or client-side off any `Match`:
 - `matchStats.ts` — per-player batting/bowling aggregates plus MVP / Best Batter / Best Bowler / Best Fielder / match-impact rankings from a `Match` document.
@@ -120,7 +143,7 @@ When adding rule-based analysis, extend these modules — keep them LLM-free and
 ### Server vs client components
 
 Default-server (no `"use client"`): About, BoardMembers, Footer, LegalDocuments, Partners, Programs, SponsorshipBanner, LiveStreaming, Clubhouse.
-Client (`"use client"`): Navbar, Hero, Registration, Contact, VerifiedNonprofit (uses `canvas-confetti` + IntersectionObserver), VerifiedBanner, UserMenu, and **all** `app/c3h/**/*.tsx` pages.
+Client (`"use client"`): Navbar, Hero, Registration, Contact, VerifiedNonprofit (uses `canvas-confetti` + IntersectionObserver), VerifiedBanner, UserMenu, PublicLiveScore (homepage live-match strip — subscribes to in-flight `matches` via `onSnapshot`), and **all** `app/c3h/**/*.tsx` pages.
 
 ### Design System
 
