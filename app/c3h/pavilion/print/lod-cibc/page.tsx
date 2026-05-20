@@ -27,6 +27,7 @@ import {
   isC3HGovernanceReader,
 } from '@/lib/c3h-access';
 import { findDoc } from '../../governanceDocs';
+import LetterPaper from '../../LetterPaper';
 
 const DOC_ID = 'lod-cibc-gokul-qaiser-2026';
 
@@ -115,21 +116,9 @@ export default function LoDPrintPage() {
 
   return (
     <>
-      {/* Print stylesheet — Letter size, narrow margins, hide UI chrome,
-          preserve background colours so the green accent renders. */}
+      {/* Page-level rules; the @page / letterhead structure lives in
+          LetterPaper. Only LoD-specific helpers stay here. */}
       <style>{`
-        @page { size: letter; margin: 0.5in; }
-        @media print {
-          html, body { background: #fff !important; }
-          .no-print { display: none !important; }
-          .page-paper {
-            box-shadow: none !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            max-width: 100% !important;
-          }
-          * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        }
         .sig-img-wrap img {
           max-height: 56px;
           max-width: 240px;
@@ -166,23 +155,10 @@ export default function LoDPrintPage() {
           </button>
         </div>
 
-        {/* The letter itself */}
-        <article className="page-paper max-w-4xl mx-auto bg-white text-gray-900 shadow-lg p-12 print:p-0 leading-relaxed">
-
-          {/* Letterhead */}
-          <header className="flex items-center gap-4 pb-3 border-b-[3px] border-emerald-600">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/ccc-logo.png" alt="Challengers Cricket Club" className="h-16 w-auto" />
-            <div>
-              <div className="text-xl font-extrabold text-emerald-700 tracking-tight">Challengers Cricket Club</div>
-              <div className="text-[11px] text-gray-600 leading-snug mt-0.5">
-                Canada Not-for-Profit Corporation #1746974-8 (incorporated 12 November 2025)<br />
-                Registered office: 790 Capulet Lane, London, ON&nbsp;&nbsp;N6H 0J8<br />
-                contact@challengerscc.ca&nbsp;&nbsp;·&nbsp;&nbsp;challengerscc.ca
-              </div>
-            </div>
-          </header>
-          <div className="h-[2px] bg-gradient-to-r from-emerald-500 to-amber-400 mb-6" />
+        {/* The letter itself — wrapped in LetterPaper so the green
+            letterhead header + footer bands repeat on every printed
+            page when content overflows past a single sheet. */}
+        <LetterPaper>
 
           {/* Date */}
           <div className="text-right text-[13px] text-gray-700 mb-5">May 20, 2026</div>
@@ -383,7 +359,7 @@ export default function LoDPrintPage() {
             Corporation #1746974-8, or contact the Corporation at contact@challengerscc.ca.
           </div>
 
-        </article>
+        </LetterPaper>
 
         {/* Footer toolbar — screen only */}
         <div className="no-print max-w-4xl mx-auto mt-4 px-4 text-xs text-gray-500">
