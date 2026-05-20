@@ -177,7 +177,7 @@ export default function LoDPrintPage() {
               <div className="text-xl font-extrabold text-emerald-700 tracking-tight">Challengers Cricket Club</div>
               <div className="text-[11px] text-gray-600 leading-snug mt-0.5">
                 Canada Not-for-Profit Corporation #1746974-8 (incorporated 12 November 2025)<br />
-                Registered office: 790 Capulet Lane, Unit 907, London, ON&nbsp;&nbsp;N6H 0J8<br />
+                Registered office: 790 Capulet Lane, London, ON&nbsp;&nbsp;N6H 0J8<br />
                 contact@challengerscc.ca&nbsp;&nbsp;·&nbsp;&nbsp;challengerscc.ca
               </div>
             </div>
@@ -208,7 +208,7 @@ export default function LoDPrintPage() {
             This letter is provided by the Board of Directors of <strong>Challengers Cricket Club</strong> (the
             &ldquo;Corporation&rdquo;), a federal Canada Not-for-Profit Corporation incorporated under the{' '}
             <em>Canada Not-for-Profit Corporations Act</em> (Corporation #1746974-8), having its registered office at
-            790 Capulet Lane, Unit 907, London, Ontario&nbsp;&nbsp;N6H 0J8. The Corporation is a volunteer-run
+            790 Capulet Lane, London, Ontario&nbsp;&nbsp;N6H 0J8. The Corporation is a volunteer-run
             not-for-profit organization; it has no employees, issues no payroll, and pays no salary, fee, or other
             compensation to any signing authority, director, or officer.
           </p>
