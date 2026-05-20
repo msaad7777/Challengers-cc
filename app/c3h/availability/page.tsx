@@ -59,7 +59,7 @@ const ALL_PLAYERS = [
   'Salman Ahmed', 'Farooq Choudhary', 'Vijay Yadav', 'Shivam Rajput',
   'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
   'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Siva Sriram', 'Rajath Shetty', 'Murshad Azad',
-  'Aleem Quadri',
+  'Aleem Quadri', 'Ameeya Singh',
 ];
 
 // Players restricted to specific leagues

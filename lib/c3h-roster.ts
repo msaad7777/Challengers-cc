@@ -49,6 +49,7 @@ export const EMAIL_TO_PLAYER: Record<string, string> = {
   'rajath.s.shetty@gmail.com': 'Rajath Shetty',
   'maaleemq@gmail.com': 'Aleem Quadri',
   'thoufeeqmuhammed99@gmail.com': 'Thoufeeq Muhammed',
+  'ameeyasingh1@gmail.com': 'Ameeya Singh',
 };
 
 // Resolve a Google-login email to the player's display name. Returns null
