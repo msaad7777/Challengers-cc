@@ -304,48 +304,64 @@ export default function LoDPrintPage() {
             their access being activated.
           </p>
 
-          {/* ── Signature grid ─────────────────────────────────────────── */}
-          <div className="border-t border-dashed border-gray-400 pt-4 mt-2 text-[12.5px] text-gray-700 mb-4">
-            By signing below, each of the undersigned confirms that they are a current director of the Corporation and
-            that they have authorised this direction on behalf of the Corporation. Signatures captured electronically
-            through the Pavilion governance ledger of Challengers Cricket Club, in accordance with the{' '}
-            <em>Ontario Electronic Commerce Act, 2000</em> and the federal <em>UECA</em>.
-          </div>
+          {/* ── Signature grid ───────────────────────────────────────────
+              Forced onto a fresh page so all 5 director blocks stay together.
+              Without this, the grid was splitting across page 3 / 4 and the
+              first two blocks (Saad + Ankush) were getting clipped — banks
+              would interpret a missing signature row as "this director
+              didn't sign". */}
+          <div
+            className="signatures-section"
+            style={{ pageBreakBefore: 'always', breakBefore: 'page' }}
+          >
+            <div className="border-t border-dashed border-gray-400 pt-4 text-[12.5px] text-gray-700 mb-4">
+              By signing below, each of the undersigned confirms that they are a current director of the Corporation and
+              that they have authorised this direction on behalf of the Corporation. Signatures captured electronically
+              through the Pavilion governance ledger of Challengers Cricket Club, in accordance with the{' '}
+              <em>Ontario Electronic Commerce Act, 2000</em> and the federal <em>UECA</em>.
+            </div>
 
-          <div className="grid grid-cols-2 gap-x-10 gap-y-6">
-            {C3H_DIRECTOR_ROSTER.map((d) => {
-              const sig = signatures[d.workspaceEmail];
-              const signedDate = sig?.signedAt
-                ? sig.signedAt.toDate().toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' })
-                : null;
-              return (
-                <div key={d.workspaceEmail} className="break-inside-avoid">
+            <div
+              className="grid grid-cols-2 gap-x-10 gap-y-6"
+              style={{ pageBreakInside: 'avoid', breakInside: 'avoid-page' }}
+            >
+              {C3H_DIRECTOR_ROSTER.map((d) => {
+                const sig = signatures[d.workspaceEmail];
+                const signedDate = sig?.signedAt
+                  ? sig.signedAt.toDate().toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' })
+                  : null;
+                return (
                   <div
-                    className="sig-img-wrap border-b-[1.5px] border-gray-900 flex items-end pb-0.5"
-                    style={{ minHeight: '62px' }}
+                    key={d.workspaceEmail}
+                    style={{ pageBreakInside: 'avoid', breakInside: 'avoid-page' }}
                   >
-                    {sig?.signatureType === 'drawn' ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={sig.signatureData} alt={`${d.name} signature`} />
-                    ) : sig?.signatureType === 'typed' ? (
-                      <span
-                        className="text-gray-900 italic"
-                        style={{ fontFamily: 'Brush Script MT, cursive', fontSize: '28px', lineHeight: '1' }}
-                      >
-                        {sig.signatureData}
+                    <div
+                      className="sig-img-wrap border-b-[1.5px] border-gray-900 flex items-end pb-0.5"
+                      style={{ minHeight: '62px' }}
+                    >
+                      {sig?.signatureType === 'drawn' ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={sig.signatureData} alt={`${d.name} signature`} />
+                      ) : sig?.signatureType === 'typed' ? (
+                        <span
+                          className="text-gray-900 italic"
+                          style={{ fontFamily: 'Brush Script MT, cursive', fontSize: '28px', lineHeight: '1' }}
+                        >
+                          {sig.signatureData}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="font-bold text-[13px] text-gray-900 mt-1">{d.name}</div>
+                    <div className="text-[11px] text-gray-600">{d.role}</div>
+                    <div className="text-[11px] text-gray-600 mt-1">
+                      Date: <span className={signedDate ? 'text-gray-900' : 'text-gray-400'}>
+                        {signedDate ?? '— pending —'}
                       </span>
-                    ) : null}
+                    </div>
                   </div>
-                  <div className="font-bold text-[13px] text-gray-900 mt-1">{d.name}</div>
-                  <div className="text-[11px] text-gray-600">{d.role}</div>
-                  <div className="text-[11px] text-gray-600 mt-1">
-                    Date: <span className={signedDate ? 'text-gray-900' : 'text-gray-400'}>
-                      {signedDate ?? '— pending —'}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
 
           {/* Footer */}
