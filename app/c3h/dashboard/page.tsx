@@ -265,7 +265,7 @@ export default function DashboardPage() {
                 <p className="text-gray-400 text-sm mb-4">
                   {isDirector
                     ? 'Read corporate agreements, sign with typed or drawn signature, see which directors have signed and which are pending.'
-                    : 'Read the Club’s governance documents (IP Ownership, Software Licence Agreement) for visibility into the legal framework. Signing trackers and board resolutions are reserved for directors.'}
+                    : 'Read the Club’s governance documents (Technology Governance Record, Letter of Direction) for visibility into the Club’s digital and operational arrangements. Signing trackers and board resolutions are reserved for directors.'}
                 </p>
                 <span className={`text-xs px-3 py-1 rounded-full ${isDirector ? 'bg-accent-500/20 text-accent-400 border border-accent-500/30' : 'bg-white/5 text-gray-400 border border-white/10'}`}>
                   {isDirector ? 'Open' : 'Read-only'}

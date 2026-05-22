@@ -124,11 +124,11 @@ const DOCS: DocConfig[] = [
   },
   {
     slug: 'ip-ownership',
-    title: 'Software & IP Ownership',
-    summary: 'The C3H portal and challengerscc.ca website were authored by Mohammed Saad personally and are his personal property under Copyright Act §13(1). The Club operates under a revocable licence at no charge while he serves as a director. Not a donation.',
+    title: 'Software & Technology Notice',
+    summary: 'Brief public description of how the C3H portal and challengerscc.ca infrastructure is organised — which services are on Club-owned accounts (domain, Workspace, Vercel, Firebase, Stripe, member data) and which sit on the original developer\'s personal GitHub. Neutral on ownership; detailed Technology Governance Record is maintained internally by the Board.',
     audience: 'Public + governance',
-    icon: '⚖️',
-    priority: 'IP / governance · signed in Pavilion',
+    icon: '⚙️',
+    priority: 'Governance',
     minRole: 'public',
   },
   {

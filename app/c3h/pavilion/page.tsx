@@ -24,9 +24,9 @@ import {
   resolveOfficerWorkspaceEmail,
 } from '@/lib/c3h-access';
 import Navbar from '@/components/Navbar';
-import { GOVERNANCE_DOCS, LICENSOR, type GovernanceDoc } from './governanceDocs';
+import { GOVERNANCE_DOCS, type GovernanceDoc } from './governanceDocs';
 import SignaturePad, { type SignatureResult } from './SignaturePad';
-import ServiceAgreement from './ServiceAgreement';
+import TechnologyGovernanceRecord from './TechnologyGovernanceRecord';
 import LetterOfDirection from './LetterOfDirection';
 import Resolutions from './Resolutions';
 
@@ -49,13 +49,6 @@ function sigKey(docId: string, docVersion: string, workspaceEmail: string) {
   return `${docId}__v${docVersion}__${workspaceEmail.replace(/[^a-z0-9@.]/gi, '_')}`;
 }
 
-// Distinct key for the licensor (Mohammed Saad personally) signature
-// on a two-party agreement. Lives in the same governance_signatures
-// collection but is tracked independently from CCC-director sigs.
-function licensorSigKey(docId: string, docVersion: string) {
-  return `${docId}__v${docVersion}__licensor`;
-}
-
 export default function PavilionPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -66,7 +59,6 @@ export default function PavilionPage() {
   // Officer-appointment signers, keyed by lower-cased workspace email.
   const [oaSigners, setOaSigners] = useState<Set<string>>(new Set());
   const [openSignerFor, setOpenSignerFor] = useState<string | null>(null);
-  const [openSacsSignerFor, setOpenSacsSignerFor] = useState<string | null>(null);
   const [openContentFor, setOpenContentFor] = useState<string | null>(null);
   const [busyDocId, setBusyDocId] = useState<string | null>(null);
 
@@ -216,33 +208,6 @@ export default function PavilionPage() {
     }
   };
 
-  const submitLicensorSignature = async (doc: GovernanceDoc, result: SignatureResult) => {
-    if (userEmail.toLowerCase() !== LICENSOR.workspaceEmail &&
-        userEmail.toLowerCase() !== 'mbadru3434@gmail.com') {
-      return; // Only Mohammed Saad can sign as the personal licensor
-    }
-    setBusyDocId(doc.id);
-    try {
-      const key = licensorSigKey(doc.id, doc.version);
-      const record = {
-        docId: doc.id,
-        docVersion: doc.version,
-        signerWorkspaceEmail: LICENSOR.workspaceEmail,
-        signerLoginEmail: userEmail.toLowerCase(),
-        signerName: LICENSOR.name,
-        signerRole: LICENSOR.role,
-        signedAt: serverTimestamp(),
-        signatureType: result.type,
-        signatureData: result.data,
-        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
-      };
-      await setDoc(doc_ref(key), record);
-      setOpenSacsSignerFor(null);
-    } finally {
-      setBusyDocId(null);
-    }
-  };
-
   const requiredSignersFor = (gd: GovernanceDoc): typeof C3H_DIRECTOR_ROSTER => {
     if (gd.whoMustSign === 'all-directors') return C3H_DIRECTOR_ROSTER;
     const conflicted = new Set(gd.conflictedSigners ?? []);
@@ -287,10 +252,10 @@ export default function PavilionPage() {
                 <span>Read-only access — Treasurer / Secretary view</span>
               </p>
               <p className="text-xs text-amber-100 leading-relaxed">
-                You can read the Club&apos;s governance documents (IP Ownership, Software Licence Agreement,
-                etc.) for visibility into the Club&apos;s legal framework. Signing trackers, the director
-                onboarding tracker, and board resolutions are reserved for the elected directors under the
-                Bylaws and are not shown in this view.
+                You can read the Club&apos;s governance documents (Technology Governance Record, Letter of
+                Direction, etc.) for visibility into the Club&apos;s digital and operational arrangements.
+                Signing trackers, the director onboarding tracker, and board resolutions are reserved for the
+                elected directors under the Bylaws and are not shown in this view.
               </p>
             </div>
           )}
@@ -341,13 +306,7 @@ export default function PavilionPage() {
                 const isConflicted = (gd.conflictedSigners ?? []).includes(userWorkspaceEmail || '');
                 const isOpen = openContentFor === gd.id;
                 const isSigning = openSignerFor === gd.id;
-                // For two-party agreements, fully-signed requires both
-                // the CCC director side AND the licensor side. Otherwise
-                // CCC director side alone is sufficient.
-                const licensorSigPresent = gd.requiresLicensorSignature
-                  ? Boolean(signatures[licensorSigKey(gd.id, gd.version)])
-                  : true;
-                const fullySigned = signed === total && licensorSigPresent;
+                const fullySigned = signed === total;
 
                 return (
                   <article key={gd.id} className="glass rounded-2xl p-6 border border-white/10">
@@ -366,9 +325,7 @@ export default function PavilionPage() {
                               : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
                           }`}
                         >
-                          {gd.requiresLicensorSignature
-                            ? `${signed} / ${total} directors${licensorSigPresent ? ' · ✓ Licensor' : ' · Licensor pending'}`
-                            : `${signed} / ${total} signed`}
+                          {`${signed} / ${total} signed`}
                         </div>
                       </div>
                     </header>
@@ -426,8 +383,8 @@ export default function PavilionPage() {
 
                     {isOpen && (
                       <div className="rounded-xl bg-black/30 border border-white/10 p-5 mb-4 max-h-[420px] overflow-y-auto">
-                        {gd.inline === 'service-agreement' ? (
-                          <ServiceAgreement />
+                        {gd.inline === 'technology-governance-record-2026' ? (
+                          <TechnologyGovernanceRecord />
                         ) : gd.inline === 'lod-cibc-gokul-qaiser-2026' ? (
                           <LetterOfDirection />
                         ) : gd.publicUrl ? (
@@ -452,70 +409,6 @@ export default function PavilionPage() {
                         />
                       </div>
                     )}
-
-                    {/* ── Licensor (Mohammed Saad personally) signing track ─── */}
-                    {gd.requiresLicensorSignature && (() => {
-                      const licKey = licensorSigKey(gd.id, gd.version);
-                      const licSig = signatures[licKey];
-                      const userIsLicensor =
-                        userEmail.toLowerCase() === LICENSOR.workspaceEmail ||
-                        userEmail.toLowerCase() === 'mbadru3434@gmail.com';
-                      const isOpenLic = openSacsSignerFor === gd.id;
-                      return (
-                        <div className="mt-4 rounded-xl bg-accent-500/5 border-2 border-accent-500/30 p-4">
-                          <div className="flex items-start justify-between gap-3 flex-wrap mb-2">
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs uppercase tracking-wider text-accent-400 font-bold mb-1">
-                                Licensor signature — Mohammed Saad
-                              </p>
-                              <p className="text-sm text-gray-300">
-                                This is a two-party agreement. The Club&apos;s 4 non-conflicted directors approve
-                                on the CCC side above; Mohammed Saad signs separately on the licensor side
-                                in his personal capacity as the author and copyright owner of the platform —
-                                distinct from his recused role as a CCC director.
-                              </p>
-                            </div>
-                            {licSig ? (
-                              <div className="text-right">
-                                <div className="text-primary-400 text-xs font-semibold">✓ Licensor signed</div>
-                                <div className="text-[10px] text-gray-500 mt-0.5">
-                                  {licSig.signedAt ? licSig.signedAt.toDate().toLocaleDateString() : '…'} · {licSig.signatureType}
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="text-amber-400 text-xs font-semibold">Licensor pending</div>
-                            )}
-                          </div>
-
-                          {!licSig && userIsLicensor && (
-                            <div className="mt-3">
-                              {isOpenLic ? (
-                                <SignaturePad
-                                  signerName={LICENSOR.name}
-                                  busy={busyDocId === gd.id}
-                                  onCancel={() => setOpenSacsSignerFor(null)}
-                                  onSubmit={(result) => submitLicensorSignature(gd, result)}
-                                />
-                              ) : (
-                                <button
-                                  type="button"
-                                  onClick={() => setOpenSacsSignerFor(gd.id)}
-                                  className="px-5 py-2 rounded-lg bg-accent-500 text-black font-semibold text-sm hover:bg-accent-400 transition-all"
-                                >
-                                  Sign as licensor (personal capacity)
-                                </button>
-                              )}
-                            </div>
-                          )}
-
-                          {!licSig && !userIsLicensor && (
-                            <p className="text-xs text-gray-500 italic mt-2">
-                              Pending Mohammed Saad to sign as licensor.
-                            </p>
-                          )}
-                        </div>
-                      );
-                    })()}
 
                     {/* Sign-status grid — director-only view */}
                     {canSeeTrackers && (

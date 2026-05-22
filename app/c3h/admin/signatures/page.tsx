@@ -19,10 +19,10 @@ type CollectionConfig = {
 const COLLECTIONS: CollectionConfig[] = [
   {
     id: 'governance_signatures',
-    label: 'Pavilion: IP Ownership + Software Licence',
+    label: 'Pavilion: Technology Governance Record + LoD',
     icon: '🏛️',
     publicUrl: '/c3h/pavilion',
-    description: 'Director e-signatures on the IP Ownership Acknowledgement and Software Licence Agreement.',
+    description: 'Director e-signatures on the Technology Governance Record and the Letter of Direction (CIBC).',
   },
   {
     id: 'officer_appointment_signatures',

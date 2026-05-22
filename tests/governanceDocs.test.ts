@@ -2,10 +2,10 @@ import { describe, it, expect } from 'vitest';
 import { GOVERNANCE_DOCS, findDoc } from '@/app/c3h/pavilion/governanceDocs';
 
 describe('governanceDocs', () => {
-  it('exports at least the IP Ownership and Service Agreement docs', () => {
+  it('exports at least the Technology Governance Record and the LoD', () => {
     expect(GOVERNANCE_DOCS.length).toBeGreaterThanOrEqual(2);
-    expect(GOVERNANCE_DOCS.find((d) => d.id === 'ip-ownership-acknowledgement')).toBeDefined();
-    expect(GOVERNANCE_DOCS.find((d) => d.id === 'service-agreement-v1')).toBeDefined();
+    expect(GOVERNANCE_DOCS.find((d) => d.id === 'technology-governance-record-2026')).toBeDefined();
+    expect(GOVERNANCE_DOCS.find((d) => d.id === 'lod-cibc-gokul-qaiser-2026')).toBeDefined();
   });
 
   it('every doc has a non-empty stable id, version, title and effective date', () => {
@@ -24,7 +24,7 @@ describe('governanceDocs', () => {
     }
   });
 
-  it('Saad is recused (conflict of interest) on every doc requiring conflict-aware signing', () => {
+  it('Saad is recused on every doc requiring conflict-aware signing', () => {
     for (const d of GOVERNANCE_DOCS) {
       if (d.whoMustSign === 'all-directors-except-conflicted') {
         expect(d.conflictedSigners).toContain('saad@challengerscc.ca');
@@ -33,8 +33,8 @@ describe('governanceDocs', () => {
   });
 
   it('findDoc returns the matching doc', () => {
-    expect(findDoc('ip-ownership-acknowledgement')?.shortTitle).toBe('IP Ownership Acknowledgement');
-    expect(findDoc('service-agreement-v1')?.shortTitle).toBe('Software Licence Agreement');
+    expect(findDoc('technology-governance-record-2026')?.shortTitle).toBe('Technology Governance Record');
+    expect(findDoc('lod-cibc-gokul-qaiser-2026')?.shortTitle).toBe('Letter of Direction — CIBC');
   });
 
   it('findDoc returns undefined for unknown id', () => {
@@ -47,13 +47,15 @@ describe('governanceDocs', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it('Software Licence Agreement requires licensor signature (two-party with Mohammed Saad personally)', () => {
-    const sa = GOVERNANCE_DOCS.find((d) => d.id === 'service-agreement-v1');
-    expect(sa?.requiresLicensorSignature).toBe(true);
+  it('Technology Governance Record requires all five directors (no recusal)', () => {
+    const tgr = GOVERNANCE_DOCS.find((d) => d.id === 'technology-governance-record-2026');
+    expect(tgr?.whoMustSign).toBe('all-directors');
+    expect(tgr?.conflictedSigners ?? []).toHaveLength(0);
   });
 
-  it('IP Ownership Acknowledgement does NOT require licensor signature (unilateral CCC act)', () => {
-    const ipo = GOVERNANCE_DOCS.find((d) => d.id === 'ip-ownership-acknowledgement');
-    expect(ipo?.requiresLicensorSignature ?? false).toBe(false);
+  it('LoD requires all five directors (no recusal)', () => {
+    const lod = GOVERNANCE_DOCS.find((d) => d.id === 'lod-cibc-gokul-qaiser-2026');
+    expect(lod?.whoMustSign).toBe('all-directors');
+    expect(lod?.conflictedSigners ?? []).toHaveLength(0);
   });
 });
