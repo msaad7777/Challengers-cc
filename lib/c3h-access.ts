@@ -127,16 +127,21 @@ export type OfficerEntry = {
 };
 
 export const C3H_OFFICER_ROSTER: readonly OfficerEntry[] = [
-  // Director who also holds an officer title (President). Gokul remains
-  // in C3H_DIRECTOR_ROSTER unchanged — the dual director+officer pattern
-  // is standard NFP governance and is permitted by Bylaws Article 4.7
-  // (which only restricts officer+officer combinations).
+  // Officer Hub roster, intentionally limited to the three formal
+  // officer roles in Bylaws Article 4.6 (President, Treasurer,
+  // Secretary). These three need a signed Officer Appointment Letter
+  // in the Pavilion governance ledger.
+  //
+  // The President (Gokul) is also a Director and remains in
+  // C3H_DIRECTOR_ROSTER unchanged — the dual director+officer pattern
+  // is permitted by Bylaws Article 4.7 (which only restricts
+  // officer+officer combinations).
+  //
+  // Captains and other operational role-holders are NOT listed here —
+  // they may be tracked through a separate roster later if needed.
   { workspaceEmail: 'gokul@challengerscc.ca',   personalEmail: 'gokulprakash663@gmail.com',  name: 'Gokul Prakash',  role: 'President' },
-  // Secretary appointment is currently on hold — the Board will revisit
-  // it after the 2026 enrolment cycle settles (see policy-drafts hold).
-  // Focusing on the President appointment first; one thing at a time.
+  { workspaceEmail: 'madhu@challengerscc.ca',   personalEmail: 'vantarimadhu@gmail.com',     name: 'Madhu Reddy',    role: 'Secretary' },
   { workspaceEmail: 'qaiser@challengerscc.ca',  personalEmail: 'qureshiqaiser007@gmail.com', name: 'Qaiser Qureshi', role: 'Treasurer' },
-  { workspaceEmail: 'shariar@challengerscc.ca', personalEmail: 'syedshahriar77@gmail.com',   name: 'Syed Shahriar',  role: 'Captain (LCL T30)' },
 ];
 
 export const isC3HDirector = (email?: string | null) =>
@@ -174,17 +179,17 @@ export const resolveOfficerWorkspaceEmail = (email?: string | null): string | nu
 
 // ── Governance readers ────────────────────────────────────────────────
 // Subset of officers who get READ-ONLY access to the Pavilion governance
-// documents. Today this is the Treasurer only (the Secretary slot is
-// vacant pending the 2026 enrolment cycle). Officers in this set can
-// read the corporate agreements but DO NOT see the signing trackers or
-// the board resolutions (those remain director-only).
+// documents. Today this is the Secretary and the Treasurer — they need
+// to see the corporate agreements to do their roles, but they DO NOT
+// see the signing trackers or the board resolutions (those remain
+// director-only).
 //
-// Captains are NOT governance readers; they are operational role-holders
-// who use the Officer Hub for their own appointment letter only.
+// Captains and other operational role-holders are NOT governance readers;
+// they would use a separate roster (not in OFFICER_ROSTER) if needed.
 //
-// The President is also not a governance-reader-via-officer-role: Gokul
-// already reads governance documents via his Director status, so the
-// officer-side predicate doesn't need to grant him anything extra.
+// The President is not a governance-reader-via-officer-role either:
+// Gokul already reads governance documents via his Director status, so
+// the officer-side predicate doesn't need to grant him anything extra.
 const GOVERNANCE_READER_ROLES = new Set<string>(['Secretary', 'Treasurer']);
 
 export const isC3HGovernanceReader = (email?: string | null) => {
