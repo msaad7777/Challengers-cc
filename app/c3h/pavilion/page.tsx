@@ -28,6 +28,7 @@ import { GOVERNANCE_DOCS, type GovernanceDoc } from './governanceDocs';
 import SignaturePad, { type SignatureResult } from './SignaturePad';
 import TechnologyGovernanceRecord from './TechnologyGovernanceRecord';
 import LetterOfDirection from './LetterOfDirection';
+import PresidentAppointment from './PresidentAppointment';
 import Resolutions from './Resolutions';
 
 type SignatureRecord = {
@@ -387,6 +388,8 @@ export default function PavilionPage() {
                           <TechnologyGovernanceRecord />
                         ) : gd.inline === 'lod-cibc-gokul-qaiser-2026' ? (
                           <LetterOfDirection />
+                        ) : gd.inline === 'president-appointment-gokul-2026' ? (
+                          <PresidentAppointment />
                         ) : gd.publicUrl ? (
                           <p className="text-sm text-gray-400 italic">
                             The full text of this document is published publicly at{' '}

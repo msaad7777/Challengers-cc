@@ -11,7 +11,10 @@ export type GovernanceDoc = {
   shortTitle: string;
   effective: string; // ISO date
   publicUrl?: string; // If the document text is published on /legal/*
-  inline?: 'technology-governance-record-2026' | 'lod-cibc-gokul-qaiser-2026'; // If the body is rendered inline by an inline component
+  inline?:
+    | 'technology-governance-record-2026'
+    | 'lod-cibc-gokul-qaiser-2026'
+    | 'president-appointment-gokul-2026'; // If the body is rendered inline by an inline component
   // If set, the Pavilion shows a "Print / export signed PDF" button that
   // links to this route. The route is responsible for pulling sigs from
   // governance_signatures and rendering a print-ready white-paper version
@@ -44,6 +47,17 @@ export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
     printUrl: '/c3h/pavilion/print/lod-cibc',
     summary:
       'Directs CIBC to add Gokul Prakash (Director) and Qaiser Qureshi (Treasurer, non-director officer) to the three-person signing authority panel on the Club’s operating account (transit 04582, account ending ****1517), in addition to Mohammed Saad who is already on file. Both new authorities serve in a strictly volunteer capacity. The account continues to operate under the Club’s dual-signatory governance policy. Must be signed by all five directors before being submitted to CIBC.',
+    whoMustSign: 'all-directors',
+  },
+  {
+    id: 'president-appointment-gokul-2026',
+    version: '1.0',
+    title: 'Director Resolution & Appointment of President — Gokul Prakash',
+    shortTitle: 'President Appointment — Gokul Prakash',
+    effective: '2026-05-25',
+    inline: 'president-appointment-gokul-2026',
+    summary:
+      'Combined Director Resolution and Officer Appointment Letter formally appointing Gokul Prakash as President of the Corporation pursuant to Bylaws Article 4.6(a). Records the unanimous decision of the Board, defines the scope of the President’s authority within the bylaws framework, sets out the decision-making workflow for routine matters versus matters reserved to the Board, and affirms that the role is held on a strictly volunteer, unpaid basis. Gokul remains a Director; the President title is an additional officer appointment. Must be signed by all five directors, including Gokul whose signature evidences his acceptance of the office.',
     whoMustSign: 'all-directors',
   },
 ];

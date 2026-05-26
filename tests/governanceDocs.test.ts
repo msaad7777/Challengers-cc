@@ -2,10 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { GOVERNANCE_DOCS, findDoc } from '@/app/c3h/pavilion/governanceDocs';
 
 describe('governanceDocs', () => {
-  it('exports at least the Technology Governance Record and the LoD', () => {
-    expect(GOVERNANCE_DOCS.length).toBeGreaterThanOrEqual(2);
+  it('exports at least the TGR, LoD, and President Appointment', () => {
+    expect(GOVERNANCE_DOCS.length).toBeGreaterThanOrEqual(3);
     expect(GOVERNANCE_DOCS.find((d) => d.id === 'technology-governance-record-2026')).toBeDefined();
     expect(GOVERNANCE_DOCS.find((d) => d.id === 'lod-cibc-gokul-qaiser-2026')).toBeDefined();
+    expect(GOVERNANCE_DOCS.find((d) => d.id === 'president-appointment-gokul-2026')).toBeDefined();
   });
 
   it('every doc has a non-empty stable id, version, title and effective date', () => {
@@ -35,6 +36,7 @@ describe('governanceDocs', () => {
   it('findDoc returns the matching doc', () => {
     expect(findDoc('technology-governance-record-2026')?.shortTitle).toBe('Technology Governance Record');
     expect(findDoc('lod-cibc-gokul-qaiser-2026')?.shortTitle).toBe('Letter of Direction — CIBC');
+    expect(findDoc('president-appointment-gokul-2026')?.shortTitle).toBe('President Appointment — Gokul Prakash');
   });
 
   it('findDoc returns undefined for unknown id', () => {
@@ -57,5 +59,11 @@ describe('governanceDocs', () => {
     const lod = GOVERNANCE_DOCS.find((d) => d.id === 'lod-cibc-gokul-qaiser-2026');
     expect(lod?.whoMustSign).toBe('all-directors');
     expect(lod?.conflictedSigners ?? []).toHaveLength(0);
+  });
+
+  it('President Appointment requires all five directors including the appointee (no recusal)', () => {
+    const pres = GOVERNANCE_DOCS.find((d) => d.id === 'president-appointment-gokul-2026');
+    expect(pres?.whoMustSign).toBe('all-directors');
+    expect(pres?.conflictedSigners ?? []).toHaveLength(0);
   });
 });

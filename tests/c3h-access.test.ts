@@ -140,9 +140,17 @@ describe('c3h-access predicates', () => {
       }
     });
 
-    it('officer roster names are not directors', () => {
+    it('officer roster has the expected role/director crossover (only the President is a Director)', () => {
+      // The President is intentionally a Director who also holds an
+      // officer title — standard NFP dual director+officer pattern,
+      // permitted by Bylaws Article 4.7. All other officer roles
+      // (Treasurer, Secretary, Captains, …) are non-director.
       for (const o of C3H_OFFICER_ROSTER) {
-        expect(isC3HDirector(o.workspaceEmail)).toBe(false);
+        if (o.role === 'President') {
+          expect(isC3HDirector(o.workspaceEmail)).toBe(true);
+        } else {
+          expect(isC3HDirector(o.workspaceEmail)).toBe(false);
+        }
       }
     });
 

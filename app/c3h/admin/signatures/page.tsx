@@ -19,10 +19,10 @@ type CollectionConfig = {
 const COLLECTIONS: CollectionConfig[] = [
   {
     id: 'governance_signatures',
-    label: 'Pavilion: Technology Governance Record + LoD',
+    label: 'Pavilion: Director resolutions & agreements',
     icon: '🏛️',
     publicUrl: '/c3h/pavilion',
-    description: 'Director e-signatures on the Technology Governance Record and the Letter of Direction (CIBC).',
+    description: 'Director e-signatures on the Technology Governance Record, the Letter of Direction (CIBC), and the Director Resolution appointing Gokul Prakash as President.',
   },
   {
     id: 'officer_appointment_signatures',
