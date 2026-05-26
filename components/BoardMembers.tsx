@@ -1,6 +1,18 @@
 import Image from 'next/image';
 
 export default function BoardMembers() {
+  // Roster reflects the Club's current governance state:
+  //   - 5 federally filed Directors of Corporation #1746974-8 (Saad, Gokul,
+  //     Tarek, Ankush, Roman) are listed as Director regardless of any
+  //     additional officer role they may also hold.
+  //   - Officer appointments (President, Treasurer, Secretary, etc.) are
+  //     only shown once formally ratified via a Director Resolution and a
+  //     signed Officer Appointment Letter in the Pavilion governance ledger.
+  //   - Until ratification is complete, an `onboardingNote` flags the
+  //     in-progress appointment so the public page reflects reality.
+  //
+  // Do NOT publish an officer title that has not been ratified in the
+  // Pavilion — the false-claims memory rule applies to this page.
   const boardMembers = [
     {
       name: "Mohammed Saad",
@@ -8,7 +20,7 @@ export default function BoardMembers() {
       role: "Board of Directors",
       bio: "Science graduate with 10 years of cricket leadership experience as director and founding member of multiple cricket clubs across the globe. Established IT foundations and positive club environments while dedicated to community betterment through non-profit work since childhood.",
       image: "/saad-ground.png",
-      initials: "MS"
+      initials: "MS",
     },
     {
       name: "Gokul Prakash",
@@ -16,7 +28,8 @@ export default function BoardMembers() {
       role: "Board of Directors",
       bio: "Hardware and Networking Engineer with a lifelong passion for cricket and community service. Dedicated to growing cricket in Canada while pursuing interests in YouTube blogging and international travel. Volunteered in various community-based events for community betterment over the past 15 years.",
       image: "/gokul-final.jpeg",
-      initials: "GP"
+      initials: "GP",
+      onboardingNote: "President-Designate · Appointment in progress",
     },
     {
       name: "Tarek Islam",
@@ -24,40 +37,33 @@ export default function BoardMembers() {
       role: "Board of Directors",
       bio: "Batting all-rounder bringing strategic judgment and competitive spirit to club leadership. Co-founder of the Bangladesh Association of London, Ontario. University of Dhaka graduate committed to purposeful leadership and community engagement through sport.",
       image: "/Tarek-Director.jpeg",
-      initials: "TI"
+      initials: "TI",
     },
     {
       name: "Ankush Arora",
       title: "Director",
-      role: "Player Development & Team Morale",
+      role: "Board of Directors",
       bio: "Civil Engineering Technologist bringing analytical precision to club operations. A mystery spin bowler with an athletic personality, known for his energetic presence and unwavering support that lifts team spirits on and off the field.",
       image: "/Ankush-boardm.jpeg",
-      initials: "AA"
-    },
-    {
-      name: "Quraishi Qaiser Mahmood",
-      title: "Treasurer",
-      role: "Financial Management",
-      bio: "Elite Zonal Wicket-keeper Batsman from Karnataka, India. Chief Estimator and Cost Consultant for Heavy Civil Projects in Canada. A hard-hitting batsman passionate about growing cricket in Canada and ensuring the club's financial excellence.",
-      image: "/qaiser-treasurer.jpeg",
-      initials: "QQM"
-    },
-    {
-      name: "Madhu Reddy",
-      title: "Secretary",
-      role: "Club Administration",
-      bio: "Senior Network Security Engineer with double master's degrees in Electronics and Communications. A versatile all-rounder who has been playing cricket since his teens. Known for his calm presence and team-first mentality, Madhu brings stability in high-pressure situations both on and off the field.",
-      image: "/secretary-ccc.jpeg",
-      initials: "MR"
+      initials: "AA",
     },
     {
       name: "Roman Mahmud",
-      title: "Social Chair",
-      role: "Social & Community Engagement",
+      title: "Director",
+      role: "Board of Directors · Social & Community Engagement",
       bio: "Former first-class cricketer from Bangladesh with over 20 years of cricket leadership experience. Proud father of three, served as Social Chair for MTA University Society of All Nations (2008-09), President of MTA Cricket Club (2007-09), and Captain of Fleming College Cricket Team (2017). Passionate about nurturing the next generation of cricket players and creating fun, creative team building activities.",
       image: "/Roman-social chair.jpeg",
-      initials: "RM"
-    }
+      initials: "RM",
+    },
+    {
+      name: "Quraishi Qaiser Mahmood",
+      title: "Officer Appointment",
+      role: "Onboarding in progress",
+      bio: "Chief Estimator and Cost Consultant for Heavy Civil Projects in Canada. Wicket-keeper Batsman from Karnataka, India, with a hard-hitting batting style. Passionate about growing cricket in Canada.",
+      image: "/qaiser-treasurer.jpeg",
+      initials: "QQM",
+      onboardingNote: "Officer appointment under Board review",
+    },
   ];
 
   return (
@@ -118,7 +124,13 @@ export default function BoardMembers() {
               <div className="text-center">
                 <h3 className="text-xl font-bold mb-1">{member.name}</h3>
                 <p className="text-primary-400 font-semibold text-sm mb-1">{member.title}</p>
-                <p className="text-gray-500 text-xs mb-4">{member.role}</p>
+                <p className="text-gray-500 text-xs mb-2">{member.role}</p>
+                {member.onboardingNote && (
+                  <div className="mb-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-accent-500/15 border border-accent-500/30 text-accent-300">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent-400 animate-pulse"></span>
+                    {member.onboardingNote}
+                  </div>
+                )}
                 <p className="text-gray-400 text-sm leading-relaxed">{member.bio}</p>
               </div>
 
@@ -139,7 +151,14 @@ export default function BoardMembers() {
           <div className="glass rounded-2xl p-8 max-w-3xl mx-auto">
             <p className="text-gray-400">
               Our board is dedicated to transparency, community engagement, and the growth of cricket in London, Ontario.
-              As a registered non-profit corporation, we operate with integrity and accountability.
+              As a federally incorporated not-for-profit corporation under the <em>Canada Not-for-profit Corporations Act</em>{' '}
+              (Corporation&nbsp;#1746974-8), we operate with integrity and accountability.
+            </p>
+            <p className="text-gray-500 text-sm mt-4">
+              Officer appointments (President, Treasurer, Secretary, and other roles) are formally ratified by Director
+              Resolution and recorded via signed Officer Appointment Letters in the Club&apos;s governance ledger. Roles
+              shown as <span className="text-accent-300 font-semibold">&ldquo;in progress&rdquo;</span> are pending final
+              ratification by the Board.
             </p>
           </div>
         </div>
