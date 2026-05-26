@@ -62,7 +62,16 @@ export default function BoardMembers() {
       bio: "Chief Estimator and Cost Consultant for Heavy Civil Projects in Canada. Wicket-keeper Batsman from Karnataka, India, with a hard-hitting batting style. Passionate about growing cricket in Canada.",
       image: "/qaiser-treasurer.jpeg",
       initials: "QQM",
-      onboardingNote: "Officer appointment under Board review",
+      onboardingNote: "Appointment in progress",
+    },
+    {
+      name: "Madhu Reddy",
+      title: "Officer Appointment",
+      role: "Onboarding in progress",
+      bio: "Senior Network Security Engineer with double master's degrees in Electronics and Communications. A versatile all-rounder who has been playing cricket since his teens. Known for his calm presence and team-first mentality, Madhu brings stability in high-pressure situations both on and off the field.",
+      image: "/secretary-ccc.jpeg",
+      initials: "MR",
+      onboardingNote: "Appointment in progress",
     },
   ];
 
