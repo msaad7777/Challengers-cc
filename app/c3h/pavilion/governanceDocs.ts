@@ -56,6 +56,7 @@ export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
     shortTitle: 'President Appointment — Gokul Prakash',
     effective: '2026-05-25',
     inline: 'president-appointment-gokul-2026',
+    printUrl: '/c3h/pavilion/print/president-gokul',
     summary:
       'Combined Director Resolution and Officer Appointment Letter formally appointing Gokul Prakash as President of the Corporation pursuant to Bylaws Article 4.6(a). Records the unanimous decision of the Board, defines the scope of the President’s authority within the bylaws framework, sets out the decision-making workflow for routine matters versus matters reserved to the Board, and affirms that the role is held on a strictly volunteer, unpaid basis. Gokul remains a Director; the President title is an additional officer appointment. Must be signed by all five directors, including Gokul whose signature evidences his acceptance of the office.',
     whoMustSign: 'all-directors',
