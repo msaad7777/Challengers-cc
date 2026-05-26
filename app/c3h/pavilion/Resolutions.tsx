@@ -137,8 +137,18 @@ export default function Resolutions({
         <div>
           <h2 className="text-xl font-bold text-white">Board Resolutions</h2>
           <p className="text-sm text-gray-400 mt-1">
-            Submit and vote on board resolutions. Used for officer performance reviews (every 3 months / pre &amp; post season),
-            financial decisions, governance amendments, and ad-hoc votes. Each resolution records every director&apos;s vote with timestamp.
+            Formal record of decisions made by the Directors of the Corporation pursuant to the Bylaws and the{' '}
+            <em>Canada Not-for-profit Corporations Act</em>. Use this space for matters the bylaws or Board-adopted
+            policies place at the Board level — for example, appointment or removal of officers, captains, and committee
+            chairs (Bylaws Art. 4.6); adoption or amendment of internal policies (Financial, Code of Conduct, Conflict
+            of Interest); spending authorisations outside an approved budget; review of officer conduct under Bylaws
+            Art. 3.6; and other matters expressly reserved to the Board.
+          </p>
+          <p className="text-xs text-gray-500 mt-2 italic">
+            Note: amendments to the Bylaws or to the Articles of Incorporation are <strong>not</strong> Board
+            resolutions — those require a <strong>special resolution of the members</strong> under{' '}
+            <em>CNCA s. 197</em>. Each Board resolution records each Director&apos;s vote, optional comment, and a
+            server-side timestamp in an append-only ledger.
           </p>
         </div>
         {canVote && (
@@ -221,9 +231,10 @@ export default function Resolutions({
       )}
 
       <p className="text-[11px] text-gray-500 mt-6 italic">
-        Suggested cadence: officer performance reviews every 3 months (e.g. Q1, Q2, Q3, Q4 of each calendar year)
-        and at season transitions (pre-season, post-season). Use category &ldquo;Officer review&rdquo; with a clear title
-        like &ldquo;Q3 2026 Treasurer review (Qaiser)&rdquo;.
+        Suggested practice: where the Board chooses to conduct routine officer reviews, a quarterly cadence (Q1–Q4)
+        with additional reviews at season transitions can be a useful structure — this is a suggestion, not a
+        Board-adopted policy. Title each resolution clearly (e.g. &ldquo;Q3 2026 — Treasurer review&rdquo; or
+        &ldquo;Adoption — Financial Policy expense-threshold clause&rdquo;) so the record is searchable.
       </p>
     </div>
   );
