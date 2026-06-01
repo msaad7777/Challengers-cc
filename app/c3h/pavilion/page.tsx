@@ -70,13 +70,44 @@ export default function PavilionPage() {
   useEffect(() => {
     if (!session?.user?.email) return;
     if (!isC3HDirector(session.user.email) && !isC3HGovernanceReader(session.user.email)) return;
-    const q = query(collection(db, SIG_COLLECTION), where('docId', 'in', GOVERNANCE_DOCS.map(d => d.id)));
+
+    // Pull signatures for every active governance doc plus every legacy
+    // doc id referenced by a `carryForwardFrom` on an active doc. Legacy
+    // signatures (e.g. from the prior combined Gokul + Qaiser LoD) are
+    // promoted in-memory below to count toward the split successor
+    // docs, so directors who already signed the combined doc do not
+    // need to re-sign each split one.
+    const activeDocIds = GOVERNANCE_DOCS.map(d => d.id);
+    const legacyDocIds = Array.from(
+      new Set(GOVERNANCE_DOCS.flatMap(d => d.carryForwardFrom ?? [])),
+    );
+    const allDocIds = Array.from(new Set([...activeDocIds, ...legacyDocIds]));
+    const q = query(collection(db, SIG_COLLECTION), where('docId', 'in', allDocIds));
     const unsub = onSnapshot(q, (snap) => {
+      // First pass: index every signature under its real (legacy or new) key.
       const map: Record<string, SignatureRecord> = {};
       snap.forEach((d) => {
         const r = d.data() as SignatureRecord;
         map[sigKey(r.docId, r.docVersion, r.signerWorkspaceEmail)] = r;
       });
+
+      // Second pass: for each active doc that carries forward from a
+      // legacy doc, copy any legacy signature into the active doc's key
+      // — but only if the director has NOT already signed the active
+      // doc directly. Fresh signatures always win over carried-forward
+      // legacy ones.
+      for (const gd of GOVERNANCE_DOCS) {
+        if (!gd.carryForwardFrom) continue;
+        for (const legacyId of gd.carryForwardFrom) {
+          snap.forEach((d) => {
+            const r = d.data() as SignatureRecord;
+            if (r.docId !== legacyId) return;
+            const activeKey = sigKey(gd.id, gd.version, r.signerWorkspaceEmail);
+            if (!map[activeKey]) map[activeKey] = r;
+          });
+        }
+      }
+
       setSignatures(map);
       setLoadingSigs(false);
     });
@@ -386,8 +417,10 @@ export default function PavilionPage() {
                       <div className="rounded-xl bg-black/30 border border-white/10 p-5 mb-4 max-h-[420px] overflow-y-auto">
                         {gd.inline === 'technology-governance-record-2026' ? (
                           <TechnologyGovernanceRecord />
-                        ) : gd.inline === 'lod-cibc-gokul-qaiser-2026' ? (
-                          <LetterOfDirection />
+                        ) : gd.inline === 'lod-cibc-gokul-2026' ? (
+                          <LetterOfDirection recipient="gokul" />
+                        ) : gd.inline === 'lod-cibc-qaiser-2026' ? (
+                          <LetterOfDirection recipient="qaiser" />
                         ) : gd.inline === 'president-appointment-gokul-2026' ? (
                           <PresidentAppointment />
                         ) : gd.publicUrl ? (

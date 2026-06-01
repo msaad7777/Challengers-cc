@@ -1,18 +1,22 @@
 "use client";
 
-// Print-ready version of the Letter of Direction (CIBC — add Gokul +
-// Qaiser). Renders on white paper in a light theme, pulls director
-// signatures from the Firestore governance_signatures collection, and
-// embeds each signature image above the typed director name. Designed
-// for Cmd+P → "Save as PDF" → email to recipients.
+// Print-ready version of a Letter of Direction adding a single new
+// signing authority to the Corporation's CIBC operating account. The
+// same page renders both the Gokul Prakash and Qaiser Qureshi LoDs;
+// they differ only in the recipient block and a small amount of role
+// language.
 //
-// Access: directors + governance readers (Treasurer, Secretary). Qaiser
-// (Treasurer) is the recipient and needs to be able to see his own
-// pending Letter, hence governance readers are included.
+// The combined Gokul + Qaiser LoD that previously lived at
+// /c3h/pavilion/print/lod-cibc has been split into two per-recipient
+// LoDs. Signatures collected on the combined LoD carry forward to the
+// matching split LoD — fresh signatures on the split LoD take precedence
+// if both exist for the same director.
+//
+// Access: directors + governance readers (Treasurer, Secretary).
 
 import { useEffect, useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import {
   collection,
   getDocs,
@@ -26,10 +30,32 @@ import {
   isC3HDirector,
   isC3HGovernanceReader,
 } from '@/lib/c3h-access';
-import { findDoc } from '../../governanceDocs';
-import LetterPaper from '../../LetterPaper';
+import { findDoc } from '../../../governanceDocs';
+import LetterPaper from '../../../LetterPaper';
 
-const DOC_ID = 'lod-cibc-gokul-qaiser-2026';
+type Recipient = 'gokul' | 'qaiser';
+
+type RecipientProfile = {
+  name: string;
+  email: string;
+  roleWithCorporation: string;
+  docId: string;
+};
+
+const RECIPIENTS: Record<Recipient, RecipientProfile> = {
+  gokul: {
+    name: 'Gokul Prakash',
+    email: 'gokulprakash663@gmail.com',
+    roleWithCorporation: 'Director',
+    docId: 'lod-cibc-gokul-2026',
+  },
+  qaiser: {
+    name: 'Qaiser Qureshi',
+    email: 'qureshiqaiser007@gmail.com',
+    roleWithCorporation: 'Treasurer (non-director officer)',
+    docId: 'lod-cibc-qaiser-2026',
+  },
+};
 
 type SignatureRecord = {
   docId: string;
@@ -56,6 +82,11 @@ function FillLine({ width = '220px' }: { width?: string }) {
 export default function LoDPrintPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const params = useParams<{ recipient: string }>();
+  const recipientKey = params?.recipient as Recipient;
+  const isValidRecipient = recipientKey === 'gokul' || recipientKey === 'qaiser';
+  const r = isValidRecipient ? RECIPIENTS[recipientKey] : null;
+
   const [signatures, setSignatures] = useState<Record<string, SignatureRecord>>({});
   const [loading, setLoading] = useState(true);
 
@@ -67,26 +98,62 @@ export default function LoDPrintPage() {
   const canView = isC3HDirector(email) || isC3HGovernanceReader(email);
 
   useEffect(() => {
-    if (!email || !canView) return;
-    const q = query(collection(db, 'governance_signatures'), where('docId', '==', DOC_ID));
+    if (!email || !canView || !r) return;
+    // Pull signatures from both the split LoD (this doc) and the prior
+    // combined LoD that this doc replaces. Fresh signatures on the
+    // split doc take precedence over carried-forward legacy ones.
+    const q = query(
+      collection(db, 'governance_signatures'),
+      where('docId', 'in', [r.docId, 'lod-cibc-gokul-qaiser-2026']),
+    );
     getDocs(q)
       .then((snap) => {
         const map: Record<string, SignatureRecord> = {};
+        const legacy: SignatureRecord[] = [];
         snap.forEach((d) => {
-          const r = d.data() as SignatureRecord;
-          map[r.signerWorkspaceEmail] = r;
+          const rec = d.data() as SignatureRecord;
+          if (rec.docId === r.docId) {
+            map[rec.signerWorkspaceEmail] = rec;
+          } else {
+            legacy.push(rec);
+          }
         });
+        // Fill in any director who only signed the legacy combined LoD.
+        for (const rec of legacy) {
+          if (!map[rec.signerWorkspaceEmail]) {
+            map[rec.signerWorkspaceEmail] = rec;
+          }
+        }
         setSignatures(map);
       })
       .finally(() => setLoading(false));
-  }, [email, canView]);
+  }, [email, canView, r]);
 
-  const doc = useMemo(() => findDoc(DOC_ID), []);
+  const doc = useMemo(() => (r ? findDoc(r.docId) : undefined), [r]);
   const allSigned = useMemo(
     () => C3H_DIRECTOR_ROSTER.every((d) => signatures[d.workspaceEmail]),
     [signatures],
   );
 
+  if (!isValidRecipient) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white p-8">
+        <div className="max-w-md text-center">
+          <h1 className="text-xl font-bold mb-2 text-gray-900">Unknown recipient</h1>
+          <p className="text-sm text-gray-600 mb-4">
+            Use <code>/c3h/pavilion/print/lod-cibc/gokul</code> or{' '}
+            <code>/c3h/pavilion/print/lod-cibc/qaiser</code>.
+          </p>
+          <button
+            onClick={() => router.push('/c3h/pavilion')}
+            className="px-4 py-2 rounded bg-emerald-600 text-white text-sm hover:bg-emerald-700"
+          >
+            Back to Pavilion
+          </button>
+        </div>
+      </div>
+    );
+  }
   if (status === 'loading' || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white text-gray-700">
@@ -114,10 +181,10 @@ export default function LoDPrintPage() {
     );
   }
 
+  if (!r || !doc) return null;
+
   return (
     <>
-      {/* Page-level rules; the @page / letterhead structure lives in
-          LetterPaper. Only LoD-specific helpers stay here. */}
       <style>{`
         .sig-img-wrap img {
           max-height: 56px;
@@ -142,7 +209,7 @@ export default function LoDPrintPage() {
                 <span className="font-semibold text-emerald-700">✓ All 5 directors have signed — ready to print and submit.</span>
               ) : (
                 <span className="text-amber-700">
-                  {Object.keys(signatures).length} of {C3H_DIRECTOR_ROSTER.length} directors have signed. You can still preview / print a partial copy.
+                  {Object.keys(signatures).length} of {C3H_DIRECTOR_ROSTER.length} directors have signed (counting carry-forward from the prior combined LoD). You can still preview / print a partial copy.
                 </span>
               )}
             </div>
@@ -155,13 +222,10 @@ export default function LoDPrintPage() {
           </button>
         </div>
 
-        {/* The letter itself — wrapped in LetterPaper so the green
-            letterhead header + footer bands repeat on every printed
-            page when content overflows past a single sheet. */}
         <LetterPaper>
 
           {/* Date */}
-          <div className="text-right text-[13px] text-gray-700 mb-5">May 20, 2026</div>
+          <div className="text-right text-[13px] text-gray-700 mb-5">June 1, 2026</div>
 
           {/* Addressee */}
           <div className="text-[13px] mb-5 leading-snug">
@@ -172,7 +236,7 @@ export default function LoDPrintPage() {
 
           {/* Subject */}
           <div className="text-[13px] font-bold text-emerald-700 bg-emerald-50 border-l-[3px] border-emerald-600 px-3 py-2 mb-5">
-            Re: Letter of Direction — Addition of Signing Authorities<br />
+            Re: Letter of Direction — Addition of Signing Authority ({r.name})<br />
             <span className="font-normal text-gray-800">
               Account ending in <strong>****1517</strong> (transit <strong>04582</strong>) — Challengers Cricket Club
             </span>
@@ -208,37 +272,20 @@ export default function LoDPrintPage() {
             </div>
           </div>
 
-          {/* ── Authority block 2: Gokul ──────────────────────────────── */}
-          <div className="border border-emerald-300 rounded-md bg-emerald-50/40 px-4 py-3 mb-3 text-[12.5px]">
-            <div className="flex items-baseline justify-between pb-2 mb-2 border-b border-emerald-200">
-              <div className="font-bold text-gray-900 text-[14px]">Gokul Prakash</div>
-              <div className="text-[10px] uppercase tracking-wider text-emerald-700 font-semibold">Being added</div>
-            </div>
-            <div className="grid grid-cols-[170px_1fr] gap-y-1">
-              <div className="text-gray-600 font-semibold">Role with Corporation</div><div>Director</div>
-              <div className="text-gray-600 font-semibold">Capacity</div><div>Volunteer (uncompensated)</div>
-              <div className="text-gray-600 font-semibold">Full legal name</div><div><FillLine width="280px" /></div>
-              <div className="text-gray-600 font-semibold">Date of birth</div><div><FillLine width="160px" /></div>
-              <div className="text-gray-600 font-semibold">Home address</div><div><FillLine width="380px" /></div>
-              <div className="text-gray-600 font-semibold">Mobile (OTP)</div><div><FillLine width="200px" /></div>
-              <div className="text-gray-600 font-semibold">Email</div><div>gokulprakash663@gmail.com</div>
-            </div>
-          </div>
-
-          {/* ── Authority block 3: Qaiser ─────────────────────────────── */}
+          {/* ── Authority block 2: New recipient ──────────────────────── */}
           <div className="border border-emerald-300 rounded-md bg-emerald-50/40 px-4 py-3 mb-4 text-[12.5px]">
             <div className="flex items-baseline justify-between pb-2 mb-2 border-b border-emerald-200">
-              <div className="font-bold text-gray-900 text-[14px]">Qaiser Qureshi</div>
+              <div className="font-bold text-gray-900 text-[14px]">{r.name}</div>
               <div className="text-[10px] uppercase tracking-wider text-emerald-700 font-semibold">Being added</div>
             </div>
             <div className="grid grid-cols-[170px_1fr] gap-y-1">
-              <div className="text-gray-600 font-semibold">Role with Corporation</div><div>Treasurer (non-director officer)</div>
+              <div className="text-gray-600 font-semibold">Role with Corporation</div><div>{r.roleWithCorporation}</div>
               <div className="text-gray-600 font-semibold">Capacity</div><div>Volunteer (uncompensated)</div>
               <div className="text-gray-600 font-semibold">Full legal name</div><div><FillLine width="280px" /></div>
               <div className="text-gray-600 font-semibold">Date of birth</div><div><FillLine width="160px" /></div>
               <div className="text-gray-600 font-semibold">Home address</div><div><FillLine width="380px" /></div>
               <div className="text-gray-600 font-semibold">Mobile (OTP)</div><div><FillLine width="200px" /></div>
-              <div className="text-gray-600 font-semibold">Email</div><div>qureshiqaiser007@gmail.com</div>
+              <div className="text-gray-600 font-semibold">Email</div><div>{r.email}</div>
             </div>
           </div>
 
@@ -246,31 +293,30 @@ export default function LoDPrintPage() {
           <div className="bg-amber-50 border-l-[3px] border-amber-500 px-4 py-3 text-[12.5px] mb-4 leading-snug">
             <strong className="text-amber-800">Volunteer capacity.</strong> Challengers Cricket Club is a not-for-profit
             corporation operated entirely by unpaid volunteers in accordance with Article 5 of the Corporation&apos;s
-            Bylaws. Each individual named above — Mohammed Saad, Gokul Prakash, and Qaiser Qureshi — serves the
-            Corporation strictly as a volunteer, without compensation, salary, fees, or any other form of payment, and
-            is not an employee of the Corporation. Each acts in good faith on behalf of the Corporation in furtherance
-            of its community-sport purposes and is bound by the Corporation&apos;s Bylaws, Financial Policy, Code of
-            Conduct, and Conflict of Interest Policy.
+            Bylaws. Each individual named above — Mohammed Saad and {r.name} — serves the Corporation strictly as a
+            volunteer, without compensation, salary, fees, or any other form of payment, and is not an employee of the
+            Corporation. Each acts in good faith on behalf of the Corporation in furtherance of its community-sport
+            purposes and is bound by the Corporation&apos;s Bylaws, Financial Policy, Code of Conduct, and Conflict of
+            Interest Policy.
           </div>
 
           <p className="text-[13.5px] mb-2">The Corporation further confirms the following with respect to this account:</p>
 
           <ol className="list-decimal pl-6 text-[13px] space-y-2 mb-4">
             <li>
-              <strong>Equal and optional signing authorities.</strong> All three named signing authorities —
-              Mohammed Saad, Gokul Prakash, and Qaiser Qureshi — are equal and optional signing authorities on
-              this account. Each holds <strong>equivalent legal authority and equivalent operational rights</strong>{' '}
-              to act on, maintain, and transact on the account on behalf of the Corporation. No signing authority
-              is senior, subordinate, or in any way superior to any other; the panel members are interchangeable
-              in standing.
+              <strong>Equal and optional signing authorities.</strong> Both named signing authorities —
+              Mohammed Saad and {r.name} — are equal and optional signing authorities on this account. Each holds{' '}
+              <strong>equivalent legal authority and equivalent operational rights</strong> to act on, maintain,
+              and transact on the account on behalf of the Corporation. No signing authority is senior, subordinate,
+              or in any way superior to any other; the panel members are interchangeable in standing.
             </li>
             <li>
-              <strong>Separate cards, credentials, and OTPs.</strong> Each of the three signing authorities shall
-              be issued (a) their own separate physical debit card linked to the account, (b) their own separate
-              online-banking credentials (username and password), and (c) their own separate one-time passcode
-              (OTP) destination set to their personal registered mobile number. No signing authority shall share,
-              use, or have access to any other signing authority&apos;s card or credentials. Each authority
-              operates independently in their own login session.
+              <strong>Separate cards, credentials, and OTPs.</strong> Each signing authority shall be issued (a)
+              their own separate physical debit card linked to the account, (b) their own separate online-banking
+              credentials (username and password), and (c) their own separate one-time passcode (OTP) destination
+              set to their personal registered mobile number. No signing authority shall share, use, or have access
+              to any other signing authority&apos;s card or credentials. Each authority operates independently in
+              their own login session.
             </li>
             <li>
               <strong>Dual-signatory governance policy.</strong> The account operates under a dual-signatory
@@ -281,14 +327,14 @@ export default function LoDPrintPage() {
             <li>
               <strong>Monthly statements and Treasurer responsibility.</strong> Monthly account statements shall
               be made available to all directors of the Corporation as part of its standard governance practice.
-              The Treasurer (Qaiser Qureshi) is the officer of the Corporation responsible for reviewing those
-              statements and reporting to the Board.
+              The Treasurer of the Corporation is the officer responsible for reviewing those statements and
+              reporting to the Board.
             </li>
             <li>
-              <strong>Additive direction.</strong> This Letter of Direction is additive with respect to Gokul
-              Prakash and Qaiser Qureshi; it does not displace Mohammed Saad&apos;s existing signing authority.
-              Any future removal or replacement of a signing authority will be effected by a separate written
-              direction signed by all then-current directors of the Corporation.
+              <strong>Additive direction.</strong> This Letter of Direction is additive with respect to {r.name};
+              it does not displace Mohammed Saad&apos;s existing signing authority. Any future removal or
+              replacement of a signing authority will be effected by a separate written direction signed by all
+              then-current directors of the Corporation.
             </li>
             <li>
               <strong>CIBC display behaviour.</strong> CIBC display behaviour with respect to transaction-initiator
@@ -299,17 +345,12 @@ export default function LoDPrintPage() {
           </ol>
 
           <p className="text-[13.5px] mb-5">
-            Each individual being added (Gokul Prakash and Qaiser Qureshi) will present themselves at a CIBC branch
-            with valid government-issued photo identification to complete any bank-side verification required prior to
-            their access being activated.
+            The individual being added ({r.name}) will present themselves at a CIBC branch with valid
+            government-issued photo identification to complete any bank-side verification required prior to their
+            access being activated.
           </p>
 
-          {/* ── Signature grid ───────────────────────────────────────────
-              Forced onto a fresh page so all 5 director blocks stay together.
-              Without this, the grid was splitting across page 3 / 4 and the
-              first two blocks (Saad + Ankush) were getting clipped — banks
-              would interpret a missing signature row as "this director
-              didn't sign". */}
+          {/* ── Signature grid ─────────────────────────────────────────── */}
           <div
             className="signatures-section"
             style={{ pageBreakBefore: 'always', breakBefore: 'page' }}
@@ -369,10 +410,11 @@ export default function LoDPrintPage() {
             Signed electronically by the directors of the Corporation through the Pavilion governance ledger of
             Challengers Cricket Club. Signature records — including each signer&apos;s name, role, workspace email,
             server timestamp, and signature image — are retained in the Club&apos;s permanent Firestore governance
-            ledger under document id <code>{DOC_ID}</code> · version {doc?.version}. Issued under seal of the
-            Corporation, in accordance with the Bylaws adopted 25 February 2026 (rev. 8 May 2026). For verification
-            of director status please consult the federal corporate profile filed with Corporations Canada under
-            Corporation #1746974-8, or contact the Corporation at contact@challengerscc.ca.
+            ledger under document id <code>{r.docId}</code> · version {doc.version} (with carry-forward from the
+            prior combined LoD <code>lod-cibc-gokul-qaiser-2026</code> for directors who already signed it). Issued
+            under seal of the Corporation, in accordance with the Bylaws adopted 25 February 2026 (rev. 8 May 2026).
+            For verification of director status please consult the federal corporate profile filed with Corporations
+            Canada under Corporation #1746974-8, or contact the Corporation at contact@challengerscc.ca.
           </div>
 
         </LetterPaper>
@@ -381,7 +423,7 @@ export default function LoDPrintPage() {
         <div className="no-print max-w-4xl mx-auto mt-4 px-4 text-xs text-gray-500">
           Tip: when printing, choose <strong>&ldquo;Save as PDF&rdquo;</strong> as the destination, set margins to
           <strong> Default</strong>, and ensure <strong>Background graphics</strong> is enabled so the green accent and
-          coloured callouts render. Then email the resulting PDF to gokulprakash663@gmail.com and qureshiqaiser007@gmail.com.
+          coloured callouts render. Then email the resulting PDF to {r.email}.
         </div>
       </div>
     </>

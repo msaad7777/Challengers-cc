@@ -13,16 +13,25 @@ export type GovernanceDoc = {
   publicUrl?: string; // If the document text is published on /legal/*
   inline?:
     | 'technology-governance-record-2026'
-    | 'lod-cibc-gokul-qaiser-2026'
+    | 'lod-cibc-gokul-2026'
+    | 'lod-cibc-qaiser-2026'
     | 'president-appointment-gokul-2026'; // If the body is rendered inline by an inline component
   // If set, the Pavilion shows a "Print / export signed PDF" button that
   // links to this route. The route is responsible for pulling sigs from
   // governance_signatures and rendering a print-ready white-paper version
-  // of the document. Currently used by the LoD only.
+  // of the document. Currently used by the LoDs only.
   printUrl?: string;
   summary: string;
   whoMustSign: 'all-directors' | 'all-directors-except-conflicted';
   conflictedSigners?: readonly string[]; // workspace emails recused from CCC-side signing
+  // If set, signatures collected against any of these legacy doc IDs are
+  // treated as signatures on this doc for completeness purposes. Used
+  // when a previously combined doc is split into per-recipient docs and
+  // we want the prior signatures to carry forward without asking
+  // directors to re-sign. Append-only Firestore rules are preserved —
+  // legacy signatures stay in their original Firestore records; the
+  // carry-forward happens entirely in the Pavilion's in-memory lookup.
+  carryForwardFrom?: readonly string[];
 };
 
 export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
@@ -38,16 +47,38 @@ export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
     whoMustSign: 'all-directors',
   },
   {
-    id: 'lod-cibc-gokul-qaiser-2026',
+    // Split from the prior combined `lod-cibc-gokul-qaiser-2026` so
+    // each new signing authority is approved by the Board independently.
+    // Existing signatures on the combined doc carry forward to BOTH split
+    // LoDs via `carryForwardFrom` — directors who already signed the
+    // combined LoD do not need to re-sign. Directors who declined the
+    // combined LoD (or have not yet signed) sign each split LoD
+    // individually.
+    id: 'lod-cibc-gokul-2026',
     version: '1.0',
-    title: 'Letter of Direction — CIBC Signing Authority Panel (Gokul Prakash + Qaiser Qureshi)',
-    shortTitle: 'Letter of Direction — CIBC',
-    effective: '2026-05-20',
-    inline: 'lod-cibc-gokul-qaiser-2026',
-    printUrl: '/c3h/pavilion/print/lod-cibc',
+    title: 'Letter of Direction — CIBC Signing Authority (Gokul Prakash)',
+    shortTitle: 'Letter of Direction — CIBC (Gokul)',
+    effective: '2026-06-01',
+    inline: 'lod-cibc-gokul-2026',
+    printUrl: '/c3h/pavilion/print/lod-cibc/gokul',
     summary:
-      'Directs CIBC to add Gokul Prakash (Director) and Qaiser Qureshi (Treasurer, non-director officer) to the three-person signing authority panel on the Club’s operating account (transit 04582, account ending ****1517), in addition to Mohammed Saad who is already on file. Both new authorities serve in a strictly volunteer capacity. The account continues to operate under the Club’s dual-signatory governance policy. Must be signed by all five directors before being submitted to CIBC.',
+      'Directs CIBC to add Gokul Prakash (Director) as a signing authority on the Club’s operating account (transit 04582, account ending ****1517), in addition to Mohammed Saad who is already on file. Gokul serves in a strictly volunteer capacity. The account continues to operate under the Club’s dual-signatory governance policy. Must be signed by all five directors before being submitted to CIBC. Signatures already collected on the prior combined Letter of Direction (Gokul + Qaiser) carry forward to this Letter; only directors who did not sign the combined Letter need to sign here.',
     whoMustSign: 'all-directors',
+    carryForwardFrom: ['lod-cibc-gokul-qaiser-2026'],
+  },
+  {
+    // Companion to lod-cibc-gokul-2026. Same split rationale.
+    id: 'lod-cibc-qaiser-2026',
+    version: '1.0',
+    title: 'Letter of Direction — CIBC Signing Authority (Qaiser Qureshi)',
+    shortTitle: 'Letter of Direction — CIBC (Qaiser)',
+    effective: '2026-06-01',
+    inline: 'lod-cibc-qaiser-2026',
+    printUrl: '/c3h/pavilion/print/lod-cibc/qaiser',
+    summary:
+      'Directs CIBC to add Qaiser Qureshi (Treasurer, non-director officer) as a signing authority on the Club’s operating account (transit 04582, account ending ****1517), in addition to Mohammed Saad who is already on file. Qaiser serves in a strictly volunteer capacity. The account continues to operate under the Club’s dual-signatory governance policy. Must be signed by all five directors before being submitted to CIBC. Signatures already collected on the prior combined Letter of Direction (Gokul + Qaiser) carry forward to this Letter; only directors who did not sign the combined Letter need to sign here.',
+    whoMustSign: 'all-directors',
+    carryForwardFrom: ['lod-cibc-gokul-qaiser-2026'],
   },
   {
     id: 'president-appointment-gokul-2026',
