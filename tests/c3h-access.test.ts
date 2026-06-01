@@ -85,10 +85,10 @@ describe('c3h-access predicates', () => {
       expect(isC3HDirector(email)).toBe(true);
     });
 
-    it('rejects officers (Madhu Secretary, Qaiser Treasurer, Shahriar Captain)', () => {
-      expect(isC3HDirector('madhu@challengerscc.ca')).toBe(false);
+    it('rejects non-directors (Qaiser Treasurer, Shahriar Captain, Madhu — former Secretary candidate)', () => {
       expect(isC3HDirector('qaiser@challengerscc.ca')).toBe(false);
       expect(isC3HDirector('shariar@challengerscc.ca')).toBe(false);
+      expect(isC3HDirector('madhu@challengerscc.ca')).toBe(false);
     });
 
     it('accepts Roman (Sazzad Mahmud, both workspace + personal Gmail)', () => {

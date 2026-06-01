@@ -24,12 +24,11 @@ export default function BoardMembers() {
     },
     {
       name: "Gokul Prakash",
-      title: "Director",
+      title: "President",
       role: "Board of Directors",
       bio: "Hardware and Networking Engineer with a lifelong passion for cricket and community service. Dedicated to growing cricket in Canada while pursuing interests in YouTube blogging and international travel. Volunteered in various community-based events for community betterment over the past 15 years.",
       image: "/gokul-final.jpeg",
       initials: "GP",
-      onboardingNote: "President-Designate · Appointment in progress",
     },
     {
       name: "Tarek Islam",
@@ -62,15 +61,6 @@ export default function BoardMembers() {
       bio: "Chief Estimator and Cost Consultant for Heavy Civil Projects in Canada. Wicket-keeper Batsman from Karnataka, India, with a hard-hitting batting style. Passionate about growing cricket in Canada.",
       image: "/qaiser-treasurer.jpeg",
       initials: "QQM",
-      onboardingNote: "Appointment in progress",
-    },
-    {
-      name: "Madhu Reddy",
-      title: "Officer Appointment",
-      role: "Onboarding in progress",
-      bio: "Senior Network Security Engineer with double master's degrees in Electronics and Communications. A versatile all-rounder who has been playing cricket since his teens. Known for his calm presence and team-first mentality, Madhu brings stability in high-pressure situations both on and off the field.",
-      image: "/secretary-ccc.jpeg",
-      initials: "MR",
       onboardingNote: "Appointment in progress",
     },
   ];

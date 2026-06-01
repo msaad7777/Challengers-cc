@@ -129,7 +129,7 @@ export type OfficerEntry = {
 export const C3H_OFFICER_ROSTER: readonly OfficerEntry[] = [
   // Officer Hub roster, intentionally limited to the three formal
   // officer roles in Bylaws Article 4.6 (President, Treasurer,
-  // Secretary). These three need a signed Officer Appointment Letter
+  // Secretary). These need a signed Officer Appointment Letter
   // in the Pavilion governance ledger.
   //
   // The President (Gokul) is also a Director and remains in
@@ -137,10 +137,14 @@ export const C3H_OFFICER_ROSTER: readonly OfficerEntry[] = [
   // is permitted by Bylaws Article 4.7 (which only restricts
   // officer+officer combinations).
   //
+  // The Secretary slot is intentionally vacant — appointment is on
+  // hold pending the 2026 enrolment cycle. Do not re-add anyone here
+  // without a fresh Director Resolution + signed Officer Appointment
+  // Letter in the Pavilion.
+  //
   // Captains and other operational role-holders are NOT listed here —
   // they may be tracked through a separate roster later if needed.
   { workspaceEmail: 'gokul@challengerscc.ca',   personalEmail: 'gokulprakash663@gmail.com',  name: 'Gokul Prakash',  role: 'President' },
-  { workspaceEmail: 'madhu@challengerscc.ca',   personalEmail: 'vantarimadhu@gmail.com',     name: 'Madhu Reddy',    role: 'Secretary' },
   { workspaceEmail: 'qaiser@challengerscc.ca',  personalEmail: 'qureshiqaiser007@gmail.com', name: 'Qaiser Qureshi', role: 'Treasurer' },
 ];
 

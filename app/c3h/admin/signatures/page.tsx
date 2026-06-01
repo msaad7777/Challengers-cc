@@ -378,8 +378,7 @@ export default function AdminSignaturesPage() {
           <div className="mt-10 rounded-xl bg-amber-500/5 border border-amber-500/20 p-4 text-sm text-amber-200">
             <strong className="text-amber-300">Admin reminder:</strong> The contents of this dashboard include
             personal data (names, emails, signatures, DOB for waivers). Treat as confidential. To grant a
-            second admin (e.g. Madhu via <code className="text-primary-400">contact@challengerscc.ca</code>),
-            add their email to <code className="text-primary-400">C3H_ADMIN_EMAILS</code> in
+            second admin, add their email to <code className="text-primary-400">C3H_ADMIN_EMAILS</code> in
             {' '}<code className="text-primary-400">lib/c3h-access.ts</code>.
           </div>
 

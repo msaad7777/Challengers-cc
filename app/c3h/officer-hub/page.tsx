@@ -264,7 +264,7 @@ export default function OfficerHubPage() {
                       Print or save as PDF
                     </button>
                     <span className="text-xs text-gray-500 self-center">
-                      Forward the saved PDF to <a href="mailto:contact@challengerscc.ca" className="text-primary-400 underline">contact@challengerscc.ca</a> so Madhu can file it in our corporate records.
+                      Forward the saved PDF to <a href="mailto:contact@challengerscc.ca" className="text-primary-400 underline">contact@challengerscc.ca</a> for filing in our corporate records.
                     </span>
                   </div>
                 </div>
