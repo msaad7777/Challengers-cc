@@ -67,8 +67,12 @@ interface Reflection {
   stuckToPlan?: 'yes' | 'partly' | 'no';
   whyShotThatGotMeOut?: string;
   // ── Run Maker tracker fields (optional) ─────────────────────
-  // Drive the Dot Ball % KPI, bowler-style-specific drills,
-  // and the "focus for next session" line in the insight.
+  // Drive the Runs/10 + Dot Ball % + Strike Rate KPIs, bowler-style-
+  // specific drills, and the "focus for next session" line in the
+  // insight. runsScored + ballsFaced are pre-filled from the scorer
+  // when a recorded match is linked but always editable by the player.
+  runsScored?: number;
+  ballsFaced?: number;
   dotBallsFaced?: number;
   dismissalBowlerArm?: 'right' | 'left';
   dismissalBowlerStyle?: 'fast' | 'medium' | 'off-spin' | 'leg-spin';
@@ -680,7 +684,11 @@ export default function NetsPage() {
   const [firstSixBallsPlan, setFirstSixBallsPlan] = useState('');
   const [stuckToPlan, setStuckToPlan] = useState<'yes' | 'partly' | 'no' | undefined>(undefined);
   const [whyShotThatGotMeOut, setWhyShotThatGotMeOut] = useState('');
-  // Run Maker tracker — drives Dot Ball %, bowler-style drills, focus line.
+  // Run Maker tracker — drives Runs/10, Dot Ball %, Strike Rate KPIs,
+  // bowler-style drills, focus line. runsScored + ballsFaced are
+  // editable even when scorer auto-pull seeds them initially.
+  const [runsScored, setRunsScored] = useState<number | undefined>(undefined);
+  const [ballsFaced, setBallsFaced] = useState<number | undefined>(undefined);
   const [dotBallsFaced, setDotBallsFaced] = useState<number | undefined>(undefined);
   const [dismissalBowlerArm, setDismissalBowlerArm] = useState<'right' | 'left' | undefined>(undefined);
   const [dismissalBowlerStyle, setDismissalBowlerStyle] = useState<'fast' | 'medium' | 'off-spin' | 'leg-spin' | undefined>(undefined);
@@ -860,6 +868,12 @@ export default function NetsPage() {
                 matchLabel: data.matchLabel || hardcoded?.label || match,
                 scoredBy: data.scorer || 'unknown',
               });
+              // Seed the Run Maker tracker fields from the scorecard so
+              // the strike-rate / runs-per-10 KPIs work out of the box.
+              // The player can override either field manually in the
+              // Coach-Level Review form below.
+              setRunsScored((cur) => (cur === undefined ? myStat.runs : cur));
+              setBallsFaced((cur) => (cur === undefined ? myStat.balls : cur));
               setScorerLoading(false);
               return;
             }
@@ -946,6 +960,8 @@ export default function NetsPage() {
     if (firstSixBallsPlan.trim()) payload.firstSixBallsPlan = firstSixBallsPlan.trim();
     if (stuckToPlan !== undefined) payload.stuckToPlan = stuckToPlan;
     if (whyShotThatGotMeOut.trim()) payload.whyShotThatGotMeOut = whyShotThatGotMeOut.trim();
+    if (runsScored !== undefined) payload.runsScored = runsScored;
+    if (ballsFaced !== undefined) payload.ballsFaced = ballsFaced;
     if (dotBallsFaced !== undefined) payload.dotBallsFaced = dotBallsFaced;
     if (dismissalBowlerArm !== undefined) payload.dismissalBowlerArm = dismissalBowlerArm;
     if (dismissalBowlerStyle !== undefined) payload.dismissalBowlerStyle = dismissalBowlerStyle;
@@ -1015,6 +1031,8 @@ export default function NetsPage() {
     setFirstSixBallsPlan(r.firstSixBallsPlan || '');
     setStuckToPlan(r.stuckToPlan);
     setWhyShotThatGotMeOut(r.whyShotThatGotMeOut || '');
+    setRunsScored(r.runsScored);
+    setBallsFaced(r.ballsFaced);
     setDotBallsFaced(r.dotBallsFaced);
     setDismissalBowlerArm(r.dismissalBowlerArm);
     setDismissalBowlerStyle(r.dismissalBowlerStyle);
@@ -1559,8 +1577,8 @@ export default function NetsPage() {
                     firstSixBallsPlan: selectedReflection.firstSixBallsPlan,
                     stuckToPlan: selectedReflection.stuckToPlan,
                     whyShotThatGotMeOut: selectedReflection.whyShotThatGotMeOut,
-                    runs: undefined,
-                    balls: undefined,
+                    runs: selectedReflection.runsScored,
+                    balls: selectedReflection.ballsFaced,
                     dotBallsFaced: selectedReflection.dotBallsFaced,
                     dismissalBowlerArm: selectedReflection.dismissalBowlerArm,
                     dismissalBowlerStyle: selectedReflection.dismissalBowlerStyle,
@@ -1726,29 +1744,42 @@ export default function NetsPage() {
                           )}
 
                           {/* KPIs */}
-                          {(insight.runMaker.kpis.runsPer10Balls !== null || insight.runMaker.kpis.intentScore !== null || insight.runMaker.kpis.dotBallPercent !== null) && (
-                            <div className="rounded-md bg-amber-500/10 border-l-2 border-amber-500/60 px-3 py-2 text-xs leading-snug mb-2">
-                              <span className="text-amber-300 font-semibold">KPIs:</span>{' '}
-                              {insight.runMaker.kpis.runsPer10Balls !== null && (
-                                <span className="text-gray-200">Runs / 10 balls: <strong>{insight.runMaker.kpis.runsPer10Balls}</strong></span>
-                              )}
-                              {insight.runMaker.kpis.intentScore !== null && (
-                                <>
-                                  {insight.runMaker.kpis.runsPer10Balls !== null && <span className="text-gray-500"> · </span>}
-                                  <span className="text-gray-200">Intent: <strong>{insight.runMaker.kpis.intentScore} / 5</strong></span>
-                                </>
-                              )}
-                              {insight.runMaker.kpis.dotBallPercent !== null && (
-                                <>
-                                  {(insight.runMaker.kpis.runsPer10Balls !== null || insight.runMaker.kpis.intentScore !== null) && <span className="text-gray-500"> · </span>}
+                          {(insight.runMaker.kpis.runsPer10Balls !== null || insight.runMaker.kpis.intentScore !== null || insight.runMaker.kpis.dotBallPercent !== null || insight.runMaker.kpis.strikeRate !== null) && (
+                            <div className="rounded-md bg-amber-500/10 border-l-2 border-amber-500/60 px-3 py-2 text-xs leading-snug mb-2 space-y-1">
+                              <div>
+                                <span className="text-amber-300 font-semibold">KPIs:</span>{' '}
+                                {insight.runMaker.kpis.strikeRate !== null && (
                                   <span className="text-gray-200">
-                                    Dot ball %:{' '}
-                                    <strong className={insight.runMaker.kpis.dotBallPercent > 40 ? 'text-red-300' : 'text-emerald-300'}>
-                                      {insight.runMaker.kpis.dotBallPercent}%
+                                    Strike rate:{' '}
+                                    <strong className={insight.runMaker.kpis.strikeRate >= 100 ? 'text-emerald-300' : insight.runMaker.kpis.strikeRate >= 75 ? 'text-amber-200' : 'text-red-300'}>
+                                      {insight.runMaker.kpis.strikeRate}
                                     </strong>
                                   </span>
-                                </>
-                              )}
+                                )}
+                                {insight.runMaker.kpis.runsPer10Balls !== null && (
+                                  <>
+                                    {insight.runMaker.kpis.strikeRate !== null && <span className="text-gray-500"> · </span>}
+                                    <span className="text-gray-200">Runs / 10 balls: <strong>{insight.runMaker.kpis.runsPer10Balls}</strong></span>
+                                  </>
+                                )}
+                                {insight.runMaker.kpis.intentScore !== null && (
+                                  <>
+                                    {(insight.runMaker.kpis.strikeRate !== null || insight.runMaker.kpis.runsPer10Balls !== null) && <span className="text-gray-500"> · </span>}
+                                    <span className="text-gray-200">Intent: <strong>{insight.runMaker.kpis.intentScore} / 5</strong></span>
+                                  </>
+                                )}
+                                {insight.runMaker.kpis.dotBallPercent !== null && (
+                                  <>
+                                    {(insight.runMaker.kpis.strikeRate !== null || insight.runMaker.kpis.runsPer10Balls !== null || insight.runMaker.kpis.intentScore !== null) && <span className="text-gray-500"> · </span>}
+                                    <span className="text-gray-200">
+                                      Dot ball %:{' '}
+                                      <strong className={insight.runMaker.kpis.dotBallPercent > 40 ? 'text-red-300' : 'text-emerald-300'}>
+                                        {insight.runMaker.kpis.dotBallPercent}%
+                                      </strong>
+                                    </span>
+                                  </>
+                                )}
+                              </div>
                             </div>
                           )}
 
@@ -3090,6 +3121,46 @@ export default function NetsPage() {
                         <p className="text-amber-300 text-xs font-bold uppercase tracking-wider mb-3">🚀 Run Maker tracker</p>
 
                         <div className="space-y-4">
+                          {/* Runs scored + balls faced — auto-seeded from
+                              the scorer when a recorded match is linked;
+                              editable for practice / informal sessions or
+                              when the scorer wasn't running. */}
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <label className="text-gray-400 text-xs block mb-1">Runs scored</label>
+                              <input
+                                type="number"
+                                min={0}
+                                value={runsScored ?? ''}
+                                onChange={e => {
+                                  const v = e.target.value;
+                                  setRunsScored(v === '' ? undefined : Math.max(0, parseInt(v, 10) || 0));
+                                }}
+                                placeholder="e.g. 24"
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-amber-500 text-white text-sm placeholder-gray-600"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-gray-400 text-xs block mb-1">Total balls faced</label>
+                              <input
+                                type="number"
+                                min={0}
+                                value={ballsFaced ?? ''}
+                                onChange={e => {
+                                  const v = e.target.value;
+                                  setBallsFaced(v === '' ? undefined : Math.max(0, parseInt(v, 10) || 0));
+                                }}
+                                placeholder="e.g. 20"
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-amber-500 text-white text-sm placeholder-gray-600"
+                              />
+                            </div>
+                          </div>
+                          {runsScored !== undefined && ballsFaced !== undefined && ballsFaced > 0 && (
+                            <p className="text-[10px] text-amber-300/80 -mt-2">
+                              Strike rate: <strong>{Math.round((runsScored / ballsFaced) * 100 * 10) / 10}</strong> · Runs / 10 balls: <strong>{Math.round((runsScored / ballsFaced) * 10 * 10) / 10}</strong>
+                            </p>
+                          )}
+
                           <div>
                             <label className="text-gray-400 text-xs block mb-1">Dot balls faced (approx)</label>
                             <input
@@ -3151,6 +3222,14 @@ export default function NetsPage() {
                       </div>
                     </div>
                   )}
+                </div>
+
+                <div className="rounded-xl border border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-amber-500/5 p-4 text-xs text-gray-300 leading-snug">
+                  <p>
+                    <span className="text-purple-300 font-semibold">💡 After you save:</span> open this reflection from the list to see your{' '}
+                    <span className="text-purple-300 font-semibold">Bounce Back System</span> (mental recovery) and{' '}
+                    <span className="text-amber-300 font-semibold">Run Maker System</span> (scoring identity, intent trigger, 3-phase plan, dot-ball tactics, KPIs) — auto-generated from the fields you filled in here. You can come back later and edit any field; the insights update.
+                  </p>
                 </div>
 
                 <button onClick={handleSubmit} disabled={!match || saving} className="w-full py-4 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold shadow-xl hover:shadow-primary-500/50 transition-all hover:scale-[1.02] disabled:opacity-40">

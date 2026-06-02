@@ -317,5 +317,30 @@ describe('generateCoachInsight', () => {
       expect(i.drills.join(' ').toLowerCase()).toContain('off-spin');
       expect(i.runMaker.dotBallTactics.join(' ').toLowerCase()).toContain('leg-spin');
     });
+
+    it('computes strike rate from runs + balls', () => {
+      const i = generateCoachInsight({ ...baseInputs, runs: 18, balls: 25 });
+      expect(i.runMaker.kpis.strikeRate).toBe(72);
+    });
+
+    it('strike rate is null when runs is missing', () => {
+      const i = generateCoachInsight({ ...baseInputs, balls: 25 });
+      expect(i.runMaker.kpis.strikeRate).toBeNull();
+    });
+
+    it('strike rate is null when balls is missing', () => {
+      const i = generateCoachInsight({ ...baseInputs, runs: 18 });
+      expect(i.runMaker.kpis.strikeRate).toBeNull();
+    });
+
+    it('strike rate is null when balls is 0 (avoid divide-by-zero)', () => {
+      const i = generateCoachInsight({ ...baseInputs, runs: 0, balls: 0 });
+      expect(i.runMaker.kpis.strikeRate).toBeNull();
+    });
+
+    it('strike rate handles a typical T20 innings (e.g. 30 runs off 20 balls = 150)', () => {
+      const i = generateCoachInsight({ ...baseInputs, runs: 30, balls: 20 });
+      expect(i.runMaker.kpis.strikeRate).toBe(150);
+    });
   });
 });

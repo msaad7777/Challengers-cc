@@ -104,6 +104,7 @@ export interface CoachInsight {
       runsPer10Balls: number | null;
       intentScore: number | null;
       dotBallPercent: number | null; // requires dotBallsFaced + balls; null otherwise
+      strikeRate: number | null;     // requires runs + balls; null otherwise (T20 baseline = 100)
     };
     focusForNextSession: string | null; // surfaced when nextFocusKpi is set on the reflection
   };
@@ -429,7 +430,7 @@ function pickPhaseKeyShots(r: CoachInputs, phase: 'Start Smart' | 'Build Fast' |
   return 'Lofted drives, pull, sweep. Use the long boundary side. Manipulate the field by hitting the area they\'ve left open.';
 }
 
-function pickKpis(r: CoachInputs): { runsPer10Balls: number | null; intentScore: number | null; dotBallPercent: number | null } {
+function pickKpis(r: CoachInputs): { runsPer10Balls: number | null; intentScore: number | null; dotBallPercent: number | null; strikeRate: number | null } {
   const runsPer10Balls =
     r.runs !== undefined && r.balls !== undefined && r.balls > 0
       ? Math.round((r.runs / r.balls) * 10 * 10) / 10 // one decimal
@@ -439,7 +440,11 @@ function pickKpis(r: CoachInputs): { runsPer10Balls: number | null; intentScore:
     r.dotBallsFaced !== undefined && r.balls !== undefined && r.balls > 0
       ? Math.round((r.dotBallsFaced / r.balls) * 100 * 10) / 10 // one decimal
       : null;
-  return { runsPer10Balls, intentScore, dotBallPercent };
+  const strikeRate =
+    r.runs !== undefined && r.balls !== undefined && r.balls > 0
+      ? Math.round((r.runs / r.balls) * 100 * 10) / 10 // one decimal — standard runs-per-100-balls
+      : null;
+  return { runsPer10Balls, intentScore, dotBallPercent, strikeRate };
 }
 
 function generateRunMaker(r: CoachInputs, wrong: string[], right: string[]): CoachInsight['runMaker'] {
