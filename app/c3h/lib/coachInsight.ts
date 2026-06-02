@@ -47,6 +47,27 @@ export interface CoachInsight {
     riskToAvoid: string;   // what to NOT do
     strengthToBack: string;
   };
+  // Bounce Back System — a structured mental-recovery routine built on
+  // the Breathe → Reflect → Reset framework. Generated from the same
+  // form data; surfaces emotional/mental cues alongside the technical
+  // ones the rest of the insight gives.
+  bounceBack: {
+    breathe: string;          // calming prompt — what to do *right now*
+    reflectPrompts: Array<{   // the 3 structured reflection questions, auto-answered
+      question: string;
+      answer: string;
+    }>;
+    resetCard: {              // pre-next-innings reset (matches the printable Reset Card)
+      mindsetWord: string;
+      strengthToBack: string;
+      pressureResponse: string;
+      mantra: string;
+    };
+    mindsetSwitch: {          // cognitive reframe — replace the unhelpful inner sentence
+      from: string;
+      to: string;
+    };
+  };
 }
 
 const PRIMARY_DISMISSAL = (got: string[]): string => got[0] || '';
@@ -89,6 +110,132 @@ const DISMISSAL_DRILLS: Record<string, string> = {
   'Stumped': 'Footwork against spin — fully forward or fully back, never half-forward. 30 balls.',
   'Hit Wicket': 'Stance drill — back leg outside leg stump, stable base, watch the bat through follow-through.',
 };
+
+// ── Bounce Back System ─────────────────────────────────────────────────
+// Rule-based mental-recovery routine following the Breathe → Reflect →
+// Reset framework. All inputs are existing CoachInputs fields; we don't
+// require any new form fields for MVP.
+
+const MINDSET_WORD_RULES: Array<{ when: (r: CoachInputs, w: string[]) => boolean; word: string }> = [
+  { when: (_r, w) => w.includes('Chased a wide delivery') || w.includes('Reckless shot'), word: 'Discipline' },
+  { when: (_r, w) => w.includes('Froze under pressure') || w.includes('Overthinking'), word: 'Calm' },
+  { when: (_r, w) => w.includes('No clear plan') || w.includes('Forgot my routine'), word: 'Clear' },
+  { when: (_r, w) => w.includes('Defensive mindset'), word: 'Brave' },
+  { when: (_r, w) => w.includes('Rushed my innings') || w.includes('Played too early'), word: 'Patient' },
+  { when: (_r, w) => w.includes('Tried to hit too hard'), word: 'Soft hands' },
+  { when: (r, _w) => r.pressureLevel === 'high', word: 'Calm' },
+  { when: (r, _w) => r.feeling !== undefined && r.feeling <= 2, word: 'Brave' },
+  { when: (r, _w) => r.intentScore !== undefined && r.intentScore <= 2, word: 'Decisive' },
+];
+
+function pickMindsetWord(r: CoachInputs, wrong: string[]): string {
+  for (const rule of MINDSET_WORD_RULES) {
+    if (rule.when(r, wrong)) return rule.word;
+  }
+  return 'Locked in';
+}
+
+function pickPressureResponse(r: CoachInputs): string {
+  if (r.pressureLevel === 'high') {
+    return 'Step away from the crease. Three deep breaths — in for 4, out for 6. Tap the bat twice. Say your mindset word out loud. Look up, settle, play the next ball only.';
+  }
+  if (r.pressureLevel === 'medium') {
+    return 'Reset between balls — one breath, scan the field, refocus. Don\'t replay the last ball; play the next one.';
+  }
+  return 'Pre-ball routine every ball: breathe, tap, settle, look up. Same five steps, regardless of context.';
+}
+
+function pickMantra(r: CoachInputs, got: string): string {
+  if (r.feeling !== undefined && r.feeling <= 2) {
+    return 'My score doesn\'t define me. My process does.';
+  }
+  if (got && got !== 'Not out' && got !== 'Did not bat') {
+    return 'I had a moment. I learned from it. I\'m growing.';
+  }
+  if (r.intentScore !== undefined && r.intentScore >= 4) {
+    return 'Trust, commit, hit.';
+  }
+  return 'Review it. Don\'t relive it. Next ball is the only ball.';
+}
+
+function pickMindsetSwitch(r: CoachInputs, got: string): { from: string; to: string } {
+  if (got && got !== 'Not out' && got !== 'Did not bat') {
+    return { from: 'I got out. I failed.', to: 'I had a moment. I learned from it. I\'m growing.' };
+  }
+  if (r.feeling !== undefined && r.feeling <= 2) {
+    return { from: 'I\'m not good enough.', to: 'I trained for this. I belong here.' };
+  }
+  if (r.pressureLevel === 'high') {
+    return { from: 'What if I fail in front of everyone?', to: 'What if I trust my plan and play freely?' };
+  }
+  return { from: 'I have to score.', to: 'I have to play the ball. Runs follow process.' };
+}
+
+function generateBounceBack(
+  r: CoachInputs,
+  got: string,
+  wrong: string[],
+  right: string[],
+  nextPlan: { firstSixBalls: string; scoringAreas: string; riskToAvoid: string; strengthToBack: string },
+  topDrill: string | undefined,
+): CoachInsight['bounceBack'] {
+  // ── Breathe ──
+  // The "right now" mental reset. Same prompt every time — that's the point;
+  // it becomes a learned ritual, like a pre-ball routine.
+  const breathe = 'Stand still. Bat down. Three deep breaths — in for 4, out for 6. Drop your shoulders. Say to yourself: "That moment is over. I\'m back."';
+
+  // ── Reflect (3 structured prompts, auto-answered from the form) ──
+  const reflectPrompts: Array<{ question: string; answer: string }> = [];
+
+  // Q1: What happened? — factual, no emotion.
+  const happenedParts: string[] = [];
+  if (got && got !== 'Not out' && got !== 'Did not bat') happenedParts.push(`Dismissed: ${got.toLowerCase()}`);
+  if (got === 'Not out') happenedParts.push('Stayed not out — innings still building');
+  if (got === 'Did not bat') happenedParts.push('Padded up, didn\'t get to the crease');
+  if (r.whyShotThatGotMeOut && r.whyShotThatGotMeOut.trim().length > 5) {
+    happenedParts.push(`In your words: "${r.whyShotThatGotMeOut.trim()}"`);
+  }
+  if (r.controlPercent !== undefined) happenedParts.push(`Felt in control on ${r.controlPercent}% of balls`);
+  reflectPrompts.push({
+    question: 'What happened?',
+    answer: happenedParts.length > 0 ? happenedParts.join('. ') + '.' : 'No dismissal recorded — reflect on the innings shape overall.',
+  });
+
+  // Q2: What was in my control?
+  const controlParts: string[] = [];
+  if (r.stuckToPlan === 'no') controlParts.push('You had a plan and abandoned it');
+  if (r.stuckToPlan === 'partly') controlParts.push('You stuck to your plan partly — gaps in execution');
+  if (wrong.length > 0) controlParts.push(`Self-identified mistakes: ${wrong.slice(0, 2).map((w) => w.toLowerCase()).join(', ')}`);
+  if (r.headOverBall === 'no') controlParts.push('Head wasn\'t over the ball');
+  if (r.frontFootToPitch === 'no') controlParts.push('Front foot didn\'t reach the pitch');
+  if (r.balanceAtContact === 'falling' || r.balanceAtContact === 'reaching') controlParts.push(`Balance: ${r.balanceAtContact} at contact`);
+  reflectPrompts.push({
+    question: 'What was in my control?',
+    answer: controlParts.length > 0 ? controlParts.join('. ') + '.' : 'Shot selection, intent, footwork, mindset — all yours, every ball.',
+  });
+
+  // Q3: What would I try next time?
+  const nextParts: string[] = [];
+  if (nextPlan.firstSixBalls) nextParts.push(nextPlan.firstSixBalls);
+  if (topDrill) nextParts.push(`Add to next nets: ${topDrill}`);
+  reflectPrompts.push({
+    question: 'What would I try next time?',
+    answer: nextParts.length > 0 ? nextParts.join(' ') : 'Play yourself in. Watch the ball. Score off the bad ones, leave the rest.',
+  });
+
+  // ── Reset (mindset word + strength + pressure response + mantra) ──
+  const resetCard = {
+    mindsetWord: pickMindsetWord(r, wrong),
+    strengthToBack: nextPlan.strengthToBack || right[0] || 'The shot you trust most',
+    pressureResponse: pickPressureResponse(r),
+    mantra: pickMantra(r, got),
+  };
+
+  // ── Mindset switch ──
+  const mindsetSwitch = pickMindsetSwitch(r, got);
+
+  return { breathe, reflectPrompts, resetCard, mindsetSwitch };
+}
 
 export function generateCoachInsight(r: CoachInputs): CoachInsight {
   const got = PRIMARY_DISMISSAL(r.howGotOut);
@@ -194,10 +341,14 @@ export function generateCoachInsight(r: CoachInputs): CoachInsight {
     riskToAvoid = 'Anything ambitious before you\'re set.';
   }
 
+  const nextInningsPlan = { firstSixBalls, scoringAreas, riskToAvoid, strengthToBack };
+  const bounceBack = generateBounceBack(r, got, wrong, right, nextInningsPlan, drills[0]);
+
   return {
     diagnosis,
     narrative,
     drills,
-    nextInningsPlan: { firstSixBalls, scoringAreas, riskToAvoid, strengthToBack },
+    nextInningsPlan,
+    bounceBack,
   };
 }

@@ -91,4 +91,67 @@ describe('generateCoachInsight', () => {
     expect(i.nextInningsPlan.riskToAvoid.length).toBeGreaterThan(0);
     expect(i.nextInningsPlan.strengthToBack.length).toBeGreaterThan(0);
   });
+
+  describe('bounceBack', () => {
+    it('returns a fully-populated Bounce Back block on minimum input', () => {
+      const i = generateCoachInsight(baseInputs);
+      expect(i.bounceBack.breathe.length).toBeGreaterThan(20);
+      expect(i.bounceBack.reflectPrompts).toHaveLength(3);
+      for (const p of i.bounceBack.reflectPrompts) {
+        expect(p.question.length).toBeGreaterThan(0);
+        expect(p.answer.length).toBeGreaterThan(0);
+      }
+      expect(i.bounceBack.resetCard.mindsetWord.length).toBeGreaterThan(0);
+      expect(i.bounceBack.resetCard.strengthToBack.length).toBeGreaterThan(0);
+      expect(i.bounceBack.resetCard.pressureResponse.length).toBeGreaterThan(0);
+      expect(i.bounceBack.resetCard.mantra.length).toBeGreaterThan(0);
+      expect(i.bounceBack.mindsetSwitch.from.length).toBeGreaterThan(0);
+      expect(i.bounceBack.mindsetSwitch.to.length).toBeGreaterThan(0);
+    });
+
+    it('"Chased a wide delivery" mistake picks "Discipline" as the mindset word', () => {
+      const i = generateCoachInsight({ ...baseInputs, whatWentWrong: ['Chased a wide delivery'] });
+      expect(i.bounceBack.resetCard.mindsetWord).toBe('Discipline');
+    });
+
+    it('"Froze under pressure" picks "Calm" as the mindset word', () => {
+      const i = generateCoachInsight({ ...baseInputs, whatWentWrong: ['Froze under pressure'] });
+      expect(i.bounceBack.resetCard.mindsetWord).toBe('Calm');
+    });
+
+    it('"Defensive mindset" picks "Brave" as the mindset word', () => {
+      const i = generateCoachInsight({ ...baseInputs, whatWentWrong: ['Defensive mindset'] });
+      expect(i.bounceBack.resetCard.mindsetWord).toBe('Brave');
+    });
+
+    it('high pressure produces a different pressure response than no pressure', () => {
+      const high = generateCoachInsight({ ...baseInputs, pressureLevel: 'high' });
+      const none = generateCoachInsight({ ...baseInputs, pressureLevel: 'low' });
+      expect(high.bounceBack.resetCard.pressureResponse).not.toBe(none.bounceBack.resetCard.pressureResponse);
+    });
+
+    it('low feeling (1) produces the "score doesn\'t define me" mantra', () => {
+      const i = generateCoachInsight({ ...baseInputs, feeling: 1 });
+      expect(i.bounceBack.resetCard.mantra.toLowerCase()).toContain('process');
+    });
+
+    it('mindsetSwitch reframes "I got out / I failed" into a growth-mindset alternative when dismissed', () => {
+      const i = generateCoachInsight({ ...baseInputs, howGotOut: ['Bowled'] });
+      expect(i.bounceBack.mindsetSwitch.from.toLowerCase()).toContain('failed');
+      expect(i.bounceBack.mindsetSwitch.to.toLowerCase()).toContain('learned');
+    });
+
+    it('reflect prompts include the player\'s own "why I got out" wording when provided', () => {
+      const note = 'I went for a big shot too early before reading the bowler.';
+      const i = generateCoachInsight({ ...baseInputs, whyShotThatGotMeOut: note });
+      const happenedAnswer = i.bounceBack.reflectPrompts[0].answer;
+      expect(happenedAnswer).toContain(note);
+    });
+
+    it('is deterministic — same inputs produce same bounceBack output', () => {
+      const a = generateCoachInsight(baseInputs);
+      const b = generateCoachInsight(baseInputs);
+      expect(a.bounceBack).toEqual(b.bounceBack);
+    });
+  });
 });

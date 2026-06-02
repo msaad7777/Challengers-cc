@@ -1572,6 +1572,62 @@ export default function NetsPage() {
                             <li><span className="text-gray-500">Strength to back:</span> {insight.nextInningsPlan.strengthToBack}</li>
                           </ul>
                         </div>
+
+                        {/* ── Bounce Back System ────────────────────────────
+                            Mental-recovery routine — Breathe → Reflect → Reset.
+                            Same `insight` object; this just surfaces the
+                            emotional/mindset side alongside the technical side. */}
+                        <div className="rounded-xl p-4 border-2 border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-transparent">
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="text-lg">💪</span>
+                            <p className="text-purple-300 text-[10px] uppercase tracking-wider font-bold">Bounce Back System</p>
+                          </div>
+
+                          {/* Step 1 — Breathe */}
+                          <div className="mb-4">
+                            <p className="text-purple-400 text-[10px] uppercase tracking-wider font-bold mb-1">1. Breathe</p>
+                            <p className="text-sm text-gray-200 leading-relaxed">{insight.bounceBack.breathe}</p>
+                          </div>
+
+                          {/* Step 2 — Reflect (3 questions, auto-answered) */}
+                          <div className="mb-4">
+                            <p className="text-purple-400 text-[10px] uppercase tracking-wider font-bold mb-2">2. Reflect</p>
+                            <div className="space-y-2">
+                              {insight.bounceBack.reflectPrompts.map((p, i) => (
+                                <div key={i} className="rounded-lg bg-white/3 border border-white/5 p-2.5">
+                                  <p className="text-purple-300 text-[11px] font-semibold mb-0.5">{p.question}</p>
+                                  <p className="text-sm text-gray-200 leading-snug">{p.answer}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Step 3 — Reset card */}
+                          <div className="mb-3">
+                            <p className="text-purple-400 text-[10px] uppercase tracking-wider font-bold mb-2">3. Reset card</p>
+                            <ul className="space-y-1.5 text-sm text-gray-200">
+                              <li>
+                                <span className="text-gray-500">Mindset word:</span>{' '}
+                                <span className="font-semibold text-purple-200">{insight.bounceBack.resetCard.mindsetWord}</span>
+                              </li>
+                              <li><span className="text-gray-500">Strength to back:</span> {insight.bounceBack.resetCard.strengthToBack}</li>
+                              <li><span className="text-gray-500">If pressure hits:</span> {insight.bounceBack.resetCard.pressureResponse}</li>
+                              <li>
+                                <span className="text-gray-500">Mantra:</span>{' '}
+                                <span className="italic text-gray-100">&ldquo;{insight.bounceBack.resetCard.mantra}&rdquo;</span>
+                              </li>
+                            </ul>
+                          </div>
+
+                          {/* Mindset switch — small reframe call-out */}
+                          <div className="rounded-md bg-purple-500/10 border-l-2 border-purple-500/60 px-3 py-2 text-xs leading-snug">
+                            <span className="text-purple-300 font-semibold">Mindset switch:</span>{' '}
+                            <span className="text-gray-400 line-through">{insight.bounceBack.mindsetSwitch.from}</span>{' '}
+                            <span className="text-gray-500">→</span>{' '}
+                            <span className="text-gray-100">{insight.bounceBack.mindsetSwitch.to}</span>
+                          </div>
+                        </div>
+
                         <p className="text-[10px] text-gray-600 italic">
                           Auto-generated from your answers. Fill in the &quot;Coach-Level Review&quot; section when you reflect for sharper, more specific insights.
                         </p>
@@ -2058,7 +2114,44 @@ export default function NetsPage() {
                 </div>
               </div>
 
-              {/* 15. Above All */}
+              {/* 15. Head Still, Hip Open — Don't Chase */}
+              <div className="glass rounded-2xl p-6 border-2 border-red-500/40 bg-gradient-to-r from-red-500/5 to-transparent">
+                <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                  <span className="text-2xl">🦵</span>
+                  Head Still, Hip Open — Don&apos;t Chase
+                </h3>
+                <p className="text-xs uppercase tracking-wider text-red-300 font-semibold mb-4">Footwork + head alignment — the trigger that tells you what to leave</p>
+
+                <div className="mb-4">
+                  <p className="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2">The setup</p>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex gap-3"><span className="text-red-300 font-bold flex-shrink-0">→</span><span><strong className="text-white">Front foot toe</strong> — slightly open (not pointed straight down the pitch, not collapsed across)</span></li>
+                    <li className="flex gap-3"><span className="text-red-300 font-bold flex-shrink-0">→</span><span><strong className="text-white">Back foot</strong> — parallel to the crease</span></li>
+                    <li className="flex gap-3"><span className="text-red-300 font-bold flex-shrink-0">→</span><span><strong className="text-white">Front hip</strong> — locked open, pointing slightly outside</span></li>
+                    <li className="flex gap-3"><span className="text-red-300 font-bold flex-shrink-0">→</span><span><strong className="text-white">Head</strong> — in line with the bowler, eyes level, completely still</span></li>
+                  </ul>
+                </div>
+
+                <div className="mb-4">
+                  <p className="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2">Why this matters</p>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex gap-3"><span className="text-red-300 font-bold flex-shrink-0">→</span><span>Open hip + straight front foot = your body stays <strong className="text-white">side-on and balanced</strong>. From here you can play, defend, or leave with the same setup.</span></li>
+                    <li className="flex gap-3"><span className="text-red-300 font-bold flex-shrink-0">→</span><span>A still head is a <strong className="text-white">measuring stick</strong> — it lets you judge line. Anything outside your eye-line is a leave; anything inside is a play.</span></li>
+                  </ul>
+                </div>
+
+                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30">
+                  <p className="text-sm font-bold text-red-300 mb-2">⚠️ The fatal mistake</p>
+                  <p className="text-sm text-gray-300 leading-relaxed">
+                    <strong className="text-white">If your head falls, you will chase.</strong> Head dropping toward the off side pulls your eyes off the line, opens the bat face, and commits you to a delivery you should have left. Every nick to the keeper starts with a head that fell.
+                  </p>
+                  <p className="text-sm text-gray-300 leading-relaxed mt-2">
+                    Keep the head up. Keep the hip open. Keep the front foot straight. Let the ball come — then decide.
+                  </p>
+                </div>
+              </div>
+
+              {/* 16. Above All */}
               <div className="glass rounded-2xl p-6 border-2 border-primary-500/30 bg-gradient-to-r from-primary-500/5 to-transparent">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                   <span className="text-2xl">⭐</span>
