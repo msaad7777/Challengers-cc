@@ -66,6 +66,14 @@ interface Reflection {
   firstSixBallsPlan?: string;
   stuckToPlan?: 'yes' | 'partly' | 'no';
   whyShotThatGotMeOut?: string;
+  // ── Run Maker tracker fields (optional) ─────────────────────
+  // Drive the Dot Ball % KPI, bowler-style-specific drills,
+  // and the "focus for next session" line in the insight.
+  dotBallsFaced?: number;
+  dismissalBowlerArm?: 'right' | 'left';
+  dismissalBowlerStyle?: 'fast' | 'medium' | 'off-spin' | 'leg-spin';
+  stickyBowlerStyle?: 'fast' | 'medium' | 'off-spin' | 'leg-spin';
+  nextFocusKpi?: 'runs-per-10' | 'intent' | 'dot-ball-pct' | 'use-tactic' | 'pre-ball-routine';
   feeling: number;
   bodyStatus: string[];
   nutrition: string[];
@@ -672,6 +680,12 @@ export default function NetsPage() {
   const [firstSixBallsPlan, setFirstSixBallsPlan] = useState('');
   const [stuckToPlan, setStuckToPlan] = useState<'yes' | 'partly' | 'no' | undefined>(undefined);
   const [whyShotThatGotMeOut, setWhyShotThatGotMeOut] = useState('');
+  // Run Maker tracker — drives Dot Ball %, bowler-style drills, focus line.
+  const [dotBallsFaced, setDotBallsFaced] = useState<number | undefined>(undefined);
+  const [dismissalBowlerArm, setDismissalBowlerArm] = useState<'right' | 'left' | undefined>(undefined);
+  const [dismissalBowlerStyle, setDismissalBowlerStyle] = useState<'fast' | 'medium' | 'off-spin' | 'leg-spin' | undefined>(undefined);
+  const [stickyBowlerStyle, setStickyBowlerStyle] = useState<'fast' | 'medium' | 'off-spin' | 'leg-spin' | undefined>(undefined);
+  const [nextFocusKpi, setNextFocusKpi] = useState<'runs-per-10' | 'intent' | 'dot-ball-pct' | 'use-tactic' | 'pre-ball-routine' | undefined>(undefined);
 
   // Shot planner state
   const [shotPlan, setShotPlan] = useState<ShotPlan>({ shotConfidence: {}, bowlerPlans: {}, notes: '' });
@@ -932,6 +946,11 @@ export default function NetsPage() {
     if (firstSixBallsPlan.trim()) payload.firstSixBallsPlan = firstSixBallsPlan.trim();
     if (stuckToPlan !== undefined) payload.stuckToPlan = stuckToPlan;
     if (whyShotThatGotMeOut.trim()) payload.whyShotThatGotMeOut = whyShotThatGotMeOut.trim();
+    if (dotBallsFaced !== undefined) payload.dotBallsFaced = dotBallsFaced;
+    if (dismissalBowlerArm !== undefined) payload.dismissalBowlerArm = dismissalBowlerArm;
+    if (dismissalBowlerStyle !== undefined) payload.dismissalBowlerStyle = dismissalBowlerStyle;
+    if (stickyBowlerStyle !== undefined) payload.stickyBowlerStyle = stickyBowlerStyle;
+    if (nextFocusKpi !== undefined) payload.nextFocusKpi = nextFocusKpi;
 
     if (editingId) {
       // Update existing reflection — preserve original date + createdAt; bump editCount
@@ -996,6 +1015,11 @@ export default function NetsPage() {
     setFirstSixBallsPlan(r.firstSixBallsPlan || '');
     setStuckToPlan(r.stuckToPlan);
     setWhyShotThatGotMeOut(r.whyShotThatGotMeOut || '');
+    setDotBallsFaced(r.dotBallsFaced);
+    setDismissalBowlerArm(r.dismissalBowlerArm);
+    setDismissalBowlerStyle(r.dismissalBowlerStyle);
+    setStickyBowlerStyle(r.stickyBowlerStyle);
+    setNextFocusKpi(r.nextFocusKpi);
     // Auto-expand the coach review if any of its fields were filled
     const hasCoachData = r.controlPercent !== undefined || r.pickedLengthEarly !== undefined ||
       r.watchedBall !== undefined || r.headOverBall !== undefined ||
@@ -1535,6 +1559,13 @@ export default function NetsPage() {
                     firstSixBallsPlan: selectedReflection.firstSixBallsPlan,
                     stuckToPlan: selectedReflection.stuckToPlan,
                     whyShotThatGotMeOut: selectedReflection.whyShotThatGotMeOut,
+                    runs: undefined,
+                    balls: undefined,
+                    dotBallsFaced: selectedReflection.dotBallsFaced,
+                    dismissalBowlerArm: selectedReflection.dismissalBowlerArm,
+                    dismissalBowlerStyle: selectedReflection.dismissalBowlerStyle,
+                    stickyBowlerStyle: selectedReflection.stickyBowlerStyle,
+                    nextFocusKpi: selectedReflection.nextFocusKpi,
                   });
                   return (
                     <div className="glass rounded-2xl p-5 mb-6 border-2 border-accent-500/30 bg-gradient-to-br from-accent-500/10 to-transparent">
@@ -1695,15 +1726,37 @@ export default function NetsPage() {
                           )}
 
                           {/* KPIs */}
-                          {(insight.runMaker.kpis.runsPer10Balls !== null || insight.runMaker.kpis.intentScore !== null) && (
-                            <div className="rounded-md bg-amber-500/10 border-l-2 border-amber-500/60 px-3 py-2 text-xs leading-snug">
+                          {(insight.runMaker.kpis.runsPer10Balls !== null || insight.runMaker.kpis.intentScore !== null || insight.runMaker.kpis.dotBallPercent !== null) && (
+                            <div className="rounded-md bg-amber-500/10 border-l-2 border-amber-500/60 px-3 py-2 text-xs leading-snug mb-2">
                               <span className="text-amber-300 font-semibold">KPIs:</span>{' '}
                               {insight.runMaker.kpis.runsPer10Balls !== null && (
-                                <span className="text-gray-200">Runs / 10 balls: <strong>{insight.runMaker.kpis.runsPer10Balls}</strong>{insight.runMaker.kpis.intentScore !== null ? ' · ' : ''}</span>
+                                <span className="text-gray-200">Runs / 10 balls: <strong>{insight.runMaker.kpis.runsPer10Balls}</strong></span>
                               )}
                               {insight.runMaker.kpis.intentScore !== null && (
-                                <span className="text-gray-200">Intent score: <strong>{insight.runMaker.kpis.intentScore} / 5</strong></span>
+                                <>
+                                  {insight.runMaker.kpis.runsPer10Balls !== null && <span className="text-gray-500"> · </span>}
+                                  <span className="text-gray-200">Intent: <strong>{insight.runMaker.kpis.intentScore} / 5</strong></span>
+                                </>
                               )}
+                              {insight.runMaker.kpis.dotBallPercent !== null && (
+                                <>
+                                  {(insight.runMaker.kpis.runsPer10Balls !== null || insight.runMaker.kpis.intentScore !== null) && <span className="text-gray-500"> · </span>}
+                                  <span className="text-gray-200">
+                                    Dot ball %:{' '}
+                                    <strong className={insight.runMaker.kpis.dotBallPercent > 40 ? 'text-red-300' : 'text-emerald-300'}>
+                                      {insight.runMaker.kpis.dotBallPercent}%
+                                    </strong>
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Focus for next session */}
+                          {insight.runMaker.focusForNextSession && (
+                            <div className="rounded-md bg-amber-500/15 border border-amber-500/40 px-3 py-2 text-xs leading-snug">
+                              <span className="text-amber-300 font-semibold">🎯 Focus next session:</span>{' '}
+                              <span className="text-gray-100">{insight.runMaker.focusForNextSession}</span>
                             </div>
                           )}
                         </div>
@@ -3026,6 +3079,74 @@ export default function NetsPage() {
                           {(['accelerate', 'consolidate', 'settle'] as const).map(v => (
                             <button key={v} type="button" onClick={() => setIntentMode(intentMode === v ? undefined : v)} className={`py-2 px-3 rounded-lg text-xs font-medium border transition-all ${intentMode === v ? 'bg-red-500/20 text-red-400 border-red-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{v.charAt(0).toUpperCase() + v.slice(1)}</button>
                           ))}
+                        </div>
+                      </div>
+
+                      {/* ── Run Maker tracker ────────────────────────────
+                          Drives the Dot Ball % KPI, bowler-style-specific
+                          drills, and the "focus for next session" line in
+                          the Run Maker block. All optional. */}
+                      <div className="pt-4 border-t border-accent-500/20">
+                        <p className="text-amber-300 text-xs font-bold uppercase tracking-wider mb-3">🚀 Run Maker tracker</p>
+
+                        <div className="space-y-4">
+                          <div>
+                            <label className="text-gray-400 text-xs block mb-1">Dot balls faced (approx)</label>
+                            <input
+                              type="number"
+                              min={0}
+                              value={dotBallsFaced ?? ''}
+                              onChange={e => {
+                                const v = e.target.value;
+                                setDotBallsFaced(v === '' ? undefined : Math.max(0, parseInt(v, 10) || 0));
+                              }}
+                              placeholder="e.g. 8"
+                              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-amber-500 text-white text-sm placeholder-gray-600"
+                            />
+                            <p className="text-[10px] text-gray-500 mt-1">Used with your balls-faced count to compute your Dot Ball % KPI.</p>
+                          </div>
+
+                          <div>
+                            <p className="text-gray-400 text-xs mb-2">Bowler who dismissed you — arm</p>
+                            <div className="flex gap-2">
+                              {(['right', 'left'] as const).map(v => (
+                                <button key={v} type="button" onClick={() => setDismissalBowlerArm(dismissalBowlerArm === v ? undefined : v)} className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium border transition-all ${dismissalBowlerArm === v ? 'bg-amber-500/20 text-amber-300 border-amber-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{v.charAt(0).toUpperCase() + v.slice(1)}-arm</button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div>
+                            <p className="text-gray-400 text-xs mb-2">Bowler who dismissed you — style</p>
+                            <div className="grid grid-cols-2 gap-2">
+                              {(['fast', 'medium', 'off-spin', 'leg-spin'] as const).map(v => (
+                                <button key={v} type="button" onClick={() => setDismissalBowlerStyle(dismissalBowlerStyle === v ? undefined : v)} className={`py-2 px-3 rounded-lg text-xs font-medium border transition-all ${dismissalBowlerStyle === v ? 'bg-amber-500/20 text-amber-300 border-amber-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{v === 'off-spin' ? 'Off-spin' : v === 'leg-spin' ? 'Leg-spin' : v.charAt(0).toUpperCase() + v.slice(1)}</button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div>
+                            <p className="text-gray-400 text-xs mb-2">Sticky bowler type — caused most dot balls (optional)</p>
+                            <div className="grid grid-cols-2 gap-2">
+                              {(['fast', 'medium', 'off-spin', 'leg-spin'] as const).map(v => (
+                                <button key={v} type="button" onClick={() => setStickyBowlerStyle(stickyBowlerStyle === v ? undefined : v)} className={`py-2 px-3 rounded-lg text-xs font-medium border transition-all ${stickyBowlerStyle === v ? 'bg-amber-500/20 text-amber-300 border-amber-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{v === 'off-spin' ? 'Off-spin' : v === 'leg-spin' ? 'Leg-spin' : v.charAt(0).toUpperCase() + v.slice(1)}</button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div>
+                            <p className="text-gray-400 text-xs mb-2">Focus for next session — one micro-goal</p>
+                            <div className="flex flex-col gap-2">
+                              {([
+                                ['runs-per-10', 'Runs per 10 balls (target 6+)'],
+                                ['intent', 'Intent score (target 5/5)'],
+                                ['dot-ball-pct', 'Dot ball % (keep under 40%)'],
+                                ['use-tactic', 'Use a Dot Ball Destroyer tactic each over'],
+                                ['pre-ball-routine', 'Pre-ball routine: Look · Breathe · Say'],
+                              ] as const).map(([v, label]) => (
+                                <button key={v} type="button" onClick={() => setNextFocusKpi(nextFocusKpi === v ? undefined : v)} className={`py-2 px-3 rounded-lg text-left text-xs font-medium border transition-all ${nextFocusKpi === v ? 'bg-amber-500/20 text-amber-300 border-amber-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{label}</button>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>

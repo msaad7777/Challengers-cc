@@ -35,6 +35,16 @@ export interface CoachInputs {
   runs?: number;
   balls?: number;
   isOut?: boolean;
+
+  // ── Run Maker tracker (optional) ──────────────────────────────
+  // Drives the Dot Ball % KPI and bowler-style-specific drill /
+  // tactic recommendations. All optional — existing reflections
+  // remain valid without these.
+  dotBallsFaced?: number;
+  dismissalBowlerArm?: 'right' | 'left';
+  dismissalBowlerStyle?: 'fast' | 'medium' | 'off-spin' | 'leg-spin';
+  stickyBowlerStyle?: 'fast' | 'medium' | 'off-spin' | 'leg-spin';
+  nextFocusKpi?: 'runs-per-10' | 'intent' | 'dot-ball-pct' | 'use-tactic' | 'pre-ball-routine';
 }
 
 export interface CoachInsight {
@@ -93,7 +103,9 @@ export interface CoachInsight {
     kpis: {                         // scorer-driven KPIs, surfaced when data available
       runsPer10Balls: number | null;
       intentScore: number | null;
+      dotBallPercent: number | null; // requires dotBallsFaced + balls; null otherwise
     };
+    focusForNextSession: string | null; // surfaced when nextFocusKpi is set on the reflection
   };
 }
 
@@ -343,13 +355,61 @@ function pickDotBallTactics(r: CoachInputs, wrong: string[]): string[] {
   if (wrong.includes('No clear plan')) {
     tactics.push('Walk Down the Track (vs spin) — change the length, push into the gaps. Disrupts the bowler\'s line.');
   }
+
+  // ── Sticky-bowler-style-specific tactics ─────────────────────
+  // If the player flagged a bowler type that keeps causing dots,
+  // give a tactic tailored to that style.
+  const sticky = r.stickyBowlerStyle;
+  if (sticky === 'fast') {
+    tactics.push('vs Fast: Late Dab to third man — let the short-of-length ball come close, angle bat down. Avoids playing across the line.');
+  } else if (sticky === 'medium') {
+    tactics.push('vs Medium pace: Shuffle and Clip on the pads — step across early, target the leg-side gap behind square.');
+  } else if (sticky === 'off-spin') {
+    tactics.push('vs Off-spin: Use the depth of crease — back-and-across, work into midwicket gap. Sweep when the field is up.');
+  } else if (sticky === 'leg-spin') {
+    tactics.push('vs Leg-spin: Sweep / lap to the leg-side — disrupts the line, scores against the spin. Use the depth of crease for the wide ones.');
+  }
+
   // Always give the player at least 2 tactics so the section isn't empty.
   if (tactics.length === 0) {
     tactics.push('Drop and Run — soft hands into the off-side, call early. The easiest single in the game.');
     tactics.push('Shuffle and Clip — step across, clip the straight ball into the leg-side gap.');
   }
-  return tactics.slice(0, 3);
+  return tactics.slice(0, 4);
 }
+
+// Map (bowlerArm, bowlerStyle) → a targeted drill that addresses
+// the specific challenge of that bowler type. Used when the player
+// records what kind of bowler dismissed them.
+function pickBowlerDrill(arm: 'right' | 'left' | undefined, style: 'fast' | 'medium' | 'off-spin' | 'leg-spin' | undefined): string | null {
+  if (!style) return null;
+  const armPrefix = arm === 'left' ? 'Left-arm' : arm === 'right' ? 'Right-arm' : 'The';
+  if (style === 'fast') {
+    if (arm === 'left') return 'Left-arm pace drill — line comes across to a right-hander; train the leave outside off and play later under the eyes. 30 balls of leave/defend only.';
+    return 'Right-arm pace drill — head still, hands close to the body. Defend with soft hands; let the ball come to you. 30 balls.';
+  }
+  if (style === 'medium') {
+    if (arm === 'left') return 'Left-arm medium drill — angle into the pads; shuffle across and work to leg-side. 30 balls focusing on hip movement, not arms.';
+    return 'Right-arm medium drill — back-of-a-length challenge; play late, soft hands, third-man / cover dab for rotation. 30 balls.';
+  }
+  if (style === 'off-spin') {
+    if (arm === 'left') return 'Left-arm orthodox (SLA) drill — ball turns into the right-hander; play with the spin (work to leg-side), use the sweep against fuller deliveries. 30 balls.';
+    return 'Off-spin drill — get to the pitch OR rock back; never half-forward. Defend with bat-next-to-pad. Sweep against the fuller length. 30 balls.';
+  }
+  if (style === 'leg-spin') {
+    if (arm === 'left') return 'Chinaman drill — left-arm wrist spin turns away from a right-hander. Play late, watch the wrist, defend straight. 30 balls.';
+    return 'Leg-spin drill — read the wrist before the seam; play with the spin to the off-side, use depth-of-crease to negate length. 30 balls.';
+  }
+  return `${armPrefix} ${style} drill — watch the seam, play late, defend with bat next to pad. 30 balls.`;
+}
+
+const FOCUS_KPI_DESCRIPTIONS: Record<NonNullable<CoachInputs['nextFocusKpi']>, string> = {
+  'runs-per-10': 'Runs per 10 balls — target 6+. Rotate the strike; don\'t let dots compound.',
+  'intent': 'Intent score — target 5/5. Pick a scoring option before every ball; play with purpose, even on defence.',
+  'dot-ball-pct': 'Dot ball % — keep it under 40%. Use a tactic on every ball you can\'t boundary.',
+  'use-tactic': 'Use one Dot Ball Destroyer tactic every over — Drop and Run, Shuffle and Clip, Late Dab, or Quick Feet Bunt.',
+  'pre-ball-routine': 'Pre-ball routine — LOOK / BREATHE / SAY before every ball. Make it automatic.',
+};
 
 function pickPhaseKeyShots(r: CoachInputs, phase: 'Start Smart' | 'Build Fast' | 'Finish Strong', right: string[]): string {
   // Prefer the player's own strength when we have one — players score
@@ -369,13 +429,17 @@ function pickPhaseKeyShots(r: CoachInputs, phase: 'Start Smart' | 'Build Fast' |
   return 'Lofted drives, pull, sweep. Use the long boundary side. Manipulate the field by hitting the area they\'ve left open.';
 }
 
-function pickKpis(r: CoachInputs): { runsPer10Balls: number | null; intentScore: number | null } {
+function pickKpis(r: CoachInputs): { runsPer10Balls: number | null; intentScore: number | null; dotBallPercent: number | null } {
   const runsPer10Balls =
     r.runs !== undefined && r.balls !== undefined && r.balls > 0
       ? Math.round((r.runs / r.balls) * 10 * 10) / 10 // one decimal
       : null;
   const intentScore = r.intentScore ?? null;
-  return { runsPer10Balls, intentScore };
+  const dotBallPercent =
+    r.dotBallsFaced !== undefined && r.balls !== undefined && r.balls > 0
+      ? Math.round((r.dotBallsFaced / r.balls) * 100 * 10) / 10 // one decimal
+      : null;
+  return { runsPer10Balls, intentScore, dotBallPercent };
 }
 
 function generateRunMaker(r: CoachInputs, wrong: string[], right: string[]): CoachInsight['runMaker'] {
@@ -411,12 +475,14 @@ function generateRunMaker(r: CoachInputs, wrong: string[], right: string[]): Coa
   ];
   const dotBallTactics = pickDotBallTactics(r, wrong);
   const kpis = pickKpis(r);
+  const focusForNextSession = r.nextFocusKpi ? FOCUS_KPI_DESCRIPTIONS[r.nextFocusKpi] : null;
   return {
     scoringIdentity: { traits: [...traits], scoringStatement },
     intentTrigger,
     phasePlan,
     dotBallTactics,
     kpis,
+    focusForNextSession,
   };
 }
 
@@ -487,7 +553,12 @@ export function generateCoachInsight(r: CoachInputs): CoachInsight {
   if (r.frontFootToPitch === 'no') drillSet.add('Forward stride drill — exaggerated front-foot stride to the pitch on every full ball. 30 balls.');
   if (r.balanceAtContact === 'falling') drillSet.add('Stance drill — strong base, weight 60/40 toward the back leg, finish balanced.');
   if (r.balanceAtContact === 'reaching') drillSet.add('Reach-fix drill — defend with feet planted; only commit forward if the ball is reachable without overstretching.');
-  const drills = Array.from(drillSet).slice(0, 4);
+  // Bowler-style-specific drill — only added when the player recorded
+  // what kind of bowler dismissed them. Targets the specific challenge
+  // of that bowler type (e.g. left-arm pace line, leg-spin wrist read).
+  const bowlerDrill = pickBowlerDrill(r.dismissalBowlerArm, r.dismissalBowlerStyle);
+  if (bowlerDrill) drillSet.add(bowlerDrill);
+  const drills = Array.from(drillSet).slice(0, 5);
 
   // ── Next innings plan ──
   let firstSixBalls = 'Play yourself in. Watch the ball, leave outside off, defend straight balls.';

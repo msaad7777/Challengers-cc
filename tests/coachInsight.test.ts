@@ -227,4 +227,95 @@ describe('generateCoachInsight', () => {
       expect(a.runMaker).toEqual(b.runMaker);
     });
   });
+
+  describe('Run Maker tracker fields', () => {
+    it('computes Dot Ball % from dotBallsFaced + balls', () => {
+      const i = generateCoachInsight({ ...baseInputs, balls: 20, dotBallsFaced: 8 });
+      expect(i.runMaker.kpis.dotBallPercent).toBe(40); // 8/20 = 40%
+    });
+
+    it('Dot Ball % is null when dotBallsFaced is missing', () => {
+      const i = generateCoachInsight({ ...baseInputs, balls: 20 });
+      expect(i.runMaker.kpis.dotBallPercent).toBeNull();
+    });
+
+    it('Dot Ball % is null when balls is missing', () => {
+      const i = generateCoachInsight({ ...baseInputs, dotBallsFaced: 8 });
+      expect(i.runMaker.kpis.dotBallPercent).toBeNull();
+    });
+
+    it('focusForNextSession is null when nextFocusKpi is unset', () => {
+      const i = generateCoachInsight(baseInputs);
+      expect(i.runMaker.focusForNextSession).toBeNull();
+    });
+
+    it('focusForNextSession renders a description when nextFocusKpi is set', () => {
+      const i = generateCoachInsight({ ...baseInputs, nextFocusKpi: 'dot-ball-pct' });
+      expect(i.runMaker.focusForNextSession).not.toBeNull();
+      expect(i.runMaker.focusForNextSession!.toLowerCase()).toContain('dot ball');
+    });
+
+    it('right-arm leg-spin dismissal adds a leg-spin specific drill', () => {
+      const i = generateCoachInsight({
+        ...baseInputs,
+        howGotOut: ['Stumped'],
+        dismissalBowlerArm: 'right',
+        dismissalBowlerStyle: 'leg-spin',
+      });
+      const joined = i.drills.join(' ').toLowerCase();
+      expect(joined).toContain('leg-spin');
+    });
+
+    it('left-arm fast dismissal adds a left-arm pace specific drill', () => {
+      const i = generateCoachInsight({
+        ...baseInputs,
+        howGotOut: ['Caught — Slips/Gully'],
+        dismissalBowlerArm: 'left',
+        dismissalBowlerStyle: 'fast',
+      });
+      const joined = i.drills.join(' ').toLowerCase();
+      expect(joined).toContain('left-arm pace');
+    });
+
+    it('left-arm off-spin (i.e. SLA) dismissal adds the SLA-specific drill', () => {
+      const i = generateCoachInsight({
+        ...baseInputs,
+        howGotOut: ['LBW'],
+        dismissalBowlerArm: 'left',
+        dismissalBowlerStyle: 'off-spin',
+      });
+      const joined = i.drills.join(' ').toLowerCase();
+      expect(joined).toContain('sla');
+    });
+
+    it('stickyBowlerStyle=leg-spin adds a leg-spin-targeted dot-ball tactic', () => {
+      const i = generateCoachInsight({ ...baseInputs, stickyBowlerStyle: 'leg-spin' });
+      const joined = i.runMaker.dotBallTactics.join(' ').toLowerCase();
+      expect(joined).toContain('leg-spin');
+    });
+
+    it('stickyBowlerStyle=fast adds a fast-targeted dot-ball tactic', () => {
+      const i = generateCoachInsight({ ...baseInputs, stickyBowlerStyle: 'fast' });
+      const joined = i.runMaker.dotBallTactics.join(' ').toLowerCase();
+      expect(joined).toContain('vs fast');
+    });
+
+    it('all Run Maker tracker fields together produce a complete enriched insight', () => {
+      const i = generateCoachInsight({
+        ...baseInputs,
+        balls: 25,
+        runs: 18,
+        dotBallsFaced: 9,
+        dismissalBowlerArm: 'right',
+        dismissalBowlerStyle: 'off-spin',
+        stickyBowlerStyle: 'leg-spin',
+        nextFocusKpi: 'use-tactic',
+      });
+      expect(i.runMaker.kpis.runsPer10Balls).toBe(7.2);
+      expect(i.runMaker.kpis.dotBallPercent).toBe(36);
+      expect(i.runMaker.focusForNextSession).toContain('Dot Ball Destroyer');
+      expect(i.drills.join(' ').toLowerCase()).toContain('off-spin');
+      expect(i.runMaker.dotBallTactics.join(' ').toLowerCase()).toContain('leg-spin');
+    });
+  });
 });
