@@ -154,4 +154,77 @@ describe('generateCoachInsight', () => {
       expect(a.bounceBack).toEqual(b.bounceBack);
     });
   });
+
+  describe('runMaker', () => {
+    it('returns a fully-populated Run Maker block on minimum input', () => {
+      const i = generateCoachInsight(baseInputs);
+      expect(i.runMaker.scoringIdentity.traits).toHaveLength(3);
+      expect(i.runMaker.scoringIdentity.scoringStatement.length).toBeGreaterThan(10);
+      expect(i.runMaker.intentTrigger.look.length).toBeGreaterThan(0);
+      expect(i.runMaker.intentTrigger.breathe.length).toBeGreaterThan(0);
+      expect(i.runMaker.intentTrigger.say.length).toBeGreaterThan(0);
+      expect(i.runMaker.phasePlan).toHaveLength(3);
+      expect(i.runMaker.phasePlan.map((p) => p.phase)).toEqual(['Start Smart', 'Build Fast', 'Finish Strong']);
+      for (const p of i.runMaker.phasePlan) {
+        expect(p.goal.length).toBeGreaterThan(0);
+        expect(p.keyShots.length).toBeGreaterThan(0);
+        expect(p.reminderWord.length).toBeGreaterThan(0);
+      }
+      expect(i.runMaker.dotBallTactics.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('death-overs match phase picks the finisher trait pool (Fearless / Dominant / Ruthless)', () => {
+      const i = generateCoachInsight({ ...baseInputs, matchPhase: 'death' });
+      expect(i.runMaker.scoringIdentity.traits).toContain('Fearless');
+    });
+
+    it('powerplay phase picks the starter trait pool (Sharp / Game-aware / Purposeful)', () => {
+      const i = generateCoachInsight({ ...baseInputs, matchPhase: 'powerplay' });
+      expect(i.runMaker.scoringIdentity.traits).toContain('Sharp');
+    });
+
+    it('"Froze under pressure" steers traits toward Brave / Bold / Calm', () => {
+      const i = generateCoachInsight({ ...baseInputs, whatWentWrong: ['Froze under pressure'] });
+      expect(i.runMaker.scoringIdentity.traits).toContain('Brave');
+    });
+
+    it('"Reckless shot" steers traits toward Calculated / Strategic / Patient', () => {
+      const i = generateCoachInsight({ ...baseInputs, whatWentWrong: ['Reckless shot'] });
+      expect(i.runMaker.scoringIdentity.traits).toContain('Calculated');
+    });
+
+    it('low intent score picks "See it. Hit it." as the verbal trigger', () => {
+      const i = generateCoachInsight({ ...baseInputs, intentScore: 1 });
+      expect(i.runMaker.intentTrigger.say).toBe('See it. Hit it.');
+    });
+
+    it('death phase picks "Score now." as the verbal trigger', () => {
+      const i = generateCoachInsight({ ...baseInputs, matchPhase: 'death' });
+      expect(i.runMaker.intentTrigger.say).toBe('Score now.');
+    });
+
+    it('"Did not rotate strike" surfaces Drop and Run + Shuffle and Clip tactics', () => {
+      const i = generateCoachInsight({ ...baseInputs, whatWentWrong: ['Did not rotate strike'] });
+      const joined = i.runMaker.dotBallTactics.join(' ');
+      expect(joined).toContain('Drop and Run');
+      expect(joined).toContain('Shuffle and Clip');
+    });
+
+    it('KPIs compute Runs / 10 balls from scorer data', () => {
+      const i = generateCoachInsight({ ...baseInputs, runs: 30, balls: 20 });
+      expect(i.runMaker.kpis.runsPer10Balls).toBe(15); // 30/20 * 10 = 15
+      expect(i.runMaker.kpis.intentScore).toBe(3); // baseInputs has intentScore: 3
+    });
+
+    it('KPIs return null when scorer data is missing', () => {
+      const i = generateCoachInsight(baseInputs);
+      expect(i.runMaker.kpis.runsPer10Balls).toBeNull();
+    });
+
+    it('is deterministic — same inputs produce same runMaker output', () => {
+      const a = generateCoachInsight(baseInputs);
+      const b = generateCoachInsight(baseInputs);
+      expect(a.runMaker).toEqual(b.runMaker);
+    });
+  });
 });

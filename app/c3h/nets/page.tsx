@@ -1628,6 +1628,86 @@ export default function NetsPage() {
                           </div>
                         </div>
 
+                        {/* ── Run Maker System ──────────────────────────────
+                            Offensive counterpart to Bounce Back — scoring
+                            identity, pre-ball intent trigger, 3-phase plan,
+                            dot-ball tactics, and scorer-driven KPIs. */}
+                        <div className="rounded-xl p-4 border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-transparent">
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="text-lg">🚀</span>
+                            <p className="text-amber-300 text-[10px] uppercase tracking-wider font-bold">Run Maker System</p>
+                          </div>
+
+                          {/* Scoring identity — 3 traits + statement */}
+                          <div className="mb-4">
+                            <p className="text-amber-400 text-[10px] uppercase tracking-wider font-bold mb-1.5">Scoring identity</p>
+                            <div className="flex flex-wrap gap-1.5 mb-2">
+                              {insight.runMaker.scoringIdentity.traits.map((t, i) => (
+                                <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-200 border border-amber-500/30 font-semibold">
+                                  {t}
+                                </span>
+                              ))}
+                            </div>
+                            <p className="text-sm text-gray-200 italic leading-snug">
+                              &ldquo;{insight.runMaker.scoringIdentity.scoringStatement}&rdquo;
+                            </p>
+                          </div>
+
+                          {/* Intent trigger — LOOK / BREATHE / SAY */}
+                          <div className="mb-4">
+                            <p className="text-amber-400 text-[10px] uppercase tracking-wider font-bold mb-2">Pre-ball intent trigger</p>
+                            <div className="space-y-1.5 text-sm text-gray-200">
+                              <p><span className="text-amber-300 font-semibold">Look:</span> {insight.runMaker.intentTrigger.look}</p>
+                              <p><span className="text-amber-300 font-semibold">Breathe:</span> {insight.runMaker.intentTrigger.breathe}</p>
+                              <p><span className="text-amber-300 font-semibold">Say:</span> &ldquo;{insight.runMaker.intentTrigger.say}&rdquo;</p>
+                            </div>
+                          </div>
+
+                          {/* 3-Phase plan */}
+                          <div className="mb-4">
+                            <p className="text-amber-400 text-[10px] uppercase tracking-wider font-bold mb-2">3-Phase innings plan</p>
+                            <div className="space-y-2">
+                              {insight.runMaker.phasePlan.map((p, i) => (
+                                <div key={i} className="rounded-lg bg-white/3 border border-white/5 p-2.5">
+                                  <div className="flex items-baseline justify-between gap-2 mb-1">
+                                    <p className="text-amber-200 text-[11px] font-bold">{p.phase} <span className="text-gray-500 font-normal">· balls {p.balls}</span></p>
+                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-200 font-semibold">{p.reminderWord}</span>
+                                  </div>
+                                  <p className="text-xs text-gray-300 mb-0.5"><span className="text-gray-500">Goal:</span> {p.goal}</p>
+                                  <p className="text-xs text-gray-300"><span className="text-gray-500">Key shots:</span> {p.keyShots}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Dot ball tactics */}
+                          {insight.runMaker.dotBallTactics.length > 0 && (
+                            <div className="mb-4">
+                              <p className="text-amber-400 text-[10px] uppercase tracking-wider font-bold mb-2">Dot ball destroyer tactics</p>
+                              <ul className="space-y-1.5">
+                                {insight.runMaker.dotBallTactics.map((t, i) => (
+                                  <li key={i} className="text-sm text-gray-300 flex gap-2">
+                                    <span className="text-amber-400 flex-shrink-0">→</span><span>{t}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* KPIs */}
+                          {(insight.runMaker.kpis.runsPer10Balls !== null || insight.runMaker.kpis.intentScore !== null) && (
+                            <div className="rounded-md bg-amber-500/10 border-l-2 border-amber-500/60 px-3 py-2 text-xs leading-snug">
+                              <span className="text-amber-300 font-semibold">KPIs:</span>{' '}
+                              {insight.runMaker.kpis.runsPer10Balls !== null && (
+                                <span className="text-gray-200">Runs / 10 balls: <strong>{insight.runMaker.kpis.runsPer10Balls}</strong>{insight.runMaker.kpis.intentScore !== null ? ' · ' : ''}</span>
+                              )}
+                              {insight.runMaker.kpis.intentScore !== null && (
+                                <span className="text-gray-200">Intent score: <strong>{insight.runMaker.kpis.intentScore} / 5</strong></span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+
                         <p className="text-[10px] text-gray-600 italic">
                           Auto-generated from your answers. Fill in the &quot;Coach-Level Review&quot; section when you reflect for sharper, more specific insights.
                         </p>

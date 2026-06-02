@@ -68,6 +68,33 @@ export interface CoachInsight {
       to: string;
     };
   };
+  // Run Maker System — offensive scoring identity + pre-ball intent
+  // routine + phased innings plan. Counterpart to Bounce Back: where
+  // BB is post-failure mental recovery, RM is pre-ball / pre-innings
+  // scoring readiness. Same rule-based pure-function pattern.
+  runMaker: {
+    scoringIdentity: {              // aspirational identity for next innings
+      traits: string[];             // 3 traits picked by rules
+      scoringStatement: string;     // composed from the 3 traits
+    };
+    intentTrigger: {                // pre-ball LOOK → BREATHE → SAY routine
+      look: string;
+      breathe: string;
+      say: string;
+    };
+    phasePlan: Array<{              // 3-phase innings strategy
+      phase: 'Start Smart' | 'Build Fast' | 'Finish Strong';
+      balls: string;                // "1-10" / "11-25" / "25+"
+      goal: string;
+      keyShots: string;
+      reminderWord: string;
+    }>;
+    dotBallTactics: string[];       // 2-3 tactics derived from "did not rotate strike" / freeze patterns
+    kpis: {                         // scorer-driven KPIs, surfaced when data available
+      runsPer10Balls: number | null;
+      intentScore: number | null;
+    };
+  };
 }
 
 const PRIMARY_DISMISSAL = (got: string[]): string => got[0] || '';
@@ -237,6 +264,162 @@ function generateBounceBack(
   return { breathe, reflectPrompts, resetCard, mindsetSwitch };
 }
 
+// ── Run Maker System ───────────────────────────────────────────────────
+// Offensive counterpart to Bounce Back. Where BB resets after failure,
+// RM activates pre-ball scoring intent and lays out a phased plan.
+// Rule-based, pure function — no LLM, no new form fields required.
+
+// Trait pools by intent posture, used to derive 3 aspirational traits.
+const TRAIT_POOLS = {
+  // Default — well-rounded scorer
+  default: ['Bold', 'Decisive', 'Composed'],
+  // Player needs to find courage to attack (low intent / froze)
+  unfreeze: ['Brave', 'Bold', 'Calm'],
+  // Player has aggression but is throwing it away
+  controlAggression: ['Calculated', 'Strategic', 'Patient'],
+  // Player needs to stay composed under pressure
+  steadyPressure: ['Composed', 'Focused', 'Grounded'],
+  // Death-overs / accelerate posture
+  finisher: ['Fearless', 'Dominant', 'Ruthless'],
+  // Powerplay / first-up clarity
+  starter: ['Sharp', 'Game-aware', 'Purposeful'],
+} as const;
+
+function pickScoringTraits(r: CoachInputs, wrong: string[]): readonly string[] {
+  if (r.matchPhase === 'death' || r.intentMode === 'accelerate') return TRAIT_POOLS.finisher;
+  if (r.matchPhase === 'powerplay') return TRAIT_POOLS.starter;
+  if (wrong.includes('Froze under pressure') || (r.intentScore !== undefined && r.intentScore <= 2)) {
+    return TRAIT_POOLS.unfreeze;
+  }
+  if (wrong.includes('Reckless shot') || wrong.includes('Tried to hit too hard') || wrong.includes('Rushed my innings')) {
+    return TRAIT_POOLS.controlAggression;
+  }
+  if (r.pressureLevel === 'high') return TRAIT_POOLS.steadyPressure;
+  return TRAIT_POOLS.default;
+}
+
+function buildScoringStatement(traits: readonly string[]): string {
+  const [a, b, c] = traits;
+  if (!a || !b || !c) return 'I\'m the batter who plays with intent and finds gaps. Every ball is a chance.';
+  return `I'm the batter who plays ${a.toLowerCase()}, ${b.toLowerCase()}, and ${c.toLowerCase()}. Every ball is a chance.`;
+}
+
+function pickIntentLook(r: CoachInputs): string {
+  if (r.matchPhase === 'powerplay') {
+    return 'Bowler\'s wrist and release point. Scan for fielder gaps — anything outside the 30-yard circle is on.';
+  }
+  if (r.matchPhase === 'death') {
+    return 'Short boundary side. Long-on / long-off depth. Pre-pick your boundary zone before he runs in.';
+  }
+  if (r.matchPhase === 'middle') {
+    return 'Field gaps for rotation. Square-leg pocket, point pocket, mid-on/mid-off straight. Singles are everywhere.';
+  }
+  return 'Scan the field. Pick the gap. Commit to a scoring option before he bowls.';
+}
+
+function pickIntentSay(r: CoachInputs, wrong: string[]): string {
+  if (wrong.includes('Froze under pressure') || (r.intentScore !== undefined && r.intentScore <= 2)) {
+    return 'See it. Hit it.';
+  }
+  if (wrong.includes('No clear plan')) return 'Pick and hit.';
+  if (r.matchPhase === 'death' || r.intentMode === 'accelerate') return 'Score now.';
+  if (r.matchPhase === 'powerplay') return 'Stay sharp. Find the gap.';
+  if (r.intentScore !== undefined && r.intentScore >= 4) return 'Trust, commit, hit.';
+  return 'I\'m ready.';
+}
+
+function pickDotBallTactics(r: CoachInputs, wrong: string[]): string[] {
+  const tactics: string[] = [];
+  if (wrong.includes('Did not rotate strike') || (r.intentMode === 'consolidate' && r.pressureLevel === 'high')) {
+    tactics.push('Drop and Run — soft hands into the off-side (cover/point), call early, take the single.');
+    tactics.push('Shuffle and Clip — step across the crease, clip the straight ball into the leg-side gap.');
+  }
+  if (wrong.includes('Froze under pressure') || wrong.includes('Defensive mindset')) {
+    tactics.push('Quick Feet Bunt — small step forward or back, tap into the cover or midwicket gap. Control, not power.');
+  }
+  if (wrong.includes('Tried to hit too hard')) {
+    tactics.push('Late Dab — let the ball come close, angle the bat down to third man. Easy single, no risk.');
+  }
+  if (wrong.includes('No clear plan')) {
+    tactics.push('Walk Down the Track (vs spin) — change the length, push into the gaps. Disrupts the bowler\'s line.');
+  }
+  // Always give the player at least 2 tactics so the section isn't empty.
+  if (tactics.length === 0) {
+    tactics.push('Drop and Run — soft hands into the off-side, call early. The easiest single in the game.');
+    tactics.push('Shuffle and Clip — step across, clip the straight ball into the leg-side gap.');
+  }
+  return tactics.slice(0, 3);
+}
+
+function pickPhaseKeyShots(r: CoachInputs, phase: 'Start Smart' | 'Build Fast' | 'Finish Strong', right: string[]): string {
+  // Prefer the player's own strength when we have one — players score
+  // best with shots they trust. Otherwise use phase-default scoring shots.
+  const strength = right[0]?.toLowerCase() || '';
+  if (phase === 'Start Smart') {
+    if (strength.includes('defen') || strength.includes('block')) return 'Front-foot defence, leave outside off, push for singles into the V.';
+    return 'Push down the ground, flick off the pads, dab to third man. Build a rhythm before you build runs.';
+  }
+  if (phase === 'Build Fast') {
+    if (strength.includes('cover') || strength.includes('drive')) return 'Cover drive, on-drive, late cut. Hit through your scoring zones with full intent.';
+    if (strength.includes('pull') || strength.includes('hook')) return 'Pull, slap-pull, whip through midwicket. Take on short balls.';
+    return 'Cover drive, flick off the pads, slap-pull. Rotate every ball, find boundaries in your scoring areas.';
+  }
+  // Finish Strong
+  if (r.matchPhase === 'death') return 'Lofted drives (long-on / long-off), slog-sweep, scoop. Pre-pick your boundary zone.';
+  return 'Lofted drives, pull, sweep. Use the long boundary side. Manipulate the field by hitting the area they\'ve left open.';
+}
+
+function pickKpis(r: CoachInputs): { runsPer10Balls: number | null; intentScore: number | null } {
+  const runsPer10Balls =
+    r.runs !== undefined && r.balls !== undefined && r.balls > 0
+      ? Math.round((r.runs / r.balls) * 10 * 10) / 10 // one decimal
+      : null;
+  const intentScore = r.intentScore ?? null;
+  return { runsPer10Balls, intentScore };
+}
+
+function generateRunMaker(r: CoachInputs, wrong: string[], right: string[]): CoachInsight['runMaker'] {
+  const traits = pickScoringTraits(r, wrong);
+  const scoringStatement = buildScoringStatement(traits);
+  const intentTrigger = {
+    look: pickIntentLook(r),
+    breathe: 'One slow breath through the nose. Drop the shoulders. Feel your feet on the ground. Focus in, noise out.',
+    say: pickIntentSay(r, wrong),
+  };
+  const phasePlan: CoachInsight['runMaker']['phasePlan'] = [
+    {
+      phase: 'Start Smart',
+      balls: '1-10',
+      goal: 'Settle, find timing, get off strike. Read the bowler.',
+      keyShots: pickPhaseKeyShots(r, 'Start Smart', right),
+      reminderWord: 'Calm',
+    },
+    {
+      phase: 'Build Fast',
+      balls: '11-25',
+      goal: 'Rotate every ball. Hit your scoring zones. Build pressure back.',
+      keyShots: pickPhaseKeyShots(r, 'Build Fast', right),
+      reminderWord: 'Push',
+    },
+    {
+      phase: 'Finish Strong',
+      balls: '25+',
+      goal: 'Accelerate. Find boundaries. Manipulate the field.',
+      keyShots: pickPhaseKeyShots(r, 'Finish Strong', right),
+      reminderWord: 'Power',
+    },
+  ];
+  const dotBallTactics = pickDotBallTactics(r, wrong);
+  const kpis = pickKpis(r);
+  return {
+    scoringIdentity: { traits: [...traits], scoringStatement },
+    intentTrigger,
+    phasePlan,
+    dotBallTactics,
+    kpis,
+  };
+}
+
 export function generateCoachInsight(r: CoachInputs): CoachInsight {
   const got = PRIMARY_DISMISSAL(r.howGotOut);
   const wrong = r.whatWentWrong || [];
@@ -343,6 +526,7 @@ export function generateCoachInsight(r: CoachInputs): CoachInsight {
 
   const nextInningsPlan = { firstSixBalls, scoringAreas, riskToAvoid, strengthToBack };
   const bounceBack = generateBounceBack(r, got, wrong, right, nextInningsPlan, drills[0]);
+  const runMaker = generateRunMaker(r, wrong, right);
 
   return {
     diagnosis,
@@ -350,5 +534,6 @@ export function generateCoachInsight(r: CoachInputs): CoachInsight {
     drills,
     nextInningsPlan,
     bounceBack,
+    runMaker,
   };
 }
