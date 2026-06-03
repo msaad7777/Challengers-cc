@@ -9,6 +9,7 @@ import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import { getBattingStats, type Innings, type Match } from '../scorer/types';
 import { generateCoachInsight } from '../lib/coachInsight';
+import { generateNextMatchInsight } from '../lib/nextMatchInsight';
 
 // Map scorer's wicket type to the reflection's HOW_GOT_OUT_OPTIONS
 function mapScorerWicketToReflection(scorerHowOut: string): string {
@@ -1390,6 +1391,121 @@ export default function NetsPage() {
           {/* LIST VIEW */}
           {view === 'list' && (
             <>
+              {/* ── Next Match Coach Review ────────────────────────────
+                  Cross-reflection aggregation: per-competition KPIs
+                  (LPL / LCL / Practice) + synthesised coach voice.
+                  Rule-based, LLM-free. Lives in app/c3h/lib/nextMatchInsight.ts.
+                  Renders when the player has at least one match-linked
+                  reflection. */}
+              {reflections.filter(r => r.matchIndex !== 99).length >= 1 && (() => {
+                const nm = generateNextMatchInsight(
+                  reflections.map(r => ({
+                    match: r.match,
+                    matchIndex: r.matchIndex,
+                    howGotOut: r.howGotOut,
+                    whatWentRight: r.whatWentRight,
+                    whatWentWrong: r.whatWentWrong,
+                    intentScore: r.intentScore,
+                    feeling: r.feeling,
+                    runsScored: r.runsScored,
+                    ballsFaced: r.ballsFaced,
+                    dotBallsFaced: r.dotBallsFaced,
+                    dismissalBowlerArm: r.dismissalBowlerArm,
+                    dismissalBowlerStyle: r.dismissalBowlerStyle,
+                  })),
+                );
+                if (nm.aggregate.matches === 0) return null;
+                const fmtKpi = (v: number | null, suffix = '') => v === null ? '—' : `${v}${suffix}`;
+                return (
+                  <div className="mb-6 glass rounded-2xl p-6 border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-purple-500/5 to-transparent">
+                    <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                      <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                        <span className="text-2xl">🚀</span>
+                        Next Match Coach Review
+                      </h3>
+                      <span className="text-[10px] uppercase tracking-wider text-amber-300/80">
+                        across {nm.aggregate.matches} reflection{nm.aggregate.matches === 1 ? '' : 's'}
+                      </span>
+                    </div>
+
+                    {/* Aggregate KPI strip */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                      <div className="glass rounded-lg p-3 border border-amber-500/20">
+                        <p className="text-[10px] uppercase tracking-wider text-amber-300/70 mb-1">Strike rate</p>
+                        <p className={`text-2xl font-bold ${
+                          nm.aggregate.strikeRate === null ? 'text-gray-500'
+                            : nm.aggregate.strikeRate >= 100 ? 'text-emerald-300'
+                            : nm.aggregate.strikeRate >= 75 ? 'text-amber-200'
+                            : 'text-red-300'
+                        }`}>{fmtKpi(nm.aggregate.strikeRate)}</p>
+                      </div>
+                      <div className="glass rounded-lg p-3 border border-amber-500/20">
+                        <p className="text-[10px] uppercase tracking-wider text-amber-300/70 mb-1">Runs / 10 balls</p>
+                        <p className="text-2xl font-bold text-white">{fmtKpi(nm.aggregate.runsPer10Balls)}</p>
+                      </div>
+                      <div className="glass rounded-lg p-3 border border-amber-500/20">
+                        <p className="text-[10px] uppercase tracking-wider text-amber-300/70 mb-1">Dot ball %</p>
+                        <p className={`text-2xl font-bold ${
+                          nm.aggregate.dotBallPercent === null ? 'text-gray-500'
+                            : nm.aggregate.dotBallPercent > 40 ? 'text-red-300'
+                            : 'text-emerald-300'
+                        }`}>{fmtKpi(nm.aggregate.dotBallPercent, '%')}</p>
+                      </div>
+                      <div className="glass rounded-lg p-3 border border-amber-500/20">
+                        <p className="text-[10px] uppercase tracking-wider text-amber-300/70 mb-1">Intent avg</p>
+                        <p className="text-2xl font-bold text-white">{fmtKpi(nm.aggregate.intentAvg, '/5')}</p>
+                      </div>
+                    </div>
+
+                    {/* Per-competition stats */}
+                    {nm.competitionStats.length > 1 && (
+                      <div className="mb-4">
+                        <p className="text-[10px] uppercase tracking-wider text-amber-300/70 font-bold mb-2">By competition</p>
+                        <div className="space-y-1.5">
+                          {nm.competitionStats.map((c) => (
+                            <div key={c.key} className="flex items-baseline justify-between gap-3 text-sm rounded-lg bg-white/3 border border-white/5 px-3 py-2">
+                              <div className="flex-shrink-0">
+                                <span className="text-white font-semibold">{c.label}</span>
+                                <span className="text-gray-500 text-xs"> · {c.matches} match{c.matches === 1 ? '' : 'es'}</span>
+                              </div>
+                              <div className="text-xs text-gray-300 text-right flex flex-wrap gap-x-3 justify-end">
+                                <span>SR <strong className={c.strikeRate === null ? 'text-gray-500' : c.strikeRate >= 100 ? 'text-emerald-300' : c.strikeRate >= 75 ? 'text-amber-200' : 'text-red-300'}>{fmtKpi(c.strikeRate)}</strong></span>
+                                <span>Runs <strong className="text-white">{c.runs}</strong></span>
+                                <span>Balls <strong className="text-white">{c.balls}</strong></span>
+                                {c.dotBallPercent !== null && (
+                                  <span>Dot% <strong className={c.dotBallPercent > 40 ? 'text-red-300' : 'text-emerald-300'}>{c.dotBallPercent}%</strong></span>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Coach voice — synthesised */}
+                    {nm.coachReview.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-[10px] uppercase tracking-wider text-amber-300/70 font-bold mb-2">Coach voice — going into next match</p>
+                        <ul className="space-y-2">
+                          {nm.coachReview.map((line, i) => (
+                            <li key={i} className="text-sm text-gray-200 leading-relaxed flex gap-2">
+                              <span className="text-amber-400 flex-shrink-0">→</span>
+                              <span>{line}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Go into next match with — one-line rallying cue */}
+                    <div className="rounded-md bg-gradient-to-r from-amber-500/20 to-purple-500/20 border border-amber-500/40 px-3 py-2.5 text-sm">
+                      <span className="text-amber-300 font-semibold">🎯 Go into next match with:</span>{' '}
+                      <span className="text-white italic">&ldquo;{nm.goIntoNextMatchWith}&rdquo;</span>
+                    </div>
+                  </div>
+                );
+              })()}
+
               {/* Recommended Principles (based on past reflections) */}
               {patterns && patterns.topMistakes.length > 0 && (() => {
                 const recs: { mistake: string; count: number; principle: string; tip: string }[] = [];
