@@ -637,7 +637,10 @@ function isMatchAvailable(matchDate: string): boolean {
 export default function NetsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner' | 'training' | 'principles'>('list');
+  const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner' | 'training' | 'principles' | 'shot-mechanics'>('list');
+  // Selected shot inside the Shot Mechanics view. Starts on the
+  // pull shot; future shots are added to SHOT_MECHANICS below.
+  const [selectedShot, setSelectedShot] = useState<string>('pull-shot');
   const [expandedProgram, setExpandedProgram] = useState<string | null>(null);
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
   const [reflections, setReflections] = useState<Reflection[]>([]);
@@ -1228,6 +1231,14 @@ export default function NetsPage() {
                 }`}
               >
                 Batting Principles
+              </button>
+              <button
+                onClick={() => setView(view === 'shot-mechanics' ? 'list' : 'shot-mechanics')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
+                  view === 'shot-mechanics' ? 'bg-purple-500/20 text-purple-300 border-purple-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
+                }`}
+              >
+                Shot Mechanics
               </button>
               <button
                 onClick={() => { if (view !== 'planner') { setView('planner'); if (!plannerLoaded) loadShotPlan(); } else setView('list'); }}
@@ -1986,6 +1997,326 @@ export default function NetsPage() {
                 </button>
               </div>
             </>
+          )}
+
+          {/* SHOT MECHANICS VIEW */}
+          {view === 'shot-mechanics' && (
+            <div className="space-y-6">
+              <button onClick={() => setView('list')} className="text-gray-500 text-sm hover:text-primary-400">&larr; Back to reflections</button>
+
+              <div className="text-center mb-2">
+                <h2 className="text-2xl font-bold text-white">Shot <span className="gradient-text">Mechanics</span></h2>
+                <p className="text-gray-500 text-sm">Per-shot deep dives — the &ldquo;how&rdquo; behind each stroke. Read before working on the shot in nets.</p>
+              </div>
+
+              {/* Shot picker — extends as more shots are added */}
+              <div className="flex flex-wrap gap-2 justify-center">
+                {[
+                  { id: 'pull-shot', label: 'Pull Shot', emoji: '🏏', available: true },
+                  { id: 'cover-drive', label: 'Cover Drive', emoji: '🎯', available: false },
+                  { id: 'cut-shot', label: 'Cut Shot', emoji: '✂️', available: false },
+                  { id: 'sweep', label: 'Sweep', emoji: '🌾', available: false },
+                ].map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    disabled={!s.available}
+                    onClick={() => s.available && setSelectedShot(s.id)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
+                      !s.available ? 'bg-white/3 text-gray-600 border-white/5 cursor-not-allowed' :
+                      selectedShot === s.id ? 'bg-purple-500/20 text-purple-300 border-purple-500/50' :
+                      'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
+                    }`}
+                  >
+                    {s.emoji} {s.label}{!s.available && ' · coming soon'}
+                  </button>
+                ))}
+              </div>
+
+              {/* ── PULL SHOT — Simon Keen ────────────────────────────── */}
+              {selectedShot === 'pull-shot' && (
+                <div className="space-y-5">
+                  {/* Header */}
+                  <div className="rounded-2xl p-6 border-2 border-purple-500/40 bg-gradient-to-br from-purple-500/10 via-amber-500/5 to-transparent">
+                    <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                      <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                        <span className="text-3xl">🏏</span>
+                        Pull Shot
+                      </h3>
+                      <span className="text-xs text-purple-300/80 uppercase tracking-wider">Source: Simon Keen</span>
+                    </div>
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      <strong className="text-white">Why it matters:</strong> the pull shot is one of the most important scoring shots in cricket. Fast bowlers frequently target a back-of-a-length area around hip height — a batter who consistently scores from these deliveries immediately puts pressure on the bowler. The best players in the world dominate short bowling because they identify length early and turn defensive deliveries into runs.
+                    </p>
+                  </div>
+
+                  {/* Core Principles */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">⚙️</span>
+                      Core Principles
+                    </h4>
+
+                    <div className="space-y-5">
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-1">1. Read length early</p>
+                        <p className="text-sm text-gray-300 mb-2">The shot starts before the ball reaches you. Identify the short length as early as possible; make your movement early; don&apos;t wait until the ball is close.</p>
+                        <p className="text-sm text-amber-300/80 italic">Sequence: Read length → Forward press → Rock back → Contact → Pivot</p>
+                      </div>
+
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-1">2. Weight transfer, not big movement</p>
+                        <p className="text-sm text-gray-300 mb-2">Primarily about transferring weight efficiently, not large foot movements. Press → transfer to back foot → stay balanced → strike → rotate. The movement should be <strong className="text-white">compact, controlled, and athletic</strong>.</p>
+                      </div>
+
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-1">3. Keep the back heel off the ground</p>
+                        <p className="text-sm text-gray-300 mb-2">Keeps the head slightly forward, prevents falling backward, maintains balance, improves power, allows a smoother pivot.</p>
+                        <div className="rounded-md bg-red-500/10 border-l-2 border-red-500/60 px-3 py-2 text-xs text-red-200">
+                          <strong>Avoid:</strong> sitting back on the heel · leaning away from the ball.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Body Position */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">🧍</span>
+                      Body Position
+                    </h4>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-4">
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">At setup</p>
+                        <ul className="text-sm text-gray-300 space-y-1">
+                          <li>· Hands high</li>
+                          <li>· Front foot light, ready to move</li>
+                          <li>· Eyes on the release point</li>
+                          <li>· Athletic posture</li>
+                        </ul>
+                      </div>
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-4">
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">At contact</p>
+                        <ul className="text-sm text-gray-300 space-y-1">
+                          <li>· Head stable</li>
+                          <li>· Both feet grounded</li>
+                          <li>· Arms fully extended</li>
+                          <li>· Back hip rotating through</li>
+                          <li>· Weight slightly forward despite rocking back</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Body height + swing plane */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">📐</span>
+                      Body Height &amp; Swing Plane
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-4">
+                      Body height adjusts to the bounce of the ball. Your bat path should match the height of the ball — both feet on the ground lets you adjust quickly.
+                    </p>
+                    <div className="grid sm:grid-cols-3 gap-3">
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm text-gray-300">
+                        <p className="text-purple-300 text-xs font-bold mb-1">Low ball</p>
+                        Stay lower · bend knees more · flatter swing · pull through square or midwicket.
+                      </div>
+                      <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3 text-sm text-gray-200">
+                        <p className="text-amber-300 text-xs font-bold mb-1">Hip-height (ideal)</p>
+                        Natural swing path · maximum control and scoring potential.
+                      </div>
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm text-gray-300">
+                        <p className="text-purple-300 text-xs font-bold mb-1">Higher bounce</p>
+                        More upright · swing slightly upward if required · maintain balance.
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Contact + wrist + pivot */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">🎯</span>
+                      Contact, Wrists &amp; Pivot
+                    </h4>
+                    <div className="space-y-4 text-sm">
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-1">Correct technique</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>· Extend arms fully through the ball</li>
+                          <li>· Snap wrists through impact</li>
+                          <li>· Strike the ball flush from the middle of the bat</li>
+                        </ul>
+                      </div>
+                      <div className="rounded-md bg-red-500/10 border-l-2 border-red-500/60 px-3 py-2 text-xs text-red-200">
+                        <strong>Avoid rolling the wrists.</strong> Rolling reduces power · slows the ball · increases top-edge risk · creates inconsistent contact. <em>Hit through the ball, not across it.</em>
+                      </div>
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-1">The pivot — a consequence, not a cause</p>
+                        <p className="text-gray-300">The pivot happens <strong className="text-white">after</strong> contact. Strike → hips rotate → pivot naturally. <strong className="text-red-300">Do not spin early.</strong> The pivot should be a consequence of good contact, not something forced before impact.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Variations */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">🔀</span>
+                      Variations
+                    </h4>
+                    <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                        <p className="text-purple-300 text-xs font-bold mb-1">Full Swing Pull</p>
+                        <p className="text-gray-300">Aggressive. Bat finishes over opposite shoulder. Maximum power. <strong className="text-white">Best vs medium pace, when going for boundary.</strong></p>
+                      </div>
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                        <p className="text-purple-300 text-xs font-bold mb-1">Check Pull</p>
+                        <p className="text-gray-300">Controlled. Shortened follow-through. Uses the bowler&apos;s pace. <strong className="text-white">Best vs faster bowlers; easier to keep down; great for 1s, 2s, boundaries.</strong></p>
+                      </div>
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                        <p className="text-purple-300 text-xs font-bold mb-1">Front Foot Pull</p>
+                        <p className="text-gray-300">Press forward, keep weight moving forward, pull through the line. <strong className="text-white">Best vs medium pace when you have time.</strong></p>
+                      </div>
+                      <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3 text-sm">
+                        <p className="text-amber-300 text-xs font-bold mb-1">Snap Pull (Warner)</p>
+                        <p className="text-gray-200">Minimal foot movement · quick weight transfer · strong back-hip rotation · compact swing. <strong className="text-white">Attacks anything slightly shorter than a good length.</strong></p>
+                      </div>
+                    </div>
+                    <div className="rounded-md bg-purple-500/10 border-l-2 border-purple-500/60 px-3 py-2 text-xs text-gray-200">
+                      <strong className="text-purple-300">Why this matters:</strong> if you consistently score from back-of-a-length, bowlers can&apos;t bowl there comfortably. Shorter balls become easier to pull. Fuller balls become easier to drive. You force the bowler off their preferred length.
+                    </div>
+                  </div>
+
+                  {/* Zones */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">🟢</span>
+                      Pull Shot Zones
+                    </h4>
+                    <div className="space-y-3">
+                      <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-3">
+                        <p className="text-emerald-300 text-xs font-bold mb-1">🟢 Green Zone — Attack</p>
+                        <p className="text-sm text-gray-200">Thigh height · waist · hip · lower chest. Easiest and safest balls to pull.</p>
+                      </div>
+                      <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3">
+                        <p className="text-amber-300 text-xs font-bold mb-1">🟡 Amber Zone — Use Judgment</p>
+                        <p className="text-sm text-gray-200">Upper chest · around head height. Playable but requires excellent control.</p>
+                      </div>
+                      <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-3">
+                        <p className="text-red-300 text-xs font-bold mb-1">🔴 Red Zone — Usually Leave</p>
+                        <p className="text-sm text-gray-200">Above shoulder · very wide short balls. Options: leave · duck · sway · cut if appropriate.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Contact zone preference + Simon's recommendation */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">📍</span>
+                      Find Your Contact Zone &amp; Finish
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      Every batter has a preferred contact area. Some play the ball close to the body (easier to guide around the corner); others prefer it slightly wider (more room to swing). Experiment in nets and find where you feel strongest.
+                    </p>
+                    <div className="rounded-md bg-purple-500/10 border-l-2 border-purple-500/60 px-3 py-2 text-sm text-gray-200">
+                      <strong className="text-purple-300">Simon&apos;s preferred finish:</strong> both feet remaining grounded · strong base · stable posture · full control of balance. Simon does <strong>not</strong> recommend excessively lifting the front leg — reduces balance, less control, more likely to fall backward. Some elite players do it, but a grounded base is more repeatable and reliable.
+                    </div>
+                  </div>
+
+                  {/* Training drill */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">🏋️</span>
+                      Training Drill
+                    </h4>
+                    <div className="space-y-3 text-sm">
+                      <p className="text-gray-300"><strong className="text-purple-300">Setup:</strong> underarm throwdowns from halfway. Replicate realistic match timing.</p>
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-1">Correct timing</p>
+                        <p className="text-gray-300 mb-1">As the feeder prepares to release, you should already be:</p>
+                        <ul className="text-gray-300 space-y-0.5 ml-3">
+                          <li>· pressing into the front leg</li>
+                          <li>· prepared to transfer weight</li>
+                          <li>· prepared to rock back</li>
+                        </ul>
+                        <p className="text-gray-300 mt-1">Then: ball released → rock back → extend arms → snap wrists → complete shot.</p>
+                      </div>
+                      <div className="rounded-md bg-red-500/10 border-l-2 border-red-500/60 px-3 py-2 text-xs text-red-200">
+                        <strong>Common mistake:</strong> waiting until release before beginning movement. Creates late reactions, unrealistic timing, and poor transfer to match situations.
+                      </div>
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-1">Progression</p>
+                        <ol className="text-gray-300 list-decimal list-inside space-y-0.5">
+                          <li>Learn correct technique slowly.</li>
+                          <li>Repeat until consistent.</li>
+                          <li>Increase movement speed.</li>
+                          <li>Develop match-like reactions.</li>
+                        </ol>
+                        <p className="text-amber-300/80 text-xs italic mt-1">Speed comes only after technique is reliable.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Checklist */}
+                  <div className="rounded-2xl p-6 border-2 border-purple-500/40 bg-gradient-to-br from-purple-500/10 to-transparent">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">✅</span>
+                      Pull Shot Checklist
+                    </h4>
+                    <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">Before release</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>☐ Hands high</li>
+                          <li>☐ Athletic stance</li>
+                          <li>☐ Eyes on release point</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">During movement</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>☐ Read length early</li>
+                          <li>☐ Forward press</li>
+                          <li>☐ Rock back</li>
+                          <li>☐ Back heel off ground</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">At contact</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>☐ Head stable</li>
+                          <li>☐ Both feet grounded</li>
+                          <li>☐ Arms fully extended</li>
+                          <li>☐ Snap wrists through ball</li>
+                          <li>☐ Match swing plane to bounce</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">After contact</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>☐ Rotate back hip</li>
+                          <li>☐ Pivot naturally</li>
+                          <li>☐ Stay balanced</li>
+                          <li>☐ Finish under control</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Key takeaway */}
+                  <div className="rounded-2xl p-6 border-2 border-amber-500/40 bg-gradient-to-br from-amber-500/15 to-purple-500/10">
+                    <p className="text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">⭐ Key takeaway</p>
+                    <p className="text-sm text-gray-200 leading-relaxed">
+                      The pull shot is a high-value scoring shot that lets batters dominate fast bowlers and control the game. Success comes from <strong className="text-white">early length recognition, efficient weight transfer, keeping the back heel off the ground, matching swing plane to bounce, and maintaining balance</strong>. Mastering the pull shot turns the bowler&apos;s safest delivery into a scoring opportunity and forces them to change their length.
+                    </p>
+                  </div>
+
+                  <p className="text-[10px] text-gray-600 italic text-center">
+                    More shots (Cover Drive, Cut Shot, Sweep, and others) coming next — each as a separate deep dive in this section.
+                  </p>
+                </div>
+              )}
+            </div>
           )}
 
           {/* PRINCIPLES VIEW */}
