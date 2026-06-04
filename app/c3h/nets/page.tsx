@@ -637,7 +637,7 @@ function isMatchAvailable(matchDate: string): boolean {
 export default function NetsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner' | 'training' | 'principles' | 'shot-mechanics'>('list');
+  const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner' | 'training' | 'principles' | 'shot-mechanics' | 'visual-training'>('list');
   // Selected shot inside the Shot Mechanics view. Starts on the
   // pull shot; future shots are added to SHOT_MECHANICS below.
   const [selectedShot, setSelectedShot] = useState<string>('pull-shot');
@@ -1231,6 +1231,14 @@ export default function NetsPage() {
                 }`}
               >
                 Batting Principles
+              </button>
+              <button
+                onClick={() => setView(view === 'visual-training' ? 'list' : 'visual-training')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
+                  view === 'visual-training' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
+                }`}
+              >
+                Visual Training
               </button>
               <button
                 onClick={() => setView(view === 'shot-mechanics' ? 'list' : 'shot-mechanics')}
@@ -1997,6 +2005,309 @@ export default function NetsPage() {
                 </button>
               </div>
             </>
+          )}
+
+          {/* VISUAL TRAINING VIEW */}
+          {view === 'visual-training' && (
+            <div className="space-y-6">
+              <button onClick={() => setView('list')} className="text-gray-500 text-sm hover:text-primary-400">&larr; Back to reflections</button>
+
+              <div className="text-center mb-2">
+                <h2 className="text-2xl font-bold text-white">Visual <span className="gradient-text">Training</span></h2>
+                <p className="text-gray-500 text-sm">Eye and tracking drills that teach you to watch the ball better. Off-field training that pays off on-field.</p>
+              </div>
+
+              {/* Why this matters */}
+              <div className="rounded-2xl p-6 border-2 border-cyan-500/40 bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-transparent">
+                <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                  <span className="text-2xl">👁️</span>
+                  Why visual training matters
+                </h3>
+                <p className="text-sm text-gray-300 leading-relaxed mb-3">
+                  Cricket batting is one of the hardest visual tasks in sport: a 150 km/h delivery gives you about <strong className="text-white">400 milliseconds</strong> from release to bat. Most of that window is taken up by your brain&apos;s processing — your <em>eyes</em> only have ~150ms to lock on, track, and predict the bounce point.
+                </p>
+                <p className="text-sm text-gray-300 leading-relaxed mb-3">
+                  The Batting Principle &ldquo;Watching the Ball&rdquo; isn&apos;t just a cliché — it&apos;s a <strong className="text-white">trainable skill</strong>. Elite batters have measurably better convergence, focus-shift speed, and smooth pursuit than club-level players. The good news: these are all gym-able, with five-minute daily drills you can do anywhere.
+                </p>
+                <p className="text-sm text-cyan-300 italic">
+                  Do any one of these 5 minutes a day for 4 weeks. You&apos;ll feel the difference at the crease.
+                </p>
+              </div>
+
+              {/* ── 1. Brock String ─────────────────────────────── */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                  <h4 className="text-lg font-bold text-white flex items-center gap-2">
+                    <span className="text-2xl">🔗</span>
+                    1. Brock String — Convergence &amp; Depth Perception
+                  </h4>
+                  <a
+                    href="https://www.youtube.com/watch?v=4rDygaF3Dog"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-cyan-400 underline hover:text-cyan-300"
+                  >
+                    Watch the drill ↗
+                  </a>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">
+                  The gold-standard vision-therapy exercise. Trains your eyes to converge on a single point at different distances — exactly the skill that lets a batter pick up a ball at the bowler&apos;s hand, the release point, and the landing zone in one continuous track.
+                </p>
+
+                <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-cyan-300 text-xs font-bold uppercase tracking-wider mb-1">Equipment</p>
+                    <ul className="text-gray-300 space-y-0.5">
+                      <li>· ~10 feet of string</li>
+                      <li>· 3 different-coloured beads (red / green / yellow)</li>
+                      <li>· A fixed anchor (door handle, hook)</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-cyan-300 text-xs font-bold uppercase tracking-wider mb-1">Setup</p>
+                    <ul className="text-gray-300 space-y-0.5">
+                      <li>· Tie string to anchor at eye level</li>
+                      <li>· Hold the other end against the tip of your nose</li>
+                      <li>· Slide beads to 6&quot; / 24&quot; / 60&quot; from your nose</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mb-3">
+                  <p className="text-cyan-300 text-xs font-bold uppercase tracking-wider mb-1">How to do it</p>
+                  <ol className="text-sm text-gray-300 list-decimal list-inside space-y-1 ml-2">
+                    <li>Focus on the <strong className="text-red-300">near</strong> bead (6&quot;). The string should look like a clear <strong className="text-white">V</strong> converging on the bead. Hold for 3-5 seconds.</li>
+                    <li>Shift focus to the <strong className="text-green-300">middle</strong> bead (24&quot;). The string forms an <strong className="text-white">X</strong> through that bead.</li>
+                    <li>Shift focus to the <strong className="text-yellow-300">far</strong> bead (60&quot;). Same X pattern, further out.</li>
+                    <li>Cycle back: far → middle → near → middle → far. Do this for 2-3 minutes.</li>
+                  </ol>
+                </div>
+
+                <div className="rounded-md bg-cyan-500/10 border-l-2 border-cyan-500/60 px-3 py-2 text-xs text-gray-200 mb-2">
+                  <strong className="text-cyan-300">Cricket benefit:</strong> trains both eyes to lock on a single point at varying distances — the exact skill behind tracking a ball from release to landing without losing depth cues. Players who can&apos;t converge well misjudge length.
+                </div>
+                <div className="rounded-md bg-red-500/10 border-l-2 border-red-500/60 px-3 py-2 text-xs text-red-200">
+                  <strong>Watch for:</strong> if you see <em>two</em> strings instead of an X/V, your eyes aren&apos;t converging. Don&apos;t force it — bring the bead further away and work back closer over weeks.
+                </div>
+
+                <p className="text-xs text-gray-500 mt-2 italic">Frequency: 5 minutes daily, 4-6 weeks for noticeable gains.</p>
+              </div>
+
+              {/* ── 2. Near-Far Focus Shift ────────────────────── */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                  <span className="text-2xl">🔭</span>
+                  2. Near-Far Focus Shift — Accommodation Speed
+                </h4>
+                <p className="text-sm text-gray-300 mb-3">
+                  Trains how fast your eyes can refocus between near and far targets. In cricket: bowler&apos;s grip (far) → release point (mid) → ball off the pitch (near). The faster you refocus, the more time you have to play the shot.
+                </p>
+
+                <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-cyan-300 text-xs font-bold uppercase tracking-wider mb-1">Equipment</p>
+                    <ul className="text-gray-300 space-y-0.5">
+                      <li>· A book or magazine with normal text</li>
+                      <li>· Any clear distant target (sign, tree, clock)</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-cyan-300 text-xs font-bold uppercase tracking-wider mb-1">How to do it</p>
+                    <ul className="text-gray-300 space-y-0.5">
+                      <li>· Hold book at reading distance (~12&quot;)</li>
+                      <li>· Read one word</li>
+                      <li>· Snap focus to a distant target — read its text</li>
+                      <li>· Snap back to the next word</li>
+                      <li>· Continue for 2-3 minutes</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="rounded-md bg-cyan-500/10 border-l-2 border-cyan-500/60 px-3 py-2 text-xs text-gray-200">
+                  <strong className="text-cyan-300">Cricket benefit:</strong> halves the time it takes your eyes to lock onto the ball as it travels from the bowler&apos;s hand to your bat. Players with sluggish refocus play late.
+                </div>
+
+                <p className="text-xs text-gray-500 mt-2 italic">Frequency: 3 minutes, 1-2× a day.</p>
+              </div>
+
+              {/* ── 3. Saccadic Eye Movement ───────────────────── */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                  <span className="text-2xl">↔️</span>
+                  3. Saccades — Rapid Gaze Targets
+                </h4>
+                <p className="text-sm text-gray-300 mb-3">
+                  Saccades are the quick &ldquo;jumps&rdquo; your eyes make between targets — like looking from a bowler&apos;s left eye to his release point. Faster, more accurate saccades = earlier pickup.
+                </p>
+
+                <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-cyan-300 text-xs font-bold uppercase tracking-wider mb-1">Equipment</p>
+                    <ul className="text-gray-300 space-y-0.5">
+                      <li>· Two sticky notes with single letters / numbers</li>
+                      <li>· Stuck on a wall ~3 feet apart at eye level</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-cyan-300 text-xs font-bold uppercase tracking-wider mb-1">How to do it</p>
+                    <ul className="text-gray-300 space-y-0.5">
+                      <li>· Stand 6 feet back</li>
+                      <li>· Snap eyes from left target to right target</li>
+                      <li>· Call out each letter as you land on it</li>
+                      <li>· Keep the head still — eyes only</li>
+                      <li>· 20 repetitions, rest, 3 sets</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="rounded-md bg-cyan-500/10 border-l-2 border-cyan-500/60 px-3 py-2 text-xs text-gray-200">
+                  <strong className="text-cyan-300">Cricket benefit:</strong> drives the bowler&apos;s-eye → release-point transition. Slow saccades = late pickup = late shot.
+                </div>
+
+                <p className="text-xs text-gray-500 mt-2 italic">Frequency: 5 minutes, 3× a week.</p>
+              </div>
+
+              {/* ── 4. Smooth Pursuit ──────────────────────────── */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                  <span className="text-2xl">〰️</span>
+                  4. Smooth Pursuit — Tracking a Moving Target
+                </h4>
+                <p className="text-sm text-gray-300 mb-3">
+                  Trains your eyes to <em>track</em> something smoothly without losing it, instead of jumping in jerky saccades. This is the skill of watching the ball from release to bat — uninterrupted.
+                </p>
+
+                <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-cyan-300 text-xs font-bold uppercase tracking-wider mb-1">Setup</p>
+                    <ul className="text-gray-300 space-y-0.5">
+                      <li>· Hold a pen or finger at arm&apos;s length</li>
+                      <li>· Or partner moves a ball slowly side-to-side</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-cyan-300 text-xs font-bold uppercase tracking-wider mb-1">How to do it</p>
+                    <ul className="text-gray-300 space-y-0.5">
+                      <li>· Move pen smoothly side-to-side, up-down, diagonal</li>
+                      <li>· Eyes follow — head stays still</li>
+                      <li>· No jumps; no losing the target</li>
+                      <li>· 2 minutes each direction</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="rounded-md bg-cyan-500/10 border-l-2 border-cyan-500/60 px-3 py-2 text-xs text-gray-200">
+                  <strong className="text-cyan-300">Cricket benefit:</strong> the &ldquo;watch the ball into the bat&rdquo; instruction is impossible without smooth pursuit. Train this and the ball stops looking like it&apos;s jumping mid-flight.
+                </div>
+
+                <p className="text-xs text-gray-500 mt-2 italic">Frequency: 5 minutes, daily.</p>
+              </div>
+
+              {/* ── 5. Reaction Ball ───────────────────────────── */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                  <span className="text-2xl">🎾</span>
+                  5. Reaction Ball — Hand-Eye Under Chaos
+                </h4>
+                <p className="text-sm text-gray-300 mb-3">
+                  A reaction ball is a rubber ball with bumps that makes it bounce unpredictably. Catching one trains your eyes and hands to react to chaotic motion — closest analogue to a ball doing something weird off the pitch.
+                </p>
+
+                <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-cyan-300 text-xs font-bold uppercase tracking-wider mb-1">Equipment</p>
+                    <ul className="text-gray-300 space-y-0.5">
+                      <li>· Reaction ball (~$10 on Amazon, search &ldquo;reaction ball&rdquo;)</li>
+                      <li>· Hard surface — driveway, wall</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-cyan-300 text-xs font-bold uppercase tracking-wider mb-1">How to do it</p>
+                    <ul className="text-gray-300 space-y-0.5">
+                      <li>· Solo: bounce off a wall, catch on the rebound</li>
+                      <li>· Pair: partner throws it at a wall, you catch</li>
+                      <li>· 5 minutes of continuous catches</li>
+                      <li>· Progress: smaller catching glove, faster throws</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="rounded-md bg-cyan-500/10 border-l-2 border-cyan-500/60 px-3 py-2 text-xs text-gray-200">
+                  <strong className="text-cyan-300">Cricket benefit:</strong> mimics pitch variation — sudden bounce, seam movement, deflection. Builds late-adjust capability when the ball does something unexpected.
+                </div>
+
+                <p className="text-xs text-gray-500 mt-2 italic">Frequency: 5-10 minutes, 3× a week. Also great for fielding.</p>
+              </div>
+
+              {/* ── 6. Bowler-Release Tracking ─────────────────── */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                  <span className="text-2xl">🎯</span>
+                  6. Bowler-Release Tracking — The Cricket-Specific Drill
+                </h4>
+                <p className="text-sm text-gray-300 mb-3">
+                  Combines saccades + smooth pursuit + convergence into one cricket-specific drill. Targets the exact sequence: <strong className="text-white">bowler&apos;s eye → release point → ball flight → bounce → bat</strong>.
+                </p>
+
+                <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-cyan-300 text-xs font-bold uppercase tracking-wider mb-1">Setup (in nets or backyard)</p>
+                    <ul className="text-gray-300 space-y-0.5">
+                      <li>· Have a partner / coach throw underarm at moderate pace</li>
+                      <li>· Stand in batting stance with a bat</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-cyan-300 text-xs font-bold uppercase tracking-wider mb-1">The 4-step gaze sequence</p>
+                    <ul className="text-gray-300 space-y-0.5">
+                      <li>· <strong className="text-white">1.</strong> Lock onto thrower&apos;s left eye</li>
+                      <li>· <strong className="text-white">2.</strong> Snap to release-hand position as arm reaches the top</li>
+                      <li>· <strong className="text-white">3.</strong> Track ball flight smoothly</li>
+                      <li>· <strong className="text-white">4.</strong> Lock on the bounce point, then the bat</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <p className="text-sm text-gray-300 mb-3">
+                  Call out each step <strong className="text-white">out loud</strong> as it happens (&ldquo;eye…release…flight…bounce…bat&rdquo;) for the first 10 balls. After that, do it silently. The verbalising forces the sequence into your motor memory.
+                </p>
+
+                <div className="rounded-md bg-cyan-500/10 border-l-2 border-cyan-500/60 px-3 py-2 text-xs text-gray-200">
+                  <strong className="text-cyan-300">Cricket benefit:</strong> the gold-standard application drill — converts the lab-style drills above into match-grade tracking. This is the drill that makes everything else show up at the crease.
+                </div>
+
+                <p className="text-xs text-gray-500 mt-2 italic">Frequency: 30 balls before every nets session.</p>
+              </div>
+
+              {/* ── Weekly visual-training plan ──────────────── */}
+              <div className="rounded-2xl p-6 border-2 border-cyan-500/40 bg-gradient-to-br from-cyan-500/10 to-transparent">
+                <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">📅</span>
+                  Suggested Weekly Schedule (15 min / day)
+                </h4>
+                <ul className="space-y-2 text-sm text-gray-200">
+                  <li className="flex gap-3"><span className="text-cyan-300 font-bold flex-shrink-0 w-20">Mon</span><span>Brock String (5 min) · Near-Far Focus (5 min) · Smooth Pursuit (5 min)</span></li>
+                  <li className="flex gap-3"><span className="text-cyan-300 font-bold flex-shrink-0 w-20">Tue</span><span>Saccades (5 min) · Reaction Ball (10 min)</span></li>
+                  <li className="flex gap-3"><span className="text-cyan-300 font-bold flex-shrink-0 w-20">Wed</span><span>Brock String (5 min) · Smooth Pursuit (5 min) · Near-Far Focus (5 min)</span></li>
+                  <li className="flex gap-3"><span className="text-cyan-300 font-bold flex-shrink-0 w-20">Thu</span><span>Bowler-Release Tracking (15 min — pair drill at nets if possible)</span></li>
+                  <li className="flex gap-3"><span className="text-cyan-300 font-bold flex-shrink-0 w-20">Fri</span><span>Reaction Ball (10 min) · Saccades (5 min)</span></li>
+                  <li className="flex gap-3"><span className="text-cyan-300 font-bold flex-shrink-0 w-20">Sat</span><span>Match day — 5-minute warm-up with Bowler-Release Tracking before walking out</span></li>
+                  <li className="flex gap-3"><span className="text-cyan-300 font-bold flex-shrink-0 w-20">Sun</span><span>Off — your eyes need rest too</span></li>
+                </ul>
+              </div>
+
+              {/* Key takeaway */}
+              <div className="rounded-2xl p-6 border-2 border-amber-500/40 bg-gradient-to-br from-amber-500/15 to-cyan-500/10">
+                <p className="text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">⭐ Key takeaway</p>
+                <p className="text-sm text-gray-200 leading-relaxed">
+                  The Batting Principle &ldquo;Watching the Ball&rdquo; assumes you have the visual machinery to do it. These drills <strong className="text-white">build that machinery</strong>. Five minutes a day, four weeks in, and balls that used to surprise you will arrive earlier in your visual window. Start with the Brock String — it&apos;s the foundation everything else builds on.
+                </p>
+              </div>
+
+              <p className="text-[10px] text-gray-600 italic text-center">
+                More drills (peripheral vision, depth-of-field, cognitive perception) coming next — each as a new card in this section.
+              </p>
+            </div>
           )}
 
           {/* SHOT MECHANICS VIEW */}
