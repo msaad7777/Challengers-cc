@@ -639,8 +639,9 @@ export default function NetsPage() {
   const router = useRouter();
   const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner' | 'training' | 'principles' | 'shot-mechanics' | 'visual-training'>('list');
   // Selected shot inside the Shot Mechanics view. Starts on the
-  // pull shot; future shots are added to SHOT_MECHANICS below.
-  const [selectedShot, setSelectedShot] = useState<string>('pull-shot');
+  // foundational "Head Over the Ball" entry since it's the base
+  // layer every other shot builds on; future shots slot in below.
+  const [selectedShot, setSelectedShot] = useState<string>('head-over-ball');
   const [expandedProgram, setExpandedProgram] = useState<string | null>(null);
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
   const [reflections, setReflections] = useState<Reflection[]>([]);
@@ -2323,6 +2324,7 @@ export default function NetsPage() {
               {/* Shot picker — extends as more shots are added */}
               <div className="flex flex-wrap gap-2 justify-center">
                 {[
+                  { id: 'head-over-ball', label: 'Head Over the Ball', emoji: '👤', available: true },
                   { id: 'pull-shot', label: 'Pull Shot', emoji: '🏏', available: true },
                   { id: 'playing-swing', label: 'Playing Swing', emoji: '〰️', available: true },
                   { id: 'cover-drive', label: 'Cover Drive', emoji: '🎯', available: false },
@@ -2344,6 +2346,205 @@ export default function NetsPage() {
                   </button>
                 ))}
               </div>
+
+              {/* ── HEAD OVER THE BALL — Foundational ────────────────── */}
+              {selectedShot === 'head-over-ball' && (
+                <div className="space-y-5">
+                  {/* Header */}
+                  <div className="rounded-2xl p-6 border-2 border-purple-500/40 bg-gradient-to-br from-purple-500/10 via-amber-500/5 to-transparent">
+                    <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                      <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                        <span className="text-3xl">👤</span>
+                        Head Over the Ball — The Foundation
+                      </h3>
+                      <span className="text-xs text-purple-300/80 uppercase tracking-wider">Source: CCC coaching notes</span>
+                    </div>
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      <strong className="text-white">Why it matters:</strong> head over the ball is the single most important technical habit in batting. Get it right and the ball stays down — defensive shots find the ground, drives stay along the carpet, even mishits don&apos;t carry. Get it wrong and every shot has a chance of going in the air. Applies to <strong className="text-white">fast bowling and spin equally</strong> — same principle, same fix.
+                    </p>
+                  </div>
+
+                  {/* Why it matters — the physics */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">⚖️</span>
+                      Head Position = Ball Trajectory
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      Where your head is, your weight is. Where your weight is, the bat face points. If your head leans back or to the side, your bat face opens up and the ball goes <em>up</em>. If your head sits over the ball, your bat face stays straight and the ball stays <em>down</em>.
+                    </p>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-3 text-sm">
+                        <p className="text-emerald-300 text-xs font-bold mb-1">✓ Head over the ball</p>
+                        <ul className="text-gray-200 space-y-0.5">
+                          <li>· Weight forward, into the ball</li>
+                          <li>· Bat face stays straight</li>
+                          <li>· Ball stays on the ground</li>
+                          <li>· Mishits roll, don&apos;t carry</li>
+                        </ul>
+                      </div>
+                      <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-3 text-sm">
+                        <p className="text-red-300 text-xs font-bold mb-1">✗ Head off the ball</p>
+                        <ul className="text-gray-200 space-y-0.5">
+                          <li>· Weight back / sideways</li>
+                          <li>· Bat face opens up</li>
+                          <li>· Ball goes in the air</li>
+                          <li>· Mishits = catches at slip / cover / mid-on</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Elbow lock */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">💪</span>
+                      Lock the Elbows — Fast AND Spin
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      Elbows have to stay locked through impact, against <strong className="text-white">both pace and spin</strong>. Loose elbows mean the bat face wobbles at contact; the ball loops up rather than staying flat.
+                    </p>
+                    <ul className="text-sm text-gray-200 space-y-2 mb-3">
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Top elbow locked high</strong> through the line of the ball.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Bottom elbow firm</strong>, not collapsed in toward the body.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Both elbows together control the bat face</strong>. If one loosens at contact, the face opens.</span></li>
+                    </ul>
+                    <div className="rounded-md bg-red-500/10 border-l-2 border-red-500/60 px-3 py-2 text-xs text-red-200">
+                      <strong>The rule:</strong> if the ball is going in the air when it shouldn&apos;t — defensive shot looping, drive carrying to mid-on, sweep ballooning — your elbows let go at contact. Lock them and the ball stays down.
+                    </div>
+                  </div>
+
+                  {/* Bat away from body */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">⬆️</span>
+                      Bat Away From the Body
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      The <strong className="text-white">only way</strong> to get your head over the ball is to keep the bat slightly away from your body during the back-lift and through the swing. A bat pinned tight to the body forces the head sideways to make room — that&apos;s where the trouble starts.
+                    </p>
+                    <ul className="text-sm text-gray-300 space-y-2 mb-3">
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span>Small gap between bat and body during the lift — give the hands room.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span>Bat path comes down through the line, not across the body.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span>Head is free to come <em>forward and over</em>, not sideways.</span></li>
+                    </ul>
+                    <div className="rounded-md bg-purple-500/10 border-l-2 border-purple-500/60 px-3 py-2 text-xs text-gray-200">
+                      <strong className="text-purple-300">Connection:</strong> this is the same principle behind playing swing — see <em>Playing Swing &gt; Bat Lift</em>. A small gap is the foundation of every clean shot.
+                    </div>
+                  </div>
+
+                  {/* Front foot direction by line */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">🦶</span>
+                      Front Foot — Straight by Line of the Ball
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      The front foot moves <strong className="text-white">forward to the line of the ball, not across it</strong>. For balls anywhere in the off-stump corridor — off stump, middle stump, 4th stump, even 5th stump — the front foot should go <strong className="text-white">straight forward</strong> toward the pitch of the ball, not crossing too far to the off side.
+                    </p>
+                    <div className="rounded-lg bg-white/3 border border-white/10 p-4 text-sm mb-3">
+                      <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">The rule by line</p>
+                      <ul className="text-gray-200 space-y-1.5">
+                        <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Off stump line</strong> → front foot straight forward, head over the ball, play through cover or straight.</span></li>
+                        <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Middle stump line</strong> → front foot straight forward, play through mid-on or down the ground.</span></li>
+                        <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">4th stump line</strong> → front foot straight forward, head still gets over the ball, play through cover.</span></li>
+                        <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">5th stump line</strong> → front foot straight forward (NOT chasing across); usually a leave, or a controlled steer.</span></li>
+                      </ul>
+                    </div>
+                    <div className="rounded-md bg-red-500/10 border-l-2 border-red-500/60 px-3 py-2 text-xs text-red-200 mb-2">
+                      <strong>Don&apos;t cross too far across.</strong> The front foot stays roughly in the direction you&apos;re standing — not reaching across to where the ball is. Reaching across locks the hips, pulls the head off the line, and the ball goes up. If the ball is too wide to reach with a straight stride, <strong>leave it</strong>.
+                    </div>
+                    <div className="rounded-md bg-emerald-500/10 border-l-2 border-emerald-500/60 px-3 py-2 text-xs text-gray-200">
+                      <strong className="text-emerald-300">Trigger thought:</strong> &ldquo;Foot goes forward, not across. Head follows the foot.&rdquo;
+                    </div>
+                  </div>
+
+                  {/* Shoulder stability */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">🪨</span>
+                      Shoulders — Don&apos;t Move Them Early
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      The shoulders should stay quiet through the setup and back-lift — <strong className="text-white">no premature rotation</strong>. Rotating the shoulders before contact opens the bat face, pulls the head off the ball, and sends the ball in the air.
+                    </p>
+                    <ul className="text-sm text-gray-300 space-y-2 mb-3">
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span>Front shoulder pointing at the bowler at setup.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span>Shoulders stay closed through the back-lift; hips and shoulders together.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span>Rotation comes <em>after</em> contact, not before. Same rule as the pivot on the pull shot.</span></li>
+                    </ul>
+                    <div className="rounded-md bg-amber-500/10 border-l-2 border-amber-500/60 px-3 py-2 text-xs text-gray-200">
+                      <strong className="text-amber-300">Cricket tell:</strong> if you keep getting bowled or LBW <em>around the legs</em>, your shoulders are opening early. Lock them shut and the bat face stays straight.
+                    </div>
+                  </div>
+
+                  {/* Why this matters — ball stays down */}
+                  <div className="glass rounded-2xl p-6 border border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-transparent">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">📉</span>
+                      The Payoff — Ball Stays Down
+                    </h4>
+                    <p className="text-sm text-gray-200 mb-3">
+                      All four habits — head over the ball, locked elbows, bat away from body, straight front foot — exist for one outcome: <strong className="text-white">the ball stays on the ground</strong>. That&apos;s how you avoid the catchers.
+                    </p>
+                    <p className="text-sm text-gray-300">
+                      Look at any in-form Test batter under a still camera at the moment of contact: head directly over the ball, top elbow high and locked, bat face square, weight forward. That picture isn&apos;t cosmetic — it&apos;s the difference between 4 along the ground and a chip to mid-off.
+                    </p>
+                  </div>
+
+                  {/* Common mistakes */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">⚠️</span>
+                      Common Mistakes (And the Symptom in the Game)
+                    </h4>
+                    <ul className="text-sm text-gray-300 space-y-2">
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Head leaning back</strong> → drive lobs to mid-off or cover. Get the weight forward.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Loose elbows at contact</strong> → defensive shot pops up; sweep balloons. Lock through impact.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Bat pinned to body</strong> → head goes sideways to make room, line of the ball missed.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Front foot across to off side</strong> → hips lock, ball under your eyes ends up between bat and pad.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Shoulders open early</strong> → bowled or LBW around the legs; bat face opens.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Front foot chasing 5th-stump width</strong> → over-reach, head off line, edge to slip. Leave it instead.</span></li>
+                    </ul>
+                  </div>
+
+                  {/* Checklist */}
+                  <div className="rounded-2xl p-6 border-2 border-purple-500/40 bg-gradient-to-br from-purple-500/10 to-transparent">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">✅</span>
+                      Head Over the Ball — Checklist
+                    </h4>
+                    <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">Setup</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>☐ Front shoulder pointing at the bowler</li>
+                          <li>☐ Bat slightly away from the body</li>
+                          <li>☐ Head still, eyes level</li>
+                          <li>☐ Weight balanced, ready to move forward</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">At contact</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>☐ Head directly over the ball</li>
+                          <li>☐ Both elbows locked</li>
+                          <li>☐ Front foot pointing forward, not across</li>
+                          <li>☐ Shoulders still closed (not yet rotated)</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Key takeaway */}
+                  <div className="rounded-2xl p-6 border-2 border-amber-500/40 bg-gradient-to-br from-amber-500/15 to-purple-500/10">
+                    <p className="text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">⭐ Key takeaway</p>
+                    <p className="text-sm text-gray-200 leading-relaxed">
+                      Head over the ball is the master skill — every other shot in this section depends on it. The four habits that get you there: <strong className="text-white">bat slightly away from the body, elbows locked through contact, front foot forward (not across), shoulders still until after impact</strong>. Master these and the ball stays on the ground, mishits don&apos;t carry, and you bat for longer. Applies equally to a 140kph seamer and a flighted leg-spinner — the body shape is the same.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* ── PULL SHOT — Simon Keen ────────────────────────────── */}
               {selectedShot === 'pull-shot' && (
