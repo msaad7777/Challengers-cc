@@ -2328,6 +2328,7 @@ export default function NetsPage() {
                   { id: 'pull-shot', label: 'Pull Shot', emoji: '🏏', available: true },
                   { id: 'cut-shot', label: 'Cut Shot', emoji: '✂️', available: true },
                   { id: 'cover-drive', label: 'Cover Drive', emoji: '🎯', available: true },
+                  { id: 'off-the-pads', label: 'Off the Pads', emoji: '🦵', available: true },
                   { id: 'playing-swing', label: 'Playing Swing', emoji: '〰️', available: true },
                   { id: 'sweep', label: 'Sweep', emoji: '🌾', available: false },
                 ].map((s) => (
@@ -3198,6 +3199,210 @@ export default function NetsPage() {
 
                   <p className="text-[10px] text-gray-600 italic text-center">
                     Cue: <em>&ldquo;Head to mid-off. Hands close to ear. Stay side-on.&rdquo;</em>
+                  </p>
+                </div>
+              )}
+
+              {/* ── PLAYING OFF THE PADS — Front & Back Foot Flick ──── */}
+              {selectedShot === 'off-the-pads' && (
+                <div className="space-y-5">
+                  {/* Header */}
+                  <div className="rounded-2xl p-6 border-2 border-purple-500/40 bg-gradient-to-br from-purple-500/10 via-amber-500/5 to-transparent">
+                    <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                      <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                        <span className="text-3xl">🦵</span>
+                        Playing Off the Pads — The Flick
+                      </h3>
+                      <span className="text-xs text-purple-300/80 uppercase tracking-wider">Source: Simon Keen</span>
+                    </div>
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      <strong className="text-white">Why it matters:</strong> the flick off the pads turns the bowler&apos;s safest defensive line — straight at the pads — into easy runs through the leg side. Without it, you get bogged down by anything on middle-and-leg. With it, you rotate strike at will and force bowlers to bowl wider, opening up your off-side scoring.
+                    </p>
+                  </div>
+
+                  {/* Core principle — straight bat first */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">🏏</span>
+                      The Core Principle — Straight Bat First, Flick Second
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      The flick looks like a wristy leg-side shot — but the technique that makes it safe is the opposite. <strong className="text-white">Lead with a straight bat coming down the line; let the wrists do the flick at the very last moment.</strong> Start with the flick and you swing across the line — guaranteed bowled or LBW.
+                    </p>
+                    <div className="rounded-md bg-purple-500/10 border-l-2 border-purple-500/60 px-3 py-2 text-xs text-gray-200">
+                      <strong className="text-purple-300">Rule:</strong> bat comes down straight as if you&apos;re defending. The wrists turn only at contact. The wrist turn is the <em>finish</em>, not the start.
+                    </div>
+                  </div>
+
+                  {/* Front Foot Flick */}
+                  <div className="glass rounded-2xl p-6 border border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-transparent">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">↗️</span>
+                      Front Foot Flick — Press Forward, Whip Late
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      The default flick for fuller balls on middle / leg / pad line. Press forward into the ball, head well over it, let the wrists turn at the last moment.
+                    </p>
+                    <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                        <p className="text-emerald-300 text-xs font-bold uppercase tracking-wider mb-1">Key technique</p>
+                        <ul className="text-gray-200 space-y-0.5">
+                          <li>· Straight bat first, wrist flick second</li>
+                          <li>· Head well forward, over the ball</li>
+                          <li>· Small front-foot movement (don&apos;t over-stride)</li>
+                          <li>· Front knee remains bent</li>
+                          <li>· Weight moves toward the bowler</li>
+                          <li>· Bottom hand controls the flick</li>
+                          <li>· Hands finish under the chin</li>
+                          <li>· Elbows tucked, not flaring out</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-3 text-sm mb-2">
+                          <p className="text-emerald-300 text-xs font-bold mb-1">✅ When to play</p>
+                          <ul className="text-gray-200 space-y-0.5">
+                            <li>· Full ball on leg stump</li>
+                            <li>· Full ball on middle stump</li>
+                            <li>· Ball into the pads / hip</li>
+                          </ul>
+                        </div>
+                        <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-3 text-sm">
+                          <p className="text-red-300 text-xs font-bold mb-1">❌ Avoid</p>
+                          <ul className="text-gray-200 space-y-0.5">
+                            <li>· Swinging across the line of the ball</li>
+                            <li>· Lifting the body before contact</li>
+                            <li>· Falling toward square leg</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="rounded-md bg-emerald-500/10 border-l-2 border-emerald-500/60 px-3 py-2 text-xs text-gray-200">
+                      <strong className="text-emerald-300">Trigger thought:</strong> &ldquo;Straight bat. Head forward. Flick late. Finish under chin.&rdquo;
+                    </div>
+                  </div>
+
+                  {/* Back Foot Flick */}
+                  <div className="glass rounded-2xl p-6 border border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-transparent">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">↘️</span>
+                      Back Foot Flick — Clear Space, Whip Clean
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      For shorter balls on the hips or back-of-length on the pads. The trick: clear the front leg out of the way so the bat has room to come through cleanly, but keep the shoulders closed until contact.
+                    </p>
+                    <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                        <p className="text-amber-300 text-xs font-bold uppercase tracking-wider mb-1">Key technique</p>
+                        <ul className="text-gray-200 space-y-0.5">
+                          <li>· Move onto the back foot</li>
+                          <li>· Back heel stays off the ground</li>
+                          <li>· Clear the front leg (move it out of the way)</li>
+                          <li>· Stay side-on through the movement</li>
+                          <li>· Head over the ball, not falling away</li>
+                          <li>· Wrists work through contact</li>
+                          <li>· Hands finish under the chin</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-3 text-sm mb-2">
+                          <p className="text-emerald-300 text-xs font-bold mb-1">✅ When to play</p>
+                          <ul className="text-gray-200 space-y-0.5">
+                            <li>· Back-of-length on the pads</li>
+                            <li>· Ball arriving into the hip area</li>
+                            <li>· Shorter ball that&apos;s rising into your body</li>
+                          </ul>
+                        </div>
+                        <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-3 text-sm">
+                          <p className="text-red-300 text-xs font-bold mb-1">❌ Avoid</p>
+                          <ul className="text-gray-200 space-y-0.5">
+                            <li>· Opening the hips early</li>
+                            <li>· Falling backwards onto the heel</li>
+                            <li>· Front leg blocking the bat&apos;s path</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="rounded-md bg-amber-500/10 border-l-2 border-amber-500/60 px-3 py-2 text-xs text-gray-200">
+                      <strong className="text-amber-300">Trigger thought:</strong> &ldquo;Clear space. Stay side-on. Flick clean.&rdquo;
+                    </div>
+                  </div>
+
+                  {/* Decision making — which variant when */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">🌳</span>
+                      Front Foot vs Back Foot — Which Flick When?
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      Length decides. Same bat path, different footwork:
+                    </p>
+                    <div className="grid sm:grid-cols-2 gap-3 text-sm">
+                      <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-3">
+                        <p className="text-emerald-300 text-xs font-bold mb-1">Full to good length on the pads</p>
+                        <p className="text-gray-200"><strong className="text-white">→ Front foot flick.</strong> Press into the ball; whip late.</p>
+                      </div>
+                      <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3">
+                        <p className="text-amber-300 text-xs font-bold mb-1">Back of length / into the hip</p>
+                        <p className="text-gray-200"><strong className="text-white">→ Back foot flick.</strong> Clear the front leg; work it through square.</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-400 italic mt-2">Read length first, then commit to the variant. Half-forward against either is how you get hit on the pad.</p>
+                  </div>
+
+                  {/* Common mistakes */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">⚠️</span>
+                      Common Mistakes
+                    </h4>
+                    <ul className="text-sm text-gray-300 space-y-2">
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Wrist flick first, bat second.</strong> Bat comes across the line; bowled / LBW around the legs.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Opening the hips early.</strong> Shoulders rotate, bat face opens, top edge to short fine leg.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Falling toward square leg.</strong> Loss of balance, ball pops up to mid-on or square leg.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Hands finishing high above the head.</strong> Means the bottom hand dominated; ball goes in the air. Hands should finish at chin level.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Front leg blocking on the back foot flick.</strong> Bat can&apos;t come through; jammed straight at the bowler.</span></li>
+                    </ul>
+                  </div>
+
+                  {/* Checklist */}
+                  <div className="rounded-2xl p-6 border-2 border-purple-500/40 bg-gradient-to-br from-purple-500/10 to-transparent">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">✅</span>
+                      Off the Pads Checklist
+                    </h4>
+                    <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">Setup &amp; movement</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>☐ Read length first (front foot or back?)</li>
+                          <li>☐ Head leads, eyes on the ball</li>
+                          <li>☐ Stay side-on; shoulders closed</li>
+                          <li>☐ For back foot: clear the front leg</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">At contact</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>☐ Straight bat down the line, not across</li>
+                          <li>☐ Wrist flick happens at contact, not before</li>
+                          <li>☐ Bottom hand controls the flick</li>
+                          <li>☐ Hands finish under the chin</li>
+                          <li>☐ Elbows tucked, balanced finish</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Key takeaway */}
+                  <div className="rounded-2xl p-6 border-2 border-amber-500/40 bg-gradient-to-br from-amber-500/15 to-purple-500/10">
+                    <p className="text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">⭐ Key takeaway</p>
+                    <p className="text-sm text-gray-200 leading-relaxed">
+                      <strong className="text-white">Straight bat first. Flick second.</strong> The wrist is the finish, not the start. Press forward for fuller balls; clear the front leg and stay side-on for back-of-length balls into the hip. Hands finish under the chin every time — that&apos;s the marker that tells you bottom hand worked, ball stayed down, you can keep doing this all day.
+                    </p>
+                  </div>
+
+                  <p className="text-[10px] text-gray-600 italic text-center">
+                    Cues: <em>&ldquo;Straight bat. Flick late.&rdquo;</em> · <em>&ldquo;Clear space. Flick clean.&rdquo;</em>
                   </p>
                 </div>
               )}
