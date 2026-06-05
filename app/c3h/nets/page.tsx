@@ -3224,6 +3224,279 @@ export default function NetsPage() {
                 </div>
               </div>
 
+              {/* ── Simon Keen's 10 Golden Rules ──────────────────────── */}
+              <div className="rounded-2xl p-6 border-2 border-accent-500/40 bg-gradient-to-br from-accent-500/10 via-primary-500/5 to-transparent">
+                <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                  <span className="text-2xl">📜</span>
+                  Simon Keen&apos;s 10 Golden Rules
+                </h3>
+                <p className="text-sm text-gray-400 mb-4">Universal batting principles that repeat across every shot. Memorise these — they collapse hundreds of pages of coaching into ten directives.</p>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {[
+                    { n: 1, rule: 'Keep heels off the ground.' },
+                    { n: 2, rule: 'Head leads movement.' },
+                    { n: 3, rule: 'Stay side-on.' },
+                    { n: 4, rule: 'Read length early.' },
+                    { n: 5, rule: 'Match swing plane to bounce.' },
+                    { n: 6, rule: 'Don\'t roll wrists.' },
+                    { n: 7, rule: 'Use spin and pace — don\'t fight them.' },
+                    { n: 8, rule: 'Have scoring options all around the ground.' },
+                    { n: 9, rule: 'If it\'s not hitting stumps and you\'re not scoring, leave it.' },
+                    { n: 10, rule: 'The best position to defend is usually the best position to attack.' },
+                  ].map((r) => (
+                    <div key={r.n} className="rounded-lg bg-white/3 border border-white/5 p-3 flex items-start gap-3">
+                      <span className="text-accent-400 font-bold text-lg flex-shrink-0">#{r.n}</span>
+                      <p className="text-sm text-gray-200 leading-snug">{r.rule}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 p-3 rounded-xl bg-accent-500/15 border border-accent-500/40">
+                  <p className="text-sm text-accent-300 font-bold">⭐ The Golden Cue (collapses all 10)</p>
+                  <p className="text-sm text-gray-100 italic mt-1">&ldquo;Head first. Balance second. Bat third. Timing fourth. Power last.&rdquo;</p>
+                </div>
+              </div>
+
+              {/* ── Decision-Making Framework ─────────────────────────── */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🌳</span>
+                  Decision Framework — Length → Width → Bounce → Spin
+                </h3>
+                <p className="text-sm text-gray-300 mb-4">
+                  Pick the shot in this order. Length first; everything else is layered on. If you flip the order, you commit to a shot before you know what the ball is doing.
+                </p>
+
+                {/* Length */}
+                <div className="mb-4">
+                  <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-2">1. Length</p>
+                  <ul className="text-sm text-gray-200 space-y-1.5">
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Full / yorker</strong> → drive (straight / on / off)</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Good length</strong> → defend or play late; rotate strike</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Slightly short / back-of-length</strong> → back-foot drive / punch</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Short</strong> → pull / cut</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Above shoulder height</strong> → leave / duck / sway</span></li>
+                  </ul>
+                </div>
+
+                {/* Width */}
+                <div className="mb-4">
+                  <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-2">2. Width / Line</p>
+                  <ul className="text-sm text-gray-200 space-y-1.5">
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Stumps line</strong> → V (mid-on to mid-off)</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Outside off, angling across</strong> → cut / square drive</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Outside off, angling in</strong> → pull / drive / leave</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">5th stump line</strong> → leave (unless full enough to drive cleanly)</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Pads / hip line</strong> → flick / clip / sweep (vs spin)</span></li>
+                  </ul>
+                </div>
+
+                {/* Spin direction */}
+                <div className="mb-4">
+                  <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-2">3. Spin Direction</p>
+                  <ul className="text-sm text-gray-200 space-y-1.5">
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Ball spinning away</strong> → cut / square drive (with the spin)</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Ball spinning in</strong> → flick / sweep / on-drive (with the spin)</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Don&apos;t fight the spin</strong> — go where the ball wants to go</span></li>
+                  </ul>
+                </div>
+
+                {/* Bounce */}
+                <div className="mb-4">
+                  <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-2">4. Bounce</p>
+                  <ul className="text-sm text-gray-200 space-y-1.5">
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Low bounce</strong> → stay low, flatten swing plane, hit along the ground</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Hip-height</strong> → ideal scoring zone for pull / drive</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Higher bounce</strong> → upper cut / hang back / leave</span></li>
+                  </ul>
+                </div>
+
+                <div className="p-3 rounded-xl bg-primary-500/10 border border-primary-500/30">
+                  <p className="text-sm text-primary-300 font-bold mb-1">✅ Decision in one line</p>
+                  <p className="text-sm text-gray-200">Length tells you <em>front foot or back</em>. Width tells you <em>which side of the ground</em>. Spin direction tells you <em>which way to go with it</em>. Bounce tells you <em>how high the bat finishes</em>. Layer them in that order.</p>
+                </div>
+              </div>
+
+              {/* ── Playing Spin Quick Reference ──────────────────────── */}
+              <div className="rounded-2xl p-6 border-2 border-primary-500/40 bg-gradient-to-br from-primary-500/10 via-accent-500/5 to-transparent">
+                <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                  <span className="text-2xl">🌀</span>
+                  Playing Spin — Quick Reference
+                </h3>
+                <p className="text-sm text-gray-400 mb-5">Six modes for facing spin. Pick one per ball based on length, turn direction, and field. Full deep-dive coming to Shot Mechanics.</p>
+
+                {/* Grip + setup */}
+                <div className="mb-4 rounded-lg bg-white/3 border border-white/5 p-4">
+                  <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-2">Grip &amp; Setup vs Spin</p>
+                  <ul className="text-sm text-gray-200 space-y-1.5">
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Lower stance</strong> than against pace; knees flexed, athletic, balanced</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Strong front-foot press</strong> at the trigger; front shoulder dips</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">High handle = power</strong>; <strong className="text-white">low handle = control</strong> — choose by intent</span></li>
+                    <li className="flex gap-2"><span className="text-primary-400 flex-shrink-0">→</span><span><strong className="text-white">Rotated wrist grip</strong> (bottom hand slightly under) opens up the flick</span></li>
+                  </ul>
+                  <p className="text-xs text-accent-300/80 italic mt-2">Cue: &ldquo;Low stance. Shoulder down. Press forward. Read length.&rdquo;</p>
+                </div>
+
+                {/* Front foot to spin */}
+                <div className="mb-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-4">
+                  <p className="text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">↗️ Front Foot to Spin — Smother</p>
+                  <p className="text-sm text-gray-200 mb-2"><strong className="text-white">Purpose:</strong> reach the pitch of the ball; smother spin before it can grip.</p>
+                  <ul className="text-sm text-gray-200 space-y-1">
+                    <li>· Big positive stride to the pitch</li>
+                    <li>· Head over the ball</li>
+                    <li>· Front shoulder stays down</li>
+                    <li>· Options: drive · lofted drive · sweep · reverse sweep</li>
+                  </ul>
+                  <p className="text-xs text-emerald-300/80 italic mt-2">Cue: &ldquo;Get to the pitch. Stay low. Head over ball.&rdquo;</p>
+                </div>
+
+                {/* Back foot to spin */}
+                <div className="mb-4 rounded-lg bg-amber-500/10 border border-amber-500/30 p-4">
+                  <p className="text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">↙️ Back Foot to Spin — Create Time</p>
+                  <p className="text-sm text-gray-200 mb-2"><strong className="text-white">Purpose:</strong> create extra time; turn good length into short length.</p>
+                  <ul className="text-sm text-gray-200 space-y-1">
+                    <li>· Move deep into the crease</li>
+                    <li>· Stay low and athletic</li>
+                    <li>· Easier to cut, pull, or defend with composure</li>
+                  </ul>
+                  <p className="text-xs text-amber-300/80 italic mt-2">Cue: &ldquo;Deep in crease. Low body. Extra time.&rdquo;</p>
+                </div>
+
+                {/* Check swing */}
+                <div className="mb-4 rounded-lg bg-white/3 border border-white/10 p-4">
+                  <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-2">🎯 Check Swing — Placement over Power</p>
+                  <ul className="text-sm text-gray-200 space-y-1">
+                    <li>· Maintain shape; compact finish</li>
+                    <li>· Hit gaps, not boundaries</li>
+                    <li>· Better balance · better rotation · lower risk</li>
+                  </ul>
+                  <p className="text-xs text-primary-300/80 italic mt-2">Cue: &ldquo;Placement beats power.&rdquo;</p>
+                </div>
+
+                {/* Using the pace */}
+                <div className="mb-4 rounded-lg bg-blue-500/10 border border-blue-500/30 p-4">
+                  <p className="text-blue-300 text-xs font-bold uppercase tracking-wider mb-2">⚡ Using the Pace — Guide, Don&apos;t Hit</p>
+                  <p className="text-sm text-gray-200 mb-2"><strong className="text-white">For quicker spin (off-spin / arm ball / quick leggie):</strong></p>
+                  <ul className="text-sm text-gray-200 space-y-1">
+                    <li>· <strong className="text-white">Lap sweep</strong> — minimal swing, use pace</li>
+                    <li>· <strong className="text-white">Glide</strong> to third man</li>
+                    <li>· <strong className="text-white">Ramp</strong> — redirect pace over keeper</li>
+                    <li>· <strong className="text-white">Check first:</strong> 45° (short fine leg) · slip · fine leg</li>
+                  </ul>
+                  <p className="text-xs text-blue-300/80 italic mt-2">Cue: &ldquo;Guide it. Don&apos;t hit it.&rdquo;</p>
+                </div>
+
+                {/* Defending */}
+                <div className="mb-4 rounded-lg bg-red-500/10 border border-red-500/30 p-4">
+                  <p className="text-red-300 text-xs font-bold uppercase tracking-wider mb-2">🛡️ Defending Spin — Simon&apos;s Strategy</p>
+                  <p className="text-sm text-gray-200 mb-2"><strong className="text-white">Move back to force fuller length, then attack the overpitched ball.</strong></p>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-red-300/80 text-xs font-bold mb-1">Back-foot defence</p>
+                      <ul className="text-xs text-gray-200 space-y-0.5">
+                        <li>· Deep in crease</li>
+                        <li>· Stay low</li>
+                        <li>· Soft hands</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="text-red-300/80 text-xs font-bold mb-1">Front-foot defence</p>
+                      <ul className="text-xs text-gray-200 space-y-0.5">
+                        <li>· Bat slightly in front of pad</li>
+                        <li>· Head over ball</li>
+                        <li>· Weight forward</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <p className="text-xs text-red-300/80 italic mt-2">Cue: &ldquo;Can I score? If not, defend. If not hitting stumps, leave.&rdquo;</p>
+                </div>
+
+                {/* Picking spin */}
+                <div className="rounded-lg bg-purple-500/10 border border-purple-500/30 p-4">
+                  <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">👁️ Picking Spin — Three Phases</p>
+                  <div className="grid sm:grid-cols-3 gap-3 text-xs">
+                    <div>
+                      <p className="text-purple-300 font-bold mb-1">Pre-release</p>
+                      <p className="text-gray-200">Fingers · wrist · seam · release point</p>
+                    </div>
+                    <div>
+                      <p className="text-purple-300 font-bold mb-1">In flight</p>
+                      <p className="text-gray-200">Drift · shape · trajectory</p>
+                    </div>
+                    <div>
+                      <p className="text-purple-300 font-bold mb-1">Off the pitch</p>
+                      <p className="text-gray-200">Bounce · turn · pace</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-200 mt-3"><strong className="text-white">Decision order:</strong> Length → line → spin → commit.</p>
+                  <p className="text-xs text-purple-300/80 italic mt-1">Cue: &ldquo;Length first. Spin second.&rdquo;</p>
+                </div>
+              </div>
+
+              {/* ── Universal Principles Summary ──────────────────────── */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🧱</span>
+                  Universal Principles — Across Every Shot
+                </h3>
+                <p className="text-sm text-gray-400 mb-4">If you only remember six things, remember these. They&apos;re the load-bearing walls of every shot in cricket.</p>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3">
+                    <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-1">👤 Head Position</p>
+                    <ul className="text-sm text-gray-200 space-y-0.5">
+                      <li>· Head leads movement</li>
+                      <li>· Head toward target</li>
+                      <li>· Eyes level</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3">
+                    <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-1">⚖️ Balance</p>
+                    <ul className="text-sm text-gray-200 space-y-0.5">
+                      <li>· Athletic posture</li>
+                      <li>· Strong legs</li>
+                      <li>· Stable base</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3">
+                    <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-1">🦶 Heel Position</p>
+                    <ul className="text-sm text-gray-200 space-y-0.5">
+                      <li>· Back heel off the ground</li>
+                      <li>· Stay on toes</li>
+                      <li>· Don&apos;t fall back</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3">
+                    <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-1">🏏 Bat Path</p>
+                    <ul className="text-sm text-gray-200 space-y-0.5">
+                      <li>· Straight bat whenever possible</li>
+                      <li>· Match swing plane to bounce</li>
+                      <li>· Hit ball flush</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3">
+                    <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-1">🎯 Shot Selection</p>
+                    <ul className="text-sm text-gray-200 space-y-0.5">
+                      <li>· Pull if too high</li>
+                      <li>· Cut if wide</li>
+                      <li>· Drive if full</li>
+                      <li>· Flick if on pads</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3">
+                    <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-1">✨ Finish Position</p>
+                    <ul className="text-sm text-gray-200 space-y-0.5">
+                      <li>· Hands close to head</li>
+                      <li>· Elbows tucked</li>
+                      <li>· Balanced finish</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="mt-4 p-3 rounded-xl bg-accent-500/15 border border-accent-500/40">
+                  <p className="text-sm text-accent-300 font-bold mb-1">⭐ The Golden Cue</p>
+                  <p className="text-sm text-gray-100 italic">&ldquo;Head first. Balance second. Bat third. Timing fourth. Power last.&rdquo;</p>
+                  <p className="text-xs text-gray-400 mt-1">Master the 20% of concepts that produce 80% of Simon Keen&apos;s technical model.</p>
+                </div>
+              </div>
+
               {/* 2. Stance & Setup */}
               <div className="glass rounded-2xl p-6 border border-white/10">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
