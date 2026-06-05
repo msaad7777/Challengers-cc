@@ -2326,9 +2326,9 @@ export default function NetsPage() {
                 {[
                   { id: 'head-over-ball', label: 'Head Over the Ball', emoji: '👤', available: true },
                   { id: 'pull-shot', label: 'Pull Shot', emoji: '🏏', available: true },
+                  { id: 'cut-shot', label: 'Cut Shot', emoji: '✂️', available: true },
+                  { id: 'cover-drive', label: 'Cover Drive', emoji: '🎯', available: true },
                   { id: 'playing-swing', label: 'Playing Swing', emoji: '〰️', available: true },
-                  { id: 'cover-drive', label: 'Cover Drive', emoji: '🎯', available: false },
-                  { id: 'cut-shot', label: 'Cut Shot', emoji: '✂️', available: false },
                   { id: 'sweep', label: 'Sweep', emoji: '🌾', available: false },
                 ].map((s) => (
                   <button
@@ -2826,6 +2826,378 @@ export default function NetsPage() {
 
                   <p className="text-[10px] text-gray-600 italic text-center">
                     More shots (Cover Drive, Cut Shot, Sweep, and others) coming next — each as a separate deep dive in this section.
+                  </p>
+                </div>
+              )}
+
+              {/* ── CUT SHOT — Simon Keen ────────────────────────────── */}
+              {selectedShot === 'cut-shot' && (
+                <div className="space-y-5">
+                  {/* Header */}
+                  <div className="rounded-2xl p-6 border-2 border-purple-500/40 bg-gradient-to-br from-purple-500/10 via-amber-500/5 to-transparent">
+                    <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                      <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                        <span className="text-3xl">✂️</span>
+                        Cut Shot
+                      </h3>
+                      <span className="text-xs text-purple-300/80 uppercase tracking-wider">Source: Simon Keen</span>
+                    </div>
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      <strong className="text-white">Why it matters:</strong> the cut shot punishes width outside off stump — the most common ball a fast bowler leaks and the easiest free run on offer. A batter with a reliable cut forces bowlers to bowl tighter, which opens up the V for drives. No reliable cut means the off side stops scoring.
+                    </p>
+                  </div>
+
+                  {/* Core Principles */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">⚙️</span>
+                      Core Principles
+                    </h4>
+                    <ul className="text-sm text-gray-200 space-y-2">
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Back heel off the ground</strong> — stay athletic, on your toes. Heel down = falling back, loss of balance.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Hands stay high.</strong> Cut comes down on the ball from above, not across.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Head moves toward point.</strong> Head leads the shot in the direction of intended scoring.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Strike the ball flush</strong> — middle of the bat, not the toe or the edge.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Match swing plane to bounce.</strong> Low bounce = flatter cut. Higher bounce = steeper, more upright cut.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Don&apos;t roll the wrists.</strong> Rolling = top edge or chop on. Hit through the line.</span></li>
+                    </ul>
+                  </div>
+
+                  {/* Timing controls direction */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">⏱️</span>
+                      Timing Controls Direction
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      The cut is a timing shot, not a power shot. <strong className="text-white">When you make contact</strong> decides where the ball goes:
+                    </p>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-3 text-sm">
+                        <p className="text-emerald-300 text-xs font-bold mb-1">Earlier contact</p>
+                        <p className="text-gray-200">Ball played in <strong className="text-white">front of point</strong> — through cover-point / backward point.</p>
+                      </div>
+                      <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3 text-sm">
+                        <p className="text-amber-300 text-xs font-bold mb-1">Later contact</p>
+                        <p className="text-gray-200">Ball played <strong className="text-white">behind point</strong> — late cut / steer to third man.</p>
+                      </div>
+                    </div>
+                    <div className="rounded-md bg-purple-500/10 border-l-2 border-purple-500/60 px-3 py-2 text-xs text-gray-200 mt-3">
+                      <strong className="text-purple-300">Implication:</strong> the cut lets you target three different fielding gaps from the same starting position — just by adjusting how late you play it. Field-aware batters use this constantly.
+                    </div>
+                  </div>
+
+                  {/* Decision making — cut vs pull */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">🎯</span>
+                      Decision Making — Cut vs Pull
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      The cut and pull share the back-foot setup but split on ball direction. Read the angle, then choose:
+                    </p>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                        <p className="text-purple-300 text-xs font-bold mb-1">Ball angling across (away from you)</p>
+                        <p className="text-gray-200"><strong className="text-white">→ Cut.</strong> Width outside off stump, going further away.</p>
+                      </div>
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                        <p className="text-purple-300 text-xs font-bold mb-1">Ball angling in (toward body)</p>
+                        <p className="text-gray-200"><strong className="text-white">→ Pull.</strong> Coming back toward middle / hip line.</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-amber-300/80 italic mt-2">Reading the angle in the air is the difference between four runs and a leading edge to point.</p>
+                  </div>
+
+                  {/* Variations */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">🔀</span>
+                      Variations
+                    </h4>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                        <p className="text-purple-300 text-xs font-bold mb-1">Full Swing Cut</p>
+                        <p className="text-gray-200">Aggressive, full follow-through. Maximum power. Best when the field is up and there&apos;s gap behind point.</p>
+                      </div>
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                        <p className="text-purple-300 text-xs font-bold mb-1">Check Cut</p>
+                        <p className="text-gray-200">Shortened follow-through. Placement over power. Lower risk; ideal in middle overs.</p>
+                      </div>
+                      <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3 text-sm">
+                        <p className="text-amber-300 text-xs font-bold mb-1">Upper Cut</p>
+                        <p className="text-gray-200">Higher bounce, ball above shoulder. Hit over the slip cordon to third man / fine third. Aerial — needs confidence in execution.</p>
+                      </div>
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                        <p className="text-purple-300 text-xs font-bold mb-1">Late Cut</p>
+                        <p className="text-gray-200">Play it as late as possible; angle the bat down to third man. Soft hands. The trickle-single specialist.</p>
+                      </div>
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                        <p className="text-purple-300 text-xs font-bold mb-1">Helicopter Cut</p>
+                        <p className="text-gray-200">Rotational follow-through that lets the bat finish over the head — extra power on length deliveries that sit up.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Common mistakes */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">⚠️</span>
+                      Common Mistakes
+                    </h4>
+                    <ul className="text-sm text-gray-300 space-y-2">
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Rolling the wrists</strong> at contact → top edge to backward point or chop on to keeper.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Falling backward</strong> onto the heel → loss of balance, mistimed cut goes in the air.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Cutting balls angling into the body</strong> → use the pull. Cutting in-comers is how you get bowled or LBW.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Hands low at the start</strong> → bat comes around the line, not down on it. Toe of the bat hits the ball.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Cutting full balls</strong> → cut needs the ball to be short of length. A full ball cut is a chop-on waiting to happen.</span></li>
+                    </ul>
+                  </div>
+
+                  {/* Checklist */}
+                  <div className="rounded-2xl p-6 border-2 border-purple-500/40 bg-gradient-to-br from-purple-500/10 to-transparent">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">✅</span>
+                      Cut Shot Checklist
+                    </h4>
+                    <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">Setup</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>☐ Back heel off the ground</li>
+                          <li>☐ Hands high, ready to come down</li>
+                          <li>☐ Athletic, on toes</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">At contact</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>☐ Head moving toward point</li>
+                          <li>☐ Strike flush, middle of the bat</li>
+                          <li>☐ No wrist roll — hit through</li>
+                          <li>☐ Swing plane matches bounce</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Key takeaway */}
+                  <div className="rounded-2xl p-6 border-2 border-amber-500/40 bg-gradient-to-br from-amber-500/15 to-purple-500/10">
+                    <p className="text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">⭐ Key takeaway</p>
+                    <p className="text-sm text-gray-200 leading-relaxed">
+                      <strong className="text-white">Width equals cut.</strong> Heels up, hands high, head toward point, strike flush, no wrist roll. Time it earlier or later to pick different scoring gaps from the same setup. Cut the angling-out ball; pull the angling-in ball — confusing the two is how the cut gets you out.
+                    </p>
+                  </div>
+
+                  <p className="text-[10px] text-gray-600 italic text-center">
+                    Cue: <em>&ldquo;Width equals cut. Angle across. Stay tall. Hands high. Hit through.&rdquo;</em>
+                  </p>
+                </div>
+              )}
+
+              {/* ── COVER DRIVE — Simon Keen (with sibling drives) ──── */}
+              {selectedShot === 'cover-drive' && (
+                <div className="space-y-5">
+                  {/* Header */}
+                  <div className="rounded-2xl p-6 border-2 border-purple-500/40 bg-gradient-to-br from-purple-500/10 via-amber-500/5 to-transparent">
+                    <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                      <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                        <span className="text-3xl">🎯</span>
+                        Cover Drive (and its sibling drives)
+                      </h3>
+                      <span className="text-xs text-purple-300/80 uppercase tracking-wider">Source: Simon Keen</span>
+                    </div>
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      <strong className="text-white">Why it matters:</strong> the cover drive is cricket&apos;s signature shot. It&apos;s the shot batters dream about and the shot that gets them out chasing the dream too early. Played right, it&apos;s a four through the most open part of the off side. Played wrong, it&apos;s an edge to the slip cordon. The technique compounds — get the cover drive right and the on drive, straight drive, and off drive follow.
+                    </p>
+                  </div>
+
+                  {/* Core Principles */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">⚙️</span>
+                      Core Principles
+                    </h4>
+                    <ul className="text-sm text-gray-200 space-y-2">
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Controlled stride toward mid-off</strong> — not too far across; foot points roughly at extra cover.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Head in front of front knee</strong> at contact. If the head&apos;s behind the knee, the ball goes in the air.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Stay side-on.</strong> Front shoulder pointing at the bowler at setup; chest doesn&apos;t open early.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Relax the bottom hand</strong> slightly through contact — bottom-hand-dominant drives go in the air.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Full face of the bat</strong> through the line of the ball — bat face pointing at the target, not angled.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Look through the bottom forearm</strong> at the ball — that&apos;s the gaze cue that keeps the head still.</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Hands finish close to the head</strong>, elbows tucked. Balanced finish.</span></li>
+                    </ul>
+                  </div>
+
+                  {/* Body position */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">🧍</span>
+                      Body Position at Contact
+                    </h4>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-3 text-sm">
+                        <p className="text-emerald-300 text-xs font-bold mb-1">✓ Right shape</p>
+                        <ul className="text-gray-200 space-y-0.5">
+                          <li>· Head in front of front knee</li>
+                          <li>· Front shoulder pointing at the ball</li>
+                          <li>· Bat face square through the line</li>
+                          <li>· Weight forward, into the shot</li>
+                          <li>· Hands finish near the head</li>
+                        </ul>
+                      </div>
+                      <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-3 text-sm">
+                        <p className="text-red-300 text-xs font-bold mb-1">✗ Wrong shape</p>
+                        <ul className="text-gray-200 space-y-0.5">
+                          <li>· Head behind / over the knee</li>
+                          <li>· Chest opening early — falling away</li>
+                          <li>· Bat angled, not square</li>
+                          <li>· Weight back, reaching for the ball</li>
+                          <li>· Bottom hand dominating contact</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Target areas */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">🗺️</span>
+                      Target Area
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      Cover drive ideal target: the gap between mid-off and cover. Open the bat face very slightly for extra cover; close very slightly for straighter through mid-off. The shot itself doesn&apos;t change — the angle of the bat face at contact does.
+                    </p>
+                  </div>
+
+                  {/* Drive family */}
+                  <div className="glass rounded-2xl p-6 border border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-transparent">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">👨‍👩‍👧</span>
+                      Sibling Drives — Same Family, Small Adjustments
+                    </h4>
+                    <div className="space-y-3 text-sm">
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3">
+                        <p className="text-amber-300 text-xs font-bold mb-1">Straight Drive — back past the bowler</p>
+                        <p className="text-gray-200">Step <strong className="text-white">straight down the wicket</strong>. Head leads everything. Stay side-on. Weight transfers directly forward. Most disciplined of the drives — full face, pure timing.</p>
+                      </div>
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3">
+                        <p className="text-amber-300 text-xs font-bold mb-1">On Drive — through mid-on</p>
+                        <p className="text-gray-200"><strong className="text-white">Smaller step.</strong> Open the front hip slightly. Head still forward. Swing through mid-on or straight midwicket. Hardest of the drives to play technically clean.</p>
+                      </div>
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3">
+                        <p className="text-amber-300 text-xs font-bold mb-1">Off Drive — through mid-off / extra cover</p>
+                        <p className="text-gray-200">Controlled stride, head in front of front knee, full face, hands finish close to the head. Cover drive is the wider cousin — same shot, target slightly squarer.</p>
+                      </div>
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3">
+                        <p className="text-amber-300 text-xs font-bold mb-1">Square Drive (front-foot cut)</p>
+                        <p className="text-gray-200">Don&apos;t step too far across. Stay side-on. Front shoulder leads. Match swing plane to bounce. Timing changes direction (earlier = in front of point, later = behind).</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Variations */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">🔀</span>
+                      Drive Variations by Intent
+                    </h4>
+                    <div className="grid sm:grid-cols-3 gap-3 text-sm">
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3">
+                        <p className="text-purple-300 text-xs font-bold mb-1">Defensive Drive</p>
+                        <p className="text-gray-200">Soft hands. ~45° bat angle. Rotation, not boundary. The under-rated single source.</p>
+                      </div>
+                      <div className="rounded-lg bg-white/3 border border-white/5 p-3">
+                        <p className="text-purple-300 text-xs font-bold mb-1">Check Drive</p>
+                        <p className="text-gray-200">Bat parallel to the ground at finish. Placement focused. Pick the gap, hit it firm.</p>
+                      </div>
+                      <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3">
+                        <p className="text-amber-300 text-xs font-bold mb-1">Full Drive</p>
+                        <p className="text-gray-200">Complete follow-through; bat finishes over the shoulder. Boundary option when the ball is full enough.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Decision making */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">🌳</span>
+                      When to Drive (and When Not To)
+                    </h4>
+                    <div className="grid sm:grid-cols-2 gap-3 text-sm">
+                      <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-3">
+                        <p className="text-emerald-300 text-xs font-bold mb-1">✅ Drive when</p>
+                        <ul className="text-gray-200 space-y-0.5">
+                          <li>· Ball is full (half-volley or fuller)</li>
+                          <li>· In line with the body or just outside off</li>
+                          <li>· Bowler&apos;s rhythm is settled (you can read length)</li>
+                          <li>· Field has a gap in the off side</li>
+                        </ul>
+                      </div>
+                      <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-3">
+                        <p className="text-red-300 text-xs font-bold mb-1">❌ Don&apos;t drive when</p>
+                        <ul className="text-gray-200 space-y-0.5">
+                          <li>· Ball is good length or shorter — chop on / edge</li>
+                          <li>· You&apos;re not yet set (first 10 balls especially)</li>
+                          <li>· Ball is swinging late — reach + edge</li>
+                          <li>· On a wicket where the ball isn&apos;t coming on</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Common mistakes */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">⚠️</span>
+                      Common Mistakes
+                    </h4>
+                    <ul className="text-sm text-gray-300 space-y-2">
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Driving good-length balls.</strong> The #1 cause of caught-behind on drives. Wait for the half-volley.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Head behind the front knee.</strong> Drive lobs to mid-off or cover.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Bottom hand dominating.</strong> Bat face closes, ball goes in the air.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Chest opening early.</strong> Loses side-on shape, bat comes across the line.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Driving before set.</strong> First 10 balls aren&apos;t for drives. Defend straight, score off width.</span></li>
+                    </ul>
+                  </div>
+
+                  {/* Checklist */}
+                  <div className="rounded-2xl p-6 border-2 border-purple-500/40 bg-gradient-to-br from-purple-500/10 to-transparent">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">✅</span>
+                      Cover Drive Checklist
+                    </h4>
+                    <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">Setup</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>☐ Side-on, front shoulder at bowler</li>
+                          <li>☐ Bat lifted slightly away from body</li>
+                          <li>☐ Head still, eyes level</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">At contact</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>☐ Head in front of front knee</li>
+                          <li>☐ Full face of bat, square through the line</li>
+                          <li>☐ Bottom hand relaxed</li>
+                          <li>☐ Hands finish close to the head</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Key takeaway */}
+                  <div className="rounded-2xl p-6 border-2 border-amber-500/40 bg-gradient-to-br from-amber-500/15 to-purple-500/10">
+                    <p className="text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">⭐ Key takeaway</p>
+                    <p className="text-sm text-gray-200 leading-relaxed">
+                      Cover drive is a <strong className="text-white">discipline</strong> shot, not a power shot. Head in front of the front knee, side-on shape, full face, hands finish near the head. Drive the half-volley; defend the good length. Get this template right and the straight drive, on drive, and off drive all fall out of the same body shape.
+                    </p>
+                  </div>
+
+                  <p className="text-[10px] text-gray-600 italic text-center">
+                    Cue: <em>&ldquo;Head to mid-off. Hands close to ear. Stay side-on.&rdquo;</em>
                   </p>
                 </div>
               )}
