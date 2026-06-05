@@ -2324,6 +2324,7 @@ export default function NetsPage() {
               <div className="flex flex-wrap gap-2 justify-center">
                 {[
                   { id: 'pull-shot', label: 'Pull Shot', emoji: '🏏', available: true },
+                  { id: 'playing-swing', label: 'Playing Swing', emoji: '〰️', available: true },
                   { id: 'cover-drive', label: 'Cover Drive', emoji: '🎯', available: false },
                   { id: 'cut-shot', label: 'Cut Shot', emoji: '✂️', available: false },
                   { id: 'sweep', label: 'Sweep', emoji: '🌾', available: false },
@@ -2625,6 +2626,219 @@ export default function NetsPage() {
                   <p className="text-[10px] text-gray-600 italic text-center">
                     More shots (Cover Drive, Cut Shot, Sweep, and others) coming next — each as a separate deep dive in this section.
                   </p>
+                </div>
+              )}
+
+              {/* ── PLAYING SWING — In-swing & Out-swing ─────────────── */}
+              {selectedShot === 'playing-swing' && (
+                <div className="space-y-5">
+                  {/* Header */}
+                  <div className="rounded-2xl p-6 border-2 border-purple-500/40 bg-gradient-to-br from-purple-500/10 via-amber-500/5 to-transparent">
+                    <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                      <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                        <span className="text-3xl">〰️</span>
+                        Playing Swing — In-swing &amp; Out-swing
+                      </h3>
+                      <span className="text-xs text-purple-300/80 uppercase tracking-wider">Source: CCC coaching notes</span>
+                    </div>
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      <strong className="text-white">Why it matters:</strong> swing bowling dismisses in-form batters because the line and length look orthodox but the ball moves <em>after</em> you&apos;ve committed. The technique to play swing isn&apos;t about chasing every delivery — it&apos;s about an open, mobile setup where the bat, elbow, and front foot can adjust to late movement instead of being trapped by it.
+                    </p>
+                  </div>
+
+                  {/* Core principle — open posture */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">🧍</span>
+                      The Core Principle — Open, Never Closed
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      Every error against swing traces back to a <strong className="text-white">closed</strong> position somewhere — closed front foot, elbow pinned to the body, head stiff over the stumps, bat lifted tight to the back. A closed batter can&apos;t adjust to late movement; an open batter can.
+                    </p>
+                    <p className="text-sm text-amber-300/80 italic">Rule: little gaps everywhere — bat away from body, elbow free, head soft, foot angled forward, not across.</p>
+                  </div>
+
+                  {/* Bat lift */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">⬆️</span>
+                      Bat Lift — Slightly Away From the Body
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      The bat lift sets up everything. Lift the bat <strong className="text-white">slightly away from the body</strong>, not tight up against your back leg. A small gap between bat and body during the back-lift gives the hands room to adjust the bat path as the ball moves.
+                    </p>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-3 text-sm">
+                        <p className="text-emerald-300 text-xs font-bold mb-1">✓ Do</p>
+                        <ul className="text-gray-200 space-y-0.5">
+                          <li>· Lift slightly away from the body</li>
+                          <li>· Bat coming down through second slip — gully line</li>
+                          <li>· Hands free, wrists soft</li>
+                        </ul>
+                      </div>
+                      <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-3 text-sm">
+                        <p className="text-red-300 text-xs font-bold mb-1">✗ Avoid</p>
+                        <ul className="text-gray-200 space-y-0.5">
+                          <li>· Bat pinned tight against the back leg</li>
+                          <li>· Straight-up vertical lift (no room to adjust)</li>
+                          <li>· Stiff wrists locked at the top</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Elbow position */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">💪</span>
+                      Elbow Position — Free, Not Stuck
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      When the ball is moving away from middle stump, your top elbow has to <strong className="text-white">go with the ball</strong> — extend out toward the line. If your elbows are pinned to your body, the elbow can&apos;t lead and the bat ends up swinging across the line of the ball.
+                    </p>
+                    <div className="rounded-md bg-purple-500/10 border-l-2 border-purple-500/60 px-3 py-2 text-xs text-gray-200">
+                      <strong className="text-purple-300">Cue:</strong> &ldquo;Top elbow chases the ball.&rdquo; For an out-swinger going wider, the elbow extends with it. For an in-swinger ducking back in, the elbow stays soft so the hands can work the line.
+                    </div>
+                  </div>
+
+                  {/* Head and balance */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">👤</span>
+                      Head &amp; Balance — Soft, Not Stiff
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      The head and shoulders should sit with a little gap between them and the front leg — <strong className="text-white">never stiff or locked</strong>. A stiff head means the eyes can&apos;t adjust late; a soft head with small gap means you can react to the last 0.2 seconds of swing.
+                    </p>
+                    <p className="text-sm text-gray-300">
+                      Think of it like a boxer&apos;s guard — alert, balanced, ready to move in any direction. Never welded into one position.
+                    </p>
+                  </div>
+
+                  {/* Front foot */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">🦶</span>
+                      Front Foot — Open, Pointing Forward
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      This is the single biggest technical key. The front foot should <strong className="text-white">not be closed</strong> — meaning it shouldn&apos;t point across the line toward fine leg. A closed front foot locks your hips, locks your shoulders, and prevents the bat from coming down on the line of the ball.
+                    </p>
+                    <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                      <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-3 text-sm">
+                        <p className="text-emerald-300 text-xs font-bold mb-1">✓ Open / forward</p>
+                        <ul className="text-gray-200 space-y-0.5">
+                          <li>· Front foot points down the wicket (toward mid-off or extra cover)</li>
+                          <li>· Hips can rotate freely</li>
+                          <li>· Bat has space to come straight through</li>
+                          <li>· Body moves forward toward the ball</li>
+                        </ul>
+                      </div>
+                      <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-3 text-sm">
+                        <p className="text-red-300 text-xs font-bold mb-1">✗ Closed</p>
+                        <ul className="text-gray-200 space-y-0.5">
+                          <li>· Front foot points across toward fine leg</li>
+                          <li>· Hips lock up, can&apos;t rotate</li>
+                          <li>· Bat forced to swing across the line</li>
+                          <li>· LBW + bowled risk explodes</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div className="rounded-md bg-amber-500/10 border-l-2 border-amber-500/60 px-3 py-2 text-xs text-gray-200">
+                      <strong className="text-amber-300">Why this matters most:</strong> if you only fix one thing, fix this. An open front foot lets you play out-swing AND in-swing with the same setup. A closed front foot makes both impossible.
+                    </div>
+                  </div>
+
+                  {/* Out-swing specifically */}
+                  <div className="glass rounded-2xl p-6 border border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-transparent">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">↗️</span>
+                      Playing the Out-swinger
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      Out-swing leaves the right-hander, going away from middle stump toward the slips. The danger shot is reaching for it and edging behind. The way to play it:
+                    </p>
+                    <ul className="text-sm text-gray-200 space-y-2 mb-3">
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">→</span><span><strong className="text-white">Elbow and bat go directly to the ball.</strong> Top elbow extends with the line of the ball; bat follows. Don&apos;t play around the line.</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">→</span><span><strong className="text-white">Play late.</strong> Let the ball come right under your eyes — the later you play it, the less the swing can deceive you.</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">→</span><span><strong className="text-white">Soft hands.</strong> If the ball moves more than expected and finds the edge, soft hands drop the ball short of the slips.</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">→</span><span><strong className="text-white">Leave the wide one.</strong> If the ball is shaping past 5th-stump line, leave it. Discipline on out-swing is half the battle.</span></li>
+                    </ul>
+                    <div className="rounded-md bg-emerald-500/10 border-l-2 border-emerald-500/60 px-3 py-2 text-xs text-gray-200">
+                      <strong className="text-emerald-300">Trigger thought:</strong> &ldquo;Elbow toward the ball, hands soft, play late.&rdquo;
+                    </div>
+                  </div>
+
+                  {/* In-swing specifically */}
+                  <div className="glass rounded-2xl p-6 border border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-transparent">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">↘️</span>
+                      Playing the In-swinger
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      In-swing comes back into the right-hander, threatening LBW and bowled. The danger shot is jamming the bat down with closed hips and getting hit on the pad. The way to play it:
+                    </p>
+                    <ul className="text-sm text-gray-200 space-y-2 mb-3">
+                      <li className="flex gap-2"><span className="text-amber-400 flex-shrink-0">→</span><span><strong className="text-white">Front foot stays open.</strong> Same setup as for out-swing — front foot points forward, hips free to rotate. Closed front foot is what gets you LBW.</span></li>
+                      <li className="flex gap-2"><span className="text-amber-400 flex-shrink-0">→</span><span><strong className="text-white">Bat lifted slightly away.</strong> So the hands can bring the bat down straight, not in an arc that exposes the pad.</span></li>
+                      <li className="flex gap-2"><span className="text-amber-400 flex-shrink-0">→</span><span><strong className="text-white">Play through the line, not around it.</strong> Trust the bat down the wicket; the ball will hit the bat first if your shape is right.</span></li>
+                      <li className="flex gap-2"><span className="text-amber-400 flex-shrink-0">→</span><span><strong className="text-white">Forward movement.</strong> Body weight goes into the ball, not back away from it. Pressing forward shortens the swing window before it can move.</span></li>
+                    </ul>
+                    <div className="rounded-md bg-amber-500/10 border-l-2 border-amber-500/60 px-3 py-2 text-xs text-gray-200">
+                      <strong className="text-amber-300">Trigger thought:</strong> &ldquo;Front foot forward, bat away, play straight.&rdquo;
+                    </div>
+                  </div>
+
+                  {/* Common mistakes */}
+                  <div className="glass rounded-2xl p-6 border border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <span className="text-2xl">⚠️</span>
+                      Common Mistakes Against Swing
+                    </h4>
+                    <ul className="text-sm text-gray-300 space-y-2">
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Closed front foot.</strong> The single biggest cause of swing dismissals. Hips lock, bat goes across the line, ball wins.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Elbow pinned to the body.</strong> Bat can&apos;t track the ball, edge to slip on out-swing.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Bat lifted tight to the back leg.</strong> No room to adjust the bat path as the ball moves late.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Head stiff, leaning across.</strong> Eyes can&apos;t adjust to late movement; balance gone.</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span><strong className="text-white">Going back when you should be coming forward.</strong> Back-foot retreat against swing gives the ball maximum window to move.</span></li>
+                    </ul>
+                  </div>
+
+                  {/* Checklist */}
+                  <div className="rounded-2xl p-6 border-2 border-purple-500/40 bg-gradient-to-br from-purple-500/10 to-transparent">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span className="text-2xl">✅</span>
+                      Playing Swing Checklist
+                    </h4>
+                    <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">Setup</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>☐ Small gap — bat slightly away from body</li>
+                          <li>☐ Elbows free, not pinned</li>
+                          <li>☐ Head soft, not stiff</li>
+                          <li>☐ Front foot pointing forward, not across</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">Movement</p>
+                        <ul className="text-gray-300 space-y-1">
+                          <li>☐ Forward weight, into the ball</li>
+                          <li>☐ Top elbow tracks the ball line</li>
+                          <li>☐ Bat comes down straight, not across</li>
+                          <li>☐ Play late, under the eyes</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Key takeaway */}
+                  <div className="rounded-2xl p-6 border-2 border-amber-500/40 bg-gradient-to-br from-amber-500/15 to-purple-500/10">
+                    <p className="text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">⭐ Key takeaway</p>
+                    <p className="text-sm text-gray-200 leading-relaxed">
+                      Playing swing is about <strong className="text-white">openness everywhere</strong> — bat lifted away, elbow free, head soft, front foot forward. A closed position invites swing to win; an open position lets you adjust to late movement. The single fix that helps most: open the front foot. Everything else is built on top of that one habit.
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
