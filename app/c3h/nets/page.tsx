@@ -3161,6 +3161,69 @@ export default function NetsPage() {
                 </div>
               </div>
 
+              {/* Strike Rotation — Four Habits */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🏃</span>
+                  Strike Rotation — Turning Ones Into Twos
+                </h3>
+                <p className="text-sm text-gray-300 mb-4">
+                  Strike rotation is the cheapest source of runs in cricket — and the place where average batters and good ones diverge most. The good ones rotate <strong className="text-white">70-80% of balls they don&apos;t boundary</strong>. Four habits get you there.
+                </p>
+
+                <div className="space-y-4">
+                  {/* Habit 1 — Play on merit */}
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-4">
+                    <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-1">Habit 1 — Play on merit, even on pre-meditative movement</p>
+                    <p className="text-sm text-gray-300">
+                      If you trigger forward or move early expecting a length, you still have to play the ball that <em>actually arrives</em> — not the one you predicted. Pre-meditation is fine; pre-commitment is not. The bat answers to the ball, not the plan.
+                    </p>
+                  </div>
+
+                  {/* Habit 2 — Look for gaps */}
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-4">
+                    <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-1">Habit 2 — Look for gaps, not field placement</p>
+                    <p className="text-sm text-gray-300">
+                      Reading the field by where the <strong className="text-white">fielders</strong> are wastes attention. Read it by where the <strong className="text-white">gaps</strong> are instead. Same field, different focus — gap vision turns dot balls into singles because your bat aims at the empty space, not at the fielder you&apos;re trying to avoid.
+                    </p>
+                  </div>
+
+                  {/* Habit 3 — Watch the ball after contact */}
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-4">
+                    <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-1">Habit 3 — Watch the ball immediately after you hit it</p>
+                    <p className="text-sm text-gray-300 mb-2">
+                      Even on a defensive shot. The moment ball meets bat, your eyes pick up the ball&apos;s direction, speed, and whose hands are coming. That&apos;s how you make a fast, accurate <em>&ldquo;yes&rdquo; / &ldquo;no&rdquo; / &ldquo;wait&rdquo;</em> call.
+                    </p>
+                    <p className="text-sm text-gray-400 italic">
+                      Most missed singles come from batters who look at the bat or the ground after contact and have to find the ball again — by then the fielder is already on it.
+                    </p>
+                  </div>
+
+                  {/* Habit 4 — Head facing the fielder while running */}
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-4">
+                    <p className="text-primary-300 text-xs font-bold uppercase tracking-wider mb-1">Habit 4 — Head faces the fielder catching the ball</p>
+                    <p className="text-sm text-gray-300 mb-2">
+                      While running between wickets, your head should be turned toward the fielder collecting the ball — never tucked down watching your feet. That lets you:
+                    </p>
+                    <ul className="text-sm text-gray-300 space-y-1 ml-3">
+                      <li>· See the throw early and dive / glide accordingly</li>
+                      <li>· Re-call mid-run if the fielder fumbles or rifles a return</li>
+                      <li>· Spot the chance for a second run while the throw is still in the air</li>
+                    </ul>
+                    <p className="text-sm text-amber-300/80 italic mt-2">
+                      Looking forward only sees what&apos;s already decided. Looking at the fielder reads what&apos;s about to happen.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-5 p-4 rounded-xl bg-primary-500/10 border border-primary-500/30">
+                  <p className="text-sm text-primary-300 font-bold mb-1">✅ Takeaway</p>
+                  <p className="text-sm text-gray-200">
+                    Strike rotation isn&apos;t about hitting boundaries on more balls. It&apos;s four habits stacked: <strong className="text-white">play the ball that arrives, look for gaps, watch the ball after contact, run with your head on the fielder</strong>. Drill these in nets and every over you bat becomes one or two singles richer.
+                  </p>
+                </div>
+              </div>
+
               {/* 2. Stance & Setup */}
               <div className="glass rounded-2xl p-6 border border-white/10">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
