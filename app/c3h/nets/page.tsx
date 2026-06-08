@@ -770,19 +770,29 @@ export default function NetsPage() {
     );
     const snapshot = await getDocs(q);
     const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Reflection));
-
-    // Auto-delete reflections older than 3 matches (keep last 3 match reflections + all practice)
-    const matchReflections = data.filter(r => r.matchIndex !== 99);
-    const practiceReflections = data.filter(r => r.matchIndex === 99);
-    if (matchReflections.length > 3) {
-      const toDelete = matchReflections.slice(3);
-      for (const r of toDelete) {
-        await deleteDoc(doc(db, 'reflections', r.id));
-      }
-    }
-    const kept = [...matchReflections.slice(0, 3), ...practiceReflections.slice(0, 3)];
-    setReflections(kept);
+    // No auto-deletion. All reflections are preserved for the player
+    // to review, edit, or manually delete. Earlier versions capped this
+    // at "last 3 match + last 3 practice" and silently wiped older
+    // ones from Firestore on load — removed 2026-06-08 per Saad,
+    // because losing match history made it impossible to spot
+    // season-long patterns and removed the player's ability to revisit
+    // older entries.
+    setReflections(data);
     setLoading(false);
+  };
+
+  // Explicit deletion of a single reflection from Firestore.
+  const deleteReflection = async (r: Reflection) => {
+    if (!session?.user?.email) return;
+    const confirmed = typeof window !== 'undefined'
+      && window.confirm(`Delete this reflection?\n\n${r.match} · ${r.date}\n\nThis cannot be undone.`);
+    if (!confirmed) return;
+    try {
+      await deleteDoc(doc(db, 'reflections', r.id));
+      setReflections((cur) => cur.filter((x) => x.id !== r.id));
+    } catch {
+      if (typeof window !== 'undefined') window.alert('Delete failed. Please try again.');
+    }
   };
 
   const loadShotPlan = async () => {
@@ -1771,30 +1781,67 @@ export default function NetsPage() {
                   </button>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {reflections.map((r) => (
-                    <button
-                      key={r.id}
-                      onClick={() => { setSelectedReflection(r); setView('detail'); }}
-                      className="w-full text-left glass rounded-xl p-5 border border-white/10 hover:border-primary-500/30 transition-all"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-white font-bold text-sm">{r.match}</span>
-                        <span className="text-gray-500 text-xs">{r.date}</span>
+                <>
+                  <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                    <p className="text-xs text-gray-500">
+                      {reflections.length} reflection{reflections.length === 1 ? '' : 's'} · all your history is preserved
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    {reflections.map((r) => (
+                      <div
+                        key={r.id}
+                        className="glass rounded-xl p-5 border border-white/10 hover:border-primary-500/30 transition-all"
+                      >
+                        <div className="flex items-start justify-between mb-2 gap-3 flex-wrap">
+                          <button
+                            type="button"
+                            onClick={() => { setSelectedReflection(r); setView('detail'); }}
+                            className="flex-1 min-w-0 text-left"
+                          >
+                            <div className="flex items-center justify-between mb-2 gap-2">
+                              <span className="text-white font-bold text-sm">{r.match}</span>
+                              <span className="text-gray-500 text-xs flex-shrink-0">{r.date}</span>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-400">
+                              <span>Out: {Array.isArray(r.howGotOut) ? r.howGotOut.join(', ') || 'N/A' : r.howGotOut || 'N/A'}</span>
+                              <span>Intent: {r.intentScore}/5</span>
+                              <span className="text-primary-400">{r.mindsetWord || '—'}</span>
+                              {r.updatedAt && r.createdAt && r.updatedAt !== r.createdAt && (
+                                <span className="text-accent-400">
+                                  ✏️ edited{r.editCount && r.editCount > 1 ? ` ×${r.editCount}` : ''}
+                                </span>
+                              )}
+                            </div>
+                          </button>
+                        </div>
+                        <div className="flex items-center gap-2 pt-2 border-t border-white/5 mt-1">
+                          <button
+                            type="button"
+                            onClick={() => { setSelectedReflection(r); setView('detail'); }}
+                            className="text-xs px-3 py-1.5 rounded-md bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10"
+                          >
+                            View
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => beginEdit(r)}
+                            className="text-xs px-3 py-1.5 rounded-md bg-primary-500/15 border border-primary-500/30 text-primary-300 hover:bg-primary-500/25"
+                          >
+                            ✏️ Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => deleteReflection(r)}
+                            className="text-xs px-3 py-1.5 rounded-md bg-red-500/10 border border-red-500/20 text-red-300 hover:bg-red-500/20 ml-auto"
+                          >
+                            🗑 Delete
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-400">
-                        <span>Out: {Array.isArray(r.howGotOut) ? r.howGotOut.join(', ') || 'N/A' : r.howGotOut || 'N/A'}</span>
-                        <span>Intent: {r.intentScore}/5</span>
-                        <span className="text-primary-400">{r.mindsetWord || '—'}</span>
-                        {r.updatedAt && r.createdAt && r.updatedAt !== r.createdAt && (
-                          <span className="text-accent-400">
-                            ✏️ edited{r.editCount && r.editCount > 1 ? ` ×${r.editCount}` : ''}
-                          </span>
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                </>
               )}
               {/* Video Review */}
               <div className="mt-6 glass rounded-xl p-5 border border-accent-500/20">
