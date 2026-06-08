@@ -210,16 +210,24 @@ export interface MatchPlan {
 
   squad: PlayerAssignment[];
 
-  // Batting plan
+  // Batting plan — if batting first (setting a target)
   teamTarget?: number;
-  startSmartTactic?: string; // balls 1-10
-  buildFastTactic?: string; // balls 11-25
-  finishStrongTactic?: string; // balls 25+
+  startSmartTactic?: string; // overs 1-10
+  buildFastTactic?: string; // overs 11-25
+  finishStrongTactic?: string; // overs 25+
 
-  // Bowling plan
+  // Chase plan — if batting second (chasing a target)
+  chaseStandardTactic?: string;   // required run-rate ≤ 5.5/over
+  chaseAggressiveTactic?: string; // required run-rate > 5.5/over
+
+  // Bowling plan — if bowling first (restricting an unknown total)
   powerplayPlan?: string;
   middleOversPlan?: string;
   deathOversPlan?: string;
+
+  // Defending plan — if bowling second (defending a known target)
+  defendBelowParPlan?: string;     // defending under 130 in T30
+  defendParOrAbovePlan?: string;   // defending 130+ in T30
 
   // Mindset & strategy
   mindsetWord?: string;

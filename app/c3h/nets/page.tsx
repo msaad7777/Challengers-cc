@@ -742,6 +742,11 @@ export default function NetsPage() {
   const [mpPowerplayPlan, setMpPowerplayPlan] = useState<string>('');
   const [mpMiddleOversPlan, setMpMiddleOversPlan] = useState<string>('');
   const [mpDeathOversPlan, setMpDeathOversPlan] = useState<string>('');
+  // Chase + defending plans — for batting / bowling second scenarios
+  const [mpChaseStandard, setMpChaseStandard] = useState<string>('');
+  const [mpChaseAggressive, setMpChaseAggressive] = useState<string>('');
+  const [mpDefendBelowPar, setMpDefendBelowPar] = useState<string>('');
+  const [mpDefendParOrAbove, setMpDefendParOrAbove] = useState<string>('');
   const [mpMindsetWord, setMpMindsetWord] = useState<string>('');
   const [mpProcessFocuses, setMpProcessFocuses] = useState<string[]>(['', '', '']);
   const [mpHuddleLine, setMpHuddleLine] = useState<string>('');
@@ -823,6 +828,10 @@ export default function NetsPage() {
         setMpPowerplayPlan(data.powerplayPlan || '');
         setMpMiddleOversPlan(data.middleOversPlan || '');
         setMpDeathOversPlan(data.deathOversPlan || '');
+        setMpChaseStandard(data.chaseStandardTactic || '');
+        setMpChaseAggressive(data.chaseAggressiveTactic || '');
+        setMpDefendBelowPar(data.defendBelowParPlan || '');
+        setMpDefendParOrAbove(data.defendParOrAbovePlan || '');
         setMpMindsetWord(data.mindsetWord || '');
         setMpProcessFocuses([
           data.processFocuses?.[0] || '',
@@ -845,6 +854,10 @@ export default function NetsPage() {
         setMpPowerplayPlan('');
         setMpMiddleOversPlan('');
         setMpDeathOversPlan('');
+        setMpChaseStandard('');
+        setMpChaseAggressive('');
+        setMpDefendBelowPar('');
+        setMpDefendParOrAbove('');
         setMpMindsetWord('');
         setMpProcessFocuses(['', '', '']);
         setMpHuddleLine('');
@@ -878,6 +891,10 @@ export default function NetsPage() {
       powerplayPlan: mpPowerplayPlan || undefined,
       middleOversPlan: mpMiddleOversPlan || undefined,
       deathOversPlan: mpDeathOversPlan || undefined,
+      chaseStandardTactic: mpChaseStandard || undefined,
+      chaseAggressiveTactic: mpChaseAggressive || undefined,
+      defendBelowParPlan: mpDefendBelowPar || undefined,
+      defendParOrAbovePlan: mpDefendParOrAbove || undefined,
       mindsetWord: mpMindsetWord || undefined,
       processFocuses: mpProcessFocuses.filter((f) => f.trim().length > 0),
       huddleLine: mpHuddleLine || undefined,
@@ -2452,53 +2469,97 @@ export default function NetsPage() {
                     </div>
                   )}
 
-                  {/* Batting plan */}
+                  {/* Batting plan — both scenarios */}
                   <div className="glass rounded-2xl p-5 border border-white/10">
-                    <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-2">5. Batting plan</label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3 text-sm">
-                      <div>
-                        <label className="text-gray-400 text-xs block mb-1">Team target (runs)</label>
-                        <input
-                          type="number"
-                          min={0}
-                          value={mpTeamTarget ?? ''}
-                          onChange={(e) => setMpTeamTarget(e.target.value === '' ? undefined : Math.max(0, parseInt(e.target.value, 10) || 0))}
-                          className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm"
-                        />
-                        <p className="text-[10px] text-gray-500 mt-1">Aim: 150+ playing all 30 overs.</p>
+                    <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-3">5. Batting plan — both scenarios</label>
+                    <p className="text-[11px] text-gray-500 -mt-2 mb-4">Fill in both. After the toss, the captain knows which one applies.</p>
+
+                    {/* Batting first */}
+                    <div className="rounded-lg bg-emerald-500/5 border border-emerald-500/30 p-3 mb-3">
+                      <p className="text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">🏏 If we bat first — setting a target</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3 text-sm">
+                        <div>
+                          <label className="text-gray-400 text-xs block mb-1">Team target (runs)</label>
+                          <input
+                            type="number"
+                            min={0}
+                            value={mpTeamTarget ?? ''}
+                            onChange={(e) => setMpTeamTarget(e.target.value === '' ? undefined : Math.max(0, parseInt(e.target.value, 10) || 0))}
+                            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm"
+                          />
+                          <p className="text-[10px] text-gray-500 mt-1">Aim: 150+ playing all 30 overs.</p>
+                        </div>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div>
+                          <label className="text-gray-400 text-xs block mb-1">Start Smart (overs 1-10)</label>
+                          <input type="text" value={mpStartSmart} onChange={(e) => setMpStartSmart(e.target.value)} placeholder="e.g. Rotate strike, leave outside off, defend straight balls, build platform" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                        </div>
+                        <div>
+                          <label className="text-gray-400 text-xs block mb-1">Build Fast (overs 11-22)</label>
+                          <input type="text" value={mpBuildFast} onChange={(e) => setMpBuildFast(e.target.value)} placeholder="e.g. Rotate every ball, target boundaries against spin in scoring zones" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                        </div>
+                        <div>
+                          <label className="text-gray-400 text-xs block mb-1">Finish Strong (overs 23-30)</label>
+                          <input type="text" value={mpFinishStrong} onChange={(e) => setMpFinishStrong(e.target.value)} placeholder="e.g. Pre-pick boundary zones; clear front leg, hit straight; minimum 8 RPO" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                        </div>
                       </div>
                     </div>
-                    <div className="space-y-2 text-sm">
-                      <div>
-                        <label className="text-gray-400 text-xs block mb-1">Start Smart (balls 1-10)</label>
-                        <input type="text" value={mpStartSmart} onChange={(e) => setMpStartSmart(e.target.value)} placeholder="e.g. Rotate strike, leave outside off, defend straight balls" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
-                      </div>
-                      <div>
-                        <label className="text-gray-400 text-xs block mb-1">Build Fast (balls 11-25)</label>
-                        <input type="text" value={mpBuildFast} onChange={(e) => setMpBuildFast(e.target.value)} placeholder="e.g. Hit gaps in cover and midwicket, rotate every ball" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
-                      </div>
-                      <div>
-                        <label className="text-gray-400 text-xs block mb-1">Finish Strong (balls 25+)</label>
-                        <input type="text" value={mpFinishStrong} onChange={(e) => setMpFinishStrong(e.target.value)} placeholder="e.g. Long-on / long-off are open; clear front leg, hit straight" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+
+                    {/* Chasing */}
+                    <div className="rounded-lg bg-amber-500/5 border border-amber-500/30 p-3">
+                      <p className="text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">🎯 If we bat second — chasing a target</p>
+                      <p className="text-[11px] text-gray-500 mb-2">Required run-rate (RR) = runs needed ÷ overs remaining. Pace the chase by RR, not by emotion.</p>
+                      <div className="space-y-2 text-sm">
+                        <div>
+                          <label className="text-gray-400 text-xs block mb-1">Standard chase — required RR ≤ 5.5 / over</label>
+                          <input type="text" value={mpChaseStandard} onChange={(e) => setMpChaseStandard(e.target.value)} placeholder="e.g. Run-a-ball start, build partnership to over 15, lose ≤4 wickets by halfway, accelerate from over 22" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                        </div>
+                        <div>
+                          <label className="text-gray-400 text-xs block mb-1">Aggressive chase — required RR &gt; 5.5 / over</label>
+                          <input type="text" value={mpChaseAggressive} onChange={(e) => setMpChaseAggressive(e.target.value)} placeholder="e.g. Pinch hit early to get ahead of RR; platform by over 12; boundary every over from 18; accept risk" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Bowling plan */}
+                  {/* Bowling plan — both scenarios */}
                   <div className="glass rounded-2xl p-5 border border-white/10">
-                    <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-2">6. Bowling plan</label>
-                    <div className="space-y-2 text-sm">
-                      <div>
-                        <label className="text-gray-400 text-xs block mb-1">Powerplay (overs 1-6)</label>
-                        <input type="text" value={mpPowerplayPlan} onChange={(e) => setMpPowerplayPlan(e.target.value)} placeholder="e.g. Open with pace pair, attack stumps" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                    <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-3">6. Bowling plan — both scenarios</label>
+                    <p className="text-[11px] text-gray-500 -mt-2 mb-4">Fill in both. After we set or chase a target, the captain knows which one applies.</p>
+
+                    {/* Bowling first */}
+                    <div className="rounded-lg bg-blue-500/5 border border-blue-500/30 p-3 mb-3">
+                      <p className="text-blue-300 text-xs font-bold uppercase tracking-wider mb-2">🛡️ If we bowl first — restricting (no target to defend)</p>
+                      <div className="space-y-2 text-sm">
+                        <div>
+                          <label className="text-gray-400 text-xs block mb-1">Powerplay (overs 1-6)</label>
+                          <input type="text" value={mpPowerplayPlan} onChange={(e) => setMpPowerplayPlan(e.target.value)} placeholder="e.g. Open with pace pair, attack stumps, keep fielders up; target wickets" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                        </div>
+                        <div>
+                          <label className="text-gray-400 text-xs block mb-1">Middle overs (7-22)</label>
+                          <input type="text" value={mpMiddleOversPlan} onChange={(e) => setMpMiddleOversPlan(e.target.value)} placeholder="e.g. Spinners from both ends; build dot pressure; target ≤4.5 RPO" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                        </div>
+                        <div>
+                          <label className="text-gray-400 text-xs block mb-1">Death overs (23-30)</label>
+                          <input type="text" value={mpDeathOversPlan} onChange={(e) => setMpDeathOversPlan(e.target.value)} placeholder="e.g. Yorkers + slower balls; protect long boundary; restrict to under 8 RPO" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                        </div>
                       </div>
-                      <div>
-                        <label className="text-gray-400 text-xs block mb-1">Middle overs (7-20)</label>
-                        <input type="text" value={mpMiddleOversPlan} onChange={(e) => setMpMiddleOversPlan(e.target.value)} placeholder="e.g. Spinners from both ends; dry up runs" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
-                      </div>
-                      <div>
-                        <label className="text-gray-400 text-xs block mb-1">Death overs (21-30)</label>
-                        <input type="text" value={mpDeathOversPlan} onChange={(e) => setMpDeathOversPlan(e.target.value)} placeholder="e.g. Yorkers + slower balls; defend boundaries" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                    </div>
+
+                    {/* Defending */}
+                    <div className="rounded-lg bg-red-500/5 border border-red-500/30 p-3">
+                      <p className="text-red-300 text-xs font-bold uppercase tracking-wider mb-2">🔒 If we bowl second — defending our total</p>
+                      <p className="text-[11px] text-gray-500 mb-2">The total we set shapes the field, the line, and the risk we accept.</p>
+                      <div className="space-y-2 text-sm">
+                        <div>
+                          <label className="text-gray-400 text-xs block mb-1">Defending under par (under ~130 in T30)</label>
+                          <input type="text" value={mpDefendBelowPar} onChange={(e) => setMpDefendBelowPar(e.target.value)} placeholder="e.g. Attack from ball one; open with best bowlers; attacking field every over; force errors" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                        </div>
+                        <div>
+                          <label className="text-gray-400 text-xs block mb-1">Defending par or above (~130+)</label>
+                          <input type="text" value={mpDefendParOrAbove} onChange={(e) => setMpDefendParOrAbove(e.target.value)} placeholder="e.g. Bowl tight lines first; restrict scoring in middle; build pressure; protect boundary in death" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                        </div>
                       </div>
                     </div>
                   </div>
