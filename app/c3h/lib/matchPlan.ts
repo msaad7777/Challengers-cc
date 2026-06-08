@@ -17,6 +17,65 @@ export const BATTING_ROLES = [
   'lower-order',
 ] as const;
 
+// T30-tuned (30 overs) responsibility briefs for each batting role.
+// Surfaced inline in the Match Planner so captains/VCs and players see
+// the same definition of what each role actually does at the crease.
+//
+// Phases referenced:
+//   Phase 1 (1-10):  Powerplay + early consolidation
+//   Phase 2 (11-22): Middle overs / build
+//   Phase 3 (23-30): Death / acceleration
+export const BATTING_ROLE_BRIEF: Record<(typeof BATTING_ROLES)[number], {
+  position: string;
+  battingPhase: string;
+  target: string;
+  strikeRate: string;
+  responsibility: string;
+}> = {
+  'opener': {
+    position: '#1-2',
+    battingPhase: 'Overs 1-12',
+    target: '30-60 runs each',
+    strikeRate: '90-110',
+    responsibility: 'Survive the new ball, capitalise on powerplay field restrictions, give the team a platform. At least one opener should bat to over 12-15. Worst case: don\'t get out in the first 3 overs.',
+  },
+  'top-order': {
+    position: '#3-4',
+    battingPhase: 'Overs 5-22',
+    target: '40-70 runs',
+    strikeRate: '90-110',
+    responsibility: 'The most important position. Build a big innings, anchor + rotate, set up the death overs. If a top-order batter is set at over 20, the team usually wins.',
+  },
+  'anchor': {
+    position: '#3-5',
+    battingPhase: 'Overs 5-28',
+    target: '60+ off 70-80 balls',
+    strikeRate: '80-100',
+    responsibility: 'The "stay till the end" specialist. One end stays solid while others attack. Bats the longest innings of the team. Accelerates only in the last 5 overs.',
+  },
+  'pinch-hitter': {
+    position: '#3-5 (situational)',
+    battingPhase: 'Overs 8-18',
+    target: '25-40 off 15-25 balls',
+    strikeRate: '140+',
+    responsibility: 'Mid-innings momentum shifter. Walks in to take down a specific bowler (often spin). High-risk, high-reward. If it works the team explodes; if it fails, next batter consolidates.',
+  },
+  'finisher': {
+    position: '#5-7',
+    battingPhase: 'Overs 22-30',
+    target: '30-60 off 15-30 balls',
+    strikeRate: '140+',
+    responsibility: 'Death-overs specialist. Walks in for the last 5-8 overs to maximise the run rate. Must be able to clear the boundary on demand. Pre-meditated scoring zones.',
+  },
+  'lower-order': {
+    position: '#8-11',
+    battingPhase: 'Overs 25-30 (if needed)',
+    target: '5-25 off 5-20 balls',
+    strikeRate: '110+',
+    responsibility: 'Support the recognised batters. Don\'t waste balls. Hit cleanly when set. Often all-rounders who can bowl too.',
+  },
+};
+
 export const BOWLING_ROLES = [
   'none',
   'opening',
@@ -28,6 +87,61 @@ export const BOWLING_ROLES = [
   'death',
   'part-time',
 ] as const;
+
+// T30-tuned (30 overs) bowling-role briefs. Mirrors BATTING_ROLE_BRIEF
+// so the planner surfaces consistent guidance on both halves of the
+// game. Each bowler bowls a max of 6 overs in T30.
+export const BOWLING_ROLE_BRIEF: Record<(typeof BOWLING_ROLES)[number], {
+  whenBowling: string;
+  oversInGame: string;
+  responsibility: string;
+}> = {
+  'none': {
+    whenBowling: '—',
+    oversInGame: '0',
+    responsibility: 'Specialist batter / fielder only. Will not bowl in this match.',
+  },
+  'opening': {
+    whenBowling: 'Powerplay (overs 1-6)',
+    oversInGame: '4-6 (1-2 spells)',
+    responsibility: 'Take wickets with the new ball; restrict scoring while the field is up. Pace bowlers, swing if conditions help.',
+  },
+  'first-change': {
+    whenBowling: 'Overs 7-12',
+    oversInGame: '3-5',
+    responsibility: 'Continue pressure after the powerplay. Often a medium-pacer or quality seamer. Bridge to the spinners.',
+  },
+  'spinner-off': {
+    whenBowling: 'Middle (overs 8-22)',
+    oversInGame: '5-8',
+    responsibility: 'Off-spin. Ball turns into a right-hander. Build dot-ball pressure. Best vs left-handers when the ball turns away.',
+  },
+  'spinner-leg': {
+    whenBowling: 'Middle (overs 8-22)',
+    oversInGame: '5-8',
+    responsibility: 'Leg-spin. Wicket-taking option. Ball turns away from a right-hander. Attacking field.',
+  },
+  'spinner-orthodox': {
+    whenBowling: 'Middle (overs 8-22)',
+    oversInGame: '5-8',
+    responsibility: 'Left-arm orthodox (SLA). Restrict + take wickets. Ball turns into a right-hander. Consistent.',
+  },
+  'spinner-wrist': {
+    whenBowling: 'Middle (overs 12-22)',
+    oversInGame: '4-7',
+    responsibility: 'Left-arm wrist-spin (chinaman). Specialist wicket-taker. Attacking option vs right-handers.',
+  },
+  'death': {
+    whenBowling: 'Overs 23-30',
+    oversInGame: '4-6',
+    responsibility: 'Yorkers, slower balls, wide yorkers. Best pacer of the side. Defend low totals; restrict acceleration to single-digit overs.',
+  },
+  'part-time': {
+    whenBowling: 'Middle (overs 10-20)',
+    oversInGame: '1-3',
+    responsibility: 'Fill gaps to rest main bowlers. Surprise option, change of angle. Usually a batting all-rounder.',
+  },
+};
 
 export const FIELDING_POSITIONS = [
   'Keeper',

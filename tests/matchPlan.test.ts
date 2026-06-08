@@ -6,6 +6,10 @@ import {
   validatePlan,
   buildHuddleScript,
   getLeadership,
+  BATTING_ROLES,
+  BOWLING_ROLES,
+  BATTING_ROLE_BRIEF,
+  BOWLING_ROLE_BRIEF,
   type MatchPlan,
   type PlayerAssignment,
 } from '@/app/c3h/lib/matchPlan';
@@ -152,6 +156,49 @@ describe('validatePlan', () => {
     );
     const plan = basePlan({ squad });
     expect(validatePlan(plan)).toEqual([]);
+  });
+});
+
+describe('role briefs', () => {
+  it('every batting role has a brief', () => {
+    for (const role of BATTING_ROLES) {
+      const b = BATTING_ROLE_BRIEF[role];
+      expect(b).toBeDefined();
+      expect(b.position.length).toBeGreaterThan(0);
+      expect(b.battingPhase.length).toBeGreaterThan(0);
+      expect(b.target.length).toBeGreaterThan(0);
+      expect(b.strikeRate.length).toBeGreaterThan(0);
+      expect(b.responsibility.length).toBeGreaterThan(20);
+    }
+  });
+
+  it('every bowling role has a brief', () => {
+    for (const role of BOWLING_ROLES) {
+      const b = BOWLING_ROLE_BRIEF[role];
+      expect(b).toBeDefined();
+      expect(b.whenBowling.length).toBeGreaterThan(0);
+      expect(b.oversInGame.length).toBeGreaterThan(0);
+      expect(b.responsibility.length).toBeGreaterThan(10);
+    }
+  });
+
+  it('opener brief mentions powerplay or new ball', () => {
+    const text = (BATTING_ROLE_BRIEF['opener'].responsibility + ' ' + BATTING_ROLE_BRIEF['opener'].battingPhase).toLowerCase();
+    expect(text).toMatch(/powerplay|new ball/);
+  });
+
+  it('finisher brief mentions death overs', () => {
+    const text = (BATTING_ROLE_BRIEF['finisher'].responsibility + ' ' + BATTING_ROLE_BRIEF['finisher'].battingPhase).toLowerCase();
+    expect(text).toMatch(/death|last 5|22-30/);
+  });
+
+  it('death bowler brief mentions yorkers or restricting', () => {
+    const text = BOWLING_ROLE_BRIEF['death'].responsibility.toLowerCase();
+    expect(text).toMatch(/yorker|restrict|defend/);
+  });
+
+  it('opening bowler is in the powerplay', () => {
+    expect(BOWLING_ROLE_BRIEF['opening'].whenBowling.toLowerCase()).toContain('powerplay');
   });
 });
 

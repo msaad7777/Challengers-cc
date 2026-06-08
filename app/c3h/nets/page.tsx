@@ -16,6 +16,8 @@ import {
   type LeagueKey,
   BATTING_ROLES,
   BOWLING_ROLES,
+  BATTING_ROLE_BRIEF,
+  BOWLING_ROLE_BRIEF,
   FIELDING_POSITIONS,
   MINDSET_WORDS,
   detectLeagueFromLabel,
@@ -2182,6 +2184,63 @@ export default function NetsPage() {
                 <p className="text-gray-500 text-sm">Captain + VC pre-match planner. Pick squad, assign roles, lock the strategy, share with the team.</p>
               </div>
 
+              {/* Role Reference — T30-tuned definitions of every batting
+                  and bowling role available in the planner. Collapsible
+                  so it doesn't dominate the form; captains can open it
+                  before assigning roles to refresh on what each one does. */}
+              <details className="glass rounded-2xl border border-white/10 group">
+                <summary className="cursor-pointer p-5 flex items-center justify-between text-left list-none">
+                  <div>
+                    <h3 className="text-base font-bold text-white flex items-center gap-2">
+                      <span className="text-xl">📖</span> Role definitions (T30 — 30 overs)
+                    </h3>
+                    <p className="text-xs text-gray-500 mt-0.5">What each batting + bowling role actually does. Click to expand.</p>
+                  </div>
+                  <svg className="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </summary>
+                <div className="px-5 pb-5 space-y-4 border-t border-white/10 pt-4">
+                  <div>
+                    <p className="text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">🏏 Batting roles</p>
+                    <div className="space-y-2">
+                      {(['opener', 'top-order', 'anchor', 'pinch-hitter', 'finisher', 'lower-order'] as const).map((r) => {
+                        const b = BATTING_ROLE_BRIEF[r];
+                        return (
+                          <div key={r} className="rounded-lg bg-white/3 border border-white/5 p-3 text-xs">
+                            <div className="flex items-baseline justify-between flex-wrap gap-2 mb-1">
+                              <span className="text-emerald-200 font-bold">{r}</span>
+                              <span className="text-gray-500">{b.position} · {b.battingPhase} · target {b.target} · SR {b.strikeRate}</span>
+                            </div>
+                            <p className="text-gray-300 leading-snug">{b.responsibility}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-blue-300 text-xs font-bold uppercase tracking-wider mb-2">🎯 Bowling roles (max 6 overs per bowler in T30)</p>
+                    <div className="space-y-2">
+                      {(['opening', 'first-change', 'spinner-off', 'spinner-leg', 'spinner-orthodox', 'spinner-wrist', 'death', 'part-time'] as const).map((r) => {
+                        const b = BOWLING_ROLE_BRIEF[r];
+                        return (
+                          <div key={r} className="rounded-lg bg-white/3 border border-white/5 p-3 text-xs">
+                            <div className="flex items-baseline justify-between flex-wrap gap-2 mb-1">
+                              <span className="text-blue-200 font-bold">{r}</span>
+                              <span className="text-gray-500">{b.whenBowling} · {b.oversInGame} overs</span>
+                            </div>
+                            <p className="text-gray-300 leading-snug">{b.responsibility}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3 text-xs text-amber-100">
+                    <strong className="text-amber-300">T30 phases:</strong> Phase 1 (overs 1-10, powerplay + early consolidation) · Phase 2 (overs 11-22, middle / build) · Phase 3 (overs 23-30, death / acceleration). The role assignments here should map players to the phase where they bat or bowl best.
+                  </div>
+                </div>
+              </details>
+
               {/* Match selection */}
               <div className="glass rounded-2xl p-5 border border-white/10">
                 <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-2">1. Select match</label>
@@ -2363,6 +2422,30 @@ export default function NetsPage() {
                               placeholder="Specific instruction for this player (optional)"
                               className="mt-2 w-full px-2 py-1.5 bg-white/5 border border-white/10 rounded text-white text-xs"
                             />
+                            {/* Inline role briefs — show the T30-tuned
+                                responsibility for whichever batting +
+                                bowling role this player is assigned, so
+                                the captain and the player both see what
+                                the role actually means at the crease /
+                                with the ball. */}
+                            {(p.battingRole || p.bowlingRole) && (
+                              <div className="mt-2 space-y-1.5">
+                                {p.battingRole && BATTING_ROLE_BRIEF[p.battingRole] && (
+                                  <div className="rounded bg-emerald-500/10 border-l-2 border-emerald-500/60 px-2.5 py-1.5 text-[11px] text-gray-200 leading-snug">
+                                    <span className="text-emerald-300 font-semibold">{p.battingRole}</span>
+                                    <span className="text-gray-500"> · {BATTING_ROLE_BRIEF[p.battingRole].position} · {BATTING_ROLE_BRIEF[p.battingRole].battingPhase} · target {BATTING_ROLE_BRIEF[p.battingRole].target} · SR {BATTING_ROLE_BRIEF[p.battingRole].strikeRate}</span>
+                                    <div className="mt-0.5 text-gray-300">{BATTING_ROLE_BRIEF[p.battingRole].responsibility}</div>
+                                  </div>
+                                )}
+                                {p.bowlingRole && p.bowlingRole !== 'none' && BOWLING_ROLE_BRIEF[p.bowlingRole] && (
+                                  <div className="rounded bg-blue-500/10 border-l-2 border-blue-500/60 px-2.5 py-1.5 text-[11px] text-gray-200 leading-snug">
+                                    <span className="text-blue-300 font-semibold">{p.bowlingRole}</span>
+                                    <span className="text-gray-500"> · {BOWLING_ROLE_BRIEF[p.bowlingRole].whenBowling} · {BOWLING_ROLE_BRIEF[p.bowlingRole].oversInGame} overs</span>
+                                    <div className="mt-0.5 text-gray-300">{BOWLING_ROLE_BRIEF[p.bowlingRole].responsibility}</div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
