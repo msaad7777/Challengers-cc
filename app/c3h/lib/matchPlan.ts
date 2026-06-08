@@ -257,6 +257,21 @@ export function detectLeagueFromLabel(label: string): LeagueKey {
   return 'Other';
 }
 
+// ── Pre-fill templates ────────────────────────────────────────────
+// Opinionated T30 batting-first template the captain can apply with
+// one click to pre-fill the batting-plan fields. Editable after that.
+// Source: CCC coaching playbook 2026 — adapted from ODI structure,
+// compressed for the 30-over format.
+export const T30_BATTING_FIRST_TEMPLATE = {
+  teamTarget: 150,
+  startSmartTactic:
+    'Protect wickets, target 5.5 RPO (~55 by over 10). Openers: one attacks the powerplay, one anchors. Lose 0-1 wicket by over 10.',
+  buildFastTactic:
+    'Target 6.5 RPO. Rotate every ball; boundaries in your scoring zones. Top order bats deep; finishers must be in by over 22-23. No more than 4 wickets down by over 15.',
+  finishStrongTactic:
+    'Target 10 RPO. Finishers clear boundaries on demand — pre-pick the short side. All-out is acceptable; runs over wickets in the last 8 overs.',
+};
+
 // Default captain + VC assignments per league (current season).
 // Single source of truth for the Match Planner pre-fill. Keep in
 // sync with the `Captains/VCs today` comment block in lib/c3h-access.ts.

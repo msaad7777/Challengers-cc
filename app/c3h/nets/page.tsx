@@ -20,6 +20,7 @@ import {
   BOWLING_ROLE_BRIEF,
   FIELDING_POSITIONS,
   MINDSET_WORDS,
+  T30_BATTING_FIRST_TEMPLATE,
   detectLeagueFromLabel,
   getPlayingXI,
   getTwelfthMan,
@@ -2641,7 +2642,34 @@ export default function NetsPage() {
 
                     {/* Batting first */}
                     <div className="rounded-lg bg-emerald-500/5 border border-emerald-500/30 p-3 mb-3">
-                      <p className="text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">🏏 If we bat first — setting a target</p>
+                      <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+                        <p className="text-emerald-300 text-xs font-bold uppercase tracking-wider">🏏 If we bat first — setting a target</p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            // Confirm before overwriting, so a captain
+                            // who has already filled in their own plan
+                            // doesn't lose it accidentally.
+                            const hasContent =
+                              (mpTeamTarget !== undefined && mpTeamTarget !== 150) ||
+                              mpStartSmart.trim().length > 0 ||
+                              mpBuildFast.trim().length > 0 ||
+                              mpFinishStrong.trim().length > 0;
+                            const confirmed = !hasContent ||
+                              (typeof window !== 'undefined'
+                                && window.confirm('Apply the T30 batting-first template? This will overwrite the current target and phase tactics. You can still edit any field after.'));
+                            if (!confirmed) return;
+                            setMpTeamTarget(T30_BATTING_FIRST_TEMPLATE.teamTarget);
+                            setMpStartSmart(T30_BATTING_FIRST_TEMPLATE.startSmartTactic);
+                            setMpBuildFast(T30_BATTING_FIRST_TEMPLATE.buildFastTactic);
+                            setMpFinishStrong(T30_BATTING_FIRST_TEMPLATE.finishStrongTactic);
+                          }}
+                          className="text-[11px] px-2.5 py-1 rounded-md bg-emerald-500/20 border border-emerald-500/40 text-emerald-200 hover:bg-emerald-500/30 font-semibold"
+                          title="Pre-fill target + 3-phase tactics with the standard T30 batting-first playbook"
+                        >
+                          ⚡ Apply T30 template
+                        </button>
+                      </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3 text-sm">
                         <div>
                           <label className="text-gray-400 text-xs block mb-1">Team target (runs)</label>

@@ -10,6 +10,7 @@ import {
   BOWLING_ROLES,
   BATTING_ROLE_BRIEF,
   BOWLING_ROLE_BRIEF,
+  T30_BATTING_FIRST_TEMPLATE,
   type MatchPlan,
   type PlayerAssignment,
 } from '@/app/c3h/lib/matchPlan';
@@ -156,6 +157,36 @@ describe('validatePlan', () => {
     );
     const plan = basePlan({ squad });
     expect(validatePlan(plan)).toEqual([]);
+  });
+});
+
+describe('T30_BATTING_FIRST_TEMPLATE', () => {
+  it('uses a 150 team target as the default', () => {
+    expect(T30_BATTING_FIRST_TEMPLATE.teamTarget).toBe(150);
+  });
+
+  it('Start Smart mentions wicket protection + ~5.5 RPO', () => {
+    const t = T30_BATTING_FIRST_TEMPLATE.startSmartTactic.toLowerCase();
+    expect(t).toContain('protect');
+    expect(t).toMatch(/5\.5|rpo|wicket/);
+  });
+
+  it('Build Fast mentions ~6.5 RPO + finishers in by over 22-23', () => {
+    const t = T30_BATTING_FIRST_TEMPLATE.buildFastTactic.toLowerCase();
+    expect(t).toContain('6.5');
+    expect(t).toMatch(/finisher|over 22|over 23/);
+  });
+
+  it('Finish Strong mentions death-overs intent (~10 RPO + boundary)', () => {
+    const t = T30_BATTING_FIRST_TEMPLATE.finishStrongTactic.toLowerCase();
+    expect(t).toMatch(/10 rpo|10 \/ over/);
+    expect(t).toContain('boundar');
+  });
+
+  it('every tactic is a non-empty sentence (>40 chars) so it is useful in the planner', () => {
+    expect(T30_BATTING_FIRST_TEMPLATE.startSmartTactic.length).toBeGreaterThan(40);
+    expect(T30_BATTING_FIRST_TEMPLATE.buildFastTactic.length).toBeGreaterThan(40);
+    expect(T30_BATTING_FIRST_TEMPLATE.finishStrongTactic.length).toBeGreaterThan(40);
   });
 });
 
