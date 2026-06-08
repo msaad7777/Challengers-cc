@@ -87,6 +87,26 @@ service cloud.firestore {
       allow write: if authed();
     }
 
+    // ── Match plans (captain + VC pre-match planning) ─────────────────────
+    // One plan per match, keyed by matchId. Authored by captains/VCs;
+    // any authenticated user can read so players see their role before
+    // the match. Captain/VC enforcement happens at the app layer (the UI
+    // only renders the Match Plan tab for users where isC3HCaptain()
+    // returns true). Append-only-ish: any captain can update; deletion
+    // disallowed via client to preserve historical plans.
+    match /match_plans/{matchId} {
+      allow read: if authed();
+      allow create: if authed()
+        && request.resource.data.keys().hasAll(['matchId', 'matchLabel', 'createdBy', 'createdAt'])
+        && request.resource.data.matchId == matchId
+        && isString(request.resource.data.matchId)
+        && isString(request.resource.data.matchLabel)
+        && isString(request.resource.data.createdBy);
+      allow update: if authed()
+        && request.resource.data.matchId == matchId;
+      allow delete: if false;
+    }
+
     // ── Nets reflections (private to player + captains) ───────────────────
     match /reflections/{reflectionId} {
       allow read: if authed();

@@ -10,6 +10,22 @@ import Link from 'next/link';
 import { getBattingStats, type Innings, type Match } from '../scorer/types';
 import { generateCoachInsight } from '../lib/coachInsight';
 import { generateNextMatchInsight } from '../lib/nextMatchInsight';
+import {
+  type MatchPlan,
+  type PlayerAssignment,
+  type LeagueKey,
+  BATTING_ROLES,
+  BOWLING_ROLES,
+  FIELDING_POSITIONS,
+  MINDSET_WORDS,
+  detectLeagueFromLabel,
+  getPlayingXI,
+  getTwelfthMan,
+  validatePlan,
+  buildHuddleScript,
+} from '../lib/matchPlan';
+import { EMAIL_TO_PLAYER } from '@/lib/c3h-roster';
+import { isC3HCaptain } from '@/lib/c3h-access';
 
 // Map scorer's wicket type to the reflection's HOW_GOT_OUT_OPTIONS
 function mapScorerWicketToReflection(scorerHowOut: string): string {
@@ -637,7 +653,7 @@ function isMatchAvailable(matchDate: string): boolean {
 export default function NetsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner' | 'training' | 'principles' | 'shot-mechanics' | 'visual-training'>('list');
+  const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner' | 'training' | 'principles' | 'shot-mechanics' | 'visual-training' | 'match-plan'>('list');
   // Selected shot inside the Shot Mechanics view. Starts on the
   // foundational "Head Over the Ball" entry since it's the base
   // layer every other shot builds on; future shots slot in below.
@@ -706,6 +722,30 @@ export default function NetsPage() {
   const [plannerSaving, setPlannerSaving] = useState(false);
   const [plannerLoaded, setPlannerLoaded] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
+
+  // Match Plan state — captains/VCs build per-match squad + roles + plan.
+  const [mpMatchId, setMpMatchId] = useState<string>('');
+  const [mpMatchLabel, setMpMatchLabel] = useState<string>('');
+  const [mpLeague, setMpLeague] = useState<LeagueKey>('Other');
+  const [mpOpponent, setMpOpponent] = useState<string>('');
+  const [mpVenue, setMpVenue] = useState<string>('');
+  const [mpCaptainName, setMpCaptainName] = useState<string>('');
+  const [mpVcName, setMpVcName] = useState<string>('');
+  const [mpSquad, setMpSquad] = useState<PlayerAssignment[]>([]);
+  const [mpTeamTarget, setMpTeamTarget] = useState<number | undefined>(150);
+  const [mpStartSmart, setMpStartSmart] = useState<string>('');
+  const [mpBuildFast, setMpBuildFast] = useState<string>('');
+  const [mpFinishStrong, setMpFinishStrong] = useState<string>('');
+  const [mpPowerplayPlan, setMpPowerplayPlan] = useState<string>('');
+  const [mpMiddleOversPlan, setMpMiddleOversPlan] = useState<string>('');
+  const [mpDeathOversPlan, setMpDeathOversPlan] = useState<string>('');
+  const [mpMindsetWord, setMpMindsetWord] = useState<string>('');
+  const [mpProcessFocuses, setMpProcessFocuses] = useState<string[]>(['', '', '']);
+  const [mpHuddleLine, setMpHuddleLine] = useState<string>('');
+  const [mpStatus, setMpStatus] = useState<MatchPlan['status']>('draft');
+  const [mpLoading, setMpLoading] = useState<boolean>(false);
+  const [mpSaving, setMpSaving] = useState<boolean>(false);
+  const [mpSaveStatus, setMpSaveStatus] = useState<'idle' | 'saved' | 'error'>('idle');
   const [wagonLHB, setWagonLHB] = useState(false);
 
   useEffect(() => {
@@ -756,6 +796,119 @@ export default function NetsPage() {
       updatedAt: new Date().toISOString(),
     });
     setTimeout(() => setPlannerSaving(false), 500);
+  };
+
+  // ── Match Plan load/save ────────────────────────────────────────
+  const loadMatchPlan = async (matchId: string) => {
+    if (!matchId) return;
+    setMpLoading(true);
+    try {
+      const planDoc = await getDoc(doc(db, 'match_plans', matchId));
+      if (planDoc.exists()) {
+        const data = planDoc.data() as MatchPlan;
+        setMpMatchLabel(data.matchLabel || '');
+        setMpLeague(data.league || 'Other');
+        setMpOpponent(data.opponent || '');
+        setMpVenue(data.venue || '');
+        setMpCaptainName(data.captainName || '');
+        setMpVcName(data.vcName || '');
+        setMpSquad(data.squad || []);
+        setMpTeamTarget(data.teamTarget ?? 150);
+        setMpStartSmart(data.startSmartTactic || '');
+        setMpBuildFast(data.buildFastTactic || '');
+        setMpFinishStrong(data.finishStrongTactic || '');
+        setMpPowerplayPlan(data.powerplayPlan || '');
+        setMpMiddleOversPlan(data.middleOversPlan || '');
+        setMpDeathOversPlan(data.deathOversPlan || '');
+        setMpMindsetWord(data.mindsetWord || '');
+        setMpProcessFocuses([
+          data.processFocuses?.[0] || '',
+          data.processFocuses?.[1] || '',
+          data.processFocuses?.[2] || '',
+        ]);
+        setMpHuddleLine(data.huddleLine || '');
+        setMpStatus(data.status || 'draft');
+      } else {
+        // Reset to fresh plan
+        setMpMatchLabel('');
+        setMpLeague(detectLeagueFromLabel(''));
+        setMpOpponent('');
+        setMpVenue('');
+        setMpSquad([]);
+        setMpTeamTarget(150);
+        setMpStartSmart('');
+        setMpBuildFast('');
+        setMpFinishStrong('');
+        setMpPowerplayPlan('');
+        setMpMiddleOversPlan('');
+        setMpDeathOversPlan('');
+        setMpMindsetWord('');
+        setMpProcessFocuses(['', '', '']);
+        setMpHuddleLine('');
+        setMpStatus('draft');
+      }
+    } catch {
+      /* swallow — keep current form state */
+    } finally {
+      setMpLoading(false);
+    }
+  };
+
+  const saveMatchPlan = async () => {
+    if (!session?.user?.email || !mpMatchId) return;
+    setMpSaving(true);
+    setMpSaveStatus('idle');
+    const now = new Date().toISOString();
+    const plan: MatchPlan = {
+      matchId: mpMatchId,
+      matchLabel: mpMatchLabel,
+      league: mpLeague,
+      opponent: mpOpponent || undefined,
+      venue: mpVenue || undefined,
+      captainName: mpCaptainName || undefined,
+      vcName: mpVcName || undefined,
+      squad: mpSquad,
+      teamTarget: mpTeamTarget,
+      startSmartTactic: mpStartSmart || undefined,
+      buildFastTactic: mpBuildFast || undefined,
+      finishStrongTactic: mpFinishStrong || undefined,
+      powerplayPlan: mpPowerplayPlan || undefined,
+      middleOversPlan: mpMiddleOversPlan || undefined,
+      deathOversPlan: mpDeathOversPlan || undefined,
+      mindsetWord: mpMindsetWord || undefined,
+      processFocuses: mpProcessFocuses.filter((f) => f.trim().length > 0),
+      huddleLine: mpHuddleLine || undefined,
+      status: mpStatus,
+      createdBy: session.user.email.toLowerCase(),
+      createdAt: now,
+      updatedAt: now,
+      updatedBy: session.user.email.toLowerCase(),
+    };
+    try {
+      await setDoc(doc(db, 'match_plans', mpMatchId), plan, { merge: true });
+      setMpSaveStatus('saved');
+      setTimeout(() => setMpSaveStatus('idle'), 2000);
+    } catch {
+      setMpSaveStatus('error');
+    } finally {
+      setMpSaving(false);
+    }
+  };
+
+  // Add/remove a player from the squad. roster = EMAIL_TO_PLAYER map.
+  const toggleSquadPlayer = (email: string, playerName: string) => {
+    setMpSquad((cur) => {
+      const exists = cur.find((p) => p.email === email);
+      if (exists) {
+        return cur.filter((p) => p.email !== email);
+      }
+      if (cur.length >= 12) return cur; // hard cap at 12
+      return [...cur, { playerName, email, battingOrder: cur.length + 1 }];
+    });
+  };
+
+  const updateSquadAssignment = (email: string, patch: Partial<PlayerAssignment>) => {
+    setMpSquad((cur) => cur.map((p) => (p.email === email ? { ...p, ...patch } : p)));
   };
 
   const toggleShotConfidence = (shotName: string) => {
@@ -1257,6 +1410,16 @@ export default function NetsPage() {
               >
                 Shot Planner
               </button>
+              {isC3HCaptain(session?.user?.email) && (
+                <button
+                  onClick={() => setView(view === 'match-plan' ? 'list' : 'match-plan')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
+                    view === 'match-plan' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
+                  }`}
+                >
+                  Match Plan
+                </button>
+              )}
               {patterns && (
                 <button
                   onClick={() => setView(view === 'patterns' ? 'list' : 'patterns')}
@@ -2006,6 +2169,353 @@ export default function NetsPage() {
                 </button>
               </div>
             </>
+          )}
+
+          {/* MATCH PLAN VIEW */}
+          {view === 'match-plan' && (
+            <div className="space-y-6">
+              <button onClick={() => setView('list')} className="text-gray-500 text-sm hover:text-primary-400">&larr; Back to reflections</button>
+
+              <div className="text-center mb-2">
+                <h2 className="text-2xl font-bold text-white">Match <span className="gradient-text">Plan</span></h2>
+                <p className="text-gray-500 text-sm">Captain + VC pre-match planner. Pick squad, assign roles, lock the strategy, share with the team.</p>
+              </div>
+
+              {/* Match selection */}
+              <div className="glass rounded-2xl p-5 border border-white/10">
+                <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-2">1. Select match</label>
+                <select
+                  value={mpMatchId}
+                  onChange={(e) => {
+                    const id = e.target.value;
+                    setMpMatchId(id);
+                    const m = MATCHES.find((mm) => mm.label === id);
+                    if (m) {
+                      setMpMatchLabel(m.label);
+                      setMpLeague(detectLeagueFromLabel(m.label));
+                      // Extract opponent from labels of the form
+                      // "LPL M3 — vs NLCC (May 31)"
+                      const opp = m.label.match(/—\s*vs\s+(.+?)\s*\(/i)?.[1] ?? '';
+                      setMpOpponent(opp);
+                      setMpVenue(''); // Venue not in MATCHES; user can fill in
+                    }
+                    loadMatchPlan(id);
+                  }}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-emerald-500 text-white text-sm"
+                >
+                  <option value="" className="bg-gray-900">— Choose a match —</option>
+                  {MATCHES.map((m) => (
+                    <option key={m.label} value={m.label} className="bg-gray-900">{m.label}</option>
+                  ))}
+                </select>
+                {mpMatchId && (
+                  <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                    <div><span className="text-gray-500">League:</span> <span className="text-white">{mpLeague}</span></div>
+                    {mpOpponent && <div><span className="text-gray-500">Opponent:</span> <span className="text-white">{mpOpponent}</span></div>}
+                    {mpVenue && <div><span className="text-gray-500">Venue:</span> <span className="text-white">{mpVenue}</span></div>}
+                  </div>
+                )}
+              </div>
+
+              {mpMatchId && (
+                <>
+                  {/* Captain + VC */}
+                  <div className="glass rounded-2xl p-5 border border-white/10">
+                    <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-2">2. Captain &amp; Vice-Captain</label>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <label className="text-gray-400 text-xs block mb-1">Captain</label>
+                        <input
+                          type="text"
+                          value={mpCaptainName}
+                          onChange={(e) => setMpCaptainName(e.target.value)}
+                          placeholder="e.g. Tarek Islam"
+                          className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-emerald-500 text-white text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-gray-400 text-xs block mb-1">Vice-captain</label>
+                        <input
+                          type="text"
+                          value={mpVcName}
+                          onChange={(e) => setMpVcName(e.target.value)}
+                          placeholder="e.g. Mohammed Saad"
+                          className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-emerald-500 text-white text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Squad selection */}
+                  <div className="glass rounded-2xl p-5 border border-white/10">
+                    <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-2">3. Squad (pick up to 12 — 11 + twelfth man)</label>
+                    <p className="text-xs text-gray-500 mb-3">Current selection: {mpSquad.length} / 12</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {Array.from(new Set(Object.values(EMAIL_TO_PLAYER))).sort().map((name) => {
+                        const email = Object.entries(EMAIL_TO_PLAYER).find(([_e, n]) => n === name)?.[0] || '';
+                        const selected = mpSquad.some((p) => p.email === email);
+                        return (
+                          <button
+                            key={email}
+                            type="button"
+                            onClick={() => toggleSquadPlayer(email, name)}
+                            disabled={!selected && mpSquad.length >= 12}
+                            className={`text-xs px-3 py-2 rounded-lg border text-left transition-all ${
+                              selected
+                                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 font-semibold'
+                                : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed'
+                            }`}
+                          >
+                            {selected ? '✓ ' : ''}{name}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Per-player role assignment */}
+                  {mpSquad.length > 0 && (
+                    <div className="glass rounded-2xl p-5 border border-white/10">
+                      <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-3">4. Player roles</label>
+                      <p className="text-xs text-gray-500 mb-3">For each selected player, set batting order (1-11, or 12 for twelfth man) and role tags. Every player should know their role before the match.</p>
+                      <div className="space-y-3">
+                        {mpSquad.map((p) => (
+                          <div key={p.email} className="rounded-lg bg-white/3 border border-white/10 p-3">
+                            <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
+                              <div className="font-semibold text-white">{p.playerName}</div>
+                              <label className="text-xs text-gray-400 flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  checked={!!p.isWicketkeeper}
+                                  onChange={(e) => updateSquadAssignment(p.email, { isWicketkeeper: e.target.checked })}
+                                  className="accent-emerald-500"
+                                />
+                                Wicketkeeper
+                              </label>
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                              <div>
+                                <label className="text-gray-500 block mb-0.5">Batting order</label>
+                                <input
+                                  type="number"
+                                  min={1}
+                                  max={12}
+                                  value={p.battingOrder ?? ''}
+                                  onChange={(e) => {
+                                    const v = e.target.value;
+                                    updateSquadAssignment(p.email, { battingOrder: v === '' ? undefined : Math.max(1, Math.min(12, parseInt(v, 10) || 0)) });
+                                  }}
+                                  className="w-full px-2 py-1.5 bg-white/5 border border-white/10 rounded text-white"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-gray-500 block mb-0.5">Batting role</label>
+                                <select
+                                  value={p.battingRole || ''}
+                                  onChange={(e) => updateSquadAssignment(p.email, { battingRole: (e.target.value || undefined) as PlayerAssignment['battingRole'] })}
+                                  className="w-full px-2 py-1.5 bg-white/5 border border-white/10 rounded text-white"
+                                >
+                                  <option value="" className="bg-gray-900">—</option>
+                                  {BATTING_ROLES.map((r) => (
+                                    <option key={r} value={r} className="bg-gray-900">{r}</option>
+                                  ))}
+                                </select>
+                              </div>
+                              <div>
+                                <label className="text-gray-500 block mb-0.5">Bowling role</label>
+                                <select
+                                  value={p.bowlingRole || ''}
+                                  onChange={(e) => updateSquadAssignment(p.email, { bowlingRole: (e.target.value || undefined) as PlayerAssignment['bowlingRole'] })}
+                                  className="w-full px-2 py-1.5 bg-white/5 border border-white/10 rounded text-white"
+                                >
+                                  <option value="" className="bg-gray-900">—</option>
+                                  {BOWLING_ROLES.map((r) => (
+                                    <option key={r} value={r} className="bg-gray-900">{r}</option>
+                                  ))}
+                                </select>
+                              </div>
+                              <div>
+                                <label className="text-gray-500 block mb-0.5">Fielding</label>
+                                <select
+                                  value={p.fieldingPosition || ''}
+                                  onChange={(e) => updateSquadAssignment(p.email, { fieldingPosition: e.target.value || undefined })}
+                                  className="w-full px-2 py-1.5 bg-white/5 border border-white/10 rounded text-white"
+                                >
+                                  <option value="" className="bg-gray-900">—</option>
+                                  {FIELDING_POSITIONS.map((f) => (
+                                    <option key={f} value={f} className="bg-gray-900">{f}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                            <input
+                              type="text"
+                              value={p.notes || ''}
+                              onChange={(e) => updateSquadAssignment(p.email, { notes: e.target.value || undefined })}
+                              placeholder="Specific instruction for this player (optional)"
+                              className="mt-2 w-full px-2 py-1.5 bg-white/5 border border-white/10 rounded text-white text-xs"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Batting plan */}
+                  <div className="glass rounded-2xl p-5 border border-white/10">
+                    <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-2">5. Batting plan</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3 text-sm">
+                      <div>
+                        <label className="text-gray-400 text-xs block mb-1">Team target (runs)</label>
+                        <input
+                          type="number"
+                          min={0}
+                          value={mpTeamTarget ?? ''}
+                          onChange={(e) => setMpTeamTarget(e.target.value === '' ? undefined : Math.max(0, parseInt(e.target.value, 10) || 0))}
+                          className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm"
+                        />
+                        <p className="text-[10px] text-gray-500 mt-1">Aim: 150+ playing all 30 overs.</p>
+                      </div>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <div>
+                        <label className="text-gray-400 text-xs block mb-1">Start Smart (balls 1-10)</label>
+                        <input type="text" value={mpStartSmart} onChange={(e) => setMpStartSmart(e.target.value)} placeholder="e.g. Rotate strike, leave outside off, defend straight balls" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                      </div>
+                      <div>
+                        <label className="text-gray-400 text-xs block mb-1">Build Fast (balls 11-25)</label>
+                        <input type="text" value={mpBuildFast} onChange={(e) => setMpBuildFast(e.target.value)} placeholder="e.g. Hit gaps in cover and midwicket, rotate every ball" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                      </div>
+                      <div>
+                        <label className="text-gray-400 text-xs block mb-1">Finish Strong (balls 25+)</label>
+                        <input type="text" value={mpFinishStrong} onChange={(e) => setMpFinishStrong(e.target.value)} placeholder="e.g. Long-on / long-off are open; clear front leg, hit straight" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bowling plan */}
+                  <div className="glass rounded-2xl p-5 border border-white/10">
+                    <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-2">6. Bowling plan</label>
+                    <div className="space-y-2 text-sm">
+                      <div>
+                        <label className="text-gray-400 text-xs block mb-1">Powerplay (overs 1-6)</label>
+                        <input type="text" value={mpPowerplayPlan} onChange={(e) => setMpPowerplayPlan(e.target.value)} placeholder="e.g. Open with pace pair, attack stumps" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                      </div>
+                      <div>
+                        <label className="text-gray-400 text-xs block mb-1">Middle overs (7-20)</label>
+                        <input type="text" value={mpMiddleOversPlan} onChange={(e) => setMpMiddleOversPlan(e.target.value)} placeholder="e.g. Spinners from both ends; dry up runs" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                      </div>
+                      <div>
+                        <label className="text-gray-400 text-xs block mb-1">Death overs (21-30)</label>
+                        <input type="text" value={mpDeathOversPlan} onChange={(e) => setMpDeathOversPlan(e.target.value)} placeholder="e.g. Yorkers + slower balls; defend boundaries" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mindset */}
+                  <div className="rounded-2xl p-5 border-2 border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-transparent">
+                    <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-2">7. Team mindset &amp; process</label>
+                    <div className="mb-3">
+                      <label className="text-gray-400 text-xs block mb-1">Team mindset word for this match</label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {MINDSET_WORDS.map((w) => (
+                          <button
+                            key={w}
+                            type="button"
+                            onClick={() => setMpMindsetWord(mpMindsetWord === w ? '' : w)}
+                            className={`text-xs px-2.5 py-1 rounded-full border ${
+                              mpMindsetWord === w ? 'bg-emerald-500/30 text-emerald-200 border-emerald-500/60 font-semibold' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
+                            }`}
+                          >
+                            {w}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="mb-3">
+                      <label className="text-gray-400 text-xs block mb-1">Three process focuses (what we do, not what we score)</label>
+                      <div className="space-y-1.5">
+                        {[0, 1, 2].map((i) => (
+                          <input
+                            key={i}
+                            type="text"
+                            value={mpProcessFocuses[i]}
+                            onChange={(e) => {
+                              const next = [...mpProcessFocuses];
+                              next[i] = e.target.value;
+                              setMpProcessFocuses(next);
+                            }}
+                            placeholder={i === 0 ? 'e.g. Watch the ball every delivery' : i === 1 ? 'e.g. Rotate strike, don\'t let dots compound' : 'e.g. Back the plan, trust the process'}
+                            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-gray-400 text-xs block mb-1">Captain&apos;s pre-match huddle line (optional)</label>
+                      <input type="text" value={mpHuddleLine} onChange={(e) => setMpHuddleLine(e.target.value)} placeholder="e.g. We've prepared for this. Play with intent and trust the plan." className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                    </div>
+                  </div>
+
+                  {/* Validation + Save */}
+                  {(() => {
+                    const tempPlan: MatchPlan = {
+                      matchId: mpMatchId,
+                      matchLabel: mpMatchLabel,
+                      league: mpLeague,
+                      captainName: mpCaptainName,
+                      vcName: mpVcName,
+                      squad: mpSquad,
+                      mindsetWord: mpMindsetWord,
+                      status: mpStatus,
+                      createdBy: session?.user?.email || '',
+                      createdAt: '',
+                      updatedAt: '',
+                    };
+                    const issues = validatePlan(tempPlan);
+                    const huddle = buildHuddleScript(tempPlan);
+                    return (
+                      <>
+                        {issues.length > 0 && (
+                          <div className="rounded-2xl p-5 border-2 border-amber-500/30 bg-amber-500/5">
+                            <p className="text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">⚠️ Plan checklist — still missing</p>
+                            <ul className="text-sm text-amber-100 space-y-0.5">
+                              {issues.map((i, k) => <li key={k}>· {i}</li>)}
+                            </ul>
+                          </div>
+                        )}
+                        {issues.length === 0 && (
+                          <div className="rounded-2xl p-5 border-2 border-emerald-500/40 bg-emerald-500/10">
+                            <p className="text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">✓ Plan complete — pre-match huddle script</p>
+                            <ul className="text-sm text-gray-200 space-y-1.5">
+                              {huddle.map((line, k) => (
+                                <li key={k} className="flex gap-2"><span className="text-emerald-400">→</span><span>{line}</span></li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
+
+                  <div className="flex items-center justify-between flex-wrap gap-3">
+                    <div className="text-xs text-gray-500">
+                      {mpLoading && 'Loading…'}
+                      {!mpLoading && mpSaveStatus === 'saved' && <span className="text-emerald-400">✓ Saved</span>}
+                      {!mpLoading && mpSaveStatus === 'error' && <span className="text-red-400">Save failed — try again</span>}
+                      {!mpLoading && mpSaveStatus === 'idle' && mpStatus !== 'draft' && <span>Status: {mpStatus}</span>}
+                    </div>
+                    <button
+                      onClick={saveMatchPlan}
+                      disabled={mpSaving || !mpMatchId}
+                      className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-semibold shadow-xl hover:shadow-emerald-500/50 transition-all hover:scale-[1.02] disabled:opacity-40"
+                    >
+                      {mpSaving ? 'Saving…' : 'Save Match Plan'}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           )}
 
           {/* VISUAL TRAINING VIEW */}

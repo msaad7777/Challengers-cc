@@ -20,11 +20,10 @@ export const C3H_ADMIN_EMAILS: readonly string[] = [
   'mbadru3434@gmail.com',
 ];
 
-// Captains/VCs today:
-//   Shahriar — LCL T30 captain
-//   Tarek    — LPL T30 captain
-//   Ankush   — Vice-captain
-//   Shoeb    — captain-level access
+// Captains/VCs today (per Saad, 2026-06-08):
+//   LPL T30 — Tarek (captain), Saad (vice-captain)
+//   LCL T30 — Shahriar (captain), Ankush (vice-captain)
+//   Shoeb   — captain-level access (player leadership / informal)
 // Saad is admin and is included automatically.
 export const C3H_CAPTAIN_EMAILS: readonly string[] = [
   ...C3H_ADMIN_EMAILS,
