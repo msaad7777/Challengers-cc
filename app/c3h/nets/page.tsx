@@ -1769,6 +1769,124 @@ export default function NetsPage() {
                 );
               })()}
 
+              {/* ── Match Coverage Tracker ─────────────────────────────
+                  Shows all 26 league matches (LCL 14 + LPL 12) with their
+                  reflection status, so the player knows which matches
+                  they've reflected on and can quickly add one for any
+                  missing match. Practice sessions excluded — they
+                  don't have a fixed schedule. */}
+              {(() => {
+                const leagueMatches = MATCHES.filter((m) => m.index !== 98 && m.index !== 99);
+                const today = new Date().toISOString().slice(0, 10);
+                const reflectionByLabel = new Map(reflections.map((r) => [r.match, r]));
+                const lclMatches = leagueMatches.filter((m) => m.label.startsWith('LCL'));
+                const lplMatches = leagueMatches.filter((m) => m.label.startsWith('LPL'));
+                const lclReflected = lclMatches.filter((m) => reflectionByLabel.has(m.label)).length;
+                const lplReflected = lplMatches.filter((m) => reflectionByLabel.has(m.label)).length;
+                const totalReflected = lclReflected + lplReflected;
+                const playedMatches = leagueMatches.filter((m) => m.date <= today);
+                const playedReflected = playedMatches.filter((m) => reflectionByLabel.has(m.label)).length;
+                const playedMissing = playedMatches.length - playedReflected;
+
+                const prepareNewReflectionFor = (m: typeof MATCHES[number]) => {
+                  setEditingId(null);
+                  // Reset form before pre-filling
+                  setMatch(m.label);
+                  setMatchIndex(m.index);
+                  setMatchId(undefined);
+                  setView('new');
+                };
+
+                return (
+                  <div className="mb-6 glass rounded-2xl p-5 border-2 border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-transparent">
+                    <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl">📋</span>
+                        <h3 className="text-base font-bold text-white">Match Coverage</h3>
+                      </div>
+                      <div className="text-xs text-gray-300">
+                        <span className="text-emerald-300 font-semibold">{totalReflected}</span> / {leagueMatches.length} matches reflected
+                        {playedMissing > 0 && (
+                          <span className="text-amber-300 ml-2">· {playedMissing} played but missing</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
+                      <div className="rounded-lg bg-white/5 border border-white/10 p-2.5 text-center">
+                        <p className="text-gray-500 uppercase tracking-wider text-[10px] mb-1">LCL T30</p>
+                        <p className="text-white font-bold"><span className="text-emerald-300">{lclReflected}</span> / {lclMatches.length}</p>
+                      </div>
+                      <div className="rounded-lg bg-white/5 border border-white/10 p-2.5 text-center">
+                        <p className="text-gray-500 uppercase tracking-wider text-[10px] mb-1">LPL T30</p>
+                        <p className="text-white font-bold"><span className="text-emerald-300">{lplReflected}</span> / {lplMatches.length}</p>
+                      </div>
+                    </div>
+
+                    <details className="group">
+                      <summary className="cursor-pointer text-xs text-emerald-400 hover:text-emerald-300 list-none flex items-center gap-1">
+                        <svg className="w-3.5 h-3.5 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                        Show all 26 matches
+                      </summary>
+                      <div className="mt-3 space-y-3">
+                        {([
+                          { name: 'London Cricket League (LCL T30)', list: lclMatches },
+                          { name: 'London Premier League (LPL T30)', list: lplMatches },
+                        ] as const).map((group) => (
+                          <div key={group.name}>
+                            <p className="text-[10px] uppercase tracking-wider text-emerald-300/70 font-bold mb-1.5">{group.name}</p>
+                            <div className="space-y-1.5">
+                              {group.list.map((m) => {
+                                const refl = reflectionByLabel.get(m.label);
+                                const isPast = m.date <= today;
+                                return (
+                                  <div
+                                    key={m.label}
+                                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs ${
+                                      refl
+                                        ? 'bg-emerald-500/10 border-emerald-500/30'
+                                        : isPast
+                                          ? 'bg-amber-500/10 border-amber-500/30'
+                                          : 'bg-white/3 border-white/10'
+                                    }`}
+                                  >
+                                    <span className="flex-shrink-0 text-base">
+                                      {refl ? '✅' : isPast ? '⚠️' : '🗓'}
+                                    </span>
+                                    <span className="flex-1 min-w-0 text-gray-200 truncate">{m.label}</span>
+                                    {refl ? (
+                                      <button
+                                        type="button"
+                                        onClick={() => { setSelectedReflection(refl); setView('detail'); }}
+                                        className="flex-shrink-0 text-emerald-300 hover:text-emerald-200 font-semibold"
+                                      >
+                                        View →
+                                      </button>
+                                    ) : isPast ? (
+                                      <button
+                                        type="button"
+                                        onClick={() => prepareNewReflectionFor(m)}
+                                        className="flex-shrink-0 text-amber-300 hover:text-amber-200 font-semibold"
+                                      >
+                                        + Add
+                                      </button>
+                                    ) : (
+                                      <span className="flex-shrink-0 text-gray-500">Upcoming</span>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  </div>
+                );
+              })()}
+
               {loading ? (
                 <div className="text-center py-12"><span className="text-gray-500">Loading reflections...</span></div>
               ) : reflections.length === 0 ? (
