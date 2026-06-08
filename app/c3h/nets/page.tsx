@@ -14,12 +14,15 @@ import {
   type MatchPlan,
   type PlayerAssignment,
   type LeagueKey,
+  type Temperament,
   BATTING_ROLES,
   BOWLING_ROLES,
   BATTING_ROLE_BRIEF,
   BOWLING_ROLE_BRIEF,
   FIELDING_POSITIONS,
   MINDSET_WORDS,
+  TEMPERAMENTS,
+  TEMPERAMENT_BRIEF,
   T30_BATTING_FIRST_TEMPLATE,
   detectLeagueFromLabel,
   getPlayingXI,
@@ -748,6 +751,11 @@ export default function NetsPage() {
   const [mpChaseAggressive, setMpChaseAggressive] = useState<string>('');
   const [mpDefendBelowPar, setMpDefendBelowPar] = useState<string>('');
   const [mpDefendParOrAbove, setMpDefendParOrAbove] = useState<string>('');
+  // Rajath additions — opposition intel + per-phase fielding strategy
+  const [mpOppositionNotes, setMpOppositionNotes] = useState<string>('');
+  const [mpFieldingPowerplay, setMpFieldingPowerplay] = useState<string>('');
+  const [mpFieldingMiddleOvers, setMpFieldingMiddleOvers] = useState<string>('');
+  const [mpFieldingDeathOvers, setMpFieldingDeathOvers] = useState<string>('');
   const [mpMindsetWord, setMpMindsetWord] = useState<string>('');
   const [mpProcessFocuses, setMpProcessFocuses] = useState<string[]>(['', '', '']);
   const [mpHuddleLine, setMpHuddleLine] = useState<string>('');
@@ -843,6 +851,10 @@ export default function NetsPage() {
         setMpChaseAggressive(data.chaseAggressiveTactic || '');
         setMpDefendBelowPar(data.defendBelowParPlan || '');
         setMpDefendParOrAbove(data.defendParOrAbovePlan || '');
+        setMpOppositionNotes(data.oppositionNotes || '');
+        setMpFieldingPowerplay(data.fieldingPowerplay || '');
+        setMpFieldingMiddleOvers(data.fieldingMiddleOvers || '');
+        setMpFieldingDeathOvers(data.fieldingDeathOvers || '');
         setMpMindsetWord(data.mindsetWord || '');
         setMpProcessFocuses([
           data.processFocuses?.[0] || '',
@@ -869,6 +881,10 @@ export default function NetsPage() {
         setMpChaseAggressive('');
         setMpDefendBelowPar('');
         setMpDefendParOrAbove('');
+        setMpOppositionNotes('');
+        setMpFieldingPowerplay('');
+        setMpFieldingMiddleOvers('');
+        setMpFieldingDeathOvers('');
         setMpMindsetWord('');
         setMpProcessFocuses(['', '', '']);
         setMpHuddleLine('');
@@ -906,6 +922,10 @@ export default function NetsPage() {
       chaseAggressiveTactic: mpChaseAggressive || undefined,
       defendBelowParPlan: mpDefendBelowPar || undefined,
       defendParOrAbovePlan: mpDefendParOrAbove || undefined,
+      oppositionNotes: mpOppositionNotes || undefined,
+      fieldingPowerplay: mpFieldingPowerplay || undefined,
+      fieldingMiddleOvers: mpFieldingMiddleOvers || undefined,
+      fieldingDeathOvers: mpFieldingDeathOvers || undefined,
       mindsetWord: mpMindsetWord || undefined,
       processFocuses: mpProcessFocuses.filter((f) => f.trim().length > 0),
       huddleLine: mpHuddleLine || undefined,
@@ -2418,6 +2438,18 @@ export default function NetsPage() {
                       })}
                     </div>
                   </div>
+                  <div>
+                    <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">👤 Player temperament (independent of role)</p>
+                    <p className="text-[11px] text-gray-500 mb-2">Two openers can have the same role tag but be very different players. Temperament distinguishes the player type — pair complementary temperaments (one aggressor + one anchor) for a strong opening combination.</p>
+                    <div className="space-y-2">
+                      {(['anchor', 'aggressor', 'balanced', 'specialist'] as const).map((t) => (
+                        <div key={t} className="rounded-lg bg-white/3 border border-white/5 p-3 text-xs">
+                          <p className="text-purple-200 font-bold mb-1">{t}</p>
+                          <p className="text-gray-300 leading-snug">{TEMPERAMENT_BRIEF[t]}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                   <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3 text-xs text-amber-100">
                     <strong className="text-amber-300">T30 phases:</strong> Phase 1 (overs 1-10, powerplay + early consolidation) · Phase 2 (overs 11-22, middle / build) · Phase 3 (overs 23-30, death / acceleration). The role assignments here should map players to the phase where they bat or bowl best.
                   </div>
@@ -2543,9 +2575,9 @@ export default function NetsPage() {
                                 Wicketkeeper
                               </label>
                             </div>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
                               <div>
-                                <label className="text-gray-500 block mb-0.5">Batting order</label>
+                                <label className="text-gray-500 block mb-0.5">Order</label>
                                 <input
                                   type="number"
                                   min={1}
@@ -2557,6 +2589,20 @@ export default function NetsPage() {
                                   }}
                                   className="w-full px-2 py-1.5 bg-white/5 border border-white/10 rounded text-white"
                                 />
+                              </div>
+                              <div>
+                                <label className="text-gray-500 block mb-0.5">Temperament</label>
+                                <select
+                                  value={p.temperament || ''}
+                                  onChange={(e) => updateSquadAssignment(p.email, { temperament: (e.target.value || undefined) as Temperament })}
+                                  className="w-full px-2 py-1.5 bg-white/5 border border-white/10 rounded text-white"
+                                  title={p.temperament ? TEMPERAMENT_BRIEF[p.temperament] : 'Player type — independent of position'}
+                                >
+                                  <option value="" className="bg-gray-900">—</option>
+                                  {TEMPERAMENTS.map((t) => (
+                                    <option key={t} value={t} className="bg-gray-900">{t}</option>
+                                  ))}
+                                </select>
                               </div>
                               <div>
                                 <label className="text-gray-500 block mb-0.5">Batting role</label>
@@ -2598,6 +2644,9 @@ export default function NetsPage() {
                                 </select>
                               </div>
                             </div>
+                            {p.temperament && (
+                              <p className="mt-1.5 text-[10px] text-gray-500 italic">{TEMPERAMENT_BRIEF[p.temperament]}</p>
+                            )}
                             <input
                               type="text"
                               value={p.notes || ''}
@@ -2718,8 +2767,21 @@ export default function NetsPage() {
 
                   {/* Bowling plan — both scenarios */}
                   <div className="glass rounded-2xl p-5 border border-white/10">
-                    <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-3">6. Bowling plan — both scenarios</label>
-                    <p className="text-[11px] text-gray-500 -mt-2 mb-4">Fill in both. After we set or chase a target, the captain knows which one applies.</p>
+                    <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-3">6. Bowling &amp; fielding plan — both scenarios</label>
+                    <p className="text-[11px] text-gray-500 -mt-2 mb-4">Fill in both bowling scenarios. After we set or chase a target, the captain knows which one applies. Plus pre-match opposition intel + per-phase fielding setup.</p>
+
+                    {/* Opposition intel */}
+                    <div className="rounded-lg bg-purple-500/5 border border-purple-500/30 p-3 mb-3">
+                      <label className="text-purple-300 text-xs font-bold uppercase tracking-wider block mb-2">🔍 Opposition intel — pre-match notes</label>
+                      <textarea
+                        value={mpOppositionNotes}
+                        onChange={(e) => setMpOppositionNotes(e.target.value)}
+                        rows={3}
+                        placeholder="e.g. Their LH opener Mukesh: off-spin first up, leg-spin out. #4 Ravi: pace troubles, bring death pacer early. #6 their finisher prefers slog-sweep — slip + fielder at deep mid-wicket."
+                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm resize-none"
+                      />
+                      <p className="text-[10px] text-gray-500 mt-1">Specific matchup notes per opposing batter (or general lineup observations). Read this in the pre-match huddle so bowlers know what to bowl.</p>
+                    </div>
 
                     {/* Bowling first */}
                     <div className="rounded-lg bg-blue-500/5 border border-blue-500/30 p-3 mb-3">
@@ -2736,6 +2798,26 @@ export default function NetsPage() {
                         <div>
                           <label className="text-gray-400 text-xs block mb-1">Death overs (23-30)</label>
                           <input type="text" value={mpDeathOversPlan} onChange={(e) => setMpDeathOversPlan(e.target.value)} placeholder="e.g. Yorkers + slower balls; protect long boundary; restrict to under 8 RPO" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Fielding strategy per phase */}
+                    <div className="rounded-lg bg-cyan-500/5 border border-cyan-500/30 p-3 mb-3">
+                      <p className="text-cyan-300 text-xs font-bold uppercase tracking-wider mb-2">🥎 Fielding setup per phase</p>
+                      <p className="text-[10px] text-gray-500 mb-2">Where the fielders go — separate from who&apos;s bowling. Per Rajath: middle overs need good catchers outside.</p>
+                      <div className="space-y-2 text-sm">
+                        <div>
+                          <label className="text-gray-400 text-xs block mb-1">Powerplay (overs 1-6)</label>
+                          <input type="text" value={mpFieldingPowerplay} onChange={(e) => setMpFieldingPowerplay(e.target.value)} placeholder="e.g. 2 slips, point, gully, cover, mid-off / mid-on, square leg, fine leg, third man up" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                        </div>
+                        <div>
+                          <label className="text-gray-400 text-xs block mb-1">Middle overs (7-22)</label>
+                          <input type="text" value={mpFieldingMiddleOvers} onChange={(e) => setMpFieldingMiddleOvers(e.target.value)} placeholder="e.g. Deep mid-wicket, deep cover, long-on / long-off; best catchers in the deep; ring up to save singles" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
+                        </div>
+                        <div>
+                          <label className="text-gray-400 text-xs block mb-1">Death overs (23-30)</label>
+                          <input type="text" value={mpFieldingDeathOvers} onChange={(e) => setMpFieldingDeathOvers(e.target.value)} placeholder="e.g. 5 on the boundary; long-on / long-off / deep mid-wicket / deep cover / third man; ring of 4 to save singles" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm" />
                         </div>
                       </div>
                     </div>

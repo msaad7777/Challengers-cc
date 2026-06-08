@@ -37,7 +37,7 @@ export const BATTING_ROLE_BRIEF: Record<(typeof BATTING_ROLES)[number], {
     battingPhase: 'Overs 1-12',
     target: '30-60 runs each',
     strikeRate: '90-110',
-    responsibility: 'Survive the new ball, capitalise on powerplay field restrictions, give the team a platform. At least one opener should bat to over 12-15. Worst case: don\'t get out in the first 3 overs.',
+    responsibility: 'Survive the new ball, capitalise on powerplay field restrictions, give the team a platform. At least one opener should bat to over 12-15. Worst case: don\'t get out in the first 3 overs. Best practice: pair one aggressor (SR 110-120) with one anchor (SR 80-100) — the aggressor funds the anchor with 20-30 quick runs, the anchor stays till the platform is set.',
   },
   'top-order': {
     position: '#3-4',
@@ -58,7 +58,7 @@ export const BATTING_ROLE_BRIEF: Record<(typeof BATTING_ROLES)[number], {
     battingPhase: 'Overs 8-18',
     target: '25-40 off 15-25 balls',
     strikeRate: '140+',
-    responsibility: 'Mid-innings momentum shifter. Walks in to take down a specific bowler (often spin). High-risk, high-reward. If it works the team explodes; if it fails, next batter consolidates.',
+    responsibility: 'Mid-innings momentum shifter. Walks in to take down a specific bowler (often spin). High-risk, high-reward. If it works the team explodes; if it fails, next batter consolidates. Deploy when ALL THREE conditions hold: (1) wickets in hand (5+), (2) run rate below required, (3) a containing spinner is on. Don\'t pinch-hit speculatively — pick the trigger.',
   },
   'finisher': {
     position: '#5-7',
@@ -179,6 +179,26 @@ export const MINDSET_WORDS = [
   'Sharp',
 ] as const;
 
+// Player temperament — a separate axis from role. A captain picks
+// players for roles partly based on their temperament: an anchor at
+// #2 vs an aggressor at #1 are both "openers" but require very
+// different players. Added per Rajath's feedback 2026-06-08.
+export const TEMPERAMENTS = [
+  'anchor',
+  'aggressor',
+  'balanced',
+  'specialist',
+] as const;
+
+export type Temperament = (typeof TEMPERAMENTS)[number];
+
+export const TEMPERAMENT_BRIEF: Record<Temperament, string> = {
+  'anchor': 'Risk-free cricket. Rotates strike, plays late, holds one end while others attack. Examples: Ameeya, Shoeb, Denison, Qaiser type players.',
+  'aggressor': 'Attacks from ball 1. Scores quickly. Takes down a specific bowler. Funds the anchor with quick runs in the powerplay.',
+  'balanced': 'Adapts based on situation. Can anchor if a wicket falls early, can accelerate if the platform is set. Versatile.',
+  'specialist': 'Single-skill player — usually a bowler with limited batting (lower order) or a pure defender. Don\'t ask them to do the opposite role.',
+};
+
 export type BattingRole = (typeof BATTING_ROLES)[number];
 export type BowlingRole = (typeof BOWLING_ROLES)[number];
 
@@ -190,6 +210,7 @@ export interface PlayerAssignment {
   bowlingRole?: BowlingRole;
   fieldingPosition?: string;
   isWicketkeeper?: boolean;
+  temperament?: Temperament; // player type — see TEMPERAMENT_BRIEF
   notes?: string;
 }
 
@@ -228,6 +249,20 @@ export interface MatchPlan {
   // Defending plan — if bowling second (defending a known target)
   defendBelowParPlan?: string;     // defending under 130 in T30
   defendParOrAbovePlan?: string;   // defending 130+ in T30
+
+  // Opposition intel — free-text notes about the opposing batting
+  // lineup so the captain pre-thinks matchups. E.g., "Their LH
+  // opener Mukesh: off-spin first up, leg-spin out. #4 Ravi: pace
+  // troubles, bring death pacer early."
+  oppositionNotes?: string;
+
+  // Fielding strategy per phase — separate from bowling plan because
+  // fielding (catchers in the deep, ring fielders up, short fine leg,
+  // etc.) is a distinct captain's call. Per Rajath: middle overs need
+  // good catchers outside.
+  fieldingPowerplay?: string;       // overs 1-6
+  fieldingMiddleOvers?: string;     // overs 7-22
+  fieldingDeathOvers?: string;      // overs 23-30
 
   // Mindset & strategy
   mindsetWord?: string;

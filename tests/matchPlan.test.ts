@@ -10,6 +10,8 @@ import {
   BOWLING_ROLES,
   BATTING_ROLE_BRIEF,
   BOWLING_ROLE_BRIEF,
+  TEMPERAMENTS,
+  TEMPERAMENT_BRIEF,
   T30_BATTING_FIRST_TEMPLATE,
   type MatchPlan,
   type PlayerAssignment,
@@ -157,6 +159,73 @@ describe('validatePlan', () => {
     );
     const plan = basePlan({ squad });
     expect(validatePlan(plan)).toEqual([]);
+  });
+});
+
+describe('TEMPERAMENT_BRIEF + role brief Rajath additions', () => {
+  it('has four temperaments: anchor, aggressor, balanced, specialist', () => {
+    expect([...TEMPERAMENTS]).toEqual(['anchor', 'aggressor', 'balanced', 'specialist']);
+  });
+
+  it('every temperament has a brief paragraph', () => {
+    for (const t of TEMPERAMENTS) {
+      expect(TEMPERAMENT_BRIEF[t].length).toBeGreaterThan(40);
+    }
+  });
+
+  it('anchor brief mentions risk-free / rotating strike / holding one end', () => {
+    const t = TEMPERAMENT_BRIEF['anchor'].toLowerCase();
+    expect(t).toMatch(/risk-free|rotat|hold/);
+  });
+
+  it('aggressor brief mentions attacking from ball 1', () => {
+    const t = TEMPERAMENT_BRIEF['aggressor'].toLowerCase();
+    expect(t).toMatch(/attack|ball 1|funds the anchor/);
+  });
+
+  it('opener brief now mentions the aggressor + anchor pairing (Rajath addition)', () => {
+    const t = BATTING_ROLE_BRIEF['opener'].responsibility.toLowerCase();
+    expect(t).toContain('pair');
+    expect(t).toMatch(/aggressor|anchor/);
+  });
+
+  it('pinch-hitter brief now mentions the trigger condition (Rajath addition)', () => {
+    const t = BATTING_ROLE_BRIEF['pinch-hitter'].responsibility.toLowerCase();
+    expect(t).toMatch(/wickets in hand|wickets/);
+    expect(t).toMatch(/run rate|rr|below required/);
+    expect(t).toContain('don\'t');
+  });
+
+  it('player assignment accepts a temperament', () => {
+    const p: PlayerAssignment = {
+      playerName: 'Test',
+      email: 'test@example.com',
+      battingOrder: 1,
+      battingRole: 'opener',
+      temperament: 'aggressor',
+    };
+    expect(p.temperament).toBe('aggressor');
+  });
+
+  it('match plan accepts opposition notes + per-phase fielding fields', () => {
+    const plan: MatchPlan = {
+      matchId: 'm1',
+      matchLabel: 'LPL M5',
+      league: 'LPL',
+      squad: [],
+      status: 'draft',
+      createdBy: 'a@a.com',
+      createdAt: '2026-06-08',
+      updatedAt: '2026-06-08',
+      oppositionNotes: 'Their #4 is weak vs short pitched',
+      fieldingPowerplay: '2 slips, third man up',
+      fieldingMiddleOvers: 'Deep mid-wicket, deep cover',
+      fieldingDeathOvers: '5 on boundary',
+    };
+    expect(plan.oppositionNotes).toBeTruthy();
+    expect(plan.fieldingPowerplay).toBeTruthy();
+    expect(plan.fieldingMiddleOvers).toBeTruthy();
+    expect(plan.fieldingDeathOvers).toBeTruthy();
   });
 });
 
