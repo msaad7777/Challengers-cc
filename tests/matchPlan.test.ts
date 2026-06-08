@@ -5,6 +5,7 @@ import {
   getTwelfthMan,
   validatePlan,
   buildHuddleScript,
+  getLeadership,
   type MatchPlan,
   type PlayerAssignment,
 } from '@/app/c3h/lib/matchPlan';
@@ -151,6 +152,32 @@ describe('validatePlan', () => {
     );
     const plan = basePlan({ squad });
     expect(validatePlan(plan)).toEqual([]);
+  });
+});
+
+describe('getLeadership', () => {
+  it('returns Tarek + Saad for LPL', () => {
+    const l = getLeadership('LPL');
+    expect(l.captainName).toBe('Tarek Islam');
+    expect(l.vcName).toBe('Mohammed Saad');
+  });
+
+  it('returns Shahriar + Ankush for LCL', () => {
+    const l = getLeadership('LCL');
+    expect(l.captainName).toBe('Syed Shahriar');
+    expect(l.vcName).toBe('Ankush Arora');
+  });
+
+  it('returns empty names for Practice (user fills in manually)', () => {
+    const l = getLeadership('Practice');
+    expect(l.captainName).toBe('');
+    expect(l.vcName).toBe('');
+  });
+
+  it('returns empty names for Other (user fills in manually)', () => {
+    const l = getLeadership('Other');
+    expect(l.captainName).toBe('');
+    expect(l.vcName).toBe('');
   });
 });
 

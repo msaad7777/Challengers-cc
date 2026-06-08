@@ -23,6 +23,7 @@ import {
   getTwelfthMan,
   validatePlan,
   buildHuddleScript,
+  getLeadership,
 } from '../lib/matchPlan';
 import { EMAIL_TO_PLAYER } from '@/lib/c3h-roster';
 import { isC3HCaptain } from '@/lib/c3h-access';
@@ -2192,12 +2193,19 @@ export default function NetsPage() {
                     const m = MATCHES.find((mm) => mm.label === id);
                     if (m) {
                       setMpMatchLabel(m.label);
-                      setMpLeague(detectLeagueFromLabel(m.label));
+                      const league = detectLeagueFromLabel(m.label);
+                      setMpLeague(league);
                       // Extract opponent from labels of the form
                       // "LPL M3 — vs NLCC (May 31)"
                       const opp = m.label.match(/—\s*vs\s+(.+?)\s*\(/i)?.[1] ?? '';
                       setMpOpponent(opp);
                       setMpVenue(''); // Venue not in MATCHES; user can fill in
+                      // Pre-fill captain + VC for the league. If the
+                      // user has already typed something, don't
+                      // overwrite. They can always edit either field.
+                      const leadership = getLeadership(league);
+                      if (leadership.captainName && !mpCaptainName) setMpCaptainName(leadership.captainName);
+                      if (leadership.vcName && !mpVcName) setMpVcName(leadership.vcName);
                     }
                     loadMatchPlan(id);
                   }}

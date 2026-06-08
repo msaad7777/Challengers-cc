@@ -135,6 +135,23 @@ export function detectLeagueFromLabel(label: string): LeagueKey {
   return 'Other';
 }
 
+// Default captain + VC assignments per league (current season).
+// Single source of truth for the Match Planner pre-fill. Keep in
+// sync with the `Captains/VCs today` comment block in lib/c3h-access.ts.
+// Source: Saad's confirmation 2026-06-08.
+export const LEAGUE_LEADERSHIP: Record<LeagueKey, { captainName: string; vcName: string }> = {
+  LPL: { captainName: 'Tarek Islam', vcName: 'Mohammed Saad' },
+  LCL: { captainName: 'Syed Shahriar', vcName: 'Ankush Arora' },
+  Practice: { captainName: '', vcName: '' },
+  Other: { captainName: '', vcName: '' },
+};
+
+// Return the default captain + VC for the given league. Empty strings
+// for Practice / Other so the form fields stay user-editable.
+export function getLeadership(league: LeagueKey): { captainName: string; vcName: string } {
+  return LEAGUE_LEADERSHIP[league];
+}
+
 // Return the playing XI ordered by batting order (1-11). Twelfth man
 // (battingOrder === 12) is excluded from XI. Players with no batting
 // order are sorted to the end in insertion order.
