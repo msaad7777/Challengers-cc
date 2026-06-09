@@ -13,9 +13,50 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { db, firebaseAuthReady } from '@/lib/firebase';
-import { C3H_DIRECTOR_ROSTER } from '@/lib/c3h-access';
+import { C3H_DIRECTOR_ROSTER, C3H_OFFICER_ROSTER } from '@/lib/c3h-access';
 
 const COLLECTION = 'board_resolutions';
+
+// ── CNCA-aligned resolution templates ────────────────────────────────
+// Quick-start templates for common Board actions, with motion text
+// drafted to be compliant with the Canada Not-for-profit Corporations
+// Act and the Corporation's bylaws. Selecting a template pre-fills the
+// propose form; the director can edit anything before submitting.
+//
+// Sources:
+//   CNCA s. 142(2) — Board may remove an officer at any time by
+//                    resolution
+//   CNCA s. 144(1) — Resolution in writing signed by all directors
+//                    is as valid as a resolution passed at a meeting
+//   Bylaws Art. 4.6 — Officer appointment + removal
+//   Bylaws Art. 3.6 — Board review of officer conduct
+type OfficerRemovalVars = {
+  officerName: string;
+  officeTitle: string;
+  reasonSummary: string;
+};
+
+function buildOfficerRemovalText(v: OfficerRemovalVars): { title: string; description: string } {
+  return {
+    title: `Removal from office — ${v.officerName} (${v.officeTitle})`,
+    description: `RESOLUTION OF THE BOARD OF DIRECTORS
+
+Pursuant to subsection 142(2) of the Canada Not-for-profit Corporations Act (CNCA) and Article 4.6 of the Corporation's Bylaws, the Directors of Challengers Cricket Club (Corporation #1746974-8) hereby RESOLVE that:
+
+${v.officerName}, currently holding the office of ${v.officeTitle}, is hereby removed from that office effective immediately upon passage of this resolution.
+
+The Corporation acknowledges that:
+(1) The Board has the authority to remove an officer at any time, by resolution, under CNCA s. 142(2) and the Bylaws.
+(2) This removal does not affect any other status the person holds with the Corporation (e.g., membership or volunteer roles), which are governed separately by the Bylaws.
+(3) The duties of ${v.officeTitle} shall revert to the Board until a successor is appointed by Board resolution under Article 4.6.
+
+REASON FOR REMOVAL:
+${v.reasonSummary}
+
+EFFECTIVE DATE:
+Upon passage by majority vote of the Directors at a meeting, or upon written resolution signed by all Directors pursuant to CNCA s. 144(1), whichever occurs first.`,
+  };
+}
 
 type Vote = {
   voterName: string;
@@ -512,6 +553,33 @@ function ResolutionForm({
   const [recusedEmails, setRecusedEmails] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Officer Removal template state
+  const [showRemovalTemplate, setShowRemovalTemplate] = useState(false);
+  const [removalOfficerEmail, setRemovalOfficerEmail] = useState<string>('');
+  const [removalReason, setRemovalReason] = useState<string>('');
+
+  const applyRemovalTemplate = () => {
+    const officer = C3H_OFFICER_ROSTER.find((o) => o.workspaceEmail === removalOfficerEmail);
+    if (!officer) {
+      setError('Pick an officer to remove first.');
+      return;
+    }
+    if (removalReason.trim().length < 15) {
+      setError('Please add a fuller reason — at least one or two sentences.');
+      return;
+    }
+    setError(null);
+    const t = buildOfficerRemovalText({
+      officerName: officer.name,
+      officeTitle: officer.role,
+      reasonSummary: removalReason.trim(),
+    });
+    setTitle(t.title);
+    setDescription(t.description);
+    setCategory('officer-review');
+    setDeadlineDays(3);
+    setShowRemovalTemplate(false);
+  };
 
   const submit = async () => {
     if (title.trim().length < 5) {
@@ -554,6 +622,60 @@ function ResolutionForm({
   return (
     <div className="rounded-xl bg-accent-500/5 border-2 border-accent-500/30 p-4 mb-4 space-y-3">
       <h3 className="text-base font-bold text-white">Propose a new resolution</h3>
+
+      {/* CNCA quick templates — accelerates common Board actions with
+          bylaws-correct motion text. Currently officer removal only;
+          more templates (officer appointment, financial ratification,
+          policy adoption) can be added as needed. */}
+      <div className="rounded-lg bg-purple-500/5 border border-purple-500/30 p-3">
+        <button
+          type="button"
+          onClick={() => setShowRemovalTemplate((s) => !s)}
+          className="flex items-center gap-2 text-xs font-semibold text-purple-300 hover:text-purple-200"
+        >
+          <span>⚡</span>
+          <span>Quick template — Remove an officer (CNCA s. 142(2))</span>
+          <span className="text-purple-400">{showRemovalTemplate ? '▾' : '▸'}</span>
+        </button>
+        {showRemovalTemplate && (
+          <div className="mt-3 space-y-2.5">
+            <p className="text-[10px] text-gray-500 italic">Pre-fills the form with a CNCA s. 142(2) + Bylaws Art. 4.6-aligned officer removal motion. The Board may remove an officer at any time by resolution (majority vote at meeting, or unanimous written resolution per CNCA s. 144(1)). All fields are editable after applying.</p>
+            <div>
+              <label className="text-[11px] text-gray-400 block mb-1">Officer to remove</label>
+              <select
+                value={removalOfficerEmail}
+                onChange={(e) => setRemovalOfficerEmail(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm"
+              >
+                <option value="" className="bg-gray-900">— Pick an officer —</option>
+                {C3H_OFFICER_ROSTER.map((o) => (
+                  <option key={o.workspaceEmail} value={o.workspaceEmail} className="bg-gray-900">
+                    {o.name} ({o.role})
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-[11px] text-gray-400 block mb-1">Reason for removal (factual, one or two sentences)</label>
+              <textarea
+                rows={3}
+                value={removalReason}
+                onChange={(e) => setRemovalReason(e.target.value)}
+                placeholder="e.g. Pattern of public character attacks on directors documented on [date1], [date2], [date3], inconsistent with the Club's Code of Conduct and the Treasurer's duties under Bylaws Art. 4.6."
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={applyRemovalTemplate}
+              className="px-3 py-1.5 rounded-md bg-purple-500/20 border border-purple-500/40 text-purple-200 hover:bg-purple-500/30 text-xs font-semibold"
+            >
+              Apply template → fills the form below
+            </button>
+          </div>
+        )}
+      </div>
+
       <div>
         <label className="text-xs text-gray-400 block mb-1">Title</label>
         <input
