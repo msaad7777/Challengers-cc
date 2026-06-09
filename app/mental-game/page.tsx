@@ -259,13 +259,6 @@ export default function MentalGamePage() {
                 <p className="text-gray-500 text-xs mt-1">Full playlist — 7 videos on batting technique, shot selection, and match awareness</p>
               </div>
             </a>
-            <a href="https://www.youtube.com/@tpgcricket6843/videos" target="_blank" rel="noopener noreferrer" className="glass rounded-xl p-6 border border-white/10 hover:border-primary-500/30 transition-all flex items-center gap-4">
-              <span className="text-4xl">▶️</span>
-              <div>
-                <span className="text-white font-bold">TPG Cricket Academy — Our Coaching Partner</span>
-                <p className="text-gray-500 text-xs mt-1">Coaching drills, batting tips, and training sessions from Coach Manish Giri</p>
-              </div>
-            </a>
           </div>
 
           {/* POST-GAME REFLECTION */}

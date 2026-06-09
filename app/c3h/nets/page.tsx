@@ -206,7 +206,7 @@ const MISTAKE_TO_PRINCIPLE: Record<string, { principle: string; tip: string }> =
   },
   'Tried to hit too hard': {
     principle: 'Stance & Setup',
-    tip: "Bat lifted away. Tap near back foot toe. Power comes from timing, not muscle. Watch TPG Academy's \"Smooth Bat Flow ~ Effortless Power\" in the Power Hitting section.",
+    tip: "Bat lifted away. Tap near back foot toe. Power comes from timing, not muscle. Watch the \"Smooth Bat Flow ~ Effortless Power\" video in the Power Hitting section.",
   },
   'Grip felt off': {
     principle: 'Bat Grip & Balance',
@@ -479,8 +479,8 @@ const TRAINING_PROGRAMS: TrainingProgram[] = [
       { title: 'Optimal Swing Path Drills', url: 'https://www.youtube.com/watch?v=nE8mt-X5kxI&t' },
       { title: 'Hand Speed Drills', url: 'https://www.youtube.com/watch?v=ZVCdJXVJLwU&t' },
       { title: 'Timing & Hand-Eye', url: 'https://www.youtube.com/watch?v=QCwSaXEJI2w' },
-      { title: 'Step-Out Technique — TPG Academy', url: 'https://www.youtube.com/watch?v=_2jVVb0f7Yo' },
-      { title: 'Smooth Bat Flow ~ Effortless Power — TPG Academy', url: 'https://www.youtube.com/watch?v=K_MBc62q7gY' },
+      { title: 'Step-Out Technique', url: 'https://www.youtube.com/watch?v=_2jVVb0f7Yo' },
+      { title: 'Smooth Bat Flow ~ Effortless Power', url: 'https://www.youtube.com/watch?v=K_MBc62q7gY' },
     ],
     sessions: [
       {
@@ -520,7 +520,7 @@ const TRAINING_PROGRAMS: TrainingProgram[] = [
         title: 'Session 3 — Attacking Spin',
         description: 'Build confidence playing powerful boundary shots against spin bowling.',
         drills: [
-          { name: 'Step-Out Technique (TPG Academy)', reps: '12 dropdowns + 12 underarms + 24 over arms', video: 'https://www.youtube.com/watch?v=_2jVVb0f7Yo' },
+          { name: 'Step-Out Technique', reps: '12 dropdowns + 12 underarms + 24 over arms', video: 'https://www.youtube.com/watch?v=_2jVVb0f7Yo' },
           { name: 'Double step attacking spin', reps: '12 dropdowns + 12 underarms + 24 over arms', video: 'https://youtu.be/p7GzCC7V3-4' },
           { name: 'Hitting straight over the top', reps: '12 + 18 + 24 balls', video: 'https://youtu.be/QKJO2e1gHvU' },
           { name: 'Slog Sweep', reps: '12 dropdowns + 12 underarms + 24 slow + 24 match intensity', video: 'https://youtu.be/KYdy-eUZwP0' },
@@ -613,7 +613,6 @@ const TRAINING_PROGRAMS: TrainingProgram[] = [
 
 const EXTRA_VIDEOS = [
   { title: 'AB de Villiers 360 Batting Masterclass', url: 'https://www.youtube.com/watch?v=Q8WXoX2p3Ac&list=PLj52RzS-mgRDWdyleqi1rOzoqpIqUBOyW', description: '7 videos on batting technique, shot selection, and match awareness' },
-  { title: 'TPG Cricket Academy — Our Coaching Partner', url: 'https://www.youtube.com/@tpgcricket6843/videos', description: 'Coaching drills, batting tips, and training sessions from Coach Manish Giri' },
   { title: 'Planning a Leg Spin Spell', url: 'https://www.youtube.com/watch?v=6KHJourO0b4', description: 'How to approach a spell of leg spin bowling in a match' },
 ];
 
@@ -1989,7 +1988,7 @@ export default function NetsPage() {
                   <h4 className="text-white font-bold text-sm">Need a Video Review?</h4>
                 </div>
                 <p className="text-gray-400 text-sm mb-3">
-                  Upload your batting or bowling video to YouTube (unlisted) and share the link with your captain or team group for feedback from TPG Cricket Academy coaching staff.
+                  Upload your batting or bowling video to YouTube (unlisted) and share the link with your captain or team group for review and feedback.
                 </p>
                 <p className="text-gray-500 text-xs">Talk to your captain to arrange a review session.</p>
               </div>

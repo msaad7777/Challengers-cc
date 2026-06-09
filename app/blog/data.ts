@@ -381,11 +381,10 @@ export const blogPosts: BlogPost[] = [
       </p>
       <ul class="space-y-2 text-gray-300 mb-6 ml-4">
         <li>✅ Two competitive league entries (LCL T30 + LPL T30) for the 2026 season</li>
-        <li>✅ Active coaching partnership with TPG Cricket Academy</li>
         <li>✅ Approved status with Google for Nonprofits, Google Ad Grants, YouTube Nonprofit Program, TechSoup, and Goodstack</li>
-        <li>✅ Six confirmed sponsor partners across Platinum, Gold, and Community tiers</li>
+        <li>✅ Confirmed sponsor partners across Platinum, Gold, and Community tiers</li>
         <li>✅ The C3H players&apos; portal — squad selection, field editor, training reflections, match replays</li>
-        <li>✅ Community partnerships with Curry Culture Bistro and Kover Drive</li>
+        <li>✅ Community partnerships including Curry Culture Bistro</li>
       </ul>
       <p class="text-gray-300 leading-relaxed mb-6">
         Saad has been the engine behind much of this infrastructure. The award is recognition of the hours behind the scenes that volunteer-led grassroots sport always quietly demands.
@@ -967,95 +966,6 @@ export const blogPosts: BlogPost[] = [
     image: '/curry-culture-sponsor.png',
     video: '/videos/curry-culture-sponsor.mp4',
     featured: false,
-  },
-  {
-    slug: 'kover-drive-community-partner',
-    title: 'Sponsor Spotlight: Kover Drive — Our Home for Indoor Practice',
-    excerpt:
-      'Kover Drive Sports is London\'s premier indoor cricket facility and Challengers Cricket Club\'s official Community Partner. Book a lane and train with us.',
-    content: `
-      <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Every great cricket team needs a great training ground. For Challengers Cricket Club, that home is
-        <strong class="text-white">Kover Drive Sports</strong> — London's premier indoor cricket and multi-sport
-        facility, and our official Community Partner for the 2026 season.
-      </p>
-      <h3 class="text-2xl font-bold text-white mb-4">London's Best Indoor Cricket Facility</h3>
-      <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Located at <strong class="text-white">Oxbury Mall, 1299 Oxford St E, London, ON</strong>, Kover Drive
-        offers a state-of-the-art indoor setup with multiple cricket lanes, pro-grade nets, advanced pitching
-        machines, and a dedicated training zone. Whether you are working on your batting, bowling, or fielding,
-        Kover Drive provides the perfect environment to sharpen your skills year-round.
-      </p>
-      <h3 class="text-2xl font-bold text-white mb-4">Why We Chose Kover Drive</h3>
-      <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        When we were looking for a practice facility for Challengers CC, Kover Drive stood out immediately.
-        The quality of the lanes, the welcoming atmosphere, and the passion of the team running it made it
-        an easy decision. Our players train here regularly, and the facility has become a second home for the club.
-      </p>
-      <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(234,179,8,0.1)); border: 1px solid rgba(16,185,129,0.3); border-radius: 16px; padding: 24px; margin: 24px 0;">
-        <h3 class="text-2xl font-bold text-white mb-4">What Kover Drive Offers</h3>
-        <ul class="text-gray-300 text-lg leading-relaxed mb-4 list-disc list-inside space-y-2">
-          <li>Multiple cricket lanes with pro-grade nets</li>
-          <li>Advanced bowling/pitching machines</li>
-          <li>Dedicated training zone</li>
-          <li>Online booking system — reserve your lane in seconds</li>
-          <li>Open daily 8 AM to 10 PM</li>
-          <li>Free parking at Oxbury Mall</li>
-          <li>Flexible memberships for individuals and teams</li>
-          <li>Safe, secure, and welcoming environment</li>
-        </ul>
-        <p class="text-gray-400 text-sm">Contact Kover Drive for current rates and availability.</p>
-      </div>
-      <h3 class="text-2xl font-bold text-white mb-4">Watch Our Partner Intro</h3>
-      <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Check out our official partner introduction video featuring Kover Drive and Challengers Cricket Club.
-      </p>
-      <blockquote class="border-l-4 border-primary-500 pl-6 my-8">
-        <p class="text-gray-300 text-lg italic">
-          "Kover Drive is more than a facility — it is where our team comes together to train, compete,
-          and build the bonds that make us stronger on match day."
-        </p>
-        <cite class="text-gray-400 mt-2 block">— Challengers Cricket Club</cite>
-      </blockquote>
-      <h3 class="text-2xl font-bold text-white mb-4">Book Your Session</h3>
-      <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Whether you are a Challengers CC member or just a cricket enthusiast looking for a quality indoor
-        facility in London — Kover Drive is the place. Book your lane online and experience London's best
-        indoor cricket setup.
-      </p>
-      <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 24px 0;">
-        <a href="https://koverdrivesports.ca/booking" target="_blank" rel="noopener noreferrer"
-          style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: linear-gradient(to right, #10b981, #059669); color: white; font-weight: 600; border-radius: 8px; text-decoration: none; font-size: 16px;">
-          Book a Lane Now
-        </a>
-        <a href="https://koverdrivesports.ca/" target="_blank" rel="noopener noreferrer"
-          style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; font-weight: 600; border-radius: 8px; text-decoration: none; font-size: 16px;">
-          Visit Website
-        </a>
-      </div>
-      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; margin: 24px 0;">
-        <h4 class="text-lg font-bold text-white mb-3 text-center">Kover Drive Sports — Contact Info</h4>
-        <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; color: #9ca3af; font-size: 14px;">
-          <span>1299 Oxford St E, London, ON</span>
-          <span>+1 (519) 702-2683</span>
-          <span>koverdrivelondonon@gmail.com</span>
-        </div>
-      </div>
-      <p class="text-gray-400 text-sm italic">
-        Kover Drive Sports is a Community Partner of Challengers Cricket Club. Mention Challengers CC when you book!
-      </p>
-    `,
-    category: 'Sponsor Spotlight',
-    author: 'Challengers CC',
-    date: '2026-04-09',
-    image: null,
-    video: '/videos/koverdrive-blog.mp4',
-    featured: true,
-    sponsorContact: {
-      name: 'Kover Drive Sports',
-      email: 'koverdrivelondonon@gmail.com',
-      title: 'Community Partner',
-    },
   },
   {
     slug: 'madhu-reddy-player-profile',
@@ -1652,14 +1562,12 @@ export const blogPosts: BlogPost[] = [
       <h3 class="text-2xl font-bold text-white mb-4">Growing Our Sponsor Family</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         This season, we are proud to have an incredible lineup of sponsors backing the club. From our
-        Platinum Sponsor Bhupinder Singh to Gold Sponsors like Freddy George, Ashvak Sheik, and RabyIT, plus community
-        partners Kover Drive, MakZiN Media, and TPG Cricket Academy. Every sponsor plays a vital role in making this
-        season possible.
+        Platinum Sponsor Bhupinder Singh to Gold Sponsors like Freddy George, Ashvak Sheik, and RabyIT, plus our
+        community partners. Every sponsor plays a vital role in making this season possible.
       </p>
       <h3 class="text-2xl font-bold text-white mb-4">What Is New This Year</h3>
       <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc list-inside space-y-2">
-        <li>Expanded practice schedule with professional coaching from TPG Cricket Academy</li>
-        <li>Indoor training at Kover Drive Sports, London's premier cricket facility</li>
+        <li>Expanded practice schedule with structured coaching</li>
         <li>Competing in LCL, LPL, UFCL and leagues across Ontario</li>
         <li>New payment options including Zeffy (0% processing fees) alongside Stripe</li>
         <li>Google Ad Grants powering our outreach to new players and sponsors</li>
@@ -1737,7 +1645,7 @@ export const blogPosts: BlogPost[] = [
         <li><strong class="text-white">Strike Rotation</strong> — Rotating vs spin and seam bowling</li>
       </ul>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        Plus the AB de Villiers 360 Batting Masterclass playlist and TPG Cricket Academy coaching videos.
+        Plus the AB de Villiers 360 Batting Masterclass playlist and additional coaching videos.
       </p>
 
       <h3 class="text-2xl font-bold text-white mb-4">4. The Dugout — Match Availability</h3>
@@ -1777,8 +1685,7 @@ export const blogPosts: BlogPost[] = [
         <h3 class="text-2xl font-bold text-white mb-4">Additional Resources Included</h3>
         <ul class="text-gray-300 text-lg leading-relaxed space-y-3">
           <li><strong class="text-white">Full Season Schedule</strong> — All 26 matches (LCL T30 + LPL T30) with dates, venues, and times on our <a href="/schedule" class="text-primary-400 hover:text-primary-300 underline">Schedule page</a></li>
-          <li><strong class="text-white">Indoor Practice at Kover Drive</strong> — Access to London's premier indoor cricket facility through our community partnership</li>
-          <li><strong class="text-white">Coaching by TPG Cricket Academy</strong> — Professional coaching sessions with Coach Manish Giri</li>
+          <li><strong class="text-white">Structured Practice Schedule</strong> — Regular team practice sessions throughout the season</li>
           <li><strong class="text-white">Community Partners</strong> — Discounts and perks from our sponsor partners</li>
           <li><strong class="text-white">Club Communication</strong> — Direct access to board members and captains through the portal</li>
           <li><strong class="text-white">Season Merchandise</strong> — Official Challengers CC jerseys and team gear</li>
