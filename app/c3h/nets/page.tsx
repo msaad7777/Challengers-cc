@@ -3074,7 +3074,6 @@ export default function NetsPage() {
                   <span className="text-xl">🎯</span> Bowling — the T30 rules that shape the lineup
                 </h3>
                 <ul className="text-sm text-gray-200 space-y-1.5">
-                  <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Max 6 overs per bowler.</strong> No single bowler can bowl more than 6 of the 30 overs.</span></li>
                   <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Minimum 5 bowlers needed.</strong> 5 bowlers × 6 overs = 30 overs. Realistically we field 6-7 bowlers so we have options if one is having a tough day.</span></li>
                   <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Powerplay (overs 1-6):</strong> only 2 fielders allowed outside the 30-yard ring. Bowlers attack with the new ball; field is up.</span></li>
                   <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Middle + death (overs 7-30):</strong> standard field restrictions per league rule book — typically 5 fielders outside the ring in middle, max boundary protection in death.</span></li>
@@ -3092,6 +3091,7 @@ export default function NetsPage() {
                 </div>
                 <p className="text-sm text-gray-300 mb-3">You bowl with the new ball when the field is up. Your job: take wickets and restrict scoring while the fielders are still in close.</p>
                 <ul className="text-sm text-gray-300 space-y-1.5">
+                  <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Max 3 bowlers share the powerplay.</strong> Beyond that is too much experimentation — by the time the 4th bowler comes on, none of the first 3 has settled into a rhythm. Captain commits to 2 or 3 bowlers for these 6 overs.</span></li>
                   <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Attack the stumps</strong> — top of off + middle. New ball + field up = best wicket conditions in the match.</span></li>
                   <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Target ≤6 RPO</strong> in the powerplay. Anything under 4 RPO is great; anything over 8 means the field needs rethinking.</span></li>
                   <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">If conditions help</strong> — swing, seam, bounce — use them. If conditions are flat, build pressure with line + length, not heroics.</span></li>
