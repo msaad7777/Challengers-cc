@@ -659,7 +659,7 @@ function isMatchAvailable(matchDate: string): boolean {
 export default function NetsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner' | 'training' | 'principles' | 'shot-mechanics' | 'visual-training' | 'match-plan'>('list');
+  const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner' | 'training' | 'principles' | 'shot-mechanics' | 'visual-training' | 'match-plan' | 'team-roles'>('list');
   // Selected shot inside the Shot Mechanics view. Starts on the
   // foundational "Head Over the Ball" entry since it's the base
   // layer every other shot builds on; future shots slot in below.
@@ -1435,6 +1435,14 @@ export default function NetsPage() {
                 }`}
               >
                 Batting Principles
+              </button>
+              <button
+                onClick={() => setView(view === 'team-roles' ? 'list' : 'team-roles')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
+                  view === 'team-roles' ? 'bg-rose-500/20 text-rose-300 border-rose-500/50' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
+                }`}
+              >
+                Team Roles
               </button>
               <button
                 onClick={() => setView(view === 'visual-training' ? 'list' : 'visual-training')}
@@ -2941,6 +2949,143 @@ export default function NetsPage() {
                   </div>
                 </>
               )}
+            </div>
+          )}
+
+          {/* TEAM ROLES VIEW — team-facing role brief.
+              Captain-facing detail lives in Match Plan; this view is the
+              player-facing version: short, clear, "what's expected of YOU"
+              for each batting position. Visible to all signed-in players. */}
+          {view === 'team-roles' && (
+            <div className="space-y-6">
+              <button onClick={() => setView('list')} className="text-gray-500 text-sm hover:text-primary-400">&larr; Back to reflections</button>
+
+              <div className="text-center mb-2">
+                <h2 className="text-2xl font-bold text-white">Team <span className="gradient-text">Roles</span></h2>
+                <p className="text-gray-500 text-sm">What every batter is expected to do in our T30 setup. Read this before every match. If your role isn&apos;t clear, ask the captain before the toss — don&apos;t wait until you&apos;re walking out to bat.</p>
+              </div>
+
+              {/* Format overview */}
+              <div className="rounded-2xl p-5 border-2 border-rose-500/30 bg-gradient-to-br from-rose-500/10 to-transparent">
+                <h3 className="text-base font-bold text-white mb-2 flex items-center gap-2">
+                  <span className="text-xl">🎯</span> The match in three phases
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                  <div className="rounded-lg bg-white/5 border border-white/10 p-3 text-center">
+                    <p className="text-rose-300 text-[10px] uppercase tracking-wider font-bold mb-1">Phase 1</p>
+                    <p className="text-white font-semibold">Overs 1-10</p>
+                    <p className="text-gray-400 text-xs mt-1">Powerplay + build</p>
+                  </div>
+                  <div className="rounded-lg bg-white/5 border border-white/10 p-3 text-center">
+                    <p className="text-rose-300 text-[10px] uppercase tracking-wider font-bold mb-1">Phase 2</p>
+                    <p className="text-white font-semibold">Overs 11-22</p>
+                    <p className="text-gray-400 text-xs mt-1">Middle / acceleration</p>
+                  </div>
+                  <div className="rounded-lg bg-white/5 border border-white/10 p-3 text-center">
+                    <p className="text-rose-300 text-[10px] uppercase tracking-wider font-bold mb-1">Phase 3</p>
+                    <p className="text-white font-semibold">Overs 23-30</p>
+                    <p className="text-gray-400 text-xs mt-1">Death / finish</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-400 mt-3"><strong className="text-rose-300">Aggregate team goal:</strong> 150+ batting first, defended by tight bowling and sharp fielding.</p>
+              </div>
+
+              {/* OPENERS */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <span className="text-2xl">🏏</span> Openers <span className="text-gray-500 text-sm">— positions 1 &amp; 2</span>
+                  </h3>
+                  <span className="text-xs text-emerald-300/80">Overs 1-12</span>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">You face the new ball. Your job is to survive the first 6 overs and set the platform.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                  <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-3 text-sm">
+                    <p className="text-emerald-300 text-xs font-bold uppercase tracking-wider mb-1">The aggressor</p>
+                    <p className="text-gray-200">Attack the powerplay. SR 110-120. Hit over the infield while the field is up. Fund the anchor with 20-30 quick runs.</p>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/10 p-3 text-sm">
+                    <p className="text-amber-300 text-xs font-bold uppercase tracking-wider mb-1">The anchor</p>
+                    <p className="text-gray-200">Rotate strike, take fewer risks, SR 80-100. Bat to over 12-15. Hold one end while the other attacks.</p>
+                  </div>
+                </div>
+                <ul className="text-sm text-gray-300 space-y-1.5">
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">→</span><span><strong className="text-white">At least one opener must bat to over 12-15.</strong> That&apos;s the contract.</span></li>
+                  <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span>Don&apos;t chase wide ones in the first 3 overs. Don&apos;t get out trying to be a hero before you&apos;re set.</span></li>
+                </ul>
+              </div>
+
+              {/* TOP ORDER */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <span className="text-2xl">🏏</span> Top Order <span className="text-gray-500 text-sm">— positions 3 &amp; 4</span>
+                  </h3>
+                  <span className="text-xs text-blue-300/80">Overs 5-22</span>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">You come in either to stabilise (a wicket fell early) or to accelerate (openers gave us a strong start). <strong className="text-white">This is the most important position.</strong> If a top-order batter is set at over 20, the team usually wins.</p>
+                <ul className="text-sm text-gray-300 space-y-1.5">
+                  <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span>Build a <strong className="text-white">big innings</strong> — 40-70 runs at SR 90-110.</span></li>
+                  <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span>Convert starts into substantial scores. A 25 off 20 is not enough — convert to 50+.</span></li>
+                  <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span>Bat deep. <strong className="text-white">Finishers walk in at over 22</strong> — you have to be there to set them up.</span></li>
+                  <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span>Don&apos;t throw your wicket away when you&apos;re set. Don&apos;t pre-meditate — play the ball.</span></li>
+                </ul>
+              </div>
+
+              {/* MIDDLE ORDER */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <span className="text-2xl">🏏</span> Middle Order <span className="text-gray-500 text-sm">— positions 5 &amp; 6</span>
+                  </h3>
+                  <span className="text-xs text-purple-300/80">Overs 15-25</span>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">Engine room. You navigate the middle overs and bridge to the death overs.</p>
+                <ul className="text-sm text-gray-300 space-y-1.5">
+                  <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span>Rotate strike <strong className="text-white">every ball</strong> — find boundaries in YOUR scoring zones.</span></li>
+                  <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span>Build toward the death overs. SR 110-130.</span></li>
+                  <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span>If you&apos;re a <strong className="text-white">pinch hitter</strong> (situational), deploy ONLY when ALL three hold: (1) wickets in hand 5+, (2) RR is below required, (3) a containing spinner is on. Then SR 140+, take them down.</span></li>
+                  <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span>Don&apos;t drift in &ldquo;wait and watch&rdquo; mode. Active scoring at all times.</span></li>
+                </ul>
+              </div>
+
+              {/* FINISHERS / LOWER ORDER */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <span className="text-2xl">🏏</span> Finishers &amp; Lower Order <span className="text-gray-500 text-sm">— positions 7-11</span>
+                  </h3>
+                  <span className="text-xs text-amber-300/80">Overs 22-30</span>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">Death-overs specialists. You walk in for the last 5-8 overs.</p>
+                <ul className="text-sm text-gray-300 space-y-1.5">
+                  <li className="flex gap-2"><span className="text-amber-400 flex-shrink-0">→</span><span><strong className="text-white">Maximise the run rate</strong> from ball one. SR 140+.</span></li>
+                  <li className="flex gap-2"><span className="text-amber-400 flex-shrink-0">→</span><span>Pre-pick your boundary zone <em>before</em> the bowler runs in. Clear boundaries on demand.</span></li>
+                  <li className="flex gap-2"><span className="text-amber-400 flex-shrink-0">→</span><span><strong className="text-white">Runs over wickets</strong> — all-out in the last 8 overs is acceptable.</span></li>
+                  <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span>Don&apos;t waste balls. From ball one, you&apos;re attacking.</span></li>
+                </ul>
+              </div>
+
+              {/* EVERYONE */}
+              <div className="rounded-2xl p-6 border-2 border-rose-500/40 bg-gradient-to-br from-rose-500/15 to-transparent">
+                <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                  <span className="text-2xl">⭐</span> Everyone — non-negotiables
+                </h3>
+                <ul className="text-sm text-gray-200 space-y-1.5">
+                  <li className="flex gap-2"><span className="text-rose-400 flex-shrink-0">→</span><span><strong className="text-white">Watch the ball every delivery</strong> — including the ones you&apos;re not facing.</span></li>
+                  <li className="flex gap-2"><span className="text-rose-400 flex-shrink-0">→</span><span><strong className="text-white">Rotate strike</strong> — singles are the cheapest runs in cricket.</span></li>
+                  <li className="flex gap-2"><span className="text-rose-400 flex-shrink-0">→</span><span><strong className="text-white">Run hard between wickets</strong> — call yes / no / wait, eye contact with your partner.</span></li>
+                  <li className="flex gap-2"><span className="text-rose-400 flex-shrink-0">→</span><span><strong className="text-white">Trust the plan</strong> — the captain has set roles. Play yours.</span></li>
+                  <li className="flex gap-2"><span className="text-rose-400 flex-shrink-0">→</span><span><strong className="text-white">Bounce back fast</strong> — one bad delivery, one bad over, one bad innings doesn&apos;t define your day.</span></li>
+                </ul>
+              </div>
+
+              {/* Footer reminder */}
+              <div className="rounded-2xl p-5 border border-amber-500/40 bg-amber-500/5">
+                <p className="text-sm text-amber-100">
+                  <strong className="text-amber-300">Before each match:</strong> the captain + VC will share the playing XI with each player&apos;s role tag via the Match Plan in the C3H portal. If your role isn&apos;t clear when you read it, ask the captain or VC before the toss — don&apos;t wait until you&apos;re walking out to bat.
+                </p>
+              </div>
             </div>
           )}
 
