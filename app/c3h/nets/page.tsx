@@ -3066,6 +3066,160 @@ export default function NetsPage() {
                 </ul>
               </div>
 
+              {/* ───────── BOWLING ROLES ───────── */}
+
+              {/* Bowling rules card */}
+              <div className="rounded-2xl p-5 border-2 border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-transparent">
+                <h3 className="text-base font-bold text-white mb-2 flex items-center gap-2">
+                  <span className="text-xl">🎯</span> Bowling — the T30 rules that shape the lineup
+                </h3>
+                <ul className="text-sm text-gray-200 space-y-1.5">
+                  <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Max 6 overs per bowler.</strong> No single bowler can bowl more than 6 of the 30 overs.</span></li>
+                  <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Minimum 5 bowlers needed.</strong> 5 bowlers × 6 overs = 30 overs. Realistically we field 6-7 bowlers so we have options if one is having a tough day.</span></li>
+                  <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Powerplay (overs 1-6):</strong> only 2 fielders allowed outside the 30-yard ring. Bowlers attack with the new ball; field is up.</span></li>
+                  <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Middle + death (overs 7-30):</strong> standard field restrictions per league rule book — typically 5 fielders outside the ring in middle, max boundary protection in death.</span></li>
+                  <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Pre-game know your share:</strong> the captain tells you before the match how many overs you&apos;re likely to bowl and at which phase. If unclear, ask.</span></li>
+                </ul>
+              </div>
+
+              {/* OPENING BOWLERS */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <span className="text-2xl">🎯</span> Opening Bowlers
+                  </h3>
+                  <span className="text-xs text-blue-300/80">Powerplay (overs 1-6) · 4-6 overs total in 1-2 spells</span>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">You bowl with the new ball when the field is up. Your job: take wickets and restrict scoring while the fielders are still in close.</p>
+                <ul className="text-sm text-gray-300 space-y-1.5">
+                  <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Attack the stumps</strong> — top of off + middle. New ball + field up = best wicket conditions in the match.</span></li>
+                  <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Target ≤6 RPO</strong> in the powerplay. Anything under 4 RPO is great; anything over 8 means the field needs rethinking.</span></li>
+                  <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">If conditions help</strong> — swing, seam, bounce — use them. If conditions are flat, build pressure with line + length, not heroics.</span></li>
+                  <li className="flex gap-2"><span className="text-blue-400 flex-shrink-0">→</span><span><strong className="text-white">Captain may hold back 1-2 overs</strong> for the death overs. Pace yourself across the spells.</span></li>
+                  <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span>Don&apos;t bowl too short in the powerplay — the field is up and short balls fly to the boundary. Don&apos;t no-ball or wide — every extra run is amplified by field restrictions.</span></li>
+                </ul>
+              </div>
+
+              {/* FIRST-CHANGE / MIDDLE PACE */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <span className="text-2xl">🎯</span> First-Change / Middle-Overs Pace
+                  </h3>
+                  <span className="text-xs text-cyan-300/80">Overs 7-12 · 3-5 overs</span>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">You come on after the powerplay to maintain pressure and bridge to the spinners. Medium-pace or seam-friendly bowler.</p>
+                <ul className="text-sm text-gray-300 space-y-1.5">
+                  <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">→</span><span><strong className="text-white">Restrict, don&apos;t leak.</strong> Target ≤5 RPO. Build pressure that lets the spinners attack in overs 8-22.</span></li>
+                  <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">→</span><span><strong className="text-white">Back-of-a-length on top of off.</strong> Limit width; make the batter come to you.</span></li>
+                  <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">→</span><span><strong className="text-white">Take wickets if they offer</strong> — but containment is the primary job.</span></li>
+                </ul>
+              </div>
+
+              {/* SPINNERS */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <span className="text-2xl">🎯</span> Spinners
+                  </h3>
+                  <span className="text-xs text-purple-300/80">Middle (overs 8-22) · 4-8 overs each</span>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">You own the middle overs. Most opposing batters in our leagues struggle against quality spin — your job is to build dot-ball pressure, take wickets, and choke the run rate.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-purple-300 text-xs font-bold mb-1">Off-spin (right-arm finger)</p>
+                    <p className="text-gray-200">Ball turns INTO a right-hander. Build dot pressure. Strongest vs left-handers when the ball turns away from them.</p>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-purple-300 text-xs font-bold mb-1">Leg-spin (right-arm wrist)</p>
+                    <p className="text-gray-200">Ball turns AWAY from a right-hander. Wicket-taking option with an attacking field. Variable bounce + drift are bonuses.</p>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-purple-300 text-xs font-bold mb-1">Left-arm orthodox (SLA)</p>
+                    <p className="text-gray-200">Ball turns INTO a right-hander (same direction as off-spin, opposite arm). Consistent. Restricts + takes wickets.</p>
+                  </div>
+                  <div className="rounded-lg bg-white/3 border border-white/5 p-3 text-sm">
+                    <p className="text-purple-300 text-xs font-bold mb-1">Left-arm wrist-spin (chinaman)</p>
+                    <p className="text-gray-200">Ball turns AWAY from a right-hander (same direction as leg-spin, opposite arm). Specialist wicket-taker.</p>
+                  </div>
+                </div>
+                <ul className="text-sm text-gray-300 space-y-1.5">
+                  <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Target ≤4.5 RPO</strong> in the middle overs.</span></li>
+                  <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Bowl in pairs.</strong> Two spinners from both ends creates pressure that builds across overs — a wicket usually comes within 3-4 overs of the squeeze starting.</span></li>
+                  <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">→</span><span><strong className="text-white">Field your own bowling.</strong> Get deep catchers in your scoring zones; bring the ring in to save singles.</span></li>
+                  <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span>Don&apos;t bowl too short or too full when wickets aren&apos;t falling. Discipline beats variation.</span></li>
+                </ul>
+              </div>
+
+              {/* DEATH BOWLERS */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <span className="text-2xl">🎯</span> Death Bowlers
+                  </h3>
+                  <span className="text-xs text-red-300/80">Overs 23-30 · 4-6 overs</span>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">You bowl the last 8 overs. The match is often decided here — opposing finishers are trying to clear boundaries every ball, and you have to defend.</p>
+                <ul className="text-sm text-gray-300 space-y-1.5">
+                  <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">→</span><span><strong className="text-white">Yorkers, wide yorkers, slower balls.</strong> Three weapons. Mix them. Don&apos;t become predictable.</span></li>
+                  <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">→</span><span><strong className="text-white">Target single-digit RPO per over.</strong> 6-7 runs is great. 8 is acceptable. 10+ means the over got away from you — reset for the next.</span></li>
+                  <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">→</span><span><strong className="text-white">Protect the long boundary.</strong> Bowl to the field — if long-on is set, don&apos;t bowl the ball that goes there.</span></li>
+                  <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">→</span><span><strong className="text-white">Stay calm after a boundary.</strong> One bad ball doesn&apos;t become two. Pre-ball routine before every delivery.</span></li>
+                  <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span>Don&apos;t bowl half-volleys — death-overs gold for the batter. Don&apos;t no-ball — free hits cost 6.</span></li>
+                </ul>
+              </div>
+
+              {/* PART-TIME BOWLERS */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <span className="text-2xl">🎯</span> Part-Time Bowlers
+                  </h3>
+                  <span className="text-xs text-amber-300/80">Middle (overs 10-20) · 1-3 overs</span>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">You bowl 1-3 overs when the captain needs to rest a main bowler or change the angle. Usually a batting all-rounder. Don&apos;t treat this as small — your one over could be the one that breaks a partnership.</p>
+                <ul className="text-sm text-gray-300 space-y-1.5">
+                  <li className="flex gap-2"><span className="text-amber-400 flex-shrink-0">→</span><span><strong className="text-white">Bowl your strongest delivery on repeat.</strong> Don&apos;t experiment — captain put you on for control.</span></li>
+                  <li className="flex gap-2"><span className="text-amber-400 flex-shrink-0">→</span><span><strong className="text-white">Surprise factor is your advantage.</strong> Batter doesn&apos;t have a plan for you. Use it.</span></li>
+                  <li className="flex gap-2"><span className="text-amber-400 flex-shrink-0">→</span><span><strong className="text-white">Target ≤6 RPO.</strong> Goal is containment, not heroics.</span></li>
+                </ul>
+              </div>
+
+              {/* WICKETKEEPER */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <span className="text-2xl">🧤</span> Wicketkeeper
+                  </h3>
+                  <span className="text-xs text-emerald-300/80">Every ball, all 30 overs</span>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">You see every delivery. You&apos;re the only fielder who watches the bowler from the bowler&apos;s end of the pitch — captains lean on you for tactical reads.</p>
+                <ul className="text-sm text-gray-300 space-y-1.5">
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">→</span><span><strong className="text-white">Clean takes &gt; flashy takes.</strong> Stay low, watch the ball into the gloves.</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">→</span><span><strong className="text-white">Communicate constantly.</strong> Talk to the bowler between balls: what the batter&apos;s doing, what&apos;s working, field adjustments.</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">→</span><span><strong className="text-white">Stumping awareness</strong> against spin — if the batter overbalances even slightly, your gloves are off the bails fast.</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">→</span><span><strong className="text-white">Energy on the field</strong> — wicketkeeper sets the team&apos;s vibe. Loud, positive, picking guys up.</span></li>
+                </ul>
+              </div>
+
+              {/* FIELDING */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <span className="text-2xl">🥎</span> Fielders
+                  </h3>
+                  <span className="text-xs text-cyan-300/80">Every ball you&apos;re not bowling</span>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">10 of 11 fielders aren&apos;t bowling on any given ball. Fielding is what most matches are won or lost on — not bowling, not batting. Take it seriously.</p>
+                <ul className="text-sm text-gray-300 space-y-1.5">
+                  <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">→</span><span><strong className="text-white">Know your position</strong> before every ball. Captain sets the field — if you&apos;re unsure where to stand, ask.</span></li>
+                  <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">→</span><span><strong className="text-white">Best catchers in the deep during middle overs.</strong> If you&apos;re a strong catcher, captain will put you at deep mid-wicket / deep cover / long-on.</span></li>
+                  <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">→</span><span><strong className="text-white">Ring fielders save singles.</strong> Anticipate the shot, move on the bowler&apos;s release, take it cleanly. A single saved is a single not added to their total.</span></li>
+                  <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">→</span><span><strong className="text-white">Throw to the keeper&apos;s gloves</strong> — bounce one if you have to, never over the head. The keeper takes it; the bowler doesn&apos;t.</span></li>
+                  <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">×</span><span>Don&apos;t walk between balls. Don&apos;t take your eye off the batter. Don&apos;t stand up with the field set and then drift back when a fast bowler comes on.</span></li>
+                </ul>
+              </div>
+
               {/* EVERYONE */}
               <div className="rounded-2xl p-6 border-2 border-rose-500/40 bg-gradient-to-br from-rose-500/15 to-transparent">
                 <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
