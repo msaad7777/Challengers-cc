@@ -51,7 +51,7 @@ export default function FinancialPolicyPage() {
             <section>
               <h2 className="text-lg font-bold text-white mb-2">Bank account</h2>
               <p className="text-sm">The Club operates a single primary bank account at <strong className="text-white">CIBC</strong> (Canadian Imperial Bank of Commerce) under the Club&apos;s legal name. The account is dedicated solely to Club operations. Personal funds are never commingled with Club funds.</p>
-              <p className="text-sm mt-2"><strong className="text-white">Co-signatories:</strong> Mohammed Saad and Md Monirul Islam (Tarek). Both signatures are required for cheques, withdrawals, and significant disbursements.</p>
+              <p className="text-sm mt-2"><strong className="text-white">Signing authority:</strong> Mohammed Saad is currently the Club&apos;s signing authority. The Club&apos;s banking follows a dual-signatory policy; a second signing authority will be added and reflected here once in place.</p>
               <p className="text-sm mt-2">Bank statements are reconciled monthly by a board member who is <em>not</em> a primary signatory (the Treasurer or designate), to provide a separation-of-duties check.</p>
             </section>
 
@@ -237,7 +237,9 @@ export default function FinancialPolicyPage() {
               <br />
               v1.2 (2026-06-15) — adds &ldquo;Receipts and tax status&rdquo; section clarifying the Club is a
               non-profit (not a registered charity), cannot issue tax-credit/donation receipts, that fees are
-              not tax-deductible, and that any proof-of-payment provided is a payment record only, not a tax receipt.
+              not tax-deductible, and that any proof-of-payment provided is a payment record only, not a tax receipt;
+              corrects the bank signing-authority line to reflect a single current signing authority (Mohammed Saad)
+              under a dual-signatory policy, with a second authority to be added.
               <br />
               v1.1 (2026-05-08) — adds &ldquo;Member fees — variable, set by Board, fund operations&rdquo;
               section; tightens reimbursement to require 60-day claim window + personal-account routing only +
