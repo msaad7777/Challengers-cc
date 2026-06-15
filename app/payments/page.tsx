@@ -227,7 +227,7 @@ export default function PaymentsPage() {
             </div>
             <div className="glass rounded-xl p-6">
               <h3 className="font-semibold mb-2">Will I receive a receipt?</h3>
-              <p className="text-sm text-gray-400">Yes, you will receive an email receipt from Stripe immediately after payment.</p>
+              <p className="text-sm text-gray-400">Yes — you&apos;ll get an email payment receipt from Stripe immediately. Note this is a record of payment for your files, not a tax receipt (the Club is a non-profit, not a registered charity).</p>
             </div>
             <div className="glass rounded-xl p-6">
               <h3 className="font-semibold mb-2">What payment methods are accepted?</h3>

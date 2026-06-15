@@ -67,6 +67,20 @@ export default function FinancialPolicyPage() {
             </section>
 
             <section>
+              <h2 className="text-lg font-bold text-white mb-2">Receipts and tax status</h2>
+              <p className="text-sm">
+                Challengers Cricket Club is a registered Canadian not-for-profit corporation, <strong className="text-white">not a registered charity</strong>. Under the Income Tax Act (Canada), only a registered charity holding a CRA charity registration number may issue official donation receipts that qualify for a tax credit. Accordingly, at this time:
+              </p>
+              <ul className="space-y-2 text-sm list-disc list-inside ml-2 mt-2">
+                <li>The Club <strong className="text-white">does not and cannot issue charitable / tax-credit (&ldquo;donation&rdquo;) receipts.</strong></li>
+                <li>Registration, membership, practice and league fees <strong className="text-white">are not tax-deductible</strong>, as they are paid in exchange for participation in Club activities.</li>
+                <li>Members who pay via Stripe, Zeffy or Interac e-Transfer receive a <strong className="text-white">payment confirmation</strong> from that platform. These confirmations, and any proof-of-payment the Club provides, are <strong className="text-white">records of payment for your own files only — they are not tax receipts</strong>, and do not entitle the payer to any tax credit or deduction.</li>
+                <li>After the end of a season, the Club may, <strong className="text-white">on request</strong>, provide a simple <strong className="text-white">proof-of-payment statement (PDF) showing the amount a member paid</strong>. This is a payment record only — again, <strong className="text-white">not a tax receipt</strong>.</li>
+                <li><strong className="text-white">If and when the Club obtains CRA charity registration</strong>, it will notify members and issue official tax receipts for eligible donations in accordance with CRA rules.</li>
+              </ul>
+            </section>
+
+            <section>
               <h2 className="text-lg font-bold text-white mb-2">Member fees — variable, set by Board, fund operations</h2>
               <p className="text-sm">
                 Member fees — including registration fees, membership fees, indoor practice fees, outdoor practice
@@ -219,7 +233,11 @@ export default function FinancialPolicyPage() {
             <hr className="border-white/10" />
 
             <p className="text-xs text-gray-500 italic">
-              Document version: v1.1 · Effective 8 May 2026 · Pending pro-bono lawyer review.
+              Document version: v1.2 · Effective 15 June 2026 · Pending pro-bono lawyer review.
+              <br />
+              v1.2 (2026-06-15) — adds &ldquo;Receipts and tax status&rdquo; section clarifying the Club is a
+              non-profit (not a registered charity), cannot issue tax-credit/donation receipts, that fees are
+              not tax-deductible, and that any proof-of-payment provided is a payment record only, not a tax receipt.
               <br />
               v1.1 (2026-05-08) — adds &ldquo;Member fees — variable, set by Board, fund operations&rdquo;
               section; tightens reimbursement to require 60-day claim window + personal-account routing only +
