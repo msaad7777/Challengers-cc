@@ -5,7 +5,6 @@ import Footer from '@/components/Footer';
 import VerifiedBanner from '@/components/VerifiedBanner';
 
 const STRIPE_DONATION_LINK = 'https://donate.stripe.com/00w3cwaPAdAwdmT08j9R600';
-const ZEFFY_DONATION_LINK = 'https://www.zeffy.com/en-CA/donation-form/challengers-cricket-building-community-through-sport';
 
 // Member fees vary year-to-year and within a season. They are set by the
 // Board based on the actual operational costs of the season (insurance,
@@ -127,14 +126,6 @@ export default function PaymentsPage() {
                 Your support helps us cover league registration, field rent, field insurance, unemployed members, equipment, and programs. Thank you for being a part of our community!
               </p>
               <div className="space-y-3">
-                <a
-                  href={ZEFFY_DONATION_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block w-full py-4 px-3 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold text-base sm:text-lg shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105 text-center"
-                >
-                  Confirm Payment via Zeffy (0% Fees)
-                </a>
                 <div className="glass rounded-lg p-3 sm:p-4 border border-accent-500/30">
                   <p className="font-semibold text-xs sm:text-sm text-center mb-2">Pay via Interac e-Transfer (0% Fees)</p>
                   <a
@@ -160,7 +151,7 @@ export default function PaymentsPage() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
-                Zeffy &amp; e-Transfer: 100% goes to the club | Stripe: 2.2% + $0.30 fee applies
+                e-Transfer: 100% goes to the club | Stripe: 2.2% + $0.30 fee applies
               </div>
               <div className="mt-4 pt-4 border-t border-white/10">
                 <p className="text-xs text-gray-500 break-words">
