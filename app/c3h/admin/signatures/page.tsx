@@ -25,6 +25,13 @@ const COLLECTIONS: CollectionConfig[] = [
     description: 'Director e-signatures on the Technology Governance Record, the Letter of Direction (CIBC), and the Director Resolution appointing Gokul Prakash as President.',
   },
   {
+    id: 'governance_revocations',
+    label: 'Pavilion: Signature revocations',
+    icon: '⊘',
+    publicUrl: '/c3h/pavilion',
+    description: 'Append-only record of directors who withdrew a Pavilion signature. The original signature stays in governance_signatures; a revocation here marks it inactive for that document version.',
+  },
+  {
     id: 'officer_appointment_signatures',
     label: 'Officer Appointment Confirmation',
     icon: '🎩',
@@ -90,6 +97,9 @@ type SigRecord = {
   effectiveFrom?: string;
   year?: string;
   conflictDeclarations?: string;
+  // revocation records (governance_revocations)
+  revokedAt?: Timestamp;
+  reason?: string;
 };
 
 type SigEntry = { id: string; data: SigRecord };
@@ -130,10 +140,11 @@ export default function AdminSignaturesPage() {
               const snap = await getDocs(collection(db, col.id));
               const entries: SigEntry[] = [];
               snap.forEach((d) => entries.push({ id: d.id, data: d.data() as SigRecord }));
-              // Sort by signedAt descending (newest first)
+              // Sort by signedAt (or revokedAt for the revocations ledger)
+              // descending (newest first)
               entries.sort((a, b) => {
-                const ta = a.data.signedAt?.toMillis?.() ?? 0;
-                const tb = b.data.signedAt?.toMillis?.() ?? 0;
+                const ta = (a.data.signedAt ?? a.data.revokedAt)?.toMillis?.() ?? 0;
+                const tb = (b.data.signedAt ?? b.data.revokedAt)?.toMillis?.() ?? 0;
                 return tb - ta;
               });
               out[col.id] = entries;
@@ -289,7 +300,7 @@ export default function AdminSignaturesPage() {
                                       </div>
                                     </div>
                                     <div className="text-right flex-shrink-0">
-                                      <div className="text-xs text-gray-300">{fmtDate(r.signedAt)}</div>
+                                      <div className="text-xs text-gray-300">{fmtDate(r.signedAt ?? r.revokedAt)}</div>
                                       <div className="text-[10px] text-gray-500">
                                         {r.signatureType ?? '—'}
                                         {r.docVersion ? ` · v${r.docVersion}` : ''}
@@ -308,6 +319,8 @@ export default function AdminSignaturesPage() {
                                         )}
                                         <Field label="Role" value={r.signerRole} />
                                         <Field label="Effective from" value={r.effectiveFrom} />
+                                        <Field label="Revoked at" value={r.revokedAt ? fmtDate(r.revokedAt) : undefined} />
+                                        <Field label="Revocation reason" value={r.reason} />
                                         <Field label="Year" value={r.year} />
                                         <Field label="DOB" value={r.dateOfBirth} />
                                         <Field label="Emergency contact" value={r.emergencyContact} />

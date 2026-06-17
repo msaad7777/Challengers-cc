@@ -102,15 +102,30 @@ export default function LoDPrintPage() {
     // Pull signatures from both the split LoD (this doc) and the prior
     // combined LoD that this doc replaces. Fresh signatures on the
     // split doc take precedence over carried-forward legacy ones.
-    const q = query(
+    const sigQ = query(
       collection(db, 'governance_signatures'),
       where('docId', 'in', [r.docId, 'lod-cibc-gokul-qaiser-2026']),
     );
-    getDocs(q)
-      .then((snap) => {
+    // Revocations are written against the active (split) doc only. A
+    // director who has withdrawn their signature must NOT appear on the
+    // printed Letter — drop them from the map so they read as pending and
+    // the "all signed" gate stays false until they re-sign at a bumped
+    // version.
+    const revQ = query(
+      collection(db, 'governance_revocations'),
+      where('docId', '==', r.docId),
+    );
+    Promise.all([getDocs(sigQ), getDocs(revQ)])
+      .then(([sigSnap, revSnap]) => {
+        const revoked = new Set<string>();
+        revSnap.forEach((d) => {
+          const rec = d.data() as { signerWorkspaceEmail?: string };
+          if (rec.signerWorkspaceEmail) revoked.add(rec.signerWorkspaceEmail);
+        });
+
         const map: Record<string, SignatureRecord> = {};
         const legacy: SignatureRecord[] = [];
-        snap.forEach((d) => {
+        sigSnap.forEach((d) => {
           const rec = d.data() as SignatureRecord;
           if (rec.docId === r.docId) {
             map[rec.signerWorkspaceEmail] = rec;
@@ -124,6 +139,8 @@ export default function LoDPrintPage() {
             map[rec.signerWorkspaceEmail] = rec;
           }
         }
+        // Remove any signer who has since revoked on the active doc.
+        for (const ws of revoked) delete map[ws];
         setSignatures(map);
       })
       .finally(() => setLoading(false));

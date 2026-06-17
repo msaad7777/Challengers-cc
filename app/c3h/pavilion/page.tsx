@@ -44,7 +44,20 @@ type SignatureRecord = {
   userAgent: string;
 };
 
+type RevocationRecord = {
+  docId: string;
+  docVersion: string;
+  signerWorkspaceEmail: string;
+  signerLoginEmail: string;
+  signerName: string;
+  signerRole: string;
+  revokedAt: Timestamp | null;
+  reason?: string;
+  userAgent: string;
+};
+
 const SIG_COLLECTION = 'governance_signatures';
+const REVOKE_COLLECTION = 'governance_revocations';
 
 function sigKey(docId: string, docVersion: string, workspaceEmail: string) {
   return `${docId}__v${docVersion}__${workspaceEmail.replace(/[^a-z0-9@.]/gi, '_')}`;
@@ -54,6 +67,8 @@ export default function PavilionPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [signatures, setSignatures] = useState<Record<string, SignatureRecord>>({});
+  // Revocation events keyed by the same sigKey as the signature they retract.
+  const [revocations, setRevocations] = useState<Record<string, RevocationRecord>>({});
   const [loadingSigs, setLoadingSigs] = useState(true);
   // Volunteer-agreement signers, keyed by lower-cased email.
   const [vaSigners, setVaSigners] = useState<Set<string>>(new Set());
@@ -62,6 +77,11 @@ export default function PavilionPage() {
   const [openSignerFor, setOpenSignerFor] = useState<string | null>(null);
   const [openContentFor, setOpenContentFor] = useState<string | null>(null);
   const [busyDocId, setBusyDocId] = useState<string | null>(null);
+  // Revocation flow: which doc's confirm panel is open, the typed reason,
+  // and which doc is mid-write.
+  const [openRevokeFor, setOpenRevokeFor] = useState<string | null>(null);
+  const [revokeReason, setRevokeReason] = useState('');
+  const [busyRevokeDocId, setBusyRevokeDocId] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/c3h/login');
@@ -110,6 +130,26 @@ export default function PavilionPage() {
 
       setSignatures(map);
       setLoadingSigs(false);
+    });
+    return () => unsub();
+  }, [session?.user?.email]);
+
+  // Revocations — appended when a director withdraws a signature. Keyed by
+  // the active doc's sigKey, so a revocation masks both a directly-recorded
+  // signature and a carried-forward legacy one. Revocations are written
+  // only against active doc ids, so we filter on those.
+  useEffect(() => {
+    if (!session?.user?.email) return;
+    if (!isC3HDirector(session.user.email) && !isC3HGovernanceReader(session.user.email)) return;
+    const activeDocIds = GOVERNANCE_DOCS.map(d => d.id);
+    const q = query(collection(db, REVOKE_COLLECTION), where('docId', 'in', activeDocIds));
+    const unsub = onSnapshot(q, (snap) => {
+      const map: Record<string, RevocationRecord> = {};
+      snap.forEach((d) => {
+        const r = d.data() as RevocationRecord;
+        map[sigKey(r.docId, r.docVersion, r.signerWorkspaceEmail)] = r;
+      });
+      setRevocations(map);
     });
     return () => unsub();
   }, [session?.user?.email]);
@@ -240,15 +280,50 @@ export default function PavilionPage() {
     }
   };
 
+  // Withdraw the current director's signature on a document. Append-only:
+  // we never delete the original signature record — we write a revocation
+  // event that the UI treats as making the signature inactive. Re-signing
+  // at the same version is not supported (bump the doc version instead).
+  const submitRevocation = async (gd: GovernanceDoc) => {
+    if (!userWorkspaceEmail || !userRosterEntry) return;
+    setBusyRevokeDocId(gd.id);
+    try {
+      const key = sigKey(gd.id, gd.version, userWorkspaceEmail);
+      const trimmedReason = revokeReason.trim();
+      const record = {
+        docId: gd.id,
+        docVersion: gd.version,
+        signerWorkspaceEmail: userWorkspaceEmail,
+        signerLoginEmail: userEmail.toLowerCase(),
+        signerName: userRosterEntry.name,
+        signerRole: userRosterEntry.role,
+        revokedAt: serverTimestamp(),
+        ...(trimmedReason ? { reason: trimmedReason } : {}),
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+      };
+      await setDoc(doc(db, REVOKE_COLLECTION, key), record);
+      setOpenRevokeFor(null);
+      setRevokeReason('');
+    } finally {
+      setBusyRevokeDocId(null);
+    }
+  };
+
   const requiredSignersFor = (gd: GovernanceDoc): typeof C3H_DIRECTOR_ROSTER => {
     if (gd.whoMustSign === 'all-directors') return C3H_DIRECTOR_ROSTER;
     const conflicted = new Set(gd.conflictedSigners ?? []);
     return C3H_DIRECTOR_ROSTER.filter((d) => !conflicted.has(d.workspaceEmail)) as unknown as typeof C3H_DIRECTOR_ROSTER;
   };
 
+  const isRevoked = (gd: GovernanceDoc, workspaceEmail: string) =>
+    !!revocations[sigKey(gd.id, gd.version, workspaceEmail)];
+
+  // A signature counts only if it exists AND has not been revoked.
   const signedCount = (gd: GovernanceDoc) =>
     requiredSignersFor(gd).filter(
-      (d) => !!signatures[sigKey(gd.id, gd.version, d.workspaceEmail)],
+      (d) =>
+        !!signatures[sigKey(gd.id, gd.version, d.workspaceEmail)] &&
+        !isRevoked(gd, d.workspaceEmail),
     ).length;
 
   return (
@@ -335,9 +410,11 @@ export default function PavilionPage() {
                 const signed = signedCount(gd);
                 const myKey = userWorkspaceEmail ? sigKey(gd.id, gd.version, userWorkspaceEmail) : '';
                 const mySig = myKey ? signatures[myKey] : undefined;
+                const myRev = myKey ? revocations[myKey] : undefined;
                 const isConflicted = (gd.conflictedSigners ?? []).includes(userWorkspaceEmail || '');
                 const isOpen = openContentFor === gd.id;
                 const isSigning = openSignerFor === gd.id;
+                const isRevoking = openRevokeFor === gd.id;
                 const fullySigned = signed === total;
 
                 return (
@@ -398,10 +475,26 @@ export default function PavilionPage() {
                         <span className="px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-sm text-amber-300">
                           You are recused (conflict of interest declared)
                         </span>
-                      ) : mySig ? (
-                        <span className="px-4 py-2 rounded-lg bg-primary-500/10 border border-primary-500/30 text-sm text-primary-300">
-                          ✓ You signed on {mySig.signedAt ? mySig.signedAt.toDate().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'pending sync'}
+                      ) : myRev ? (
+                        <span className="px-4 py-2 rounded-lg bg-red-500/10 border border-red-500/30 text-sm text-red-300">
+                          ⊘ You revoked your signature on {myRev.revokedAt ? myRev.revokedAt.toDate().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'pending sync'}
                         </span>
+                      ) : mySig ? (
+                        <>
+                          <span className="px-4 py-2 rounded-lg bg-primary-500/10 border border-primary-500/30 text-sm text-primary-300">
+                            ✓ You signed on {mySig.signedAt ? mySig.signedAt.toDate().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'pending sync'}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setRevokeReason('');
+                              setOpenRevokeFor(isRevoking ? null : gd.id);
+                            }}
+                            className="px-4 py-2 rounded-lg bg-red-500/10 border border-red-500/40 text-sm text-red-300 hover:bg-red-500/20 transition-all"
+                          >
+                            {isRevoking ? 'Cancel' : 'Revoke my signature'}
+                          </button>
+                        </>
                       ) : (
                         <button
                           type="button"
@@ -435,7 +528,7 @@ export default function PavilionPage() {
                       </div>
                     )}
 
-                    {isSigning && !mySig && !isConflicted && userRosterEntry && (
+                    {isSigning && !mySig && !myRev && !isConflicted && userRosterEntry && (
                       <div className="mb-4">
                         <SignaturePad
                           signerName={userRosterEntry.name}
@@ -446,6 +539,46 @@ export default function PavilionPage() {
                       </div>
                     )}
 
+                    {isRevoking && mySig && !myRev && canSign && (
+                      <div className="mb-4 rounded-xl bg-red-500/5 border border-red-500/30 p-4">
+                        <p className="text-sm font-semibold text-red-300 mb-1">Withdraw your signature?</p>
+                        <p className="text-xs text-red-100/80 leading-relaxed mb-3">
+                          This records a <strong>revocation</strong> of your signature on <strong>{gd.title}</strong> (v{gd.version}).
+                          Your original signature is not deleted — the Club&apos;s ledger keeps the full
+                          signed-then-revoked history — but the document will no longer count you as a current
+                          signatory. You will <strong>not</strong> be able to re-sign this same version; to sign
+                          again the document must be re-issued at a new version.
+                        </p>
+                        <label className="block text-xs text-gray-400 mb-1">Reason (optional, recorded with the revocation)</label>
+                        <textarea
+                          value={revokeReason}
+                          onChange={(e) => setRevokeReason(e.target.value)}
+                          rows={2}
+                          maxLength={2000}
+                          placeholder="e.g. Withdrawing pending board discussion"
+                          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none mb-3"
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            disabled={busyRevokeDocId === gd.id}
+                            onClick={() => submitRevocation(gd)}
+                            className="px-5 py-2 rounded-lg bg-red-500 text-black font-semibold text-sm hover:bg-red-400 transition-all disabled:opacity-50"
+                          >
+                            {busyRevokeDocId === gd.id ? 'Revoking…' : 'Confirm revocation'}
+                          </button>
+                          <button
+                            type="button"
+                            disabled={busyRevokeDocId === gd.id}
+                            onClick={() => { setOpenRevokeFor(null); setRevokeReason(''); }}
+                            className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-gray-300 hover:bg-white/10 transition-all"
+                          >
+                            Keep my signature
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Sign-status grid — director-only view */}
                     {canSeeTrackers && (
                     <div>
@@ -453,6 +586,7 @@ export default function PavilionPage() {
                       <div className="grid sm:grid-cols-2 gap-2">
                         {required.map((d) => {
                           const sig = signatures[sigKey(gd.id, gd.version, d.workspaceEmail)];
+                          const rev = revocations[sigKey(gd.id, gd.version, d.workspaceEmail)];
                           const isSelf = d.workspaceEmail === userWorkspaceEmail;
                           const signedVa =
                             vaSigners.has(d.workspaceEmail) ||
@@ -461,7 +595,9 @@ export default function PavilionPage() {
                             <div
                               key={d.workspaceEmail}
                               className={`rounded-lg px-3 py-2 border text-sm ${
-                                sig
+                                rev
+                                  ? 'bg-red-500/5 border-red-500/20'
+                                  : sig
                                   ? 'bg-primary-500/5 border-primary-500/20'
                                   : 'bg-white/3 border-white/10'
                               } ${isSelf ? 'ring-1 ring-accent-500/40' : ''}`}
@@ -471,7 +607,15 @@ export default function PavilionPage() {
                                   <div className="text-white font-medium truncate">{d.name}</div>
                                   <div className="text-xs text-gray-500 truncate">{d.role}</div>
                                 </div>
-                                {sig ? (
+                                {rev ? (
+                                  <div className="text-right">
+                                    <div className="text-red-400 text-xs font-semibold">⊘ Revoked</div>
+                                    <div className="text-[10px] text-gray-500 mt-0.5">
+                                      {rev.revokedAt ? rev.revokedAt.toDate().toLocaleDateString() : '…'}
+                                    </div>
+                                    <div className="text-[10px] text-gray-500">VA: {signedVa ? '✓' : '—'}</div>
+                                  </div>
+                                ) : sig ? (
                                   <div className="text-right">
                                     <div className="text-primary-400 text-xs font-semibold">✓ Signed</div>
                                     <div className="text-[10px] text-gray-500 mt-0.5">

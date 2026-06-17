@@ -56,13 +56,21 @@ export default function PresidentAppointmentPrintPage() {
 
   useEffect(() => {
     if (!email || !canView) return;
-    const q = query(collection(db, 'governance_signatures'), where('docId', '==', DOC_ID));
-    getDocs(q)
-      .then((snap) => {
+    const sigQ = query(collection(db, 'governance_signatures'), where('docId', '==', DOC_ID));
+    // Directors who have withdrawn their signature must not appear as
+    // signatories on the printed resolution.
+    const revQ = query(collection(db, 'governance_revocations'), where('docId', '==', DOC_ID));
+    Promise.all([getDocs(sigQ), getDocs(revQ)])
+      .then(([sigSnap, revSnap]) => {
+        const revoked = new Set<string>();
+        revSnap.forEach((d) => {
+          const rec = d.data() as { signerWorkspaceEmail?: string };
+          if (rec.signerWorkspaceEmail) revoked.add(rec.signerWorkspaceEmail);
+        });
         const map: Record<string, SignatureRecord> = {};
-        snap.forEach((d) => {
+        sigSnap.forEach((d) => {
           const r = d.data() as SignatureRecord;
-          map[r.signerWorkspaceEmail] = r;
+          if (!revoked.has(r.signerWorkspaceEmail)) map[r.signerWorkspaceEmail] = r;
         });
         setSignatures(map);
       })

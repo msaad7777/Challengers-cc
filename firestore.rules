@@ -157,6 +157,46 @@ service cloud.firestore {
         && isString(d.signatureData) && d.signatureData.size() < 800000;
     }
 
+    // ── Governance signature revocations (Pavilion) ───────────────────────
+    // A director may WITHDRAW a signature they previously recorded in
+    // governance_signatures. The signing ledger is append-only by design
+    // (a corporate record), so we never delete the original signature —
+    // instead a revocation event is appended here, preserving the full
+    // "signed on X / revoked on Y" audit trail. The Pavilion treats a
+    // signature as inactive once a matching revocation exists.
+    //
+    // Re-signing at the SAME version is intentionally NOT supported — to
+    // start a fresh signing cycle, bump the GovernanceDoc.version (which
+    // changes every signature key). Revocations are therefore create-once
+    // and append-only, keyed identically to the signature they retract:
+    //   {docId}__v{version}__{safeEmail}
+    match /governance_revocations/{revId} {
+      allow read: if authed();
+      allow create: if authed()
+        && validRevocationPayload(request.resource.data)
+        && request.resource.data.signerWorkspaceEmail in directorEmails();
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    function validRevocationPayload(d) {
+      return d.keys().hasAll([
+        'docId', 'docVersion',
+        'signerWorkspaceEmail', 'signerLoginEmail',
+        'signerName', 'signerRole',
+        'revokedAt'
+      ])
+        && isString(d.docId) && d.docId.size() > 0
+        && isString(d.docVersion) && d.docVersion.size() > 0
+        && isString(d.signerWorkspaceEmail)
+        && isString(d.signerLoginEmail)
+        && isString(d.signerName) && d.signerName.size() > 1
+        && isString(d.signerRole)
+        && d.revokedAt is timestamp
+        // Optional free-text reason, capped to keep records lean.
+        && (!('reason' in d) || (isString(d.reason) && d.reason.size() < 2000));
+    }
+
     // ── Volunteer Agreement signatures (per-member, public legal page) ────
     // Any logged-in member who reads /legal/volunteer-agreement can sign.
     // Append-only — to revise a previous signature, members contact the
