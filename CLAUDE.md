@@ -73,6 +73,7 @@ Two layered access checks:
    - `isC3HCaptain` / `isC3HBoard` — admin + designated league captains/VCs. Use this for any board-only mutation surface.
    - `isC3HSquadViewer` — read-only captain view for Treasurer + the shared `contact@` inbox.
    - `isC3HDirector` / `isC3HGovernanceReader` — for Pavilion / governance-signature surfaces, backed by `C3H_DIRECTOR_ROSTER` and `C3H_OFFICER_ROSTER`. Use the `resolveDirectorWorkspaceEmail()` / `resolveOfficerWorkspaceEmail()` helpers to canonicalize a personal-gmail login back to the director's workspace address — Pavilion writes always store the workspace email, never the login email.
+   - `isC3HPresident` — roster-driven (the `'President'` role in `C3H_OFFICER_ROSTER`, currently Gokul). Gates the Pavilion "ready to send" sign-off on externally-submitted docs (LoDs). Keep in sync with `presidentEmails()` in `firestore.rules`.
 
    **This is intentionally narrower than the NextAuth board list**: other club board members can sign in as players to mark availability but don't see captain/squad/Pavilion features. Always gate from these predicates — never re-derive from email domain or role string. `contact@challengerscc.ca` is deliberately excluded from `C3H_ADMIN_EMAILS` because the inbox is shared.
 
@@ -88,6 +89,7 @@ Two layered access checks:
 - `shot-plans/{playerEmail}` — per-player shot-plan preferences from the Nets coaching tabs
 - `reflections` — Nets reflections
 - `governance_signatures` — append-only Pavilion signatures. Doc id encodes `{docId}_{docVersion}_{signerWorkspaceEmail}`; rules enforce append-only (no update, no delete) and director-allowlist on create.
+- `governance_approvals` — President "ready to send" status for externally-submitted docs (the CIBC LoDs, flagged `requiresPresidentApproval` on the `GovernanceDoc`). One mutable doc per `{docId}__v{version}` with `status: 'ready' | 'held'`. Directors' signatures *authorise* an LoD; the President's sign-off *authorises its dispatch* — only after all 5 sign. President-only writes (gated by `isC3HPresident` in UI + `presidentEmails()` in rules); never deletable. The LoD print/PDF toolbar shows "ready to submit" only when fully signed **and** marked ready.
 - `governance_revocations` — append-only signature **withdrawals**. A director can revoke their own Pavilion signature; because `governance_signatures` is append-only (never deleted), a revocation is a *new* event keyed identically to the signature it retracts (`{docId}__v{version}__{signerWorkspaceEmail}`). The Pavilion treats a signature as inactive once a matching revocation exists (so `signedCount` and the print/PDF exports both drop revoked signers). Re-signing at the same version is intentionally unsupported — bump `GovernanceDoc.version` for a fresh signing cycle. Same director-allowlist + append-only rules as signatures.
 - `officer_appointments` — Officer Hub appointments produced from the Pavilion flow.
 - `board_resolutions` — director propose/vote board resolutions from the Pavilion **Board Resolutions** view (`Resolutions.tsx`).

@@ -180,6 +180,24 @@ export const resolveOfficerWorkspaceEmail = (email?: string | null): string | nu
   return match?.workspaceEmail ?? null;
 };
 
+// ── President ──────────────────────────────────────────────────────────
+// The President (currently Gokul Prakash, appointed via the Pavilion
+// President Appointment doc) holds a final "ready to send" sign-off over
+// externally-submitted governance documents (the CIBC Letters of
+// Direction). All five directors authorise an LoD by signing it; the
+// President then decides — at his discretion — whether the Club is ready
+// to actually submit it to the bank. Roster-driven: whoever holds the
+// 'President' role in C3H_OFFICER_ROSTER is the President. Kept in sync
+// with presidentEmails() in firestore.rules.
+export const isC3HPresident = (email?: string | null) => {
+  const lower = lc(email);
+  return C3H_OFFICER_ROSTER.some(
+    o =>
+      o.role === 'President' &&
+      (o.workspaceEmail === lower || o.personalEmail?.toLowerCase() === lower),
+  );
+};
+
 // ── Governance readers ────────────────────────────────────────────────
 // Subset of officers who get READ-ONLY access to the Pavilion governance
 // documents. Today this is the Secretary and the Treasurer — they need

@@ -197,6 +197,47 @@ service cloud.firestore {
         && (!('reason' in d) || (isString(d.reason) && d.reason.size() < 2000));
     }
 
+    // Hardcoded President allowlist (workspace email) — kept in sync with
+    // the 'President' role in C3H_OFFICER_ROSTER / isC3HPresident() in
+    // lib/c3h-access.ts. Only the President may mark an externally-bound
+    // governance document "ready to send".
+    function presidentEmails() {
+      return ['gokul@challengerscc.ca'];
+    }
+
+    // ── Governance approvals (Pavilion: President "ready to send") ─────────
+    // One status doc per externally-submitted governance document version
+    // (the CIBC Letters of Direction). After all directors have signed,
+    // the President toggles the document between 'held' and 'ready'. Unlike
+    // signatures/revocations this is an operational dispatch status, not a
+    // legal signature, so it is mutable (the President may put it back on
+    // hold before submission) — but only the President may write it, and it
+    // can never be deleted.
+    //   Doc key: {docId}__v{version}
+    match /governance_approvals/{docKey} {
+      allow read: if authed();
+      allow create, update: if authed()
+        && validApprovalPayload(request.resource.data)
+        && request.resource.data.approverWorkspaceEmail in presidentEmails();
+      allow delete: if false;
+    }
+
+    function validApprovalPayload(d) {
+      return d.keys().hasAll([
+        'docId', 'docVersion', 'status',
+        'approverWorkspaceEmail', 'approverName', 'approverRole',
+        'updatedAt'
+      ])
+        && isString(d.docId) && d.docId.size() > 0
+        && isString(d.docVersion) && d.docVersion.size() > 0
+        && d.status in ['ready', 'held']
+        && isString(d.approverWorkspaceEmail)
+        && isString(d.approverName) && d.approverName.size() > 1
+        && isString(d.approverRole)
+        && d.updatedAt is timestamp
+        && (!('note' in d) || (isString(d.note) && d.note.size() < 2000));
+    }
+
     // ── Volunteer Agreement signatures (per-member, public legal page) ────
     // Any logged-in member who reads /legal/volunteer-agreement can sign.
     // Append-only — to revise a previous signature, members contact the

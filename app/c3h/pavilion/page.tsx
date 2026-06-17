@@ -20,6 +20,7 @@ import {
   C3H_OFFICER_ROSTER,
   isC3HDirector,
   isC3HGovernanceReader,
+  isC3HPresident,
   resolveDirectorWorkspaceEmail,
   resolveOfficerWorkspaceEmail,
 } from '@/lib/c3h-access';
@@ -56,11 +57,27 @@ type RevocationRecord = {
   userAgent: string;
 };
 
+type ApprovalRecord = {
+  docId: string;
+  docVersion: string;
+  status: 'ready' | 'held';
+  approverWorkspaceEmail: string;
+  approverName: string;
+  approverRole: string;
+  updatedAt: Timestamp | null;
+  note?: string;
+};
+
 const SIG_COLLECTION = 'governance_signatures';
 const REVOKE_COLLECTION = 'governance_revocations';
+const APPROVAL_COLLECTION = 'governance_approvals';
 
 function sigKey(docId: string, docVersion: string, workspaceEmail: string) {
   return `${docId}__v${docVersion}__${workspaceEmail.replace(/[^a-z0-9@.]/gi, '_')}`;
+}
+
+function approvalKey(docId: string, docVersion: string) {
+  return `${docId}__v${docVersion}`;
 }
 
 export default function PavilionPage() {
@@ -69,6 +86,8 @@ export default function PavilionPage() {
   const [signatures, setSignatures] = useState<Record<string, SignatureRecord>>({});
   // Revocation events keyed by the same sigKey as the signature they retract.
   const [revocations, setRevocations] = useState<Record<string, RevocationRecord>>({});
+  // President "ready to send" approvals, keyed by approvalKey(docId, version).
+  const [approvals, setApprovals] = useState<Record<string, ApprovalRecord>>({});
   const [loadingSigs, setLoadingSigs] = useState(true);
   // Volunteer-agreement signers, keyed by lower-cased email.
   const [vaSigners, setVaSigners] = useState<Set<string>>(new Set());
@@ -82,6 +101,8 @@ export default function PavilionPage() {
   const [openRevokeFor, setOpenRevokeFor] = useState<string | null>(null);
   const [revokeReason, setRevokeReason] = useState('');
   const [busyRevokeDocId, setBusyRevokeDocId] = useState<string | null>(null);
+  // President "ready to send" toggle.
+  const [busyApprovalDocId, setBusyApprovalDocId] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/c3h/login');
@@ -154,6 +175,24 @@ export default function PavilionPage() {
     return () => unsub();
   }, [session?.user?.email]);
 
+  // President "ready to send" approvals for externally-submitted docs.
+  useEffect(() => {
+    if (!session?.user?.email) return;
+    if (!isC3HDirector(session.user.email) && !isC3HGovernanceReader(session.user.email)) return;
+    const approvalDocIds = GOVERNANCE_DOCS.filter(d => d.requiresPresidentApproval).map(d => d.id);
+    if (approvalDocIds.length === 0) return;
+    const q = query(collection(db, APPROVAL_COLLECTION), where('docId', 'in', approvalDocIds));
+    const unsub = onSnapshot(q, (snap) => {
+      const map: Record<string, ApprovalRecord> = {};
+      snap.forEach((d) => {
+        const r = d.data() as ApprovalRecord;
+        map[approvalKey(r.docId, r.docVersion)] = r;
+      });
+      setApprovals(map);
+    });
+    return () => unsub();
+  }, [session?.user?.email]);
+
   // Volunteer-agreement + Officer-appointment signers — one-shot reads
   // on mount. The onboarding tracker is read-mostly; no live snapshot
   // needed.
@@ -190,6 +229,7 @@ export default function PavilionPage() {
   const userEmail = session?.user?.email || '';
   const isDirector = isC3HDirector(userEmail);
   const isGovernanceReader = isC3HGovernanceReader(userEmail);
+  const isPresident = isC3HPresident(userEmail);
   // Pavilion is open to directors (full) + governance readers (Treasurer +
   // Secretary, docs only — no signing trackers, no resolutions). Captains
   // and players have no Pavilion access.
@@ -309,6 +349,30 @@ export default function PavilionPage() {
     }
   };
 
+  // President-only: toggle a document's "ready to send" status. Writes the
+  // operational dispatch status to governance_approvals. Mutable by design
+  // (the President may put a document back on hold before submission).
+  const setApprovalStatus = async (gd: GovernanceDoc, status: 'ready' | 'held') => {
+    if (!isPresident || !userWorkspaceEmail || !userRosterEntry) return;
+    setBusyApprovalDocId(gd.id);
+    try {
+      const key = approvalKey(gd.id, gd.version);
+      const record = {
+        docId: gd.id,
+        docVersion: gd.version,
+        status,
+        approverWorkspaceEmail: userWorkspaceEmail,
+        approverName: userRosterEntry.name,
+        approverRole: 'President',
+        updatedAt: serverTimestamp(),
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+      };
+      await setDoc(doc(db, APPROVAL_COLLECTION, key), record);
+    } finally {
+      setBusyApprovalDocId(null);
+    }
+  };
+
   const requiredSignersFor = (gd: GovernanceDoc): typeof C3H_DIRECTOR_ROSTER => {
     if (gd.whoMustSign === 'all-directors') return C3H_DIRECTOR_ROSTER;
     const conflicted = new Set(gd.conflictedSigners ?? []);
@@ -416,6 +480,10 @@ export default function PavilionPage() {
                 const isSigning = openSignerFor === gd.id;
                 const isRevoking = openRevokeFor === gd.id;
                 const fullySigned = signed === total;
+                const approval = gd.requiresPresidentApproval
+                  ? approvals[approvalKey(gd.id, gd.version)]
+                  : undefined;
+                const isReadyToSend = approval?.status === 'ready';
 
                 return (
                   <article key={gd.id} className="glass rounded-2xl p-6 border border-white/10">
@@ -505,6 +573,65 @@ export default function PavilionPage() {
                         </button>
                       )}
                     </div>
+
+                    {/* President "ready to send" gate — externally-submitted
+                        docs (the LoDs) need the President's final sign-off
+                        after all directors have signed. */}
+                    {gd.requiresPresidentApproval && (
+                      <div
+                        className={`rounded-xl border p-4 mb-4 ${
+                          isReadyToSend
+                            ? 'bg-primary-500/5 border-primary-500/30'
+                            : 'bg-white/3 border-white/10'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-3 flex-wrap">
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-white flex items-center gap-2">
+                              <span>🪶</span>
+                              <span>President sign-off — ready to send to CIBC</span>
+                            </p>
+                            {isReadyToSend ? (
+                              <p className="text-xs text-primary-300 mt-1">
+                                ✓ Marked ready to send by {approval?.approverName || 'the President'}
+                                {approval?.updatedAt ? ` on ${approval.updatedAt.toDate().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}` : ''}.
+                                This Letter may now be exported and submitted to the bank.
+                              </p>
+                            ) : fullySigned ? (
+                              <p className="text-xs text-amber-300 mt-1">
+                                All {total} directors have signed. Awaiting the President&apos;s final sign-off before this Letter is submitted to CIBC.
+                              </p>
+                            ) : (
+                              <p className="text-xs text-gray-400 mt-1">
+                                The President can mark this Letter ready to send once all {total} directors have signed ({signed}/{total} so far).
+                              </p>
+                            )}
+                          </div>
+                          {isPresident && (
+                            isReadyToSend ? (
+                              <button
+                                type="button"
+                                disabled={busyApprovalDocId === gd.id}
+                                onClick={() => setApprovalStatus(gd, 'held')}
+                                className="px-4 py-2 rounded-lg bg-white/5 border border-amber-500/40 text-sm text-amber-300 hover:bg-amber-500/10 transition-all disabled:opacity-50 whitespace-nowrap"
+                              >
+                                {busyApprovalDocId === gd.id ? 'Saving…' : 'Put back on hold'}
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                disabled={!fullySigned || busyApprovalDocId === gd.id}
+                                onClick={() => setApprovalStatus(gd, 'ready')}
+                                title={fullySigned ? undefined : 'All directors must sign first'}
+                                className="px-4 py-2 rounded-lg bg-primary-500 text-black font-semibold text-sm hover:bg-primary-400 transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+                              >
+                                {busyApprovalDocId === gd.id ? 'Saving…' : 'Mark ready to send'}
+                              </button>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    )}
 
                     {isOpen && (
                       <div className="rounded-xl bg-black/30 border border-white/10 p-5 mb-4 max-h-[420px] overflow-y-auto">

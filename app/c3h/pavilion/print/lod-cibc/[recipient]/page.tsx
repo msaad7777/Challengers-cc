@@ -88,6 +88,7 @@ export default function LoDPrintPage() {
   const r = isValidRecipient ? RECIPIENTS[recipientKey] : null;
 
   const [signatures, setSignatures] = useState<Record<string, SignatureRecord>>({});
+  const [readyToSend, setReadyToSend] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -115,8 +116,20 @@ export default function LoDPrintPage() {
       collection(db, 'governance_revocations'),
       where('docId', '==', r.docId),
     );
-    Promise.all([getDocs(sigQ), getDocs(revQ)])
-      .then(([sigSnap, revSnap]) => {
+    // President "ready to send" status for this LoD.
+    const apprQ = query(
+      collection(db, 'governance_approvals'),
+      where('docId', '==', r.docId),
+    );
+    Promise.all([getDocs(sigQ), getDocs(revQ), getDocs(apprQ)])
+      .then(([sigSnap, revSnap, apprSnap]) => {
+        let ready = false;
+        apprSnap.forEach((d) => {
+          const rec = d.data() as { status?: string };
+          if (rec.status === 'ready') ready = true;
+        });
+        setReadyToSend(ready);
+
         const revoked = new Set<string>();
         revSnap.forEach((d) => {
           const rec = d.data() as { signerWorkspaceEmail?: string };
@@ -222,8 +235,12 @@ export default function LoDPrintPage() {
               ← Back to Pavilion
             </button>
             <div className="text-sm text-gray-600">
-              {allSigned ? (
-                <span className="font-semibold text-emerald-700">✓ All 5 directors have signed — ready to print and submit.</span>
+              {allSigned && readyToSend ? (
+                <span className="font-semibold text-emerald-700">✓ All 5 directors have signed and the President has marked this ready to send — print and submit to CIBC.</span>
+              ) : allSigned ? (
+                <span className="text-amber-700">
+                  All 5 directors have signed. Awaiting the President&apos;s &ldquo;ready to send&rdquo; sign-off in the Pavilion before this Letter is submitted to CIBC. You can still preview / print a draft.
+                </span>
               ) : (
                 <span className="text-amber-700">
                   {Object.keys(signatures).length} of {C3H_DIRECTOR_ROSTER.length} directors have signed (counting carry-forward from the prior combined LoD). You can still preview / print a partial copy.

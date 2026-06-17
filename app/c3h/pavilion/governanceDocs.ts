@@ -32,6 +32,13 @@ export type GovernanceDoc = {
   // legacy signatures stay in their original Firestore records; the
   // carry-forward happens entirely in the Pavilion's in-memory lookup.
   carryForwardFrom?: readonly string[];
+  // If true, this document is submitted to an external party once signed
+  // (e.g. an LoD sent to CIBC), and requires a final "ready to send"
+  // sign-off from the President AFTER all directors have signed. The
+  // President toggles this in the Pavilion; it is recorded in the
+  // governance_approvals collection. Directors' signatures authorise the
+  // document; the President's sign-off authorises its dispatch.
+  requiresPresidentApproval?: boolean;
 };
 
 export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
@@ -65,6 +72,7 @@ export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
       'Directs CIBC to add Gokul Prakash (Director) as a signing authority on the Club’s operating account (transit 04582, account ending ****1517), in addition to Mohammed Saad who is already on file. Gokul serves in a strictly volunteer capacity. The account continues to operate under the Club’s dual-signatory governance policy. Must be signed by all five directors before being submitted to CIBC. Signatures already collected on the prior combined Letter of Direction (Gokul + Qaiser) carry forward to this Letter; only directors who did not sign the combined Letter need to sign here.',
     whoMustSign: 'all-directors',
     carryForwardFrom: ['lod-cibc-gokul-qaiser-2026'],
+    requiresPresidentApproval: true,
   },
   {
     // Companion to lod-cibc-gokul-2026. Same split rationale.
@@ -79,6 +87,7 @@ export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
       'Directs CIBC to add Qaiser Qureshi (Treasurer, non-director officer) as a signing authority on the Club’s operating account (transit 04582, account ending ****1517), in addition to Mohammed Saad who is already on file. Qaiser serves in a strictly volunteer capacity. The account continues to operate under the Club’s dual-signatory governance policy. Must be signed by all five directors before being submitted to CIBC. Signatures already collected on the prior combined Letter of Direction (Gokul + Qaiser) carry forward to this Letter; only directors who did not sign the combined Letter need to sign here.',
     whoMustSign: 'all-directors',
     carryForwardFrom: ['lod-cibc-gokul-qaiser-2026'],
+    requiresPresidentApproval: true,
   },
   {
     id: 'president-appointment-gokul-2026',
