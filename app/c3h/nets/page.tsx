@@ -638,7 +638,7 @@ const MATCHES = [
   { label: 'LPL M3 — vs NLCC (May 31)', index: 53, date: '2026-05-31' },
   { label: 'LPL M4 — vs Royal Tigers (Jun 7)', index: 54, date: '2026-06-07' },
   { label: 'LPL M5 — vs Maple Tigers (Jun 13)', index: 55, date: '2026-06-13' },
-  { label: 'LPL M6 — vs Premier XI (Jun 27)', index: 56, date: '2026-06-27' },
+  { label: 'LPL M6 — vs Premier XI (Jun 28)', index: 56, date: '2026-06-28' },
   { label: 'LPL M7 — vs London Stars (Jul 4)', index: 57, date: '2026-07-04' },
   { label: 'LPL M8 — vs Premier XI (Jul 18)', index: 58, date: '2026-07-18' },
   { label: 'LPL M9 — vs London Rhinos (Jul 25)', index: 59, date: '2026-07-25' },

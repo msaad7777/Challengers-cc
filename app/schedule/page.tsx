@@ -8,7 +8,7 @@ import Footer from '@/components/Footer';
 import { matchDetailsToEvent, googleCalendarUrl, generateICS } from '@/app/c3h/events/data';
 
 // Dates where LCL T30 and LPL T30 overlap
-const CLASH_DATES = ['May 10, 2026', 'June 27, 2026', 'July 25, 2026', 'August 2, 2026'];
+const CLASH_DATES = ['May 10, 2026', 'July 25, 2026', 'August 2, 2026'];
 
 interface Match {
   league?: string;
@@ -44,7 +44,7 @@ const lplT30Matches: Match[] = [
   { match: 3, date: 'May 31, 2026', sortKey: '2026-05-31-1400', day: 'Sunday', time: '2:00 PM', opponent: 'NLCC', venue: 'Thamesville' },
   { match: 4, date: 'June 7, 2026', sortKey: '2026-06-07-1000', day: 'Sunday', time: '10:00 AM', opponent: 'Royal Tigers', venue: 'Silverwoods Cricket Ground' },
   { match: 5, date: 'June 13, 2026', sortKey: '2026-06-13-0800', day: 'Saturday', time: '8:00 AM', opponent: 'Maple Tigers', venue: 'Northridge Cricket Ground' },
-  { match: 6, date: 'June 27, 2026', sortKey: '2026-06-27-0900', day: 'Saturday', time: '9:00 AM', opponent: 'Premier XI', venue: 'Thamesville' },
+  { match: 6, date: 'June 28, 2026', sortKey: '2026-06-28-1400', day: 'Sunday', time: '2:00 PM', opponent: 'Premier XI', venue: 'Thamesville' },
   { match: 7, date: 'July 4, 2026', sortKey: '2026-07-04-1000', day: 'Saturday', time: '10:00 AM', opponent: 'London Stars', venue: 'Northridge Cricket Ground' },
   { match: 8, date: 'July 18, 2026', sortKey: '2026-07-18-1000', day: 'Saturday', time: '10:00 AM', opponent: 'Premier XI', venue: 'Northridge Cricket Ground' },
   { match: 9, date: 'July 25, 2026', sortKey: '2026-07-25-0900', day: 'Saturday', time: '9:00 AM', opponent: 'London Rhinos', venue: 'Thamesville' },

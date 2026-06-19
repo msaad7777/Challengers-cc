@@ -1431,14 +1431,13 @@ export const blogPosts: BlogPost[] = [
           <div class="text-xs text-gray-400">Season</div>
         </div>
       </div>
-      <h3 class="text-2xl font-bold text-white mb-4">4 Clashing Dates to Watch</h3>
+      <h3 class="text-2xl font-bold text-white mb-4">3 Clashing Dates to Watch</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
-        On four dates, we have both LCL and LPL matches on the same day. This means we need to manage
+        On three dates, we have both LCL and LPL matches on the same day. This means we need to manage
         two squads and plan availability carefully.
       </p>
       <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc list-inside space-y-2">
         <li><strong class="text-red-400">May 10</strong> — LPL vs Maple Tigers (10 AM) + LCL vs London Predators (1 PM)</li>
-        <li><strong class="text-red-400">June 27</strong> — LPL vs Premier XI (9 AM) + LCL vs Western CA B (8 AM)</li>
         <li><strong class="text-red-400">July 25</strong> — LPL vs London Rhinos (9 AM) + LCL vs LCC Mavericks (1 PM)</li>
         <li><strong class="text-red-400">August 2</strong> — LPL vs NLCC (10 AM) + LCL vs Western CA B (8 AM)</li>
       </ul>
