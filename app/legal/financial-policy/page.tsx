@@ -58,11 +58,10 @@ export default function FinancialPolicyPage() {
             <section>
               <h2 className="text-lg font-bold text-white mb-2">Income</h2>
               <ul className="space-y-2 text-sm list-disc list-inside ml-2">
-                <li>All Club income — registration fees, season fees, league fees, indoor/outdoor practice fees, sponsorship payments, donations, grants — is deposited into the Club&apos;s bank account within <strong className="text-white">7 days</strong> of receipt.</li>
-                <li>Payment processors used: <strong className="text-white">Stripe, Zeffy, Interac e-Transfer</strong>. Processor balances are settled to the bank account on each platform&apos;s standard cycle.</li>
-                <li>Each income item is logged in the Club&apos;s accounting system (Wave Accounting) with: date, amount, source, and category (registration / sponsorship / donation / grant / other).</li>
-                <li>Receipts (PDF or printable) are issued for any income over $20 on request.</li>
-                <li>Once CRA charity status is registered, official tax receipts will be issued for eligible donations per CRA rules.</li>
+                <li>All Club income — registration, season, league and practice fees, sponsorship, donations and grants — is recorded and deposited into the Club&apos;s bank account.</li>
+                <li>Payment is accepted by card / online payment, Interac e-Transfer, and cash. However it is received, income is recorded in the Club&apos;s books with date, amount, source, and category (registration / sponsorship / donation / grant / other).</li>
+                <li>A receipt or proof of payment is available on request.</li>
+                <li>For donation-receipt and charitable-status details, see <em>Receipts and tax status</em> below.</li>
               </ul>
             </section>
 
@@ -74,7 +73,7 @@ export default function FinancialPolicyPage() {
               <ul className="space-y-2 text-sm list-disc list-inside ml-2 mt-2">
                 <li>The Club <strong className="text-white">does not and cannot issue charitable / tax-credit (&ldquo;donation&rdquo;) receipts.</strong></li>
                 <li>Registration, membership, practice and league fees <strong className="text-white">are not tax-deductible</strong>, as they are paid in exchange for participation in Club activities.</li>
-                <li>Members who pay via Stripe, Zeffy or Interac e-Transfer receive a <strong className="text-white">payment confirmation</strong> from that platform. These confirmations, and any proof-of-payment the Club provides, are <strong className="text-white">records of payment for your own files only — they are not tax receipts</strong>, and do not entitle the payer to any tax credit or deduction.</li>
+                <li>Members who pay by card or Interac e-Transfer receive a <strong className="text-white">payment confirmation</strong> from the payment platform; members who pay in cash may request a written proof of payment from the Club. These confirmations, and any proof-of-payment the Club provides, are <strong className="text-white">records of payment for your own files only — they are not tax receipts</strong>, and do not entitle the payer to any tax credit or deduction.</li>
                 <li>After the end of a season, the Club may, <strong className="text-white">on request</strong>, provide a simple <strong className="text-white">proof-of-payment statement (PDF) showing the amount a member paid</strong>. This is a payment record only — again, <strong className="text-white">not a tax receipt</strong>.</li>
                 <li><strong className="text-white">If and when the Club obtains CRA charity registration</strong>, it will notify members and issue official tax receipts for eligible donations in accordance with CRA rules.</li>
               </ul>
@@ -108,6 +107,36 @@ export default function FinancialPolicyPage() {
                 given at least <strong className="text-white">thirty (30) days&apos; notice</strong> of any change
                 to membership dues before the change takes effect.
               </p>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-2">Withdrawal and refunds</h2>
+              <p className="text-sm">
+                The Club operates on a <strong className="text-white">substantially pass-through basis</strong>.
+                Fees collected for a season are paid out as that season is arranged — to leagues (registration and
+                team-entry fees), venues, insurance, equipment, jerseys, and other operating costs. The Club
+                retains only a <strong className="text-white">minimal operating balance</strong> &mdash; enough to
+                keep the bank account in good standing and to cover statutory costs such as incorporation and
+                annual government (federal / provincial) filing fees &mdash; and <strong className="text-white">does
+                not build reserves to fund refunds</strong>.
+              </p>
+              <ul className="space-y-2 mt-2 text-sm list-disc list-inside ml-2">
+                <li><strong className="text-white">Before the season is committed:</strong> if a member withdraws
+                  before the Club has paid the season&apos;s league, venue and related costs, their fees may be
+                  refunded, applied to a future season, or adjusted &mdash; at the Board&apos;s discretion.</li>
+                <li><strong className="text-white">Once the season has started, or once league / team-entry fees
+                  have been paid:</strong> fees are <strong className="text-white">non-refundable</strong>. After
+                  league registration, venue bookings, insurance, equipment or jerseys have been paid or committed
+                  on a member&apos;s behalf, that money has already left the Club and cannot be returned &mdash; even
+                  if the member later decides to leave or stops participating.</li>
+                <li>A member who withdraws mid-season <strong className="text-white">remains responsible for their
+                  share of costs already committed</strong> on their behalf and is not entitled to repayment of
+                  fees already paid.</li>
+                <li>This follows directly from the Club&apos;s not-for-profit, volunteer-run nature:
+                  <strong className="text-white"> the Club pays out substantially all of what it collects</strong>,
+                  retaining only the minimal balance needed to keep the bank account operating and meet statutory
+                  filing fees, and does not profit from member fees.</li>
+              </ul>
             </section>
 
             <section>
@@ -233,7 +262,15 @@ export default function FinancialPolicyPage() {
             <hr className="border-white/10" />
 
             <p className="text-xs text-gray-500 italic">
-              Document version: v1.2 · Effective 15 June 2026 · Pending pro-bono lawyer review.
+              Document version: v1.3 · Effective 19 June 2026 · Pending pro-bono lawyer review.
+              <br />
+              v1.3 (2026-06-19) — simplifies the &ldquo;Income&rdquo; section: removes named payment
+              processors and accounting-software references, the fixed deposit-timing and receipt-threshold
+              figures, and states plainly that payment is accepted by card, e-Transfer or cash with income
+              recorded however received. Adds a &ldquo;Withdrawal and refunds&rdquo; section: fees are
+              non-refundable once the season has started or league / team-entry fees have been paid, reflecting
+              the Club&apos;s substantially pass-through operation (it retains only a minimal operating balance for
+              account upkeep and statutory filing fees).
               <br />
               v1.2 (2026-06-15) — adds &ldquo;Receipts and tax status&rdquo; section clarifying the Club is a
               non-profit (not a registered charity), cannot issue tax-credit/donation receipts, that fees are
