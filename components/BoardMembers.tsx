@@ -8,8 +8,6 @@ export default function BoardMembers() {
   //   - Officer appointments (President, Treasurer, Secretary, etc.) are
   //     only shown once formally ratified via a Director Resolution and a
   //     signed Officer Appointment Letter in the Pavilion governance ledger.
-  //   - Until ratification is complete, an `onboardingNote` flags the
-  //     in-progress appointment so the public page reflects reality.
   //
   // Do NOT publish an officer title that has not been ratified in the
   // Pavilion — the false-claims memory rule applies to this page.
@@ -53,15 +51,6 @@ export default function BoardMembers() {
       bio: "Former first-class cricketer from Bangladesh with over 20 years of cricket leadership experience. Proud father of three, served as Social Chair for MTA University Society of All Nations (2008-09), President of MTA Cricket Club (2007-09), and Captain of Fleming College Cricket Team (2017). Passionate about nurturing the next generation of cricket players and creating fun, creative team building activities.",
       image: "/Roman-social chair.jpeg",
       initials: "RM",
-    },
-    {
-      name: "Quraishi Qaiser Mahmood",
-      title: "Officer Appointment",
-      role: "Onboarding in progress",
-      bio: "Chief Estimator and Cost Consultant for Heavy Civil Projects in Canada. Wicket-keeper Batsman from Karnataka, India, with a hard-hitting batting style. Passionate about growing cricket in Canada.",
-      image: "/qaiser-treasurer.jpeg",
-      initials: "QQM",
-      onboardingNote: "Appointment in progress",
     },
   ];
 
@@ -124,12 +113,6 @@ export default function BoardMembers() {
                 <h3 className="text-xl font-bold mb-1">{member.name}</h3>
                 <p className="text-primary-400 font-semibold text-sm mb-1">{member.title}</p>
                 <p className="text-gray-500 text-xs mb-2">{member.role}</p>
-                {member.onboardingNote && (
-                  <div className="mb-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-accent-500/15 border border-accent-500/30 text-accent-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent-400 animate-pulse"></span>
-                    {member.onboardingNote}
-                  </div>
-                )}
                 <p className="text-gray-400 text-sm leading-relaxed">{member.bio}</p>
               </div>
 
@@ -155,9 +138,7 @@ export default function BoardMembers() {
             </p>
             <p className="text-gray-500 text-sm mt-4">
               Officer appointments (President, Treasurer, Secretary, and other roles) are formally ratified by Director
-              Resolution and recorded via signed Officer Appointment Letters in the Club&apos;s governance ledger. Roles
-              shown as <span className="text-accent-300 font-semibold">&ldquo;in progress&rdquo;</span> are pending final
-              ratification by the Board.
+              Resolution and recorded via signed Officer Appointment Letters in the Club&apos;s governance ledger.
             </p>
           </div>
         </div>
