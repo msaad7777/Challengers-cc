@@ -33,7 +33,9 @@ import {
 import { findDoc } from '../../../governanceDocs';
 import LetterPaper from '../../../LetterPaper';
 
-type Recipient = 'gokul' | 'qaiser';
+// The companion Qaiser Qureshi LoD was retired on 2026-06-22 when Qaiser
+// left the Club; only the Gokul recipient remains valid here.
+type Recipient = 'gokul';
 
 type RecipientProfile = {
   name: string;
@@ -48,12 +50,6 @@ const RECIPIENTS: Record<Recipient, RecipientProfile> = {
     email: 'gokulprakash663@gmail.com',
     roleWithCorporation: 'Director',
     docId: 'lod-cibc-gokul-2026',
-  },
-  qaiser: {
-    name: 'Qaiser Qureshi',
-    email: 'qureshiqaiser007@gmail.com',
-    roleWithCorporation: 'Treasurer (non-director officer)',
-    docId: 'lod-cibc-qaiser-2026',
   },
 };
 
@@ -84,7 +80,7 @@ export default function LoDPrintPage() {
   const router = useRouter();
   const params = useParams<{ recipient: string }>();
   const recipientKey = params?.recipient as Recipient;
-  const isValidRecipient = recipientKey === 'gokul' || recipientKey === 'qaiser';
+  const isValidRecipient = recipientKey === 'gokul';
   const r = isValidRecipient ? RECIPIENTS[recipientKey] : null;
 
   const [signatures, setSignatures] = useState<Record<string, SignatureRecord>>({});
@@ -171,8 +167,8 @@ export default function LoDPrintPage() {
         <div className="max-w-md text-center">
           <h1 className="text-xl font-bold mb-2 text-gray-900">Unknown recipient</h1>
           <p className="text-sm text-gray-600 mb-4">
-            Use <code>/c3h/pavilion/print/lod-cibc/gokul</code> or{' '}
-            <code>/c3h/pavilion/print/lod-cibc/qaiser</code>.
+            Use <code>/c3h/pavilion/print/lod-cibc/gokul</code>. (The Qaiser
+            Letter of Direction was retired.)
           </p>
           <button
             onClick={() => router.push('/c3h/pavilion')}

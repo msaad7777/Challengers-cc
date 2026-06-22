@@ -314,7 +314,7 @@ export default function AvailabilityPage() {
   const isBoard = isC3HBoard(session?.user?.email);
   const isCaptain = isC3HCaptain(session?.user?.email);
   // Read-only access to the captain view (squad + availability matrix).
-  // Captains have this implicitly; Qaiser (Treasurer) has it explicitly.
+  // Captains have this implicitly; the shared contact@ inbox has it explicitly.
   const isSquadViewer = isC3HSquadViewer(session?.user?.email);
   const playerName = (() => {
     const email = session?.user?.email?.toLowerCase() || '';

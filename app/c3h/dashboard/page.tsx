@@ -238,7 +238,7 @@ export default function DashboardPage() {
               </a>
             )}
 
-            {/* Officer Hub — Officers Only (Madhu, Qaiser, Shahriar) */}
+            {/* Officer Hub — ratified officers only (C3H_OFFICER_ROSTER) */}
             {isOfficer && (
               <a href="/c3h/officer-hub" className="glass rounded-2xl p-6 border-2 border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 block">
                 <div className="text-3xl mb-3">🎩</div>

@@ -14,13 +14,11 @@ const BOARD_EMAILS = [
   'gokul@challengerscc.ca',
   // Officers (non-director)
   'madhu@challengerscc.ca',
-  'qaiser@challengerscc.ca',
   'shariar@challengerscc.ca',
   // Personal Gmails of directors & officers
   'mbadru3434@gmail.com',          // Saad
   'monirulislambd64@gmail.com',    // Tarek (Md Monirul Islam)
   'gokulprakash663@gmail.com',     // Gokul
-  'qureshiqaiser007@gmail.com',    // Qaiser
   'vantarimadhu@gmail.com',        // Madhu
   '92ankusharora@gmail.com',       // Ankush
   'syedshahriar77@gmail.com',      // Shahriar

@@ -13,8 +13,6 @@ export const EMAIL_TO_PLAYER: Record<string, string> = {
   'monirulislambd64@gmail.com': 'Tarek Islam',
   'gokul@challengerscc.ca': 'Gokul Prakash',
   'gokulprakash663@gmail.com': 'Gokul Prakash',
-  'qaiser@challengerscc.ca': 'Qaiser Qureshi',
-  'qureshiqaiser007@gmail.com': 'Qaiser Qureshi',
   'madhu@challengerscc.ca': 'Madhu Reddy',
   'vantarimadhu@gmail.com': 'Madhu Reddy',
   'ankush@challengerscc.ca': 'Ankush Arora',

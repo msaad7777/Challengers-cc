@@ -14,7 +14,6 @@ export type GovernanceDoc = {
   inline?:
     | 'technology-governance-record-2026'
     | 'lod-cibc-gokul-2026'
-    | 'lod-cibc-qaiser-2026'
     | 'president-appointment-gokul-2026'; // If the body is rendered inline by an inline component
   // If set, the Pavilion shows a "Print / export signed PDF" button that
   // links to this route. The route is responsible for pulling sigs from
@@ -74,21 +73,12 @@ export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
     carryForwardFrom: ['lod-cibc-gokul-qaiser-2026'],
     requiresPresidentApproval: true,
   },
-  {
-    // Companion to lod-cibc-gokul-2026. Same split rationale.
-    id: 'lod-cibc-qaiser-2026',
-    version: '1.0',
-    title: 'Letter of Direction — CIBC Signing Authority (Qaiser Qureshi)',
-    shortTitle: 'Letter of Direction — CIBC (Qaiser)',
-    effective: '2026-06-01',
-    inline: 'lod-cibc-qaiser-2026',
-    printUrl: '/c3h/pavilion/print/lod-cibc/qaiser',
-    summary:
-      'Directs CIBC to add Qaiser Qureshi (Treasurer, non-director officer) as a signing authority on the Club’s operating account (transit 04582, account ending ****1517), in addition to Mohammed Saad who is already on file. Qaiser serves in a strictly volunteer capacity. The account continues to operate under the Club’s dual-signatory governance policy. Must be signed by all five directors before being submitted to CIBC. Signatures already collected on the prior combined Letter of Direction (Gokul + Qaiser) carry forward to this Letter; only directors who did not sign the combined Letter need to sign here.',
-    whoMustSign: 'all-directors',
-    carryForwardFrom: ['lod-cibc-gokul-qaiser-2026'],
-    requiresPresidentApproval: true,
-  },
+  // NOTE: The Qaiser Qureshi LoD (`lod-cibc-qaiser-2026`) was retired on
+  // 2026-06-22 — Qaiser left the Club, so he is no longer being added as a
+  // CIBC signing authority / Treasurer. The doc is removed from the active
+  // Pavilion list and from the print recipient set. Any signatures already
+  // recorded against it remain in the append-only `governance_signatures`
+  // ledger as a historical record; they are simply no longer surfaced.
   {
     id: 'president-appointment-gokul-2026',
     version: '1.0',

@@ -78,9 +78,9 @@ describe('c3h-access predicates', () => {
   });
 
   describe('isC3HSquadViewer', () => {
-    it('includes Qaiser (Treasurer with read-only)', () => {
-      expect(isC3HSquadViewer('qaiser@challengerscc.ca')).toBe(true);
-      expect(isC3HSquadViewer('qureshiqaiser007@gmail.com')).toBe(true);
+    it('excludes Qaiser (left the Club; Treasurer read-only access removed)', () => {
+      expect(isC3HSquadViewer('qaiser@challengerscc.ca')).toBe(false);
+      expect(isC3HSquadViewer('qureshiqaiser007@gmail.com')).toBe(false);
     });
     it('includes contact@ shared inbox (read-only board visibility)', () => {
       expect(isC3HSquadViewer('contact@challengerscc.ca')).toBe(true);
@@ -103,8 +103,7 @@ describe('c3h-access predicates', () => {
       expect(isC3HDirector(email)).toBe(true);
     });
 
-    it('rejects non-directors (Qaiser Treasurer, Shahriar Captain, Madhu — former Secretary candidate)', () => {
-      expect(isC3HDirector('qaiser@challengerscc.ca')).toBe(false);
+    it('rejects non-directors (Shahriar Captain, Madhu — former Secretary candidate)', () => {
       expect(isC3HDirector('shariar@challengerscc.ca')).toBe(false);
       expect(isC3HDirector('madhu@challengerscc.ca')).toBe(false);
     });

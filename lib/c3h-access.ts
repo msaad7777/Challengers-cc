@@ -2,7 +2,7 @@
 //
 // IMPORTANT: This is NOT the same as login-eligibility (which lives in
 // app/api/auth/[...nextauth]/route.ts). Other club board members (Gokul,
-// Madhu, Ankush, Roman, Qaiser) can still log into C3H as regular players
+// Madhu, Ankush, Roman) can still log into C3H as regular players
 // to mark their availability — they just don't see board-only features
 // (captain view, squad management, Pavilion, "Board Member" badge).
 //
@@ -44,12 +44,10 @@ export const C3H_BOARD_EMAILS: readonly string[] = C3H_CAPTAIN_EMAILS;
 //
 // Today:
 //   - All captains (implicitly, via spread)
-//   - Qaiser (Treasurer)
 //   - contact@challengerscc.ca (shared org inbox — multiple board members
-//     may have access; gets visibility but no edit rights, matching Qaiser)
+//     may have access; gets visibility but no edit rights)
 export const C3H_SQUAD_VIEWER_EMAILS: readonly string[] = [
   ...C3H_CAPTAIN_EMAILS,
-  'qaiser@challengerscc.ca', 'qureshiqaiser007@gmail.com',
   'contact@challengerscc.ca',
 ];
 
@@ -136,15 +134,15 @@ export const C3H_OFFICER_ROSTER: readonly OfficerEntry[] = [
   // is permitted by Bylaws Article 4.7 (which only restricts
   // officer+officer combinations).
   //
-  // The Secretary slot is intentionally vacant — appointment is on
-  // hold pending the 2026 enrolment cycle. Do not re-add anyone here
-  // without a fresh Director Resolution + signed Officer Appointment
-  // Letter in the Pavilion.
+  // The Treasurer and Secretary slots are intentionally vacant —
+  // appointments are on hold pending the 2026 enrolment cycle. (The
+  // prior Treasurer appointee, Qaiser, left the Club.) Do not re-add
+  // anyone here without a fresh Director Resolution + signed Officer
+  // Appointment Letter in the Pavilion.
   //
   // Captains and other operational role-holders are NOT listed here —
   // they may be tracked through a separate roster later if needed.
   { workspaceEmail: 'gokul@challengerscc.ca',   personalEmail: 'gokulprakash663@gmail.com',  name: 'Gokul Prakash',  role: 'President' },
-  { workspaceEmail: 'qaiser@challengerscc.ca',  personalEmail: 'qureshiqaiser007@gmail.com', name: 'Qaiser Qureshi', role: 'Treasurer' },
 ];
 
 export const isC3HDirector = (email?: string | null) =>

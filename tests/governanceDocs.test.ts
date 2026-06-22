@@ -2,25 +2,23 @@ import { describe, it, expect } from 'vitest';
 import { GOVERNANCE_DOCS, findDoc } from '@/app/c3h/pavilion/governanceDocs';
 
 describe('governanceDocs', () => {
-  it('exports at least the TGR, both split LoDs, and President Appointment', () => {
-    expect(GOVERNANCE_DOCS.length).toBeGreaterThanOrEqual(4);
+  it('exports at least the TGR, the Gokul LoD, and President Appointment', () => {
+    expect(GOVERNANCE_DOCS.length).toBeGreaterThanOrEqual(3);
     expect(GOVERNANCE_DOCS.find((d) => d.id === 'technology-governance-record-2026')).toBeDefined();
     expect(GOVERNANCE_DOCS.find((d) => d.id === 'lod-cibc-gokul-2026')).toBeDefined();
-    expect(GOVERNANCE_DOCS.find((d) => d.id === 'lod-cibc-qaiser-2026')).toBeDefined();
     expect(GOVERNANCE_DOCS.find((d) => d.id === 'president-appointment-gokul-2026')).toBeDefined();
   });
 
-  it('the combined LoD has been split into per-recipient LoDs', () => {
+  it('the combined LoD is retired and the Qaiser LoD has been retired', () => {
     // The original combined `lod-cibc-gokul-qaiser-2026` was split into
-    // `lod-cibc-gokul-2026` + `lod-cibc-qaiser-2026` on 2026-06-01 so
-    // each new signing authority is approved independently. The
-    // combined doc is no longer active; its signatures carry forward
-    // via the `carryForwardFrom` field on each split doc.
+    // per-recipient LoDs on 2026-06-01. The Qaiser LoD
+    // (`lod-cibc-qaiser-2026`) was then retired on 2026-06-22 when Qaiser
+    // left the Club. Only the Gokul LoD remains active; its signatures
+    // carry forward from the combined doc via `carryForwardFrom`.
     expect(GOVERNANCE_DOCS.find((d) => d.id === 'lod-cibc-gokul-qaiser-2026')).toBeUndefined();
+    expect(GOVERNANCE_DOCS.find((d) => d.id === 'lod-cibc-qaiser-2026')).toBeUndefined();
     const gokulLod = GOVERNANCE_DOCS.find((d) => d.id === 'lod-cibc-gokul-2026');
-    const qaiserLod = GOVERNANCE_DOCS.find((d) => d.id === 'lod-cibc-qaiser-2026');
     expect(gokulLod?.carryForwardFrom).toContain('lod-cibc-gokul-qaiser-2026');
-    expect(qaiserLod?.carryForwardFrom).toContain('lod-cibc-gokul-qaiser-2026');
   });
 
   it('every doc has a non-empty stable id, version, title and effective date', () => {
@@ -50,7 +48,7 @@ describe('governanceDocs', () => {
   it('findDoc returns the matching doc', () => {
     expect(findDoc('technology-governance-record-2026')?.shortTitle).toBe('Technology Governance Record');
     expect(findDoc('lod-cibc-gokul-2026')?.shortTitle).toBe('Letter of Direction — CIBC (Gokul)');
-    expect(findDoc('lod-cibc-qaiser-2026')?.shortTitle).toBe('Letter of Direction — CIBC (Qaiser)');
+    expect(findDoc('lod-cibc-qaiser-2026')).toBeUndefined();
     expect(findDoc('president-appointment-gokul-2026')?.shortTitle).toBe('President Appointment — Gokul Prakash');
   });
 
@@ -70,12 +68,10 @@ describe('governanceDocs', () => {
     expect(tgr?.conflictedSigners ?? []).toHaveLength(0);
   });
 
-  it('both split LoDs require all five directors (no recusal)', () => {
-    for (const id of ['lod-cibc-gokul-2026', 'lod-cibc-qaiser-2026']) {
-      const lod = GOVERNANCE_DOCS.find((d) => d.id === id);
-      expect(lod?.whoMustSign).toBe('all-directors');
-      expect(lod?.conflictedSigners ?? []).toHaveLength(0);
-    }
+  it('the Gokul LoD requires all five directors (no recusal)', () => {
+    const lod = GOVERNANCE_DOCS.find((d) => d.id === 'lod-cibc-gokul-2026');
+    expect(lod?.whoMustSign).toBe('all-directors');
+    expect(lod?.conflictedSigners ?? []).toHaveLength(0);
   });
 
   it('President Appointment requires all five directors including the appointee (no recusal)', () => {

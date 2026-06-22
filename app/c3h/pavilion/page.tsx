@@ -639,8 +639,6 @@ export default function PavilionPage() {
                           <TechnologyGovernanceRecord />
                         ) : gd.inline === 'lod-cibc-gokul-2026' ? (
                           <LetterOfDirection recipient="gokul" />
-                        ) : gd.inline === 'lod-cibc-qaiser-2026' ? (
-                          <LetterOfDirection recipient="qaiser" />
                         ) : gd.inline === 'president-appointment-gokul-2026' ? (
                           <PresidentAppointment />
                         ) : gd.publicUrl ? (

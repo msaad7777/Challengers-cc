@@ -1,10 +1,10 @@
 // Inline content of the Letter of Direction adding a single new signing
-// authority to the Corporation's CIBC operating account. The same
-// component renders both the Gokul Prakash and Qaiser Qureshi LoDs;
-// they differ only in the recipient block and a small amount of role
-// language. Signed by all five directors via the Pavilion (with
-// signatures from the prior combined Gokul + Qaiser LoD carried forward
-// for directors who already signed it).
+// authority to the Corporation's CIBC operating account. Currently renders
+// the Gokul Prakash LoD. (The companion Qaiser Qureshi LoD was retired on
+// 2026-06-22 when Qaiser left the Club; the recipient set is kept generic
+// so a future authority can be added without restructuring.) Signed by all
+// five directors via the Pavilion (with signatures from the prior combined
+// Gokul + Qaiser LoD carried forward for directors who already signed it).
 //
 // Personal-detail fields (DOB / home address / mobile) are intentionally
 // left blank — the recipient writes those in at the CIBC branch when
@@ -12,7 +12,7 @@
 // Corporation directs; the personal verification is between each
 // individual and the bank.
 
-type Recipient = 'gokul' | 'qaiser';
+type Recipient = 'gokul';
 
 type RecipientProfile = {
   name: string;
@@ -26,12 +26,6 @@ const RECIPIENTS: Record<Recipient, RecipientProfile> = {
     name: 'Gokul Prakash',
     email: 'gokulprakash663@gmail.com',
     roleWithCorporation: 'Director',
-    effectiveDate: 'June 1, 2026',
-  },
-  qaiser: {
-    name: 'Qaiser Qureshi',
-    email: 'qureshiqaiser007@gmail.com',
-    roleWithCorporation: 'Treasurer (non-director officer)',
     effectiveDate: 'June 1, 2026',
   },
 };
