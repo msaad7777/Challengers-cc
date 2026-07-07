@@ -46,7 +46,7 @@ const ALL_MATCHES = [
   { id: 'lpl-6', league: 'LPL T30', date: 'Jun 28', fullDate: '2026-06-28', opponent: 'Premier XI', time: '2:00 PM', venue: 'Thamesville', clash: false },
   { id: 'lpl-7', league: 'LPL T30', date: 'Jul 4', fullDate: '2026-07-04', opponent: 'London Stars', time: '10:00 AM', venue: 'Northridge', clash: false },
   { id: 'lpl-8', league: 'LPL T30', date: 'Jul 18', fullDate: '2026-07-18', opponent: 'Premier XI', time: '10:00 AM', venue: 'Northridge', clash: false },
-  { id: 'lpl-9', league: 'LPL T30', date: 'Jul 25', fullDate: '2026-07-25', opponent: 'London Rhinos', time: '9:00 AM', venue: 'Thamesville', clash: true },
+  { id: 'lpl-9', league: 'LPL T30', date: 'Jul 25', fullDate: '2026-07-25', opponent: 'London Rhinos', time: '8:00 AM', venue: 'Thamesville', clash: true },
   { id: 'lpl-10', league: 'LPL T30', date: 'Aug 2', fullDate: '2026-08-02', opponent: 'NLCC', time: '10:00 AM', venue: 'Silverwoods', clash: true },
   { id: 'lpl-11', league: 'LPL T30', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'Royal Tigers', time: '10:00 AM', venue: 'Silverwoods', clash: false },
   { id: 'lpl-12', league: 'LPL T30', date: 'Sep 6', fullDate: '2026-09-06', opponent: 'London Stars', time: '1:00 PM', venue: 'NLAF', clash: false },

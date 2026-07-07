@@ -1504,7 +1504,7 @@ export const blogPosts: BlogPost[] = [
       </p>
       <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc list-inside space-y-2">
         <li><strong class="text-red-400">May 10</strong> — LPL vs Maple Tigers (10 AM) + LCL vs London Predators (1 PM)</li>
-        <li><strong class="text-red-400">July 25</strong> — LPL vs London Rhinos (9 AM) + LCL vs LCC Mavericks (1 PM)</li>
+        <li><strong class="text-red-400">July 25</strong> — LPL vs London Rhinos (8 AM) + LCL vs LCC Mavericks (1 PM)</li>
         <li><strong class="text-red-400">August 2</strong> — LPL vs NLCC (10 AM) + LCL vs Western CA B (8 AM)</li>
       </ul>
       <div style="text-align: center; margin: 24px 0;">
