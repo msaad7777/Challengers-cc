@@ -18,6 +18,72 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'challengers-first-team-bbq-get-together-2026',
+    title: 'Off the Field — Challengers Host Their First-Ever Team BBQ',
+    excerpt:
+      'Bats down, grills up. Challengers Cricket Club came together for the club’s very first team get-together — a summer BBQ that brought players and families off the pitch and around the same table. Huge thanks to Sazzad “Roman” Mahmud for arranging it all.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Cricket is what brings us together on the field — but this weekend Challengers Cricket
+        Club came together <strong class="text-white">off</strong> it for the very first time.
+        We fired up the grills for the club&apos;s <strong class="text-white">first-ever team
+        BBQ and get-together</strong>: a relaxed summer afternoon of food, laughs, and
+        conversation that had nothing to do with run rates or field settings — and everything
+        to do with the people who make this club what it is.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">A First for the Club</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Since coming together for the 2026 season, most of our time as a group has been spent
+        at practice, at the crease, or travelling to matches. This was different. No toss, no
+        scorecard, no team sheet — just teammates and their families sharing a meal and
+        getting to know each other as people first and cricketers second. For a club built on
+        being <strong class="text-white">inclusive and community-first</strong>, a get-together
+        like this is exactly the kind of moment that turns a squad into a family.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">From the Day</h3>
+      <div class="grid sm:grid-cols-2 gap-4 mb-8">
+        <img src="/b1.jpeg" alt="Challengers CC team BBQ get-together" class="w-full h-auto rounded-xl glass" loading="lazy" />
+        <img src="/b2.jpeg" alt="Challengers CC team BBQ get-together" class="w-full h-auto rounded-xl glass" loading="lazy" />
+        <img src="/b3.jpeg" alt="Challengers CC team BBQ get-together" class="w-full h-auto rounded-xl glass" loading="lazy" />
+        <img src="/b4.jpeg" alt="Challengers CC team BBQ get-together" class="w-full h-auto rounded-xl glass" loading="lazy" />
+      </div>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Thank You, Roman</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        None of this happens without someone stepping up to organise it. A huge thank you to
+        <strong class="text-white">Sazzad &ldquo;Roman&rdquo; Mahmud</strong> for arranging this
+        event — from the plan to the food to getting everyone in the same place at the same
+        time. Roman took it on himself to make sure the club&apos;s first social was one to
+        remember, and it absolutely was. This one&apos;s on the board because of him.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">More to Come</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        This is the first of what we hope will be many Challengers get-togethers. Cricket will
+        always be the reason we found each other — but afternoons like this are the reason
+        we stay. Thank you to everyone who came out, brought family, and made the club&apos;s
+        first social a success.
+      </p>
+
+      <p class="text-gray-400 text-sm italic">
+        Challengers Cricket Club — London, Ontario&apos;s inclusive community cricket club.
+        Registered Canada Not-for-Profit Corporation #1746974-8. Follow us on
+        <a href="https://www.instagram.com/challengers.cc/" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">@challengers.cc</a>
+        and subscribe on
+        <a href="https://www.youtube.com/@Challengersccldn" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">YouTube</a>
+        for match livestreams and highlights all season.
+      </p>
+    `,
+    category: 'Club News',
+    author: 'Challengers CC',
+    date: '2026-07-07',
+    image: '/b2.jpeg',
+    video: null,
+    featured: true,
+  },
+  {
     slug: 'practice-match-3-2026-vs-tigers-cc',
     title: 'Practice Match #3 — Challengers Beat Tigers CC by 26 Runs at Thamesville',
     excerpt:
