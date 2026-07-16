@@ -8,7 +8,7 @@ import { db, firebaseAuthReady } from '@/lib/firebase';
 import { collection, doc, setDoc, updateDoc, getDocs } from 'firebase/firestore';
 import { isC3HBoard, isC3HCaptain, isC3HSquadViewer } from '@/lib/c3h-access';
 import { EMAIL_TO_PLAYER } from '@/lib/c3h-roster';
-import { computePlayerTracker } from '@/app/c3h/lib/playerTracker';
+import { computePlayerTracker, type PlayerTrackerRow, type LeagueStat } from '@/app/c3h/lib/playerTracker';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
@@ -288,6 +288,87 @@ interface PlayerAvailability {
 
 interface AllAvailability {
   [playerName: string]: PlayerAvailability;
+}
+
+// Build a standalone, print-optimised HTML document for the Player Tracker
+// so captains/managers can Save-as-PDF and share it (e.g. on WhatsApp).
+// Deliberately light-background + black text (the app is dark-themed, which
+// prints poorly and wastes ink) and fully self-contained (inline styles),
+// opened in a new window that auto-triggers the print dialog.
+function buildTrackerPrintHtml(
+  rows: PlayerTrackerRow[],
+  opts: { recorded: number; total: number; finalized: number; lclTotal: number; lplTotal: number; generatedAt: string },
+): string {
+  const esc = (s: string) =>
+    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const cell = (s: LeagueStat) => {
+    const status = s.requiredForPlayoff <= 0
+      ? ''
+      : s.eligible
+        ? '<span class="elig">✓ Eligible</span>'
+        : `<span class="togo">${s.remainingNeeded} to go</span>`;
+    return `<td class="num">${s.played}<span class="den">/${s.totalMatches}</span></td><td class="status">${status}</td><td class="avail">${s.available}</td>`;
+  };
+  const body = rows.map((r, i) => `
+    <tr class="${i % 2 ? 'alt' : ''}${r.lcl.eligible || r.lpl.eligible ? ' hot' : ''}">
+      <td class="player">${esc(r.player)}</td>
+      ${cell(r.lcl)}
+      ${cell(r.lpl)}
+      <td class="total">${r.totalPlayed}</td>
+    </tr>`).join('');
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Challengers CC — Player Tracker</title>
+  <style>
+    *{box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#111;margin:24px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    h1{color:#047857;margin:0;font-size:22px;letter-spacing:-.01em}
+    h2{margin:2px 0 4px;font-size:15px;font-weight:600;color:#222}
+    .meta{color:#555;font-size:11px;margin:0 0 14px}
+    table{border-collapse:collapse;width:100%;font-size:12px}
+    caption{caption-side:top;text-align:left}
+    th,td{border:1px solid #d4d4d8;padding:5px 8px;text-align:center}
+    thead th{background:#f1f5f9;font-weight:700;font-size:11px}
+    th.lcl{background:#d1fae5}th.lpl{background:#fef3c7}
+    td.player{text-align:left;font-weight:600;white-space:nowrap}
+    td.num{font-weight:700;font-size:13px}
+    .den{color:#999;font-weight:400;font-size:10px}
+    td.status{font-size:10px}
+    .elig{color:#047857;font-weight:700}
+    .togo{color:#92400e}
+    td.avail{color:#666;font-size:11px}
+    td.total{font-weight:800;background:#f8fafc}
+    tr.alt td{background:#fafafa}
+    tr.hot td{background:#ecfdf5}
+    .foot{color:#666;font-size:10px;margin-top:12px;line-height:1.5}
+    @page{size:portrait;margin:12mm}
+    @media print{body{margin:0}.noprint{display:none}}
+  </style></head>
+  <body>
+    <h1>Challengers Cricket Club</h1>
+    <h2>Player Games Tracker — 2026 Season</h2>
+    <p class="meta">${opts.recorded} of ${opts.total} squads recorded · ${opts.finalized} finalized · Playoff eligibility: LPL ${5}/${opts.lplTotal} (Div 2), LCL 6/${opts.lclTotal}</p>
+    <table>
+      <thead>
+        <tr>
+          <th rowspan="2">Player</th>
+          <th class="lcl" colspan="3">LCL T30</th>
+          <th class="lpl" colspan="3">LPL T30</th>
+          <th rowspan="2">Total</th>
+        </tr>
+        <tr>
+          <th class="lcl">Games</th><th class="lcl">Playoff</th><th class="lcl">Avail</th>
+          <th class="lpl">Games</th><th class="lpl">Playoff</th><th class="lpl">Avail</th>
+        </tr>
+      </thead>
+      <tbody>${body}</tbody>
+    </table>
+    <p class="foot">
+      A game counts once a player is in that match's saved Playing 12. "Avail" = matches the player marked available.<br>
+      Playoff thresholds: LPL Rule 23 (Division 2 = 5 of 12) · LCL 2026 (6 of 14). Generated ${esc(opts.generatedAt)}.
+    </p>
+    <script>window.onload=function(){setTimeout(function(){window.print()},150)}<\/script>
+  </body></html>`;
 }
 
 export default function AvailabilityPage() {
@@ -645,15 +726,17 @@ export default function AvailabilityPage() {
             const lplTotal = ALL_MATCHES.filter(m => m.league === 'LPL T30').length;
             const recorded = Object.values(squads).filter(s => (s || []).length > 0).length;
             const finalizedCount = Object.values(squadMeta).filter(v => v.finalized).length;
-            const StatCell = ({ s }: { s: ReturnType<typeof computePlayerTracker>[number]['lcl'] }) => (
-              <div className="flex flex-col items-center leading-tight">
-                <span className="text-white font-bold text-sm">{s.played}</span>
+            const StatCell = ({ s }: { s: LeagueStat }) => (
+              <div className="flex flex-col items-center gap-0.5 leading-tight py-0.5">
+                <span className="text-white font-bold text-base">
+                  {s.played}<span className="text-gray-600 text-[10px] font-normal">/{s.totalMatches}</span>
+                </span>
                 {s.requiredForPlayoff > 0 && (
                   s.eligible
-                    ? <span className="text-[10px] text-primary-400 font-semibold">✓ eligible</span>
-                    : <span className="text-[10px] text-gray-500">{s.remainingNeeded} to go</span>
+                    ? <span className="text-[10px] font-bold text-primary-300 bg-primary-500/15 rounded px-1.5 py-0.5">✓ Eligible</span>
+                    : <span className="text-[10px] font-semibold text-amber-300/80">{s.remainingNeeded} to go</span>
                 )}
-                <span className="text-[10px] text-gray-600">{s.available} avail</span>
+                <span className="text-[10px] text-gray-500">{s.available} avail</span>
               </div>
             );
             return (
@@ -665,31 +748,52 @@ export default function AvailabilityPage() {
                       Games in the playing-12 · {recorded} of {ALL_MATCHES.length} squads recorded · {finalizedCount} ✅ finalized · playoff needs: LPL 5/{lplTotal}, LCL {rows[0]?.lcl.requiredForPlayoff || '—'}/{lclTotal}
                     </p>
                   </div>
-                  <div className="flex gap-1.5 ml-auto text-[11px]">
+                  <div className="flex flex-wrap gap-1.5 ml-auto text-[11px] items-center">
+                    <span className="text-gray-500">Sort:</span>
                     {(['total', 'lcl', 'lpl'] as const).map(s => (
                       <button key={s} onClick={() => setTrackerSort(s)} className={`px-2.5 py-1 rounded-lg font-semibold border transition-all ${trackerSort === s ? 'bg-accent-500/20 text-accent-400 border-accent-500/40' : 'bg-white/5 text-gray-400 border-white/10'}`}>
                         {s === 'total' ? 'Total' : s.toUpperCase()}
                       </button>
                     ))}
+                    <button
+                      onClick={() => {
+                        const html = buildTrackerPrintHtml(rows, {
+                          recorded, total: ALL_MATCHES.length, finalized: finalizedCount,
+                          lclTotal, lplTotal,
+                          generatedAt: new Date().toLocaleString('en-CA', { dateStyle: 'medium', timeStyle: 'short' }),
+                        });
+                        const w = window.open('', '_blank');
+                        if (!w) { alert('Please allow pop-ups to print or save the tracker as PDF.'); return; }
+                        w.document.write(html);
+                        w.document.close();
+                      }}
+                      className="px-2.5 py-1 rounded-lg font-bold border bg-primary-500/20 text-primary-400 border-primary-500/40 hover:bg-primary-500/30"
+                    >
+                      🖨️ Print / PDF
+                    </button>
                   </div>
                 </div>
+                <p className="text-gray-500 text-[11px] mb-2">
+                  Each league cell shows <span className="text-gray-300">games played</span> · <span className="text-gray-300">playoff status</span> · <span className="text-gray-300">availability</span>.
+                </p>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
+                  <table className="w-full text-sm border-collapse">
+                    <caption className="sr-only">Games played and playoff eligibility per player by league for the 2026 season. LCL needs 6 of 14, LPL needs 5 of 12.</caption>
                     <thead>
-                      <tr className="text-gray-500 text-[11px] uppercase tracking-wide border-b border-white/10">
-                        <th className="text-left font-semibold py-2 pr-2">Player</th>
-                        <th className="text-center font-semibold py-2 px-2">LCL <span className="text-gray-600">/{lclTotal}</span></th>
-                        <th className="text-center font-semibold py-2 px-2">LPL <span className="text-gray-600">/{lplTotal}</span></th>
-                        <th className="text-center font-semibold py-2 pl-2">Total</th>
+                      <tr className="text-gray-400 text-[11px] uppercase tracking-wide border-b border-white/10">
+                        <th scope="col" className="text-left font-semibold py-2 pr-3">Player</th>
+                        <th scope="col" className="text-center font-semibold py-2 px-3 text-primary-400/90">LCL T30 <span className="text-gray-600 normal-case">(/{lclTotal})</span></th>
+                        <th scope="col" className="text-center font-semibold py-2 px-3 text-accent-400/90 border-l border-white/10">LPL T30 <span className="text-gray-600 normal-case">(/{lplTotal})</span></th>
+                        <th scope="col" className="text-center font-semibold py-2 pl-3 border-l border-white/10">Total</th>
                       </tr>
                     </thead>
                     <tbody>
                       {rows.map((r, i) => (
-                        <tr key={r.player} className={`border-b border-white/5 ${i % 2 ? 'bg-white/[0.02]' : ''}`}>
-                          <td className="py-2 pr-2 text-gray-200 font-medium whitespace-nowrap">{shortName(r.player)}</td>
-                          <td className="py-2 px-2 text-center"><StatCell s={r.lcl} /></td>
-                          <td className="py-2 px-2 text-center"><StatCell s={r.lpl} /></td>
-                          <td className="py-2 pl-2 text-center text-accent-400 font-bold">{r.totalPlayed}</td>
+                        <tr key={r.player} className={`border-b border-white/5 ${(r.lcl.eligible || r.lpl.eligible) ? 'bg-primary-500/[0.05]' : i % 2 ? 'bg-white/[0.02]' : ''}`}>
+                          <th scope="row" className="py-2.5 pr-3 text-left text-gray-100 font-semibold whitespace-nowrap">{shortName(r.player)}</th>
+                          <td className="py-2.5 px-3 text-center"><StatCell s={r.lcl} /></td>
+                          <td className="py-2.5 px-3 text-center border-l border-white/10"><StatCell s={r.lpl} /></td>
+                          <td className="py-2.5 pl-3 text-center text-accent-400 font-bold text-base border-l border-white/10">{r.totalPlayed}</td>
                         </tr>
                       ))}
                     </tbody>
