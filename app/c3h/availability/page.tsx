@@ -296,7 +296,7 @@ export default function AvailabilityPage() {
   const [saving, setSaving] = useState(false);
   const [squads, setSquads] = useState<Record<string, string[]>>({});
   const [squadRoles, setSquadRoles] = useState<Record<string, Record<string, string>>>({});
-  const [squadMeta, setSquadMeta] = useState<Record<string, { updatedBy?: string; updatedAt?: string }>>({});
+  const [squadMeta, setSquadMeta] = useState<Record<string, { updatedBy?: string; updatedAt?: string; finalized?: boolean; finalizedAt?: string; finalizedBy?: string }>>({});
   const [showSquadCard, setShowSquadCard] = useState<string | null>(null);
   const [selectingSquad, setSelectingSquad] = useState<string | null>(null);
   const [playerMenu, setPlayerMenu] = useState<{ matchId: string; player: string } | null>(null);
@@ -304,6 +304,9 @@ export default function AvailabilityPage() {
   const [recentlySaved, setRecentlySaved] = useState<string | null>(null);
   // Match ID for the "Finalize squad & notify players" confirmation modal
   const [finalizingMatchId, setFinalizingMatchId] = useState<string | null>(null);
+  // Match ID for the "Finalize & add to Tracker" confirmation modal — the
+  // no-calendar path that just locks the played-12 for game counting.
+  const [trackerFinalizeMatchId, setTrackerFinalizeMatchId] = useState<string | null>(null);
 
   // isCaptain moved after isBoard declaration
   const [leagueFilter, setLeagueFilter] = useState<'all' | 'LCL T30' | 'LPL T30'>('all');
@@ -363,7 +366,7 @@ export default function AvailabilityPage() {
       const squadSnap = await getDocs(collection(db, 'squads'));
       const squadData: Record<string, string[]> = {};
       const rolesData: Record<string, Record<string, string>> = {};
-      const metaData: Record<string, { updatedBy?: string; updatedAt?: string }> = {};
+      const metaData: Record<string, { updatedBy?: string; updatedAt?: string; finalized?: boolean; finalizedAt?: string; finalizedBy?: string }> = {};
       const cleanups: Promise<void>[] = [];
 
       squadSnap.docs.forEach(d => {
@@ -375,6 +378,9 @@ export default function AvailabilityPage() {
         metaData[d.id] = {
           updatedBy: docData.updatedBy as string | undefined,
           updatedAt: docData.updatedAt as string | undefined,
+          finalized: docData.finalized === true,
+          finalizedAt: docData.finalizedAt as string | undefined,
+          finalizedBy: docData.finalizedBy as string | undefined,
         };
         // Auto-heal Firestore if normalization changed anything.
         // Use updateDoc (not setDoc) so we only touch the roles + meta
@@ -483,6 +489,33 @@ export default function AvailabilityPage() {
     setSquadMeta((prev) => ({ ...prev, [matchId]: { updatedBy: editor, updatedAt: stamp } }));
     setRecentlySaved(matchId);
     setSaving(false);
+    setTimeout(() => setRecentlySaved((cur) => (cur === matchId ? null : cur)), 2500);
+  }, [squads, squadRoles, session, isCaptain]);
+
+  // Finalize the played-12 into the Player Tracker — WITHOUT opening Google
+  // Calendar. This is the "record who played" confirmation for games that
+  // have already happened (or any match you don't want to send invites for).
+  // Stamps finalized/finalizedAt/finalizedBy on the squad doc; any later edit
+  // to the squad clears it (the full setDoc in toggleSquadPlayer/persistSquad
+  // drops these fields), so re-finalize after changing who played.
+  const finalizeToTracker = useCallback(async (matchId: string) => {
+    if (!isCaptain) return;
+    setSaving(true);
+    const players = squads[matchId] || [];
+    const roles = squadRoles[matchId] || {};
+    const stamp = new Date().toISOString();
+    const editor = session?.user?.email || '';
+    await setDoc(doc(db, 'squads', matchId), {
+      players, roles, updatedBy: editor, updatedAt: stamp,
+      finalized: true, finalizedAt: stamp, finalizedBy: editor,
+    });
+    setSquadMeta((prev) => ({
+      ...prev,
+      [matchId]: { updatedBy: editor, updatedAt: stamp, finalized: true, finalizedAt: stamp, finalizedBy: editor },
+    }));
+    setSaving(false);
+    setTrackerFinalizeMatchId(null);
+    setRecentlySaved(matchId);
     setTimeout(() => setRecentlySaved((cur) => (cur === matchId ? null : cur)), 2500);
   }, [squads, squadRoles, session, isCaptain]);
 
@@ -609,6 +642,7 @@ export default function AvailabilityPage() {
             const lclTotal = ALL_MATCHES.filter(m => m.league === 'LCL T30').length;
             const lplTotal = ALL_MATCHES.filter(m => m.league === 'LPL T30').length;
             const recorded = Object.values(squads).filter(s => (s || []).length > 0).length;
+            const finalizedCount = Object.values(squadMeta).filter(v => v.finalized).length;
             const StatCell = ({ s }: { s: ReturnType<typeof computePlayerTracker>[number]['lcl'] }) => (
               <div className="flex flex-col items-center leading-tight">
                 <span className="text-white font-bold text-sm">{s.played}</span>
@@ -626,7 +660,7 @@ export default function AvailabilityPage() {
                   <div>
                     <h2 className="text-white font-bold">Player Tracker</h2>
                     <p className="text-gray-500 text-xs mt-0.5">
-                      Games in the playing-12 · {recorded} of {ALL_MATCHES.length} squads recorded · playoff needs: LPL 5/{lplTotal}, LCL {rows[0]?.lcl.requiredForPlayoff || '—'}/{lclTotal}
+                      Games in the playing-12 · {recorded} of {ALL_MATCHES.length} squads recorded · {finalizedCount} ✅ finalized · playoff needs: LPL 5/{lplTotal}, LCL {rows[0]?.lcl.requiredForPlayoff || '—'}/{lclTotal}
                     </p>
                   </div>
                   <div className="flex gap-1.5 ml-auto text-[11px]">
@@ -876,6 +910,9 @@ export default function AvailabilityPage() {
                               <button onClick={() => persistSquad(m.id)} className="text-xs px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 font-bold">
                                 💾 Save
                               </button>
+                              <button onClick={() => setTrackerFinalizeMatchId(m.id)} title="Lock these players as the Playing 12 who played — counts in the Tracker. Does NOT send calendar invites." className="text-xs px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30 hover:bg-primary-500/30 font-bold">
+                                ✅ Finalize &amp; Add to Tracker
+                              </button>
                               <button onClick={() => setShowSquadCard(showSquadCard === m.id ? null : m.id)} className="text-xs px-3 py-1.5 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30 hover:bg-accent-500/30">
                                 {showSquadCard === m.id ? 'Hide Card' : 'View Squad Card'}
                               </button>
@@ -958,6 +995,16 @@ export default function AvailabilityPage() {
                                   </span>
                                 )}
                               </span>
+                            </div>
+                          )}
+                          {(isCaptain || isBoard) && squadMeta[m.id]?.finalized && (
+                            <div className="mb-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-primary-400 bg-primary-500/10 border border-primary-500/30 rounded-lg px-2.5 py-1">
+                              ✅ Tracked — {(squads[m.id] || []).length} players counted
+                              {squadMeta[m.id].finalizedAt && (
+                                <span className="text-gray-500 font-normal">
+                                  · {new Date(squadMeta[m.id].finalizedAt!).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' })}
+                                </span>
+                              )}
                             </div>
                           )}
                           {(squads[m.id] || []).length > 0 && (() => {
@@ -1169,6 +1216,71 @@ export default function AvailabilityPage() {
               <p className="text-[10px] text-gray-500 mt-3 text-center italic">
                 Reminder: invitations are not sent until you click <strong>Save</strong> inside Google Calendar.
               </p>
+            </div>
+          </div>,
+          document.body
+        );
+      })()}
+
+      {/* Finalize & Add to Tracker confirmation — records the played-12 for
+          game counting WITHOUT opening Google Calendar. Use for games that
+          already happened or any match you don't want to send invites for. */}
+      {trackerFinalizeMatchId && typeof document !== 'undefined' && (() => {
+        const matchData = ALL_MATCHES.find(mm => mm.id === trackerFinalizeMatchId);
+        const squadPlayers = squads[trackerFinalizeMatchId] || [];
+        if (!matchData || squadPlayers.length === 0) return null;
+        return createPortal(
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            style={{ backgroundColor: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)' }}
+            onClick={(e) => { if (e.target === e.currentTarget) setTrackerFinalizeMatchId(null); }}
+          >
+            <div className="glass rounded-2xl p-6 max-w-lg w-full border-2 border-primary-500/40 max-h-[90vh] overflow-y-auto">
+              <div className="flex items-start gap-3 mb-4">
+                <span className="text-3xl">✅</span>
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-1">Finalize &amp; add to Tracker?</h3>
+                  <p className="text-sm text-gray-300">
+                    This records these <strong className="text-primary-400">{squadPlayers.length} players</strong> as
+                    the Playing 12 who played this match. They&apos;ll be counted in the <strong className="text-white">Player Tracker</strong> straight away.
+                  </p>
+                  <p className="text-xs text-gray-500 mt-2">
+                    This does <strong>not</strong> send calendar invites — use 🔒 Finalize &amp; Notify for that. Editing the squad later clears this and you can re-finalize.
+                  </p>
+                </div>
+              </div>
+
+              <div className="rounded-xl p-3 mb-4 bg-white/5 border border-white/10 text-xs">
+                <p className="text-gray-500 uppercase tracking-wider font-bold mb-1.5">Match</p>
+                <p className="text-white font-bold">Challengers CC vs {matchData.opponent}</p>
+                <p className="text-gray-400 mt-0.5">{matchData.league} · {matchData.date} · {matchData.time} · {matchData.venue}</p>
+              </div>
+
+              <div className="rounded-xl p-3 mb-4 bg-primary-500/5 border border-primary-500/20">
+                <p className="text-xs uppercase tracking-wider text-primary-400 font-bold mb-2">
+                  🏏 Counted as played ({squadPlayers.length})
+                </p>
+                <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto">
+                  {squadPlayers.map((n) => (
+                    <span key={n} className="text-xs px-2 py-0.5 rounded bg-white/5 text-gray-200 border border-white/10">{shortName(n)}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setTrackerFinalizeMatchId(null)}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 text-sm font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => finalizeToTracker(trackerFinalizeMatchId)}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-primary-500/20 text-primary-400 border border-primary-500/40 hover:bg-primary-500/30 text-sm font-bold"
+                >
+                  ✅ Confirm &amp; Add to Tracker
+                </button>
+              </div>
             </div>
           </div>,
           document.body
