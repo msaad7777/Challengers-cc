@@ -408,8 +408,11 @@ export default function AvailabilityPage() {
     if (!isCaptain) return;
     const current = squads[matchId] || [];
     const currentRoles = squadRoles[matchId] || {};
-    // Block selecting unavailable players
-    if (!current.includes(playerN) && getPlayerStatus(playerN, matchId) === 'unavailable') return;
+    // Note: we intentionally do NOT block players marked 'unavailable' or
+    // players who never marked availability. The Playing 12 doubles as the
+    // record of who ACTUALLY played (it feeds the Player Tracker's games
+    // count), so a captain must be able to add anyone who turned up —
+    // e.g. someone who marked unavailable but showed anyway.
     const updated = current.includes(playerN)
       ? current.filter(p => p !== playerN)
       : current.length < 12 ? [...current, playerN] : current;
@@ -761,8 +764,8 @@ export default function AvailabilityPage() {
                                   : `${playerMenu.player.split(' ')[0]} has not marked availability yet — only they can mark it.`}
                               </p>
                             )}
-                            {isCaptain && !(squads[m.id] || []).includes(playerMenu.player) && (squads[m.id] || []).length < 12 && getPlayerStatus(playerMenu.player, m.id) !== 'unavailable' && (
-                              <button onClick={() => { toggleSquadPlayer(m.id, playerMenu.player); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30">🏏 Select</button>
+                            {isCaptain && !(squads[m.id] || []).includes(playerMenu.player) && (squads[m.id] || []).length < 12 && (
+                              <button onClick={() => { toggleSquadPlayer(m.id, playerMenu.player); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30">🏏 Add to Playing 12</button>
                             )}
                             {isCaptain && (squads[m.id] || []).includes(playerMenu.player) && (
                               <button onClick={() => { toggleSquadPlayer(m.id, playerMenu.player); setPlayerMenu(null); }} className="text-xs px-3 py-1.5 rounded-lg bg-gray-500/20 text-gray-400 border border-gray-500/30">Remove from Squad</button>
@@ -816,7 +819,10 @@ export default function AvailabilityPage() {
                       {isCaptain && (
                         <div className="mt-3 pt-3 border-t border-white/10">
                           <div className="flex items-center justify-between mb-2 gap-2">
-                            <p className="text-white text-xs font-bold">Playing 12 ({(squads[m.id] || []).length}/12)</p>
+                            <div>
+                              <p className="text-white text-xs font-bold">Playing 12 ({(squads[m.id] || []).length}/12)</p>
+                              <p className="text-gray-500 text-[10px]">Who played — counts in the Tracker. Editable anytime; no Finalize needed.</p>
+                            </div>
                             <div className="flex gap-1">
                               {(squads[m.id] || []).length > 0 && isCaptain && (
                                 <button onClick={async () => {
@@ -1016,7 +1022,9 @@ export default function AvailabilityPage() {
                           {/* Squad card rendered via portal below */}
                           {selectingSquad === m.id && (
                             <div className="glass rounded-xl p-3 border border-primary-500/20 mt-2">
-                              <p className="text-gray-500 text-xs mb-2">Tap to select/deselect (max 12). Use B/W buttons for subs:</p>
+                              <p className="text-gray-500 text-xs mb-2">
+                                Tap to pick the <span className="text-gray-300 font-semibold">Playing 12 who actually played</span> (max 12). Include anyone who turned up — even if they marked ❌ or didn&apos;t respond. This is the record the Tracker counts.
+                              </p>
                               <div className="flex flex-wrap gap-1">
                                 {available.map(n => {
                                   const selected = (squads[m.id] || []).includes(n);
@@ -1031,6 +1039,22 @@ export default function AvailabilityPage() {
                                   return (
                                     <button key={n} onClick={() => toggleSquadPlayer(m.id, n)} className={`text-xs px-2 py-1 rounded border transition-all ${selected ? 'bg-accent-500/30 text-accent-400 border-accent-500/50 font-bold' : 'bg-white/5 text-gray-500 border-white/10 hover:bg-white/10'}`}>
                                       {selected ? '✓ ' : ''}{shortName(n)} ❓
+                                    </button>
+                                  );
+                                })}
+                                {unavailable.map(n => {
+                                  const selected = (squads[m.id] || []).includes(n);
+                                  return (
+                                    <button key={n} onClick={() => toggleSquadPlayer(m.id, n)} className={`text-xs px-2 py-1 rounded border transition-all ${selected ? 'bg-red-500/30 text-red-300 border-red-500/50 font-bold' : 'bg-white/5 text-gray-600 border-white/10 hover:bg-white/10'}`}>
+                                      {selected ? '✓ ' : ''}{shortName(n)} ❌
+                                    </button>
+                                  );
+                                })}
+                                {matchPlayers.filter(n => !getPlayerStatus(n, m.id)).map(n => {
+                                  const selected = (squads[m.id] || []).includes(n);
+                                  return (
+                                    <button key={n} onClick={() => toggleSquadPlayer(m.id, n)} className={`text-xs px-2 py-1 rounded border transition-all ${selected ? 'bg-blue-500/30 text-blue-300 border-blue-500/50 font-bold' : 'bg-white/5 text-gray-600 border-white/10 hover:bg-white/10'}`}>
+                                      {selected ? '✓ ' : ''}{shortName(n)} <span className="opacity-60">—</span>
                                     </button>
                                   );
                                 })}
