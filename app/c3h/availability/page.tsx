@@ -8,6 +8,7 @@ import { db, firebaseAuthReady } from '@/lib/firebase';
 import { collection, doc, setDoc, updateDoc, getDocs } from 'firebase/firestore';
 import { isC3HBoard, isC3HCaptain, isC3HSquadViewer } from '@/lib/c3h-access';
 import { EMAIL_TO_PLAYER } from '@/lib/c3h-roster';
+import { computePlayerTracker } from '@/app/c3h/lib/playerTracker';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
@@ -53,13 +54,13 @@ const ALL_MATCHES = [
 ];
 
 const ALL_PLAYERS = [
-  'Mohammed Saad', 'Tarek Islam', 'Gokul Prakash', 'Qaiser Mahmood', 'Madhu Reddy',
+  'Mohammed Saad', 'Tarek Islam', 'Gokul Prakash',
   'Ankush Arora', 'Roman Mahmud', 'Judin Thomas', 'Saikrishna Goriparthi', 'Shoeb Ahmad',
   'Fahad Aktar', 'Denison Davis', 'Abhishek Ladva',
   'Salman Ahmed', 'Farooq Choudhary', 'Vijay Yadav', 'Shivam Rajput',
   'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
   'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Siva Sriram', 'Rajath Shetty', 'Murshad Azad',
-  'Aleem Quadri', 'Ameeya Singh',
+  'Aleem Quadri', 'Ameeya Singh', 'Dhamu',
 ];
 
 // Players restricted to specific leagues
@@ -306,7 +307,9 @@ export default function AvailabilityPage() {
 
   // isCaptain moved after isBoard declaration
   const [leagueFilter, setLeagueFilter] = useState<'all' | 'LCL T30' | 'LPL T30'>('all');
-  const [viewMode, setViewMode] = useState<'player' | 'captain'>('player');
+  const [viewMode, setViewMode] = useState<'player' | 'captain' | 'tracker'>('player');
+  // Player Tracker sort column — LCL/LPL games or total played.
+  const [trackerSort, setTrackerSort] = useState<'total' | 'lcl' | 'lpl'>('total');
 
   // C3H board-level access (captain view, squad management, last-saved-by)
   // is admin + captains only — see lib/c3h-access.ts for the allowlist.
@@ -570,14 +573,96 @@ export default function AvailabilityPage() {
                 </button>
               ))}
               {isSquadViewer && (
-                <button onClick={() => setViewMode(viewMode === 'player' ? 'captain' : 'player')} className={`px-4 py-2 rounded-xl text-xs font-semibold border-2 transition-all ml-auto ${viewMode === 'captain' ? 'bg-accent-500/20 text-accent-400 border-accent-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>
-                  {viewMode === 'captain' ? (isCaptain ? '👑 Captain' : '👁 Squad') : '🏏 Player'}
-                </button>
+                <div className="flex gap-2 ml-auto">
+                  <button onClick={() => setViewMode('player')} className={`px-4 py-2 rounded-xl text-xs font-semibold border-2 transition-all ${viewMode === 'player' ? 'bg-primary-500/20 text-primary-400 border-primary-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>
+                    🏏 Player
+                  </button>
+                  <button onClick={() => setViewMode('captain')} className={`px-4 py-2 rounded-xl text-xs font-semibold border-2 transition-all ${viewMode === 'captain' ? 'bg-accent-500/20 text-accent-400 border-accent-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>
+                    {isCaptain ? '👑 Captain' : '👁 Squad'}
+                  </button>
+                  <button onClick={() => setViewMode('tracker')} className={`px-4 py-2 rounded-xl text-xs font-semibold border-2 transition-all ${viewMode === 'tracker' ? 'bg-accent-500/20 text-accent-400 border-accent-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>
+                    📊 Tracker
+                  </button>
+                </div>
               )}
             </div>
           </div>
 
           {saving && <p className="text-accent-400 text-xs mb-2">Saving...</p>}
+
+          {/* PLAYER TRACKER — captain/board view of games played per league.
+              Counts each player's appearances in the recorded playing-12
+              (squads/{matchId}), split LCL vs LPL, with playoff-eligibility
+              progress (LPL Div-2 = 5/12 per Rule 23). To make a past game
+              count, record its playing XI in the Captain view — it feeds
+              straight into these numbers. */}
+          {viewMode === 'tracker' && isSquadViewer && (() => {
+            const rows = computePlayerTracker(ALL_PLAYERS, ALL_MATCHES, squads, allAvailability)
+              .sort((a, b) => {
+                if (trackerSort === 'lcl') return b.lcl.played - a.lcl.played;
+                if (trackerSort === 'lpl') return b.lpl.played - a.lpl.played;
+                return b.totalPlayed - a.totalPlayed;
+              });
+            const lclTotal = ALL_MATCHES.filter(m => m.league === 'LCL T30').length;
+            const lplTotal = ALL_MATCHES.filter(m => m.league === 'LPL T30').length;
+            const recorded = Object.values(squads).filter(s => (s || []).length > 0).length;
+            const StatCell = ({ s }: { s: ReturnType<typeof computePlayerTracker>[number]['lcl'] }) => (
+              <div className="flex flex-col items-center leading-tight">
+                <span className="text-white font-bold text-sm">{s.played}</span>
+                {s.requiredForPlayoff > 0 && (
+                  s.eligible
+                    ? <span className="text-[10px] text-primary-400 font-semibold">✓ eligible</span>
+                    : <span className="text-[10px] text-gray-500">{s.remainingNeeded} to go</span>
+                )}
+                <span className="text-[10px] text-gray-600">{s.available} avail</span>
+              </div>
+            );
+            return (
+              <div className="glass rounded-2xl p-4 sm:p-5 border border-white/5">
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <div>
+                    <h2 className="text-white font-bold">Player Tracker</h2>
+                    <p className="text-gray-500 text-xs mt-0.5">
+                      Games in the playing-12 · {recorded} of {ALL_MATCHES.length} squads recorded · playoff needs: LPL 5/{lplTotal}, LCL {rows[0]?.lcl.requiredForPlayoff || '—'}/{lclTotal}
+                    </p>
+                  </div>
+                  <div className="flex gap-1.5 ml-auto text-[11px]">
+                    {(['total', 'lcl', 'lpl'] as const).map(s => (
+                      <button key={s} onClick={() => setTrackerSort(s)} className={`px-2.5 py-1 rounded-lg font-semibold border transition-all ${trackerSort === s ? 'bg-accent-500/20 text-accent-400 border-accent-500/40' : 'bg-white/5 text-gray-400 border-white/10'}`}>
+                        {s === 'total' ? 'Total' : s.toUpperCase()}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-gray-500 text-[11px] uppercase tracking-wide border-b border-white/10">
+                        <th className="text-left font-semibold py-2 pr-2">Player</th>
+                        <th className="text-center font-semibold py-2 px-2">LCL <span className="text-gray-600">/{lclTotal}</span></th>
+                        <th className="text-center font-semibold py-2 px-2">LPL <span className="text-gray-600">/{lplTotal}</span></th>
+                        <th className="text-center font-semibold py-2 pl-2">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.map((r, i) => (
+                        <tr key={r.player} className={`border-b border-white/5 ${i % 2 ? 'bg-white/[0.02]' : ''}`}>
+                          <td className="py-2 pr-2 text-gray-200 font-medium whitespace-nowrap">{shortName(r.player)}</td>
+                          <td className="py-2 px-2 text-center"><StatCell s={r.lcl} /></td>
+                          <td className="py-2 px-2 text-center"><StatCell s={r.lpl} /></td>
+                          <td className="py-2 pl-2 text-center text-accent-400 font-bold">{r.totalPlayed}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="text-gray-600 text-[11px] mt-3">
+                  A game counts once a player is in that match&apos;s saved playing-12. Missing a past game? Open the
+                  <span className="text-gray-400 font-semibold"> 👑 Captain</span> tab, pick the match, and record the XI — no re-scoring needed.
+                </p>
+              </div>
+            );
+          })()}
 
           {/* PLAYER VIEW — mark your own availability */}
           {viewMode === 'player' && (
@@ -897,7 +982,7 @@ export default function AvailabilityPage() {
                               if (r === 'bowl-sub') return 'bg-blue-500/20 text-blue-400';
                               return 'bg-primary-500/20 text-primary-400';
                             };
-                            const WK_ELIGIBLE = ['Mohammed Saad', 'Denison Davis', 'Atik Rahman', 'Qaiser Mahmood', 'Rajath Shetty'];
+                            const WK_ELIGIBLE = ['Mohammed Saad', 'Denison Davis', 'Atik Rahman', 'Rajath Shetty'];
                             return (
                             <div className="space-y-1 mb-2">
                               {(squads[m.id] || []).map((n, i) => {
