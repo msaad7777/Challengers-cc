@@ -61,10 +61,12 @@ const ALL_PLAYERS = [
   'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
   'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Siva Sriram', 'Rajath Shetty', 'Murshad Azad',
   'Aleem Quadri', 'Ameeya Singh', 'Dhamu',
+  // Part-time players added 2026-07 (roster-only — no login yet)
+  'Thoufeeque', 'Swapnil', 'Raunak', 'Raj', 'Segu', 'Fawaz', 'Abdullah',
 ];
 
 // Players restricted to specific leagues
-const LPL_ONLY = ['Siva Sriram', 'Rajath Shetty', 'Noman', 'Aleem Quadri'];
+const LPL_ONLY = ['Siva Sriram', 'Rajath Shetty', 'Noman', 'Aleem Quadri', 'Raunak'];
 const LCL_ONLY = ['Shivam Rajput'];
 
 // Get players for a specific match based on league
