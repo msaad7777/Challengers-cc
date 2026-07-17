@@ -56,7 +56,7 @@ const ALL_MATCHES = [
 const ALL_PLAYERS = [
   'Mohammed Saad', 'Tarek Islam', 'Gokul Prakash',
   'Ankush Arora', 'Roman Mahmud', 'Judin Thomas', 'Saikrishna Goriparthi', 'Shoeb Ahmad',
-  'Fahad Aktar', 'Denison Davis', 'Abhishek Ladva',
+  'Fahad Aktar', 'Fahad Ahmad', 'Denison Davis', 'Abhishek Ladva',
   'Salman Ahmed', 'Farooq Choudhary', 'Vijay Yadav', 'Shivam Rajput',
   'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
   'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Siva Sriram', 'Rajath Shetty', 'Murshad Azad',
@@ -93,6 +93,10 @@ const PLAYER_NAMES = ALL_PLAYERS;
 const SHORT_NAMES: Record<string, string> = {
   'Mohammed Saad': 'Saad',
   'Syed Shahriar': 'Shahriar',
+  // Two DIFFERENT players share the first name "Fahad" — keep both surnames
+  // so captains don't confuse them in squad lists or the Tracker.
+  'Fahad Aktar': 'Fahad Aktar',
+  'Fahad Ahmad': 'Fahad Ahmad',
 };
 const shortName = (fullName: string) => SHORT_NAMES[fullName] || fullName.split(' ')[0];
 
