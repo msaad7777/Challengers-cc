@@ -970,6 +970,23 @@ export default function AvailabilityPage() {
                         ) : null;
                       })()}
 
+                      {/* Former players — left the club, no login. Captains/board
+                          tap them straight into the Playing 12 for past games
+                          they played, so the Tracker counts those appearances. */}
+                      {isCaptain && FORMER_PLAYERS.length > 0 && (
+                        <div className="rounded-lg border border-amber-500/30 bg-amber-500/[0.06] p-2">
+                          <p className="text-amber-300/90 text-xs font-bold mb-1">⏻ Former players — tap to add for a past game they played</p>
+                          <div className="flex flex-wrap gap-1">{FORMER_PLAYERS.map(n => {
+                            const inSquad = (squads[m.id] || []).includes(n);
+                            return (
+                              <button key={n} onClick={() => toggleSquadPlayer(m.id, n)} className={`text-xs px-2.5 py-1 rounded border transition-all ${inSquad ? 'bg-amber-500/30 text-amber-100 border-amber-400/50 font-bold' : 'bg-white/5 text-gray-300 border-amber-500/20 hover:bg-amber-500/10'}`}>
+                                {inSquad ? '✓ ' : ''}{shortName(n)} ⏻
+                              </button>
+                            );
+                          })}</div>
+                        </div>
+                      )}
+
                       {/* Squad Selection — Captains Only */}
                       {isCaptain && (
                         <div className="mt-3 pt-3 border-t border-white/10">
