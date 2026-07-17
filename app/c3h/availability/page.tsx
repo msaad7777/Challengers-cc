@@ -1191,7 +1191,7 @@ export default function AvailabilityPage() {
                           {selectingSquad === m.id && (
                             <div className="glass rounded-xl p-3 border border-primary-500/20 mt-2">
                               <p className="text-gray-500 text-xs mb-2">
-                                Tap to pick the <span className="text-gray-300 font-semibold">Playing 12 who actually played</span> (max 12). Include anyone who turned up — even if they marked ❌ or didn&apos;t respond. This is the record the Tracker counts.
+                                Tap to pick the <span className="text-gray-300 font-semibold">Playing 12 who actually played</span> (max 12). Include anyone who turned up — even if they marked ❌ or didn&apos;t respond. This is the record the Tracker counts. <span className="text-amber-300/90">Former players (Qaiser, Madhu) are in the box at the bottom.</span>
                               </p>
                               <div className="flex flex-wrap gap-1">
                                 {available.map(n => {
@@ -1228,14 +1228,14 @@ export default function AvailabilityPage() {
                                 })}
                               </div>
                               {FORMER_PLAYERS.length > 0 && (
-                                <div className="mt-2 pt-2 border-t border-white/10">
-                                  <p className="text-gray-500 text-[10px] mb-1">Former players — select only for past games they actually played:</p>
+                                <div className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/[0.06] p-2.5">
+                                  <p className="text-amber-300/90 text-[11px] font-semibold mb-1.5">⏻ Former players — add only for the past LCL/LPL games they actually played:</p>
                                   <div className="flex flex-wrap gap-1">
                                     {FORMER_PLAYERS.map(n => {
                                       const selected = (squads[m.id] || []).includes(n);
                                       return (
-                                        <button key={n} onClick={() => toggleSquadPlayer(m.id, n)} className={`text-xs px-2 py-1 rounded border transition-all ${selected ? 'bg-gray-500/40 text-gray-100 border-gray-400/50 font-bold' : 'bg-white/5 text-gray-500 border-white/10 hover:bg-white/10'}`}>
-                                          {selected ? '✓ ' : ''}{shortName(n)} <span className="opacity-60" title="Former player">⏻</span>
+                                        <button key={n} onClick={() => toggleSquadPlayer(m.id, n)} className={`text-xs px-2.5 py-1.5 rounded border transition-all ${selected ? 'bg-amber-500/30 text-amber-100 border-amber-400/50 font-bold' : 'bg-white/5 text-gray-300 border-amber-500/20 hover:bg-amber-500/10'}`}>
+                                          {selected ? '✓ ' : ''}{shortName(n)} <span className="opacity-70" title="Former player">⏻</span>
                                         </button>
                                       );
                                     })}
