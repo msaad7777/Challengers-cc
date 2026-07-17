@@ -77,15 +77,21 @@ export function matchesInLeague(matches: TrackerMatch[], league: string): Tracke
  * Games a player appears in for one league, counting membership in the
  * recorded playing-12 (`squads[matchId]`). A squad that hasn't been set
  * yet simply contributes nothing.
+ *
+ * If `todayISO` ('YYYY-MM-DD') is provided, only matches on or before that
+ * date count — a squad pre-picked for a FUTURE match is just a plan (it will
+ * change by match day) and must not count until the match has been played.
  */
 export function gamesPlayed(
   player: string,
   league: string,
   matches: TrackerMatch[],
   squads: SquadsMap,
+  todayISO?: string,
 ): number {
   return matchesInLeague(matches, league).reduce(
-    (n, m) => n + ((squads[m.id] || []).includes(player) ? 1 : 0),
+    (n, m) =>
+      n + (((!todayISO || m.fullDate <= todayISO) && (squads[m.id] || []).includes(player)) ? 1 : 0),
     0,
   );
 }
@@ -110,9 +116,10 @@ function leagueStat(
   matches: TrackerMatch[],
   squads: SquadsMap,
   availability: AvailabilityMap,
+  todayISO?: string,
 ): LeagueStat {
   const totalMatches = matchesInLeague(matches, league).length;
-  const played = gamesPlayed(player, league, matches, squads);
+  const played = gamesPlayed(player, league, matches, squads, todayISO);
   const available = availableCount(player, league, matches, availability);
   const required = requiredForLeague(league);
   const eligible = required > 0 && played >= required;
@@ -130,10 +137,11 @@ export function computePlayerTracker(
   matches: TrackerMatch[],
   squads: SquadsMap,
   availability: AvailabilityMap,
+  todayISO?: string,
 ): PlayerTrackerRow[] {
   return players.map((player) => {
-    const lcl = leagueStat(player, 'LCL T30', matches, squads, availability);
-    const lpl = leagueStat(player, 'LPL T30', matches, squads, availability);
+    const lcl = leagueStat(player, 'LCL T30', matches, squads, availability, todayISO);
+    const lpl = leagueStat(player, 'LPL T30', matches, squads, availability, todayISO);
     return { player, lcl, lpl, totalPlayed: lcl.played + lpl.played };
   });
 }

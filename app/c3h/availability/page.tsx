@@ -592,6 +592,10 @@ export default function AvailabilityPage() {
   // drops these fields), so re-finalize after changing who played.
   const finalizeToTracker = useCallback(async (matchId: string) => {
     if (!isCaptain) return;
+    // Don't finalize a future match — its squad is still a plan that will
+    // change by match day. Counting only starts once the match is played.
+    const match = ALL_MATCHES.find((mm) => mm.id === matchId);
+    if (match && match.fullDate > new Date().toLocaleDateString('en-CA')) return;
     setSaving(true);
     const players = squads[matchId] || [];
     const roles = squadRoles[matchId] || {};
@@ -725,7 +729,8 @@ export default function AvailabilityPage() {
               count, record its playing XI in the Captain view — it feeds
               straight into these numbers. */}
           {viewMode === 'tracker' && isSquadViewer && (() => {
-            const rows = computePlayerTracker([...ALL_PLAYERS, ...FORMER_PLAYERS], ALL_MATCHES, squads, allAvailability)
+            const todayISO = new Date().toLocaleDateString('en-CA');
+            const rows = computePlayerTracker([...ALL_PLAYERS, ...FORMER_PLAYERS], ALL_MATCHES, squads, allAvailability, todayISO)
               // Former players only appear once they've been recorded in a
               // Playing 12 — otherwise they'd clutter the table with zeroes.
               .filter(r => ALL_PLAYERS.includes(r.player) || r.totalPlayed > 0)
@@ -993,7 +998,9 @@ export default function AvailabilityPage() {
                           <div className="flex items-center justify-between mb-2 gap-2">
                             <div>
                               <p className="text-white text-xs font-bold">Playing 12 ({(squads[m.id] || []).length}/12)</p>
-                              <p className="text-gray-500 text-[10px]">Who played — counts in the Tracker. Editable anytime; no Finalize needed.</p>
+                              {m.fullDate > new Date().toLocaleDateString('en-CA')
+                                ? <p className="text-amber-300/70 text-[10px]">Upcoming match — pick the planned XI. It won&apos;t count in the Tracker until match day.</p>
+                                : <p className="text-gray-500 text-[10px]">Who played — counts in the Tracker. Editable anytime; no Finalize needed.</p>}
                             </div>
                             <div className="flex gap-1">
                               {(squads[m.id] || []).length > 0 && isCaptain && (
@@ -1048,9 +1055,15 @@ export default function AvailabilityPage() {
                               <button onClick={() => persistSquad(m.id)} className="text-xs px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 font-bold">
                                 💾 Save
                               </button>
-                              <button onClick={() => setTrackerFinalizeMatchId(m.id)} title="Lock these players as the Playing 12 who played — counts in the Tracker. Does NOT send calendar invites." className="text-xs px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30 hover:bg-primary-500/30 font-bold">
-                                ✅ Finalize &amp; Add to Tracker
-                              </button>
+                              {m.fullDate <= new Date().toLocaleDateString('en-CA') ? (
+                                <button onClick={() => setTrackerFinalizeMatchId(m.id)} title="Lock these players as the Playing 12 who played — counts in the Tracker. Does NOT send calendar invites." className="text-xs px-3 py-1.5 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30 hover:bg-primary-500/30 font-bold">
+                                  ✅ Finalize &amp; Add to Tracker
+                                </button>
+                              ) : (
+                                <button disabled title="This match hasn't been played yet. Pick and save the squad now if you like, but it only counts in the Tracker once the match day arrives — the playing XI usually changes before then." className="text-xs px-3 py-1.5 rounded-lg bg-gray-500/10 text-gray-500 border border-gray-500/20 font-bold cursor-not-allowed">
+                                  🔒 Add to Tracker (after match day)
+                                </button>
+                              )}
                               <button onClick={() => setShowSquadCard(showSquadCard === m.id ? null : m.id)} className="text-xs px-3 py-1.5 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30 hover:bg-accent-500/30">
                                 {showSquadCard === m.id ? 'Hide Card' : 'View Squad Card'}
                               </button>

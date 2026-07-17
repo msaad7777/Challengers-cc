@@ -49,6 +49,16 @@ describe('gamesPlayed', () => {
     // lcl-3 has no squad — nobody gets a game for it
     expect(gamesPlayed('Nobody', 'LCL T30', MATCHES, SQUADS)).toBe(0);
   });
+
+  it('does not count matches in the future (squad is just a plan)', () => {
+    // As of 2026-05-15, only lcl-1 (May 10) has been played; lcl-2 (May 18) is
+    // still upcoming, so Saad's pre-picked squad for it must not count yet.
+    expect(gamesPlayed('Saad', 'LCL T30', MATCHES, SQUADS, '2026-05-15')).toBe(1);
+    // Once both have passed, both count.
+    expect(gamesPlayed('Saad', 'LCL T30', MATCHES, SQUADS, '2026-05-20')).toBe(2);
+    // A match on exactly today counts (match day).
+    expect(gamesPlayed('Saad', 'LCL T30', MATCHES, SQUADS, '2026-05-18')).toBe(2);
+  });
 });
 
 describe('availableCount', () => {
