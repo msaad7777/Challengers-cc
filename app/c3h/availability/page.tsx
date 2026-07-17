@@ -69,6 +69,14 @@ const ALL_PLAYERS = [
 const LPL_ONLY = ['Siva Sriram', 'Rajath Shetty', 'Noman', 'Aleem Quadri', 'Raunak'];
 const LCL_ONLY = ['Shivam Rajput'];
 
+// Former players — left the club (login/email access removed) but appear in
+// the historical record because they played matches earlier in the season.
+// Kept OUT of ALL_PLAYERS so they don't clutter current availability/selection.
+// Captains can still select them into the Playing 12 of the specific games
+// they actually played (via the Former section in the squad picker) so the
+// Tracker counts those appearances.
+const FORMER_PLAYERS = ['Qaiser Mahmood', 'Madhu Reddy'];
+
 // Get players for a specific match based on league
 const getPlayersForMatch = (league: string) => {
   return ALL_PLAYERS.filter(p => {
@@ -297,7 +305,7 @@ interface AllAvailability {
 // opened in a new window that auto-triggers the print dialog.
 function buildTrackerPrintHtml(
   rows: PlayerTrackerRow[],
-  opts: { recorded: number; total: number; finalized: number; lclTotal: number; lplTotal: number; generatedAt: string },
+  opts: { recorded: number; total: number; finalized: number; lclTotal: number; lplTotal: number; generatedAt: string; former: string[] },
 ): string {
   const esc = (s: string) =>
     s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -311,7 +319,7 @@ function buildTrackerPrintHtml(
   };
   const body = rows.map((r, i) => `
     <tr class="${i % 2 ? 'alt' : ''}${r.lcl.eligible || r.lpl.eligible ? ' hot' : ''}">
-      <td class="player">${esc(r.player)}</td>
+      <td class="player">${esc(r.player)}${opts.former.includes(r.player) ? ' <span class="former">(former)</span>' : ''}</td>
       ${cell(r.lcl)}
       ${cell(r.lpl)}
       <td class="total">${r.totalPlayed}</td>
@@ -338,6 +346,7 @@ function buildTrackerPrintHtml(
     .togo{color:#92400e}
     td.avail{color:#666;font-size:11px}
     td.total{font-weight:800;background:#f8fafc}
+    .former{color:#999;font-weight:400;font-size:10px}
     tr.alt td{background:#fafafa}
     tr.hot td{background:#ecfdf5}
     .foot{color:#666;font-size:10px;margin-top:12px;line-height:1.5}
@@ -716,7 +725,10 @@ export default function AvailabilityPage() {
               count, record its playing XI in the Captain view — it feeds
               straight into these numbers. */}
           {viewMode === 'tracker' && isSquadViewer && (() => {
-            const rows = computePlayerTracker(ALL_PLAYERS, ALL_MATCHES, squads, allAvailability)
+            const rows = computePlayerTracker([...ALL_PLAYERS, ...FORMER_PLAYERS], ALL_MATCHES, squads, allAvailability)
+              // Former players only appear once they've been recorded in a
+              // Playing 12 — otherwise they'd clutter the table with zeroes.
+              .filter(r => ALL_PLAYERS.includes(r.player) || r.totalPlayed > 0)
               .sort((a, b) => {
                 if (trackerSort === 'lcl') return b.lcl.played - a.lcl.played;
                 if (trackerSort === 'lpl') return b.lpl.played - a.lpl.played;
@@ -759,7 +771,7 @@ export default function AvailabilityPage() {
                       onClick={() => {
                         const html = buildTrackerPrintHtml(rows, {
                           recorded, total: ALL_MATCHES.length, finalized: finalizedCount,
-                          lclTotal, lplTotal,
+                          lclTotal, lplTotal, former: FORMER_PLAYERS,
                           generatedAt: new Date().toLocaleString('en-CA', { dateStyle: 'medium', timeStyle: 'short' }),
                         });
                         const w = window.open('', '_blank');
@@ -790,7 +802,10 @@ export default function AvailabilityPage() {
                     <tbody>
                       {rows.map((r, i) => (
                         <tr key={r.player} className={`border-b border-white/5 ${(r.lcl.eligible || r.lpl.eligible) ? 'bg-primary-500/[0.05]' : i % 2 ? 'bg-white/[0.02]' : ''}`}>
-                          <th scope="row" className="py-2.5 pr-3 text-left text-gray-100 font-semibold whitespace-nowrap">{shortName(r.player)}</th>
+                          <th scope="row" className="py-2.5 pr-3 text-left text-gray-100 font-semibold whitespace-nowrap">
+                            {shortName(r.player)}
+                            {FORMER_PLAYERS.includes(r.player) && <span className="text-gray-500 font-normal text-[10px]"> (former)</span>}
+                          </th>
                           <td className="py-2.5 px-3 text-center"><StatCell s={r.lcl} /></td>
                           <td className="py-2.5 px-3 text-center border-l border-white/10"><StatCell s={r.lpl} /></td>
                           <td className="py-2.5 pl-3 text-center text-accent-400 font-bold text-base border-l border-white/10">{r.totalPlayed}</td>
@@ -1141,7 +1156,7 @@ export default function AvailabilityPage() {
                               if (r === 'bowl-sub') return 'bg-blue-500/20 text-blue-400';
                               return 'bg-primary-500/20 text-primary-400';
                             };
-                            const WK_ELIGIBLE = ['Mohammed Saad', 'Denison Davis', 'Atik Rahman', 'Rajath Shetty'];
+                            const WK_ELIGIBLE = ['Mohammed Saad', 'Denison Davis', 'Atik Rahman', 'Rajath Shetty', 'Qaiser Mahmood'];
                             return (
                             <div className="space-y-1 mb-2">
                               {(squads[m.id] || []).map((n, i) => {
@@ -1212,6 +1227,21 @@ export default function AvailabilityPage() {
                                   );
                                 })}
                               </div>
+                              {FORMER_PLAYERS.length > 0 && (
+                                <div className="mt-2 pt-2 border-t border-white/10">
+                                  <p className="text-gray-500 text-[10px] mb-1">Former players — select only for past games they actually played:</p>
+                                  <div className="flex flex-wrap gap-1">
+                                    {FORMER_PLAYERS.map(n => {
+                                      const selected = (squads[m.id] || []).includes(n);
+                                      return (
+                                        <button key={n} onClick={() => toggleSquadPlayer(m.id, n)} className={`text-xs px-2 py-1 rounded border transition-all ${selected ? 'bg-gray-500/40 text-gray-100 border-gray-400/50 font-bold' : 'bg-white/5 text-gray-500 border-white/10 hover:bg-white/10'}`}>
+                                          {selected ? '✓ ' : ''}{shortName(n)} <span className="opacity-60" title="Former player">⏻</span>
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
