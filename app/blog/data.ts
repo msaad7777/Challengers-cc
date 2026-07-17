@@ -18,6 +18,118 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'inside-the-challengers-player-hub-2026',
+    title: 'More Than a Club — Everything Challengers Gives You to Improve Your Game',
+    excerpt:
+      'Playing for Challengers isn’t just about turning up on match day. Every player gets access to a full development hub: personalised coaching feedback, batting and role masterclasses, match analytics, live streams and replays, and a season tracker for your games. Here’s everything on offer — plus a look at what’s coming next in vision training and mental performance.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        At Challengers, we believe a club&apos;s job doesn&apos;t end at the boundary rope. When you
+        play for us, you don&apos;t just get a match on the weekend — you get a full
+        <strong class="text-white">player-development hub</strong> built to help you understand your
+        game, work on the right things, and get measurably better through the season. Most of it
+        lives inside our members area, and it&apos;s there for every player. Here&apos;s what&apos;s
+        on offer — and where we&apos;re heading next.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">The Nets — Your Personal Coaching Hub</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        The heart of it all is <strong class="text-white">The Nets</strong>. After a match you can log
+        a quick <strong class="text-white">reflection</strong> — how you felt, what worked, what didn&apos;t —
+        and the hub instantly pulls your batting and bowling numbers from that game and turns them into
+        <strong class="text-white">personalised feedback</strong>. You get an
+        <strong class="text-white">Auto Coach Insight</strong> that connects a technical mistake to a
+        plan for your next innings, and a <strong class="text-white">&ldquo;Recommended for You&rdquo;</strong>
+        list that points you straight to the coaching content matched to the exact areas you flagged.
+        It&apos;s like having a coach review every one of your games with you.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Learn the Craft</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Alongside your own feedback, the hub is packed with in-app coaching content you can study any time:
+      </p>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 space-y-2 list-disc list-inside">
+        <li><strong class="text-white">Batting Principles</strong> — the fundamentals of building an innings, shot selection, and intent.</li>
+        <li><strong class="text-white">Shot Mechanics</strong> — deep-dives into individual shots, how they&apos;re built and when to play them.</li>
+        <li><strong class="text-white">Team Roles</strong> — clear briefs on what each role in the side is really asking of you, so you know your job before you walk out.</li>
+      </ul>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Your Numbers, Made Useful</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Every completed match gives you a full <strong class="text-white">Match Summary</strong> —
+        not just a scorecard, but <strong class="text-white">MVP, Best Batter, Best Bowler and Best
+        Fielder</strong> rankings and match-impact scores worked out from the ball-by-ball data our
+        scorers capture live. It&apos;s an honest, data-backed picture of how the team performed and
+        where you fit in — and it&apos;s the same data that powers your personal coaching feedback.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Know Where You Stand</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Marking your availability in <strong class="text-white">The Dugout</strong> takes seconds and
+        helps your captains pick the right side. Behind the scenes, our captains and board now use a
+        <strong class="text-white">Player Tracker</strong> that counts every player&apos;s games in each
+        league and shows exactly where you are against the <strong class="text-white">playoff-eligibility
+        thresholds</strong>. Translation: your appearances are being recorded, and you can find out
+        precisely how many more games you need to qualify for the knockouts.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Watch, Review, Repeat</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        We <strong class="text-white">livestream matches</strong> on our
+        <a href="https://www.youtube.com/@Challengersccldn" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">YouTube channel</a>,
+        run a live scoreboard while games are in play, and keep
+        <strong class="text-white">replays</strong> of completed matches so you can go back, watch your
+        dismissal or your spell again, and actually learn from it. Film doesn&apos;t lie — and it&apos;s
+        one of the fastest ways to improve.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Coming Soon — Training the Mind and the Eyes</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        We&apos;re not done. Two new tracks are in development that go beyond technique:
+      </p>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 space-y-2 list-disc list-inside">
+        <li>
+          <strong class="text-white">Vision Training (Neurovision)</strong> — a structured program of
+          drills to sharpen the visual skills that sit underneath good batting: picking the ball up
+          earlier, tracking, focus and reaction. More details will follow as the program takes shape.
+        </li>
+        <li>
+          <strong class="text-white">Mental Performance &amp; Self-Talk</strong> — practical tools drawn
+          from sports-psychology principles to help you stay calm, reset between balls, manage nerves
+          and perform under pressure. The mental side of cricket decides more games than most players
+          realise, and we want to give you a real method for it.
+        </li>
+      </ul>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Both are being built thoughtfully and will roll out to players through the hub. Watch this space —
+        we&apos;ll brief the squad the moment each one is ready.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Make the Most of It</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        All of this is already here for you. Log a reflection after your next game, read the role brief
+        for your spot in the order, watch a replay, and check where you stand in the tracker. The players
+        who improve fastest aren&apos;t always the most talented — they&apos;re the ones who use the tools.
+        At Challengers, those tools are yours.
+      </p>
+
+      <p class="text-gray-400 text-sm italic">
+        Challengers Cricket Club — London, Ontario&apos;s inclusive community cricket club.
+        Registered Canada Not-for-Profit Corporation #1746974-8. Follow us on
+        <a href="https://www.instagram.com/challengers.cc/" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">@challengers.cc</a>
+        and subscribe on
+        <a href="https://www.youtube.com/@Challengersccldn" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">YouTube</a>
+        for match livestreams and highlights all season.
+      </p>
+    `,
+    category: 'Club News',
+    author: 'Challengers CC',
+    date: '2026-07-17',
+    image: null,
+    video: null,
+    featured: false,
+  },
+  {
     slug: 'challengers-first-team-bbq-get-together-2026',
     title: 'Off the Field — Challengers Host Their First-Ever Team BBQ',
     excerpt:
