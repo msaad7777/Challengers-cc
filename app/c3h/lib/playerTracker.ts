@@ -28,21 +28,21 @@ export type SquadsMap = Record<string, string[]>;
 /** player display name -> { matchId: availabilityStatus }. */
 export type AvailabilityMap = Record<string, Record<string, string | undefined>>;
 
-// Playoff-eligibility thresholds — minimum appearances in the playing
-// twelve to qualify for that league's playoffs.
+// Playoff-eligibility thresholds — minimum appearances in the playing twelve
+// to qualify for a league's playoffs. The two leagues express this
+// differently, so this is a function, not a fixed table:
 //
-//   LPL T30 (Challengers = Division 2): 5 of 12  — LPL 2026 Rule 23.
-//   LCL T30:                            6 of 14  — LCL 2026 rulebook.
+//   LPL T30 (Challengers = Division 2): a FIXED 5 of 12 — LPL 2026 Rule 23.
+//   LCL T30:                            50% + 1 of the league stage — LCL 2026
+//     Participation Rule ("played at least 50% plus 1 game in the league
+//     stage"). For the 14-game LCL stage that works out to 8 of 14.
 //
-// If a league's threshold is not listed here, `requiredForLeague` returns
-// 0 (treated as "no threshold configured" — everyone shows eligible).
-export const PLAYOFF_ELIGIBILITY: Record<string, number> = {
-  'LPL T30': 5,
-  'LCL T30': 6,
-};
-
-export function requiredForLeague(league: string): number {
-  return PLAYOFF_ELIGIBILITY[league] ?? 0;
+// Returns 0 for an unrecognised league ("no threshold configured" — everyone
+// shows eligible).
+export function requiredForLeague(league: string, totalLeagueMatches: number): number {
+  if (league === 'LPL T30') return 5;
+  if (league === 'LCL T30') return Math.floor(totalLeagueMatches / 2) + 1;
+  return 0;
 }
 
 export interface LeagueStat {
@@ -121,7 +121,7 @@ function leagueStat(
   const totalMatches = matchesInLeague(matches, league).length;
   const played = gamesPlayed(player, league, matches, squads, todayISO);
   const available = availableCount(player, league, matches, availability);
-  const required = requiredForLeague(league);
+  const required = requiredForLeague(league, totalMatches);
   const eligible = required > 0 && played >= required;
   const remainingNeeded = required > 0 ? Math.max(0, required - played) : 0;
   return { totalMatches, played, available, requiredForPlayoff: required, eligible, remainingNeeded };

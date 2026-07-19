@@ -309,7 +309,7 @@ interface AllAvailability {
 // opened in a new window that auto-triggers the print dialog.
 function buildTrackerPrintHtml(
   rows: PlayerTrackerRow[],
-  opts: { recorded: number; total: number; finalized: number; lclTotal: number; lplTotal: number; generatedAt: string; former: string[] },
+  opts: { recorded: number; total: number; finalized: number; lclTotal: number; lplTotal: number; lclRequired: number; generatedAt: string; former: string[] },
 ): string {
   const esc = (s: string) =>
     s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -360,7 +360,7 @@ function buildTrackerPrintHtml(
   <body>
     <h1>Challengers Cricket Club</h1>
     <h2>Player Games Tracker — 2026 Season</h2>
-    <p class="meta">${opts.recorded} of ${opts.total} squads recorded · ${opts.finalized} finalized · Playoff eligibility: LPL ${5}/${opts.lplTotal} (Div 2), LCL 6/${opts.lclTotal}</p>
+    <p class="meta">${opts.recorded} of ${opts.total} squads recorded · ${opts.finalized} finalized · Playoff eligibility: LPL 5/${opts.lplTotal} (Div 2), LCL ${opts.lclRequired}/${opts.lclTotal} (50% + 1)</p>
     <table>
       <thead>
         <tr>
@@ -378,7 +378,7 @@ function buildTrackerPrintHtml(
     </table>
     <p class="foot">
       A game counts once a player is in that match's saved Playing 12. "Avail" = matches the player marked available.<br>
-      Playoff thresholds: LPL Rule 23 (Division 2 = 5 of 12) · LCL 2026 (6 of 14). Generated ${esc(opts.generatedAt)}.
+      Playoff thresholds: LPL Rule 23 (Division 2 = 5 of 12) · LCL 2026 Participation Rule (50% + 1 = ${opts.lclRequired} of ${opts.lclTotal}). Generated ${esc(opts.generatedAt)}.
     </p>
     <script>window.onload=function(){setTimeout(function(){window.print()},150)}<\/script>
   </body></html>`;
@@ -781,6 +781,7 @@ export default function AvailabilityPage() {
                         const html = buildTrackerPrintHtml(rows, {
                           recorded, total: ALL_MATCHES.length, finalized: finalizedCount,
                           lclTotal, lplTotal, former: FORMER_PLAYERS,
+                          lclRequired: rows[0]?.lcl.requiredForPlayoff ?? (Math.floor(lclTotal / 2) + 1),
                           generatedAt: new Date().toLocaleString('en-CA', { dateStyle: 'medium', timeStyle: 'short' }),
                         });
                         const w = window.open('', '_blank');
@@ -799,7 +800,7 @@ export default function AvailabilityPage() {
                 </p>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm border-collapse">
-                    <caption className="sr-only">Games played and playoff eligibility per player by league for the 2026 season. LCL needs 6 of 14, LPL needs 5 of 12.</caption>
+                    <caption className="sr-only">Games played and playoff eligibility per player by league for the 2026 season. LCL needs 8 of 14 (50% + 1), LPL needs 5 of 12.</caption>
                     <thead>
                       <tr className="text-gray-400 text-[11px] uppercase tracking-wide border-b border-white/10">
                         <th scope="col" className="text-left font-semibold py-2 pr-3">Player</th>

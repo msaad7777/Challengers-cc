@@ -70,11 +70,17 @@ describe('availableCount', () => {
 });
 
 describe('requiredForLeague', () => {
-  it('returns the configured LPL Division-2 threshold (Rule 23)', () => {
-    expect(requiredForLeague('LPL T30')).toBe(5);
+  it('returns the FIXED LPL Division-2 threshold (Rule 23), independent of games', () => {
+    expect(requiredForLeague('LPL T30', 12)).toBe(5);
+    expect(requiredForLeague('LPL T30', 20)).toBe(5);
+  });
+  it('computes LCL as 50% + 1 of the league stage (LCL 2026 Participation Rule)', () => {
+    expect(requiredForLeague('LCL T30', 14)).toBe(8); // 7 + 1
+    expect(requiredForLeague('LCL T30', 12)).toBe(7); // 6 + 1
+    expect(requiredForLeague('LCL T30', 10)).toBe(6); // 5 + 1
   });
   it('returns 0 for an unconfigured league', () => {
-    expect(requiredForLeague('T20 Cup')).toBe(0);
+    expect(requiredForLeague('T20 Cup', 10)).toBe(0);
   });
 });
 
