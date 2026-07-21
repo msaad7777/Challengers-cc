@@ -5701,6 +5701,197 @@ export default function NetsPage() {
                 </p>
               </div>
 
+              {/* ══ BATTING MINDSET — the mental game ═══════════════════════ */}
+              <div className="rounded-2xl p-6 border-2 border-purple-500/40 bg-gradient-to-br from-purple-500/10 via-indigo-500/5 to-transparent">
+                <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                  <span className="text-2xl">🧠</span>
+                  Batting Mindset — Two Batters, One You
+                </h3>
+                <p className="text-sm text-gray-300 mb-3">
+                  You middle everything in the nets all week. Saturday arrives, and after fifteen balls you&apos;re 2 not out, poking nervously outside off. <em>Where did the rhythm go?</em> Usually it isn&apos;t your technique — it&apos;s the conversation in your head. The moment the scoreboard, teammates and opposition enter the picture, pressure changes the way you <strong className="text-white">think</strong> before it changes the way you <strong className="text-white">move</strong>.
+                </p>
+                <p className="text-xs text-purple-300/80 italic">
+                  Framework below adapts Prof. Steve Peters&apos; <em>The Chimp Paradox</em> and standard sport-psychology to batting. It&apos;s a trainable skill — read it, then rehearse it in the nets, same as any shot.
+                </p>
+              </div>
+
+              {/* The Chimp, the Human, the Computer */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🐒</span>
+                  The Chimp, the Human &amp; the Computer
+                </h3>
+                <p className="text-sm text-gray-300 mb-4">
+                  Think of three voices sharing your head at the crease. Two versions of the same batter — relaxed in the nets, hesitant on a Saturday — come down to <strong className="text-white">which voice is holding the bat</strong>.
+                </p>
+
+                <div className="space-y-3">
+                  <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-4">
+                    <p className="text-red-300 text-xs font-bold uppercase tracking-wider mb-1">🐒 The Chimp — emotional, wants you safe</p>
+                    <p className="text-sm text-gray-200 mb-2">
+                      Fast and loud. On 38 it whispers <em>&ldquo;don&apos;t waste your start.&rdquo;</em> On 97 it shouts <em>&ldquo;don&apos;t blow your hundred.&rdquo;</em> Chasing 220 it screams <em>&ldquo;you need a boundary now.&rdquo;</em> None of those help you watch the next ball. Cricket is rarely helped by playing safe — but safety is all the Chimp knows.
+                    </p>
+                  </div>
+
+                  <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-4">
+                    <p className="text-emerald-300 text-xs font-bold uppercase tracking-wider mb-1">🧍 The Human — calm, logical, present</p>
+                    <p className="text-sm text-gray-200">
+                      Never shouts. Quietly says <em>&ldquo;watch the seam. Trust your defence. Play this ball.&rdquo;</em> The Human keeps you in the one place batting happens — the delivery in front of you.
+                    </p>
+                  </div>
+
+                  <div className="rounded-lg bg-blue-500/10 border border-blue-500/30 p-4">
+                    <p className="text-blue-300 text-xs font-bold uppercase tracking-wider mb-1">💾 The Computer — your batting autopilot</p>
+                    <p className="text-sm text-gray-200">
+                      Every leave, defence, forward press and drive you&apos;ve grooved over thousands of reps lives here. When great players say they &ldquo;weren&apos;t thinking,&rdquo; they weren&apos;t — they were trusting the Computer. Every purposeful net rep is you programming it.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 p-4 rounded-xl bg-purple-500/10 border border-purple-500/30">
+                  <p className="text-sm text-purple-300 font-bold mb-1">The mistake most club batters make</p>
+                  <p className="text-sm text-gray-200">
+                    They try to bat with the Chimp — arguing with it or believing every word. You can&apos;t silence it; even the best players have one. The skill is to <strong className="text-white">hear it, acknowledge it, and hand the bat back to the Human</strong>. When it says <em>&ldquo;don&apos;t get out,&rdquo;</em> answer: <em className="text-white">&ldquo;thanks for trying to protect me — I&apos;ve got this,&rdquo;</em> then return your eyes to the bowler and let the Computer take over.
+                  </p>
+                </div>
+              </div>
+
+              {/* Fear of failure — outcome to process */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">😰</span>
+                  Fear of Failure — Shift from Outcome to Process
+                </h3>
+                <p className="text-sm text-gray-300 mb-4">
+                  Fear of failure quietly ruins more innings than poor technique ever will. It isn&apos;t only worrying you&apos;ll get out — it&apos;s attaching <strong className="text-white">meaning</strong> to the score. Out for 10 stops being a number and starts feeling like a judgement. And the paradox is cruel: the <em>more you care</em>, the more it creeps in, because now there&apos;s more at stake.
+                </p>
+                <p className="text-sm text-primary-400 font-semibold mb-2">How it shows up (it never announces itself):</p>
+                <ul className="space-y-2 text-gray-300 mb-4">
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Pushing at balls you&apos;d normally <strong className="text-white">leave or defend</strong></span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Stuck on the crease — unsure whether to go forward or back</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Overthinking technique mid-innings, forcing shots that aren&apos;t there</span></li>
+                  <li className="flex gap-3"><span className="text-primary-400 font-bold flex-shrink-0">→</span><span>Simply &ldquo;not feeling like yourself&rdquo; — batting with tension, not trust</span></li>
+                </ul>
+                <div className="p-4 rounded-xl bg-accent-500/10 border border-accent-500/30">
+                  <p className="text-sm text-accent-300 font-bold mb-2">The shift</p>
+                  <p className="text-sm text-gray-200 mb-2">
+                    You don&apos;t beat fear by trying to be fearless — that doesn&apos;t work. You beat it by <strong className="text-white">moving your focus off the outcome and onto the process</strong>:
+                  </p>
+                  <p className="text-sm text-gray-200"><span className="text-red-300 line-through">runs · averages · opinions</span> <span className="text-gray-500">→</span> <span className="text-emerald-300 font-semibold">the next ball · your routine · your preparation</span></p>
+                  <p className="text-sm text-gray-300 italic mt-2">
+                    Accept that you will fail, often — even the best fail more than they succeed. Stop trying to eliminate failure and you remove its power over you. Keep cricket in its place: you&apos;re not <em>only</em> a batter, and that perspective is where freedom comes from.
+                  </p>
+                </div>
+              </div>
+
+              {/* Pre-ball mental routine */}
+              <div className="glass rounded-2xl p-6 border border-white/10">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🔁</span>
+                  The Pre-Ball Mental Routine — Your Reset Button
+                </h3>
+                <p className="text-sm text-gray-300 mb-4">
+                  This is the practical tool that puts the Human back in charge, ball after ball. It doesn&apos;t need to be complicated — it needs to be <strong className="text-white">repeatable</strong>. It gives your mind something productive to do while the Computer gets ready to perform.
+                </p>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 p-3 rounded-xl bg-black/30 border border-purple-500/20">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-purple-500/30 text-purple-200 font-bold flex items-center justify-center text-sm">1</span>
+                    <div><p className="text-white font-bold text-sm">Step away.</p><p className="text-xs text-gray-400 mt-1">Break the crease between balls — a physical reset that ends the last delivery.</p></div>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 rounded-xl bg-black/30 border border-purple-500/20">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-purple-500/30 text-purple-200 font-bold flex items-center justify-center text-sm">2</span>
+                    <div><p className="text-white font-bold text-sm">One slow breath.</p><p className="text-xs text-gray-400 mt-1">In through the nose, controlled out, shoulders drop. As the bowler turns, this anchors you to <em>now</em> instead of the future you haven&apos;t played yet.</p></div>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 rounded-xl bg-black/30 border border-purple-500/20">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-purple-500/30 text-purple-200 font-bold flex items-center justify-center text-sm">3</span>
+                    <div><p className="text-white font-bold text-sm">Scan the field · one cue.</p><p className="text-xs text-gray-400 mt-1">Glance for the gaps, then give the Human one job: <em>&ldquo;watch the seam.&rdquo;</em> One cue, repeated, leaves the Chimp less room to interrupt during the run-up.</p></div>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 rounded-xl bg-black/30 border border-purple-500/20">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-purple-500/30 text-purple-200 font-bold flex items-center justify-center text-sm">4</span>
+                    <div><p className="text-white font-bold text-sm">Back into stance — trust it.</p><p className="text-xs text-gray-400 mt-1">Preparation is done. Watch the ball out of the hand all the way onto the bat and let the Computer react.</p></div>
+                  </div>
+                </div>
+                <div className="mt-4 p-4 rounded-xl bg-primary-500/10 border border-primary-500/30">
+                  <p className="text-sm text-primary-300 font-bold mb-1">✅ Takeaway</p>
+                  <p className="text-sm text-gray-200">
+                    You can&apos;t think your way to clarity in a match — the goal of all that net training is to think <em>less</em> because you&apos;ve prepared so well. Hear the Chimp, hand the bat to the Human, trust the Computer. <strong className="text-white">Step away · breathe · one cue · watch the seam</strong> — every ball, the same reset.
+                  </p>
+                </div>
+              </div>
+
+              {/* ══ SEASON BATTING LESSONS — the hard-earned list ══════════ */}
+              <div className="rounded-2xl p-6 border-2 border-accent-500/40 bg-gradient-to-br from-accent-500/10 via-primary-500/5 to-transparent">
+                <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                  <span className="text-2xl">📖</span>
+                  Season Batting Lessons — Earned the Hard Way
+                </h3>
+                <p className="text-sm text-gray-400 mb-5">
+                  The things good batters figure out over many seasons, grouped by <strong className="text-white">physical</strong>, <strong className="text-white">tactical</strong> and <strong className="text-white">mental</strong>. Read a few before each week&apos;s prep — they compound.
+                </p>
+
+                {[
+                  {
+                    heading: 'Physical',
+                    emoji: '💪',
+                    labelClass: 'text-emerald-300',
+                    items: [
+                      { t: 'Treat your kit like a pro', d: `Your bat matters to you like a pen to a writer. Keep it knocked in and carry a comparable back-up — nothing worse than a dead bat on the one day you get set.` },
+                      { t: `You can't score if the body won't last`, d: `A good start is wasted if you fade after 20 overs. Build match fitness early in the week (sprints, Fartlek), keep game-day light, and fix nagging limitations properly rather than playing through them.` },
+                      { t: 'Fuel and sleep are your engine', d: `The effect isn't same-day — it compounds over weeks. Good food and good sleep in the days before a game show up as clarity and stamina at the crease.` },
+                      { t: 'Sort your head before you leave home', d: `Unresolved stress at home travels to the pitch. Give your relationships what they need first, so you can give the innings 100% focus.` },
+                      { t: 'Breathe to reset (diaphragmatic)', d: `Fill the belly, force it out, shoulders drop — two or three breaths and you're centred. It works under pressure only if you've practised it. Use it as the bowler runs in to land back in the present.` },
+                    ],
+                  },
+                  {
+                    heading: 'Tactical',
+                    emoji: '🎯',
+                    labelClass: 'text-primary-300',
+                    items: [
+                      { t: 'Bat deep when chasing', d: `If you're set and experienced, be there when the winning runs are struck. Don't hand the finish to someone else.` },
+                      { t: 'Write a Sunday plan', d: `Before the week starts, note how you'll score off each bowler and survive their best ball. Pick one training priority — left-arm swing? leg-spin? — and drill that, not everything.` },
+                      { t: 'Video is a goldmine', d: `Watch the opposition where you can. Know each bowler's strength, weakness, where your runs come from, and how they'll most likely get you out. Then a few dot balls don't rattle you — you know the loose one is coming.` },
+                      { t: 'Know your role in the partnership', d: `Off day? Don't dwell on it. Drop-and-run to get the in-form partner on strike as often as you can. Bat for the other end — funny how often your own rhythm returns once the pressure's off.` },
+                      { t: 'Practise deliberately, not mindlessly', d: `Every net should have a scenario, a consequence, and your mental routine baked in. Aimlessly hitting balls doesn't transfer to the middle; purposeful reps do.` },
+                      { t: 'Review every innings honestly', d: `Did you have a plan? Did you follow it? Switched on for each ball? Preparation or routine need changing? The number in the book isn't the whole story.` },
+                    ],
+                  },
+                  {
+                    heading: 'Mental',
+                    emoji: '🧠',
+                    labelClass: 'text-purple-300',
+                    items: [
+                      { t: 'Watch the ball, 100%', d: `Do only this in the middle and a big score usually follows. Everything else is preparation so that this is all that's left to do.` },
+                      { t: `Visualise when you can't train`, d: `Rained out? Ten minutes of shadow-batting or visualisation before bed. The subconscious doesn't fully separate imagined reps from real ones — it's a deposit in the confidence bank.` },
+                      { t: 'Compartmentalise cricket', d: `You're more than a batter — put the game down between matches so you come back fresh when it counts. Perspective is where freedom at the crease comes from.` },
+                      { t: 'Bottle the disappointment — then spend it', d: `The sting of walking off cheap never fades. Use that emotion as fuel for the 6am session or the cold night at training when motivation is low.` },
+                      { t: 'Chase the process, fall into the zone', d: `The zone arrives when you're prepared, well-rested and at peace with failure — never when you chase it. Get a few clean strokes away and let confidence build without turning reckless.` },
+                      { t: 'Run a "5 Whys" on every dismissal', d: `Ask "why" five times until you reach the real root cause — technical, tactical, mental or physical. Fix the first domino, not the last one. That's how one bad ball stops becoming a pattern.` },
+                    ],
+                  },
+                ].map((group) => (
+                  <div key={group.heading} className="mb-5">
+                    <p className={`${group.labelClass} text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2`}>
+                      <span className="text-base">{group.emoji}</span> {group.heading}
+                    </p>
+                    <div className="space-y-2">
+                      {group.items.map((it) => (
+                        <div key={it.t} className="rounded-lg bg-white/3 border border-white/5 p-3">
+                          <p className="text-white font-semibold text-sm mb-0.5">{it.t}</p>
+                          <p className="text-xs text-gray-400 leading-relaxed">{it.d}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+
+                <div className="mt-2 p-3 rounded-xl bg-white/3 border border-white/10">
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    <span className="text-gray-300 font-semibold">Credit &amp; further reading:</span> these build on ideas shared by Marc Ellison (Elly&apos;s Batting Mentality) and the writers he draws on — Steve Peters, James Clear, Ryan Holiday and Owen Eastwood. Written here in our own words for the Challengers.{' '}
+                    <a href="https://battingmentality.com" target="_blank" rel="noopener noreferrer" className="text-primary-400 hover:text-primary-300 underline">battingmentality.com</a>
+                  </p>
+                </div>
+              </div>
+
               {/* CTA back to reflection */}
               <div className="text-center pt-4">
                 <button
