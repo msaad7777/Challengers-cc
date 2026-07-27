@@ -30,23 +30,31 @@ import {
   type Fielder,
   type Handedness,
   type BowlerType,
-  type FieldGap,
 } from '@/app/c3h/lib/fieldScanner';
+import {
+  createStaircase,
+  nextStaircase,
+  thresholdEstimate,
+  staircaseComplete,
+  type StaircaseState,
+} from '@/app/c3h/lib/perceptualStaircase';
 
 // ── Progress entries (Firestore) ─────────────────────────────────────────
-type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold';
+type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast';
 
 interface ProgressEntry {
   type: MetricType;
-  value: number; // predict/track = 0-100; bolt/breath-hold = seconds
+  value: number; // predict/track = 0-100; bolt/breath-hold = seconds; contrast = threshold %
   at: string; // ISO timestamp
 }
 
-const METRIC_META: Record<MetricType, { label: string; unit: string; color: string; higherBetter: true }> = {
+const METRIC_META: Record<MetricType, { label: string; unit: string; color: string; higherBetter: boolean }> = {
   'ball-predict': { label: 'Ball prediction', unit: 'pts', color: '#22d3ee', higherBetter: true },
   'ball-track': { label: 'Smooth-pursuit tracking', unit: '%', color: '#a78bfa', higherBetter: true },
   'bolt': { label: 'BOLT (CO₂ tolerance)', unit: 's', color: '#34d399', higherBetter: true },
   'breath-hold': { label: 'Max breath-hold', unit: 's', color: '#fbbf24', higherBetter: true },
+  // Detection threshold — LOWER is better (sees fainter targets).
+  'contrast': { label: 'Contrast threshold', unit: '%', color: '#f472b6', higherBetter: false },
 };
 
 const safeKey = (email: string) => email.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -753,7 +761,7 @@ function Sparkline({ values, color }: { values: number[]; color: string }) {
 
 function ProgressPanel({ entries }: { entries: ProgressEntry[] }) {
   const byType = useMemo(() => {
-    const m: Record<MetricType, ProgressEntry[]> = { 'ball-predict': [], 'ball-track': [], 'bolt': [], 'breath-hold': [] };
+    const m: Record<MetricType, ProgressEntry[]> = { 'ball-predict': [], 'ball-track': [], 'bolt': [], 'breath-hold': [], 'contrast': [] };
     for (const e of entries) m[e.type]?.push(e);
     return m;
   }, [entries]);
@@ -775,7 +783,7 @@ function ProgressPanel({ entries }: { entries: ProgressEntry[] }) {
           const meta = METRIC_META[t];
           const values = list.map((e) => e.value);
           const latest = values[values.length - 1];
-          const best = values.length ? Math.max(...values) : null;
+          const best = values.length ? (meta.higherBetter ? Math.max(...values) : Math.min(...values)) : null;
           return (
             <div key={t} className="rounded-xl p-4 border border-white/10 bg-white/3">
               <div className="flex items-center justify-between">
@@ -796,10 +804,173 @@ function ProgressPanel({ entries }: { entries: ProgressEntry[] }) {
 }
 
 // ════════════════════════════════════════════════════════════════════════
+//  MODULE 5 — Perceptual Learning (contrast sensitivity)
+// ════════════════════════════════════════════════════════════════════════
+//
+// Faithful to the UC Riverside baseball study (Deveau/Ozer/Seitz, Current
+// Biology 2014): repeatedly detect a faint oriented grating (a Gabor patch)
+// near your threshold, and the brain learns to squeeze more signal out of the
+// eyes — which transferred to real batting vision. Task here is a 2-AFC
+// orientation judgement ("tilted left or right?") with contrast driven by the
+// adaptive staircase. Lower threshold over weeks = sharper low-contrast vision.
+
+const GABOR_SIZE = 180;
+
+// Render a Gabor patch (sine grating × Gaussian window) into the canvas.
+function drawGabor(ctx: CanvasRenderingContext2D, contrast: number, tiltDeg: number) {
+  const S = GABOR_SIZE;
+  const img = ctx.createImageData(S, S);
+  const c = S / 2;
+  const sigma = S / 6;
+  const cycles = 6; // spatial frequency across the patch
+  const k = (2 * Math.PI * cycles) / S;
+  const th = (tiltDeg * Math.PI) / 180;
+  const cosT = Math.cos(th), sinT = Math.sin(th);
+  for (let y = 0; y < S; y++) {
+    for (let x = 0; x < S; x++) {
+      const dx = x - c, dy = y - c;
+      const xr = dx * cosT + dy * sinT;
+      const gauss = Math.exp(-(dx * dx + dy * dy) / (2 * sigma * sigma));
+      const grating = Math.cos(k * xr);
+      const lum = 0.5 + 0.5 * contrast * grating * gauss; // 0..1, gray field = 0.5
+      const v = Math.round(lum * 255);
+      const idx = (y * S + x) * 4;
+      img.data[idx] = v; img.data[idx + 1] = v; img.data[idx + 2] = v; img.data[idx + 3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+function fillGray(ctx: CanvasRenderingContext2D) {
+  ctx.fillStyle = 'rgb(128,128,128)';
+  ctx.fillRect(0, 0, GABOR_SIZE, GABOR_SIZE);
+}
+
+interface PerceptualProps { onLog: (type: MetricType, value: number) => void; }
+
+function PerceptualTrainer({ onLog }: PerceptualProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [phase, setPhase] = useState<'idle' | 'fixation' | 'stimulus' | 'response' | 'done'>('idle');
+  const stair = useRef<StaircaseState>(createStaircase(0.4));
+  const tilt = useRef<'left' | 'right'>('left');
+  const [trialNo, setTrialNo] = useState(0);
+  const [threshold, setThreshold] = useState<number | null>(null);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const clearTimers = () => { timers.current.forEach(clearTimeout); timers.current = []; };
+  const after = (ms: number, fn: () => void) => { timers.current.push(setTimeout(fn, ms)); };
+
+  useEffect(() => () => clearTimers(), []);
+
+  const paintGray = useCallback(() => {
+    const ctx = canvasRef.current?.getContext('2d');
+    if (ctx) fillGray(ctx);
+  }, []);
+
+  useEffect(() => { paintGray(); }, [paintGray]);
+
+  const runTrial = useCallback(() => {
+    const ctx = canvasRef.current?.getContext('2d');
+    if (!ctx) return;
+    setPhase('fixation');
+    fillGray(ctx);
+    // fixation cross
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(GABOR_SIZE / 2 - 6, GABOR_SIZE / 2); ctx.lineTo(GABOR_SIZE / 2 + 6, GABOR_SIZE / 2);
+    ctx.moveTo(GABOR_SIZE / 2, GABOR_SIZE / 2 - 6); ctx.lineTo(GABOR_SIZE / 2, GABOR_SIZE / 2 + 6);
+    ctx.stroke();
+
+    after(500, () => {
+      tilt.current = Math.random() < 0.5 ? 'left' : 'right';
+      const tiltDeg = tilt.current === 'left' ? -20 : 20;
+      drawGabor(ctx, stair.current.contrast, tiltDeg);
+      setPhase('stimulus');
+      // Flash the patch, then mask with gray and take the answer.
+      after(220, () => { fillGray(ctx); setPhase('response'); });
+    });
+  }, []);
+
+  const start = () => {
+    stair.current = createStaircase(0.4);
+    setTrialNo(0);
+    setThreshold(null);
+    runTrial();
+  };
+
+  const answer = (dir: 'left' | 'right') => {
+    if (phase !== 'response') return;
+    const correct = dir === tilt.current;
+    stair.current = nextStaircase(stair.current, correct);
+    setTrialNo((n) => n + 1);
+    if (staircaseComplete(stair.current)) {
+      setThreshold(Math.round(thresholdEstimate(stair.current) * 1000) / 10); // % to 1dp
+      setPhase('done');
+      paintGray();
+    } else {
+      runTrial();
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl p-5 border-2 border-pink-500/40 bg-gradient-to-br from-pink-500/10 to-transparent">
+        <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2"><span className="text-2xl">🌫️</span> Perceptual Learning</h3>
+        <p className="text-sm text-gray-300">The method from the UC Riverside baseball study: repeatedly spot a faint striped patch and judge its tilt. Training the brain to read low-contrast signal transferred to real batting vision — fewer strikeouts, better acuity. Your <strong className="text-pink-300">contrast threshold</strong> should drop over weeks (lower = you see fainter).</p>
+      </div>
+
+      <div className="flex flex-col items-center gap-4">
+        <canvas
+          ref={canvasRef}
+          width={GABOR_SIZE}
+          height={GABOR_SIZE}
+          className="rounded-full border border-white/10"
+          style={{ width: GABOR_SIZE, height: GABOR_SIZE, background: 'rgb(128,128,128)' }}
+        />
+
+        {phase === 'idle' && (
+          <button onClick={start} className="px-5 py-2 rounded-lg bg-gradient-to-r from-pink-600 to-pink-500 text-white text-sm font-medium">Start session</button>
+        )}
+
+        {(phase === 'fixation' || phase === 'stimulus') && (
+          <p className="text-xs text-gray-400">Watch the patch…</p>
+        )}
+
+        {phase === 'response' && (
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-sm text-white">Which way was it tilted?</p>
+            <div className="flex gap-3">
+              <button onClick={() => answer('left')} className="px-5 py-3 rounded-lg bg-white/10 border border-white/20 text-white text-lg hover:bg-white/15">◹ Left</button>
+              <button onClick={() => answer('right')} className="px-5 py-3 rounded-lg bg-white/10 border border-white/20 text-white text-lg hover:bg-white/15">◸ Right</button>
+            </div>
+            <p className="text-[11px] text-gray-500">Trial {trialNo + 1} · guess if unsure</p>
+          </div>
+        )}
+
+        {phase === 'done' && threshold !== null && (
+          <div className="text-center space-y-2">
+            <p className="text-white">Threshold this session: <strong className="text-pink-300">{threshold}%</strong> contrast <span className="text-gray-500 text-xs">(lower is better)</span></p>
+            <div className="flex gap-2 justify-center">
+              <button onClick={() => { onLog('contrast', threshold); setPhase('idle'); }} className="px-3 py-1.5 rounded-lg bg-white/10 text-pink-300 text-xs border border-pink-500/40">Log threshold</button>
+              <button onClick={start} className="px-3 py-1.5 rounded-lg bg-pink-500/20 text-pink-200 text-xs border border-pink-500/40">Again</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-lg p-3 border border-white/10 bg-white/3 text-[11px] text-gray-400">
+        A session is ~1–2 min (runs until the difficulty settles). The study protocol was <strong>25 min/day, 4 days/week</strong> — do a few sessions per sitting on weekdays. Reference: Deveau, Ozer &amp; Seitz, <em>Current Biology</em> 2014. This is a training aid inspired by that research, not a medical or diagnostic device — stop on eye strain, blur or headache.
+      </div>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════════════
 //  PAGE
 // ════════════════════════════════════════════════════════════════════════
 
-type LabTab = 'ball' | 'field' | 'breathing' | 'progress';
+type LabTab = 'ball' | 'field' | 'perceptual' | 'breathing' | 'progress';
 
 export default function NeuroVisionPage() {
   const { data: session, status } = useSession();
@@ -881,6 +1052,7 @@ export default function NeuroVisionPage() {
   const TABS: { key: LabTab; label: string; emoji: string }[] = [
     { key: 'ball', label: 'Ball Pickup', emoji: '🎯' },
     { key: 'field', label: 'Field Scanner', emoji: '🗺️' },
+    { key: 'perceptual', label: 'Perceptual', emoji: '🌫️' },
     { key: 'breathing', label: 'Breathing', emoji: '🫁' },
     { key: 'progress', label: 'Progress', emoji: '📈' },
   ];
@@ -918,6 +1090,7 @@ export default function NeuroVisionPage() {
 
           {tab === 'ball' && <BallPickupTrainer onLog={logEntry} />}
           {tab === 'field' && <FieldScanner />}
+          {tab === 'perceptual' && <PerceptualTrainer onLog={logEntry} />}
           {tab === 'breathing' && <BreathingPacer onLog={logEntry} />}
           {tab === 'progress' && <ProgressPanel entries={entries} />}
         </div>
