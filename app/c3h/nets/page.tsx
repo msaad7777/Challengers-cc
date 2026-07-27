@@ -32,7 +32,7 @@ import {
   getLeadership,
 } from '../lib/matchPlan';
 import { EMAIL_TO_PLAYER } from '@/lib/c3h-roster';
-import { isC3HCaptain } from '@/lib/c3h-access';
+import { isC3HCaptain, isC3HDirector } from '@/lib/c3h-access';
 
 // Map scorer's wicket type to the reflection's HOW_GOT_OUT_OPTIONS
 function mapScorerWicketToReflection(scorerHowOut: string): string {
@@ -1477,6 +1477,14 @@ export default function NetsPage() {
                 >
                   Match Plan
                 </button>
+              )}
+              {isC3HDirector(session?.user?.email) && (
+                <Link
+                  href="/c3h/neurovision"
+                  className="px-4 py-2 rounded-lg text-sm font-medium border bg-cyan-500/10 text-cyan-300 border-cyan-500/40 hover:bg-cyan-500/20 transition-all"
+                >
+                  🧠 NeuroVision Lab
+                </Link>
               )}
               {patterns && (
                 <button

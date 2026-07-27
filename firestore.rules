@@ -416,6 +416,22 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // ── NeuroVision Lab progress (per-player training scores) ─────────────
+    // One doc per player, keyed by a sanitized email. Stores an append-ish
+    // array of logged scores (ball-pickup, tracking, BOLT, breath-hold).
+    // Low-stakes personal training data — shape-validated only, and
+    // director-only access is enforced at the app layer (isC3HDirector).
+    // Not deletable from the client so a player can't wipe their history.
+    match /neurovision_progress/{userKey} {
+      allow read: if authed();
+      allow create, update: if authed()
+        && request.resource.data.keys().hasAll(['email', 'updatedAt', 'entries'])
+        && isString(request.resource.data.email)
+        && request.resource.data.entries is list
+        && request.resource.data.entries.size() <= 400;
+      allow delete: if false;
+    }
+
     // ── Default deny for unknown collections ──────────────────────────────
     match /{document=**} {
       allow read, write: if false;
