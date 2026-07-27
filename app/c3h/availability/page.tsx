@@ -63,6 +63,9 @@ const ALL_PLAYERS = [
   'Aleem Quadri', 'Ameeya Singh', 'Dhamu',
   // Part-time players added 2026-07 (roster-only — no login yet)
   'Thoufeeque', 'Swapnil', 'Raunak', 'Raj', 'Segu', 'Fawaz', 'Abdullah',
+  // Joined after Jul 18 (roster-only — no login yet). Tracker only counts the
+  // post–Jul-18 matches captains actually select them into.
+  'Lovely', 'Sahaj', 'RP',
 ];
 
 // Players restricted to specific leagues
