@@ -149,6 +149,7 @@ export const IMAGERY_SESSIONS: ImagerySession[] = [
       { seconds: 14, breathe: false, text: 'Notice the detail — the willow grain, the ball marks in the middle, the colour and condition of the grip, the worn areas where your hands normally hold it.' },
       { seconds: 16, breathe: false, text: 'Now imagine picking it up. Feel its weight, its balance and pickup, the texture of the grip. Let your hands settle into your normal batting grip.' },
       { seconds: 14, breathe: false, text: 'Combine what you see and what you feel into one complete, realistic image. If it fades, calmly bring it back.' },
+      { seconds: 8, breathe: true, text: 'Let the image fade. Return to your breathing — one more slow, calm breath.' },
     ],
   },
   {
@@ -156,10 +157,11 @@ export const IMAGERY_SESSIONS: ImagerySession[] = [
     name: 'The Ball',
     steps: [
       PREPARE_STEP,
-      { seconds: 16, breathe: false, text: 'Picture a cricket ball in front of you — the deep red leather, the raised seam circling it, the stitching, the maker’s stamp, the shine on one side and the rough on the other.' },
-      { seconds: 14, breathe: false, text: 'Notice the detail — the scuffs and grass stains, the lacquer catching the light, the exact size sitting in your palm.' },
-      { seconds: 16, breathe: false, text: 'Now imagine holding it. Feel the weight, the hardness, the seam under your fingers, and your grip as you would hold it to bowl or throw.' },
-      { seconds: 14, breathe: false, text: 'Combine what you see and what you feel into one complete, realistic image. If it fades, calmly bring it back.' },
+      { seconds: 16, breathe: false, text: 'Picture your cricket ball resting in front of you — its shape and size, the exact colour (red or white), the raised seam circling it, the stitching, the shiny side and the rough side.' },
+      { seconds: 14, breathe: false, text: 'Notice the detail — the scuffs and grass stains, the lacquer catching the light, the maker’s stamp, the exact size sitting in your palm. If the image disappears, gently bring it back — that is part of the training.' },
+      { seconds: 16, breathe: false, text: 'Now imagine picking it up. Feel its weight, the seam beneath your fingers, the coolness of the leather, and your natural grip as you would hold it to bowl or throw.' },
+      { seconds: 14, breathe: false, text: 'Combine what you see and what you feel into one complete, vivid image. If it fades, calmly bring it back.' },
+      { seconds: 8, breathe: true, text: 'Let the image fade. Return to your breathing — one more slow, calm breath.' },
     ],
   },
 ];
