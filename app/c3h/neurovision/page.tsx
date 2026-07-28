@@ -52,9 +52,15 @@ import {
   type Delivery,
   type RehearsalStep,
 } from '@/app/c3h/lib/visualization';
+import {
+  MOT_DIFFICULTY,
+  scoreMot,
+  type MotDifficulty,
+  type MotConfig,
+} from '@/app/c3h/lib/mot';
 
 // ── Progress entries (Firestore) ─────────────────────────────────────────
-type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast' | 'read';
+type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast' | 'read' | 'mot';
 
 interface ProgressEntry {
   type: MetricType;
@@ -70,6 +76,7 @@ const METRIC_META: Record<MetricType, { label: string; unit: string; color: stri
   // Detection threshold — LOWER is better (sees fainter targets).
   'contrast': { label: 'Contrast threshold', unit: '%', color: '#f472b6', higherBetter: false },
   'read': { label: 'Bowler read (line/length/timing)', unit: 'pts', color: '#f59e0b', higherBetter: true },
+  'mot': { label: 'Object tracking (MOT)', unit: '%', color: '#38bdf8', higherBetter: true },
 };
 
 const safeKey = (email: string) => email.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -776,7 +783,7 @@ function Sparkline({ values, color }: { values: number[]; color: string }) {
 
 function ProgressPanel({ entries }: { entries: ProgressEntry[] }) {
   const byType = useMemo(() => {
-    const m: Record<MetricType, ProgressEntry[]> = { 'ball-predict': [], 'ball-track': [], 'bolt': [], 'breath-hold': [], 'contrast': [], 'read': [] };
+    const m: Record<MetricType, ProgressEntry[]> = { 'ball-predict': [], 'ball-track': [], 'bolt': [], 'breath-hold': [], 'contrast': [], 'read': [], 'mot': [] };
     for (const e of entries) m[e.type]?.push(e);
     return m;
   }, [entries]);
@@ -1287,10 +1294,211 @@ function VisualizationTrainer({ onLog }: { onLog: (type: MetricType, value: numb
 }
 
 // ════════════════════════════════════════════════════════════════════════
+//  MODULE 7 — Multiple Object Tracking (MOT)
+// ════════════════════════════════════════════════════════════════════════
+//
+// Soft-focus the centre dot, hold the highlighted balls in your peripheral
+// vision as everything scatters, then tap them once they freeze. Trains the
+// dynamic, divided attention a fielder/batter uses to read play under load.
+
+const MOT_SIZE = 340;
+const MOT_R = 13;
+
+interface MotBall { id: number; x: number; y: number; vx: number; vy: number; target: boolean; picked: boolean; }
+
+function MotTrainer({ onLog }: { onLog: (type: MetricType, value: number) => void }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [difficulty, setDifficulty] = useState<MotDifficulty>('easy');
+  const [phase, setPhase] = useState<'idle' | 'reveal' | 'track' | 'select' | 'result'>('idle');
+  const [result, setResult] = useState<ReturnType<typeof scoreMot> | null>(null);
+  const [pickedCount, setPickedCount] = useState(0);
+  const state = useRef<{ balls: MotBall[]; cfg: MotConfig; raf: number; timer: ReturnType<typeof setTimeout> | null }>(
+    { balls: [], cfg: MOT_DIFFICULTY.easy, raf: 0, timer: null },
+  );
+
+  const draw = useCallback((showTargets: boolean, selectable: boolean) => {
+    const ctx = canvasRef.current?.getContext('2d'); if (!ctx) return;
+    ctx.fillStyle = '#06131a';
+    ctx.fillRect(0, 0, MOT_SIZE, MOT_SIZE);
+    // central fixation dot (soft focus here)
+    ctx.fillStyle = '#facc15';
+    ctx.beginPath(); ctx.arc(MOT_SIZE / 2, MOT_SIZE / 2, 4, 0, Math.PI * 2); ctx.fill();
+    for (const b of state.current.balls) {
+      // ball (cricket red with a seam)
+      ctx.fillStyle = '#e11d48';
+      ctx.beginPath(); ctx.arc(b.x, b.y, MOT_R, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(b.x - MOT_R + 3, b.y); ctx.lineTo(b.x + MOT_R - 3, b.y); ctx.stroke();
+      // glow the targets during the reveal, or reveal them in results
+      if (showTargets && b.target) {
+        ctx.strokeStyle = '#facc15'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(b.x, b.y, MOT_R + 4, 0, Math.PI * 2); ctx.stroke();
+      }
+      // show the player's picks
+      if ((selectable || showTargets) && b.picked) {
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(b.x, b.y, MOT_R + 7, 0, Math.PI * 2); ctx.stroke();
+      }
+    }
+  }, []);
+
+  const rand = (a: number, b: number) => a + Math.random() * (b - a);
+
+  const start = () => {
+    const cfg = MOT_DIFFICULTY[difficulty];
+    state.current.cfg = cfg;
+    // place balls without heavy overlap (simple scatter)
+    const balls: MotBall[] = [];
+    for (let i = 0; i < cfg.total; i++) {
+      const ang = rand(0, Math.PI * 2);
+      balls.push({
+        id: i,
+        x: rand(MOT_R + 4, MOT_SIZE - MOT_R - 4),
+        y: rand(MOT_R + 4, MOT_SIZE - MOT_R - 4),
+        vx: Math.cos(ang), vy: Math.sin(ang),
+        target: false, picked: false,
+      });
+    }
+    // pick targets
+    const idxs = balls.map((_, i) => i);
+    for (let i = idxs.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [idxs[i], idxs[j]] = [idxs[j], idxs[i]]; }
+    idxs.slice(0, cfg.targets).forEach((i) => { balls[i].target = true; });
+    state.current.balls = balls;
+    setResult(null); setPickedCount(0);
+
+    // reveal targets, then track
+    setPhase('reveal');
+    draw(true, false);
+    state.current.timer = setTimeout(() => runTracking(cfg), 2000);
+  };
+
+  const runTracking = (cfg: MotConfig) => {
+    setPhase('track');
+    const startTime = performance.now();
+    const loop = (now: number) => {
+      const balls = state.current.balls;
+      for (const b of balls) {
+        b.x += b.vx * cfg.speed;
+        b.y += b.vy * cfg.speed;
+        if (b.x < MOT_R || b.x > MOT_SIZE - MOT_R) { b.vx *= -1; b.x = Math.max(MOT_R, Math.min(MOT_SIZE - MOT_R, b.x)); }
+        if (b.y < MOT_R || b.y > MOT_SIZE - MOT_R) { b.vy *= -1; b.y = Math.max(MOT_R, Math.min(MOT_SIZE - MOT_R, b.y)); }
+      }
+      // gentle ball-ball repulsion so they don't stack
+      for (let i = 0; i < balls.length; i++) {
+        for (let j = i + 1; j < balls.length; j++) {
+          const dx = balls[j].x - balls[i].x, dy = balls[j].y - balls[i].y;
+          const d = Math.hypot(dx, dy);
+          if (d > 0 && d < MOT_R * 2) {
+            const push = (MOT_R * 2 - d) / 2;
+            const ux = dx / d, uy = dy / d;
+            balls[i].x -= ux * push; balls[i].y -= uy * push;
+            balls[j].x += ux * push; balls[j].y += uy * push;
+          }
+        }
+      }
+      draw(false, false);
+      if (now - startTime >= cfg.trackMs) {
+        setPhase('select');
+        draw(false, true);
+        return;
+      }
+      state.current.raf = requestAnimationFrame(loop);
+    };
+    state.current.raf = requestAnimationFrame(loop);
+  };
+
+  const onCanvasClick = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (phase !== 'select') return;
+    const rect = canvasRef.current!.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * MOT_SIZE;
+    const y = ((e.clientY - rect.top) / rect.height) * MOT_SIZE;
+    const balls = state.current.balls;
+    const cfg = state.current.cfg;
+    let hit: MotBall | null = null;
+    for (const b of balls) { if (Math.hypot(b.x - x, b.y - y) <= MOT_R + 4) { hit = b; break; } }
+    if (!hit) return;
+    const currentlyPicked = balls.filter((b) => b.picked).length;
+    if (!hit.picked && currentlyPicked >= cfg.targets) return; // cap at target count
+    hit.picked = !hit.picked;
+    setPickedCount(balls.filter((b) => b.picked).length);
+    draw(false, true);
+  };
+
+  const check = () => {
+    const balls = state.current.balls;
+    const targetIds = balls.filter((b) => b.target).map((b) => b.id);
+    const pickedIds = balls.filter((b) => b.picked).map((b) => b.id);
+    const s = scoreMot(targetIds, pickedIds);
+    setResult(s);
+    setPhase('result');
+    draw(true, true); // reveal targets + picks
+  };
+
+  useEffect(() => {
+    const st = state.current;
+    draw(false, false);
+    return () => { cancelAnimationFrame(st.raf); if (st.timer) clearTimeout(st.timer); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const cfg = MOT_DIFFICULTY[difficulty];
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl p-5 border-2 border-sky-500/40 bg-gradient-to-br from-sky-500/10 to-transparent">
+        <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2"><span className="text-2xl">👁️‍🗨️</span> Object Tracking (MOT)</h3>
+        <p className="text-sm text-gray-300"><strong className="text-sky-300">Soft-focus the yellow centre dot</strong> and hold the glowing balls in your <strong className="text-sky-300">peripheral vision</strong> as they scatter. When they freeze, tap the ones you tracked. This is the read-the-play, eye-on-the-ball-under-pressure skill.</p>
+      </div>
+
+      <div className="flex gap-2 items-center flex-wrap">
+        <span className="text-xs text-gray-400">Difficulty:</span>
+        {(['easy', 'medium', 'hard'] as MotDifficulty[]).map((d) => (
+          <button key={d} onClick={() => { if (phase === 'idle' || phase === 'result') setDifficulty(d); }} disabled={phase !== 'idle' && phase !== 'result'}
+            className={`px-3 py-1 rounded-md text-sm border capitalize disabled:opacity-40 ${difficulty === d ? 'bg-sky-500/20 text-sky-300 border-sky-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{d}</button>
+        ))}
+        <span className="text-[11px] text-gray-500 ml-auto">{cfg.total} balls · track {cfg.targets}</span>
+      </div>
+
+      <canvas
+        ref={canvasRef}
+        width={MOT_SIZE}
+        height={MOT_SIZE}
+        onPointerDown={onCanvasClick}
+        className="w-full max-w-[340px] mx-auto block rounded-xl border border-white/10 touch-none"
+        style={{ aspectRatio: '1 / 1', cursor: phase === 'select' ? 'pointer' : 'default' }}
+      />
+
+      <div className="flex flex-col items-center gap-2">
+        {phase === 'idle' && <button onClick={start} className="px-5 py-2 rounded-lg bg-gradient-to-r from-sky-600 to-sky-500 text-white text-sm font-medium">Start</button>}
+        {phase === 'reveal' && <p className="text-sm text-yellow-300">Memorise the glowing balls…</p>}
+        {phase === 'track' && <p className="text-sm text-sky-300">Track them — soft eyes on the centre dot</p>}
+        {phase === 'select' && (
+          <>
+            <p className="text-sm text-white">Tap the {cfg.targets} you tracked <span className="text-gray-500">({pickedCount}/{cfg.targets})</span></p>
+            <button onClick={check} disabled={pickedCount !== cfg.targets} className="px-5 py-2 rounded-lg bg-gradient-to-r from-sky-600 to-sky-500 text-white text-sm font-medium disabled:opacity-40">Check</button>
+          </>
+        )}
+        {phase === 'result' && result && (
+          <div className="text-center space-y-2">
+            <p className="text-white text-sm">{result.perfect ? '🎯 Perfect!' : 'Round done'} — <strong className="text-sky-300">{result.correct}/{result.total}</strong> ({result.accuracy}%)</p>
+            <p className="text-[11px] text-gray-500">Yellow ring = target · blue ring = your pick</p>
+            <div className="flex gap-2 justify-center">
+              <button onClick={() => { onLog('mot', result.accuracy); setPhase('idle'); draw(false, false); }} className="px-3 py-1.5 rounded-lg bg-white/10 text-sky-300 text-xs border border-sky-500/40">Log score</button>
+              <button onClick={start} className="px-3 py-1.5 rounded-lg bg-sky-500/20 text-sky-200 text-xs border border-sky-500/40">Again</button>
+            </div>
+          </div>
+        )}
+      </div>
+      <p className="text-[11px] text-gray-500 text-center italic">Challenge: do it while balancing on one foot. Stop on eye strain or dizziness.</p>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════════════
 //  PAGE
 // ════════════════════════════════════════════════════════════════════════
 
-type LabTab = 'ball' | 'field' | 'perceptual' | 'visualize' | 'breathing' | 'progress';
+type LabTab = 'ball' | 'field' | 'perceptual' | 'visualize' | 'mot' | 'breathing' | 'progress';
 
 export default function NeuroVisionPage() {
   const { data: session, status } = useSession();
@@ -1374,6 +1582,7 @@ export default function NeuroVisionPage() {
     { key: 'field', label: 'Field Scanner', emoji: '🗺️' },
     { key: 'perceptual', label: 'Perceptual', emoji: '🌫️' },
     { key: 'visualize', label: 'Visualization', emoji: '🎬' },
+    { key: 'mot', label: 'Tracking', emoji: '👁️‍🗨️' },
     { key: 'breathing', label: 'Breathing', emoji: '🫁' },
     { key: 'progress', label: 'Progress', emoji: '📈' },
   ];
@@ -1413,6 +1622,7 @@ export default function NeuroVisionPage() {
           {tab === 'field' && <FieldScanner />}
           {tab === 'perceptual' && <PerceptualTrainer onLog={logEntry} />}
           {tab === 'visualize' && <VisualizationTrainer onLog={logEntry} />}
+          {tab === 'mot' && <MotTrainer onLog={logEntry} />}
           {tab === 'breathing' && <BreathingPacer onLog={logEntry} />}
           {tab === 'progress' && <ProgressPanel entries={entries} />}
         </div>
