@@ -38,13 +38,27 @@ import {
   staircaseComplete,
   type StaircaseState,
 } from '@/app/c3h/lib/perceptualStaircase';
+import {
+  GROUNDS,
+  SITUATIONS,
+  LINES,
+  LENGTHS,
+  buildRehearsalScript,
+  scoreRead,
+  type Ground,
+  type Situation,
+  type Line,
+  type Length,
+  type Delivery,
+  type RehearsalStep,
+} from '@/app/c3h/lib/visualization';
 
 // ── Progress entries (Firestore) ─────────────────────────────────────────
-type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast';
+type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast' | 'read';
 
 interface ProgressEntry {
   type: MetricType;
-  value: number; // predict/track = 0-100; bolt/breath-hold = seconds; contrast = threshold %
+  value: number; // predict/track/read = 0-100; bolt/breath-hold = seconds; contrast = threshold %
   at: string; // ISO timestamp
 }
 
@@ -55,6 +69,7 @@ const METRIC_META: Record<MetricType, { label: string; unit: string; color: stri
   'breath-hold': { label: 'Max breath-hold', unit: 's', color: '#fbbf24', higherBetter: true },
   // Detection threshold — LOWER is better (sees fainter targets).
   'contrast': { label: 'Contrast threshold', unit: '%', color: '#f472b6', higherBetter: false },
+  'read': { label: 'Bowler read (line/length/timing)', unit: 'pts', color: '#f59e0b', higherBetter: true },
 };
 
 const safeKey = (email: string) => email.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -761,7 +776,7 @@ function Sparkline({ values, color }: { values: number[]; color: string }) {
 
 function ProgressPanel({ entries }: { entries: ProgressEntry[] }) {
   const byType = useMemo(() => {
-    const m: Record<MetricType, ProgressEntry[]> = { 'ball-predict': [], 'ball-track': [], 'bolt': [], 'breath-hold': [], 'contrast': [] };
+    const m: Record<MetricType, ProgressEntry[]> = { 'ball-predict': [], 'ball-track': [], 'bolt': [], 'breath-hold': [], 'contrast': [], 'read': [] };
     for (const e of entries) m[e.type]?.push(e);
     return m;
   }, [entries]);
@@ -967,10 +982,315 @@ function PerceptualTrainer({ onLog }: PerceptualProps) {
 }
 
 // ════════════════════════════════════════════════════════════════════════
+//  MODULE 6 — Visualization & Bowler Read
+// ════════════════════════════════════════════════════════════════════════
+//
+// Two-part mental-rehearsal + anticipation trainer:
+//   Rehearsal — a guided script places you at a real ground for the fixture
+//     you're about to play (See → Process → Act), breathing pacer underneath.
+//   Bowler read — a bowler runs in and releases; call LINE + LENGTH before the
+//     ball arrives. Scored on accuracy AND how early you committed, so you
+//     learn to read it off the hand, not off the pitch.
+
+const BR_W = 320;
+const BR_H = 440;
+const BR_RELEASE_Y = 46;
+const BR_BAT_Y = BR_H - 46;
+
+const lineToX = (line: Line): number =>
+  line === 'off' ? BR_W * 0.68 : line === 'leg' ? BR_W * 0.32 : BR_W * 0.5;
+// Short pitches up higher/earlier toward the batter's eyeline; full stays low.
+const lengthToBounceY = (len: Length): number =>
+  len === 'short' ? BR_H * 0.5 : len === 'full' ? BR_H * 0.78 : BR_H * 0.64;
+
+function VisualizationTrainer({ onLog }: { onLog: (type: MetricType, value: number) => void }) {
+  const [stage, setStage] = useState<'setup' | 'rehearsal' | 'reps'>('setup');
+  const [ground, setGround] = useState<Ground>(GROUNDS[0]);
+  const [situation, setSituation] = useState<Situation>(SITUATIONS[0]);
+  const [bowler, setBowler] = useState<BowlerType>('pace');
+
+  // ── Rehearsal ───────────────────────────────────────────────────────────
+  const script: RehearsalStep[] = useMemo(
+    () => buildRehearsalScript(ground, situation, bowler),
+    [ground, situation, bowler],
+  );
+  const [stepIdx, setStepIdx] = useState(0);
+  const [rehearsing, setRehearsing] = useState(false);
+  const rehearseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!rehearsing) return;
+    const step = script[stepIdx];
+    rehearseTimer.current = setTimeout(() => {
+      if (stepIdx < script.length - 1) setStepIdx((i) => i + 1);
+      else setRehearsing(false);
+    }, step.seconds * 1000);
+    return () => { if (rehearseTimer.current) clearTimeout(rehearseTimer.current); };
+  }, [rehearsing, stepIdx, script]);
+
+  const startRehearsal = () => { setStepIdx(0); setRehearsing(true); setStage('rehearsal'); };
+
+  // ── Bowler read ─────────────────────────────────────────────────────────
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [repRunning, setRepRunning] = useState(false);
+  const [guessLine, setGuessLine] = useState<Line | null>(null);
+  const [guessLength, setGuessLength] = useState<Length | null>(null);
+  // Refs mirror the guesses so finishRep reads the latest values even when
+  // called from the rAF loop's (stale) closure on a late auto-reveal.
+  const guessLineRef = useRef<Line | null>(null);
+  const guessLengthRef = useRef<Length | null>(null);
+  const pickLine = (l: Line) => { guessLineRef.current = l; setGuessLine(l); };
+  const pickLength = (l: Length) => { guessLengthRef.current = l; setGuessLength(l); };
+  const [repResult, setRepResult] = useState<ReturnType<typeof scoreRead> | null>(null);
+  const rep = useRef<{
+    raf: number; start: number; runupMs: number; flightMs: number;
+    delivery: Delivery; committedAt: number | null; revealed: boolean;
+  }>({ raf: 0, start: 0, runupMs: 900, flightMs: 850, delivery: { line: 'straight', length: 'good' }, committedAt: null, revealed: false });
+
+  const drawScene = (ctx: CanvasRenderingContext2D, bowlerY: number, ball: { x: number; y: number } | null, revealDelivery?: Delivery) => {
+    ctx.fillStyle = '#06131a';
+    ctx.fillRect(0, 0, BR_W, BR_H);
+    // pitch
+    ctx.fillStyle = 'rgba(200,170,110,0.12)';
+    ctx.fillRect(BR_W / 2 - 26, 20, 52, BR_H - 34);
+    // bat line
+    ctx.strokeStyle = 'rgba(245,158,11,0.6)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(24, BR_BAT_Y); ctx.lineTo(BR_W - 24, BR_BAT_Y); ctx.stroke();
+    // bowler
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    ctx.beginPath(); ctx.arc(BR_W / 2, bowlerY, 6, 0, Math.PI * 2); ctx.fill();
+    // ball
+    if (ball) {
+      ctx.fillStyle = '#e11d48';
+      ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+      ctx.beginPath(); ctx.arc(ball.x, ball.y, 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    }
+    if (revealDelivery) {
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = '11px sans-serif';
+      ctx.fillText(`actual: ${revealDelivery.length} / ${revealDelivery.line}`, 24, BR_BAT_Y - 10);
+    }
+  };
+
+  const startRep = () => {
+    const c = canvasRef.current; if (!c) return;
+    const ctx = c.getContext('2d'); if (!ctx) return;
+    const line = LINES[Math.floor(Math.random() * 3)];
+    const length = LENGTHS[Math.floor(Math.random() * 3)];
+    const r = rep.current;
+    r.delivery = { line, length };
+    r.runupMs = 700 + Math.random() * 500;
+    r.flightMs = 750 + Math.random() * 350;
+    r.committedAt = null;
+    r.revealed = false;
+    r.start = performance.now();
+    guessLineRef.current = null; guessLengthRef.current = null;
+    setGuessLine(null); setGuessLength(null); setRepResult(null);
+    setRepRunning(true);
+
+    const arrivalX = lineToX(line);
+    const bounceY = lengthToBounceY(length);
+
+    const loop = (now: number) => {
+      const t = now - r.start;
+      let bowlerY = 12;
+      let ball: { x: number; y: number } | null = null;
+      let flightFrac = -1;
+      if (t < r.runupMs) {
+        // run-up
+        bowlerY = 12 + (BR_RELEASE_Y - 12) * (t / r.runupMs);
+      } else {
+        bowlerY = BR_RELEASE_Y;
+        flightFrac = Math.min(1, (t - r.runupMs) / r.flightMs);
+        // release → bounce → bat, two segments
+        if (flightFrac <= 0.55) {
+          const k = flightFrac / 0.55;
+          ball = { x: BR_W / 2 + (arrivalX - BR_W / 2) * k * 0.7, y: BR_RELEASE_Y + (bounceY - BR_RELEASE_Y) * k };
+        } else {
+          const k = (flightFrac - 0.55) / 0.45;
+          const bx = BR_W / 2 + (arrivalX - BR_W / 2) * 0.7;
+          ball = { x: bx + (arrivalX - bx) * k, y: bounceY + (BR_BAT_Y - bounceY) * k };
+        }
+      }
+      drawScene(ctx, bowlerY, ball);
+
+      // finished flight without a full read → auto reveal (late)
+      if (flightFrac >= 1 && !r.revealed) {
+        finishRep(1);
+        return;
+      }
+      r.raf = requestAnimationFrame(loop);
+    };
+    r.raf = requestAnimationFrame(loop);
+  };
+
+  // commitFraction: where in the FLIGHT the read locked (0=release, 1=bat; <0 during run-up)
+  const currentFlightFraction = (): number => {
+    const r = rep.current;
+    const t = performance.now() - r.start;
+    if (t < r.runupMs) return 0; // committed during run-up = earliest
+    return Math.min(1, (t - r.runupMs) / r.flightMs);
+  };
+
+  const finishRep = (forcedFrac?: number) => {
+    const r = rep.current;
+    if (r.revealed) return;
+    r.revealed = true;
+    cancelAnimationFrame(r.raf);
+    setRepRunning(false);
+    const commit = forcedFrac ?? (r.committedAt ?? 1);
+    const gl = guessLineRef.current;
+    const gLen = guessLengthRef.current;
+    const ctx = canvasRef.current?.getContext('2d');
+    if (ctx) drawScene(ctx, BR_RELEASE_Y, { x: lineToX(r.delivery.line), y: BR_BAT_Y }, r.delivery);
+    // A dimension they never chose scores as wrong (sentinel never matches).
+    setRepResult(scoreRead(
+      r.delivery,
+      { line: gl ?? ('__none__' as Line), length: gLen ?? ('__none__' as Length) },
+      commit,
+    ));
+  };
+
+  // When both guesses are in, lock the commit fraction and reveal.
+  useEffect(() => {
+    if (!repRunning) return;
+    if (guessLine && guessLength && rep.current.committedAt === null) {
+      rep.current.committedAt = currentFlightFraction();
+      finishRep();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [guessLine, guessLength, repRunning]);
+
+  useEffect(() => {
+    const r = rep.current; // stable object ref — safe in cleanup
+    const ctx = canvasRef.current?.getContext('2d');
+    if (ctx && stage === 'reps') drawScene(ctx, 12, null);
+    return () => cancelAnimationFrame(r.raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage]);
+
+  // ── Render ────────────────────────────────────────────────────────────
+  return (
+    <div className="space-y-5">
+      <div className="rounded-2xl p-5 border-2 border-amber-500/40 bg-gradient-to-br from-amber-500/10 to-transparent">
+        <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2"><span className="text-2xl">🎬</span> Visualization &amp; Bowler Read</h3>
+        <p className="text-sm text-gray-300">First <strong className="text-amber-300">picture yourself at the ground</strong> you&apos;re about to play; then train the <strong className="text-amber-300">read</strong> — call line and length <em>before</em> the ball arrives. See → Process → Act.</p>
+      </div>
+
+      {/* Setup */}
+      <div className="grid sm:grid-cols-3 gap-2 text-sm">
+        <label className="flex flex-col gap-1">
+          <span className="text-xs text-gray-400">Ground</span>
+          <select value={ground.id} onChange={(e) => setGround(GROUNDS.find(g => g.id === e.target.value)!)} className="bg-white/5 border border-white/10 rounded-md px-2 py-1.5 text-gray-200">
+            {GROUNDS.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
+          </select>
+        </label>
+        <label className="flex flex-col gap-1">
+          <span className="text-xs text-gray-400">Situation</span>
+          <select value={situation.id} onChange={(e) => setSituation(SITUATIONS.find(s => s.id === e.target.value)!)} className="bg-white/5 border border-white/10 rounded-md px-2 py-1.5 text-gray-200">
+            {SITUATIONS.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
+          </select>
+        </label>
+        <label className="flex flex-col gap-1">
+          <span className="text-xs text-gray-400">Bowler</span>
+          <select value={bowler} onChange={(e) => setBowler(e.target.value as BowlerType)} className="bg-white/5 border border-white/10 rounded-md px-2 py-1.5 text-gray-200">
+            <option value="pace">Pace</option>
+            <option value="off-spin">Off-spin</option>
+            <option value="leg-spin">Leg-spin</option>
+          </select>
+        </label>
+      </div>
+
+      <div className="flex gap-2 flex-wrap">
+        <button onClick={startRehearsal} className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 text-white text-sm font-medium">▶ Guided rehearsal</button>
+        <button onClick={() => { setStage('reps'); }} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 text-sm">Skip to bowler read →</button>
+      </div>
+
+      {/* Rehearsal stage */}
+      {stage === 'rehearsal' && (
+        <div className="rounded-2xl p-6 border border-amber-500/30 bg-black/30 flex flex-col items-center gap-4">
+          <div className="relative h-40 w-40 flex items-center justify-center">
+            <div
+              className="rounded-full bg-gradient-to-br from-amber-400/30 to-orange-500/20 border border-amber-300/40"
+              style={{
+                width: 130, height: 130,
+                transform: `scale(${script[stepIdx].breathe && rehearsing ? 1 : 0.6})`,
+                transition: `transform ${script[stepIdx].breathe ? script[stepIdx].seconds : 0.5}s ease-in-out`,
+              }}
+            />
+            <span className="absolute text-4xl">🏏</span>
+          </div>
+          <p className="text-center text-gray-100 text-sm leading-relaxed max-w-md min-h-[72px]">{script[stepIdx].text}</p>
+          <div className="flex gap-1.5">
+            {script.map((_, i) => <span key={i} className={`h-1.5 w-1.5 rounded-full ${i === stepIdx ? 'bg-amber-400' : i < stepIdx ? 'bg-amber-400/40' : 'bg-white/15'}`} />)}
+          </div>
+          <div className="flex gap-2">
+            {rehearsing ? (
+              <button onClick={() => setRehearsing(false)} className="px-4 py-1.5 rounded-lg bg-white/10 border border-white/20 text-white text-sm">Pause</button>
+            ) : stepIdx < script.length - 1 ? (
+              <button onClick={() => setRehearsing(true)} className="px-4 py-1.5 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-200 text-sm">Resume</button>
+            ) : (
+              <button onClick={() => setStage('reps')} className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 text-white text-sm">Now read the bowler →</button>
+            )}
+            <button onClick={() => setStage('setup')} className="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-400 text-sm">Back</button>
+          </div>
+        </div>
+      )}
+
+      {/* Bowler-read stage */}
+      {stage === 'reps' && (
+        <div className="flex flex-col items-center gap-4">
+          <canvas
+            ref={canvasRef}
+            width={BR_W}
+            height={BR_H}
+            className="rounded-xl border border-white/10 w-full max-w-[320px]"
+            style={{ aspectRatio: `${BR_W}/${BR_H}` }}
+          />
+
+          {!repRunning && !repResult && (
+            <button onClick={startRep} className="px-5 py-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 text-white text-sm font-medium">Bowl</button>
+          )}
+
+          {repRunning && (
+            <div className="w-full max-w-[320px] space-y-2">
+              <p className="text-center text-xs text-amber-300">Call it as EARLY as you dare — length &amp; line</p>
+              <div className="grid grid-cols-3 gap-1.5">
+                {LENGTHS.map(l => (
+                  <button key={l} onClick={() => pickLength(l)} className={`px-2 py-2 rounded-md text-sm border capitalize ${guessLength === l ? 'bg-amber-500/30 text-amber-200 border-amber-500/60' : 'bg-white/5 text-gray-300 border-white/10'}`}>{l}</button>
+                ))}
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                {LINES.map(l => (
+                  <button key={l} onClick={() => pickLine(l)} className={`px-2 py-2 rounded-md text-sm border capitalize ${guessLine === l ? 'bg-cyan-500/30 text-cyan-200 border-cyan-500/60' : 'bg-white/5 text-gray-300 border-white/10'}`}>{l}</button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {repResult && (
+            <div className="text-center space-y-2">
+              <p className="text-white text-sm">{repResult.label} — <strong className="text-amber-300">{repResult.total}</strong>/100</p>
+              <p className="text-xs text-gray-400">line {repResult.lineCorrect ? '✓' : '✗'} · length {repResult.lengthCorrect ? '✓' : '✗'} · earliness {repResult.earliness}%</p>
+              <div className="flex gap-2 justify-center">
+                <button onClick={() => { onLog('read', repResult.total); setRepResult(null); }} className="px-3 py-1.5 rounded-lg bg-white/10 text-amber-300 text-xs border border-amber-500/40">Log score</button>
+                <button onClick={startRep} className="px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-200 text-xs border border-amber-500/40">Next ball</button>
+              </div>
+            </div>
+          )}
+          <button onClick={() => setStage('setup')} className="text-gray-500 text-xs hover:text-gray-300">← change ground / situation</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════════════
 //  PAGE
 // ════════════════════════════════════════════════════════════════════════
 
-type LabTab = 'ball' | 'field' | 'perceptual' | 'breathing' | 'progress';
+type LabTab = 'ball' | 'field' | 'perceptual' | 'visualize' | 'breathing' | 'progress';
 
 export default function NeuroVisionPage() {
   const { data: session, status } = useSession();
@@ -1053,6 +1373,7 @@ export default function NeuroVisionPage() {
     { key: 'ball', label: 'Ball Pickup', emoji: '🎯' },
     { key: 'field', label: 'Field Scanner', emoji: '🗺️' },
     { key: 'perceptual', label: 'Perceptual', emoji: '🌫️' },
+    { key: 'visualize', label: 'Visualization', emoji: '🎬' },
     { key: 'breathing', label: 'Breathing', emoji: '🫁' },
     { key: 'progress', label: 'Progress', emoji: '📈' },
   ];
@@ -1091,6 +1412,7 @@ export default function NeuroVisionPage() {
           {tab === 'ball' && <BallPickupTrainer onLog={logEntry} />}
           {tab === 'field' && <FieldScanner />}
           {tab === 'perceptual' && <PerceptualTrainer onLog={logEntry} />}
+          {tab === 'visualize' && <VisualizationTrainer onLog={logEntry} />}
           {tab === 'breathing' && <BreathingPacer onLog={logEntry} />}
           {tab === 'progress' && <ProgressPanel entries={entries} />}
         </div>
