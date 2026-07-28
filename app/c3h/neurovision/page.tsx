@@ -60,9 +60,15 @@ import {
   type MotDifficulty,
   type MotConfig,
 } from '@/app/c3h/lib/mot';
+import {
+  JUGGLING_LEVELS,
+  JUGGLING_TOTAL,
+  canClearLevel,
+  nextJugglingTarget,
+} from '@/app/c3h/lib/juggling';
 
 // ── Progress entries (Firestore) ─────────────────────────────────────────
-type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast' | 'read' | 'mot' | 'vividness' | 'control';
+type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast' | 'read' | 'mot' | 'vividness' | 'control' | 'juggle';
 
 interface ProgressEntry {
   type: MetricType;
@@ -81,6 +87,7 @@ const METRIC_META: Record<MetricType, { label: string; unit: string; color: stri
   'mot': { label: 'Object tracking (MOT)', unit: '%', color: '#38bdf8', higherBetter: true },
   'vividness': { label: 'Imagery vividness', unit: '/5', color: '#c084fc', higherBetter: true },
   'control': { label: 'Imagery control', unit: '/5', color: '#e879f9', higherBetter: true },
+  'juggle': { label: 'Neuro-juggling reps', unit: 'reps', color: '#4ade80', higherBetter: true },
 };
 
 const safeKey = (email: string) => email.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -787,7 +794,7 @@ function Sparkline({ values, color }: { values: number[]; color: string }) {
 
 function ProgressPanel({ entries }: { entries: ProgressEntry[] }) {
   const byType = useMemo(() => {
-    const m: Record<MetricType, ProgressEntry[]> = { 'ball-predict': [], 'ball-track': [], 'bolt': [], 'breath-hold': [], 'contrast': [], 'read': [], 'mot': [], 'vividness': [], 'control': [] };
+    const m: Record<MetricType, ProgressEntry[]> = { 'ball-predict': [], 'ball-track': [], 'bolt': [], 'breath-hold': [], 'contrast': [], 'read': [], 'mot': [], 'vividness': [], 'control': [], 'juggle': [] };
     for (const e of entries) m[e.type]?.push(e);
     return m;
   }, [entries]);
@@ -1601,10 +1608,105 @@ function MotTrainer({ onLog }: { onLog: (type: MetricType, value: number) => voi
 }
 
 // ════════════════════════════════════════════════════════════════════════
+//  MODULE 8 — Neuro-Juggling progression
+// ════════════════════════════════════════════════════════════════════════
+//
+// Physical off-screen drill (Dr. Jackie), so the app guides + tracks rather
+// than simulates. 8 levels; the player logs practice reps and marks a level
+// cleared once mastered. Cleared level persists on the progress doc.
+
+function JugglingTracker({
+  clearedLevel, onClearLevel, onLog,
+}: {
+  clearedLevel: number;
+  onClearLevel: (n: number) => void;
+  onLog: (type: MetricType, value: number) => void;
+}) {
+  const target = nextJugglingTarget(clearedLevel);
+  const [openLevel, setOpenLevel] = useState<number>(target);
+  const [reps, setReps] = useState(20);
+  const level = JUGGLING_LEVELS.find((l) => l.level === openLevel)!;
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl p-5 border-2 border-green-500/40 bg-gradient-to-br from-green-500/10 to-transparent">
+        <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2"><span className="text-2xl">🤹</span> Neuro-Juggling</h3>
+        <p className="text-sm text-gray-300">Cross-body visual-motor training (Dr. Jackie). A real ball in your hands — the app guides the progression and tracks your reps. Work one level until it&apos;s smooth, then clear it and move on.</p>
+      </div>
+
+      {/* Progress bar */}
+      <div className="flex items-center gap-2">
+        <span className="text-xs text-gray-400 whitespace-nowrap">{clearedLevel}/{JUGGLING_TOTAL} cleared</span>
+        <div className="flex-1 flex gap-1">
+          {JUGGLING_LEVELS.map((l) => (
+            <div key={l.level} className={`h-2 flex-1 rounded-full ${l.level <= clearedLevel ? 'bg-green-400' : l.level === target ? 'bg-green-400/40' : 'bg-white/10'}`} />
+          ))}
+        </div>
+      </div>
+
+      {/* Level list */}
+      <div className="space-y-1.5">
+        {JUGGLING_LEVELS.map((l) => {
+          const done = l.level <= clearedLevel;
+          const isTarget = l.level === target;
+          return (
+            <button
+              key={l.level}
+              onClick={() => setOpenLevel(l.level)}
+              className={`w-full text-left px-3 py-2 rounded-lg border flex items-center gap-2 ${openLevel === l.level ? 'border-green-500/50 bg-green-500/10' : 'border-white/10 bg-white/3'}`}
+            >
+              <span className="text-sm">{done ? '✅' : l.detailed ? (isTarget ? '🎯' : '•') : '🔒'}</span>
+              <span className="text-sm text-white flex-1">L{l.level} — {l.name}</span>
+              <span className="text-[11px] text-gray-500">{l.balls}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Open level card */}
+      <div className="rounded-xl p-4 border border-green-500/30 bg-black/30 space-y-3">
+        <div className="flex items-baseline justify-between">
+          <p className="text-white font-bold">Level {level.level}: {level.name}</p>
+          <span className="text-[11px] text-gray-500">{level.balls}</span>
+        </div>
+
+        {level.detailed ? (
+          <>
+            <ol className="text-sm text-gray-300 list-decimal list-inside space-y-1">
+              {level.how!.map((s, i) => <li key={i}>{s}</li>)}
+            </ol>
+            <p className="text-xs rounded-md bg-green-500/10 border-l-2 border-green-500/60 px-3 py-2 text-green-200"><strong>You&apos;ve got it when:</strong> {level.mastery}</p>
+
+            <div className="flex flex-wrap gap-2 items-center pt-1">
+              <label className="text-xs text-gray-400 flex items-center gap-1">
+                reps
+                <input type="number" min={1} max={500} value={reps} onChange={(e) => setReps(Math.max(1, parseInt(e.target.value || '1', 10)))} className="w-16 bg-white/5 border border-white/10 rounded-md px-2 py-1 text-gray-200" />
+              </label>
+              <button onClick={() => onLog('juggle', reps)} className="px-3 py-1.5 rounded-lg bg-white/10 text-green-300 text-xs border border-green-500/40">Log session</button>
+              {canClearLevel(level, clearedLevel) ? (
+                <button onClick={() => { onClearLevel(level.level); setOpenLevel(nextJugglingTarget(level.level)); }} className="px-3 py-1.5 rounded-lg bg-green-500/20 text-green-200 text-xs border border-green-500/50">✓ Mark Level {level.level} cleared</button>
+              ) : level.level <= clearedLevel ? (
+                <span className="text-xs text-green-400">✓ Cleared</span>
+              ) : (
+                <span className="text-[11px] text-gray-500">Clear Level {clearedLevel + 1} first</span>
+              )}
+            </div>
+          </>
+        ) : (
+          <p className="text-sm text-gray-400">Full instructions for this level haven&apos;t been added yet. Send me the &ldquo;Level {level.level}&rdquo; session and I&apos;ll unlock it here with steps + a mastery target.</p>
+        )}
+      </div>
+
+      <p className="text-[11px] text-gray-500 text-center italic">1:1 coaching: handeyebody.com. Stop if you strain — smooth rhythm beats speed.</p>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════════════
 //  PAGE
 // ════════════════════════════════════════════════════════════════════════
 
-type LabTab = 'ball' | 'field' | 'perceptual' | 'visualize' | 'mot' | 'breathing' | 'progress';
+type LabTab = 'ball' | 'field' | 'perceptual' | 'visualize' | 'mot' | 'juggle' | 'breathing' | 'progress';
 
 export default function NeuroVisionPage() {
   const { data: session, status } = useSession();
@@ -1614,6 +1716,7 @@ export default function NeuroVisionPage() {
 
   const [tab, setTab] = useState<LabTab>('ball');
   const [entries, setEntries] = useState<ProgressEntry[]>([]);
+  const [jugglingLevel, setJugglingLevel] = useState(0); // highest neuro-juggling level cleared
   const [saveError, setSaveError] = useState(false);
 
   useEffect(() => {
@@ -1630,8 +1733,9 @@ export default function NeuroVisionPage() {
         const snap = await getDoc(doc(db, 'neurovision_progress', safeKey(email)));
         if (cancelled) return;
         if (snap.exists()) {
-          const data = snap.data() as { entries?: ProgressEntry[] };
+          const data = snap.data() as { entries?: ProgressEntry[]; jugglingLevel?: number };
           setEntries(Array.isArray(data.entries) ? data.entries : []);
+          if (typeof data.jugglingLevel === 'number') setJugglingLevel(data.jugglingLevel);
         }
       } catch {
         /* first-load read failure is non-fatal — start empty */
@@ -1640,23 +1744,32 @@ export default function NeuroVisionPage() {
     return () => { cancelled = true; };
   }, [email, isDirector]);
 
-  const logEntry = useCallback(async (type: MetricType, value: number) => {
+  // Single writer for the progress doc — used by both score logging and the
+  // juggling level tracker so the whole doc stays consistent.
+  const saveProgress = useCallback(async (nextEntries: ProgressEntry[], level: number) => {
     if (!email) return;
-    const entry: ProgressEntry = { type, value, at: new Date().toISOString() };
-    const next = [...entries, entry].slice(-200); // cap history
-    setEntries(next);
+    setEntries(nextEntries);
+    setJugglingLevel(level);
     try {
       await firebaseAuthReady();
       await setDoc(doc(db, 'neurovision_progress', safeKey(email)), {
         email,
         updatedAt: new Date().toISOString(),
-        entries: next,
+        entries: nextEntries,
+        jugglingLevel: level,
       });
       setSaveError(false);
     } catch {
       setSaveError(true);
     }
-  }, [email, entries]);
+  }, [email]);
+
+  const logEntry = useCallback((type: MetricType, value: number) => {
+    const entry: ProgressEntry = { type, value, at: new Date().toISOString() };
+    return saveProgress([...entries, entry].slice(-200), jugglingLevel);
+  }, [entries, jugglingLevel, saveProgress]);
+
+  const clearJugglingLevel = useCallback((n: number) => saveProgress(entries, n), [entries, saveProgress]);
 
   if (status === 'loading') {
     return (
@@ -1689,6 +1802,7 @@ export default function NeuroVisionPage() {
     { key: 'perceptual', label: 'Perceptual', emoji: '🌫️' },
     { key: 'visualize', label: 'Visualization', emoji: '🎬' },
     { key: 'mot', label: 'Tracking', emoji: '👁️‍🗨️' },
+    { key: 'juggle', label: 'Juggling', emoji: '🤹' },
     { key: 'breathing', label: 'Breathing', emoji: '🫁' },
     { key: 'progress', label: 'Progress', emoji: '📈' },
   ];
@@ -1729,6 +1843,7 @@ export default function NeuroVisionPage() {
           {tab === 'perceptual' && <PerceptualTrainer onLog={logEntry} />}
           {tab === 'visualize' && <VisualizationTrainer onLog={logEntry} />}
           {tab === 'mot' && <MotTrainer onLog={logEntry} />}
+          {tab === 'juggle' && <JugglingTracker clearedLevel={jugglingLevel} onClearLevel={clearJugglingLevel} onLog={logEntry} />}
           {tab === 'breathing' && <BreathingPacer onLog={logEntry} />}
           {tab === 'progress' && <ProgressPanel entries={entries} />}
         </div>
