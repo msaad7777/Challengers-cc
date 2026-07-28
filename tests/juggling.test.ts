@@ -21,7 +21,7 @@ describe('juggling levels', () => {
   });
 
   it('leaves later levels as not-yet-detailed', () => {
-    expect(JUGGLING_LEVELS[1].detailed).toBe(false);
+    expect(JUGGLING_LEVELS[2].detailed).toBe(false); // Level 3 not captured yet
   });
 });
 
@@ -43,7 +43,7 @@ describe('canClearLevel', () => {
     expect(canClearLevel(JUGGLING_LEVELS[0], 1)).toBe(false); // already cleared
   });
   it('blocks a level with no instructions yet', () => {
-    // Level 2 is the target after clearing 1, but it isn't detailed.
-    expect(canClearLevel(JUGGLING_LEVELS[1], 1)).toBe(false);
+    // Level 3 is the target after clearing 2, but it isn't detailed yet.
+    expect(canClearLevel(JUGGLING_LEVELS[2], 2)).toBe(false);
   });
 });
