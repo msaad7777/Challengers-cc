@@ -1,10 +1,25 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 
+// SECURITY BLOCKLIST — checked FIRST, before any allowlist or the
+// @challengerscc.ca domain auto-approve below. Any address here is denied
+// sign-in outright.
+//
+// 2026-07-27: contact@challengerscc.ca (the shared Workspace inbox) is
+// blocked. The account was compromised by a former member (Qaiser, now
+// subject of legal action) who changed its recovery phone/email and may
+// have sent/deleted mail. Blocking it here severs the app-side access while
+// the Google Workspace account is secured. This is a temporary lockout —
+// remove from this list only once the account is fully recovered + secured.
+// NOTE: existing JWT sessions persist up to `maxAge`; rotate NEXTAUTH_SECRET
+// to force-invalidate any active session immediately.
+const BLOCKED_EMAILS = [
+  'contact@challengerscc.ca',
+];
+
 // Board members & captains get full access (all 4 modules)
 // Includes both @challengerscc.ca and personal Gmail
 const BOARD_EMAILS = [
-  'contact@challengerscc.ca',
   // Directors (5 — per federal corporate profile)
   'saad@challengerscc.ca',
   'ankush@challengerscc.ca',
@@ -58,6 +73,8 @@ const PLAYER_EMAILS: string[] = [
 
 function getUserRole(email: string): 'board' | 'player' | null {
   const lower = email.toLowerCase();
+  // Blocklist wins over everything, including the domain auto-approve below.
+  if (BLOCKED_EMAILS.includes(lower)) return null;
   if (lower.endsWith('@challengerscc.ca')) return 'board';
   if (BOARD_EMAILS.includes(lower)) return 'board';
   if (PLAYER_EMAILS.includes(lower)) return 'player';

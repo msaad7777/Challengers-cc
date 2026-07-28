@@ -82,8 +82,8 @@ describe('c3h-access predicates', () => {
       expect(isC3HSquadViewer('qaiser@challengerscc.ca')).toBe(false);
       expect(isC3HSquadViewer('qureshiqaiser007@gmail.com')).toBe(false);
     });
-    it('includes contact@ shared inbox (read-only board visibility)', () => {
-      expect(isC3HSquadViewer('contact@challengerscc.ca')).toBe(true);
+    it('excludes contact@ shared inbox (access revoked 2026-07-27 — account compromised)', () => {
+      expect(isC3HSquadViewer('contact@challengerscc.ca')).toBe(false);
     });
     it('includes captains (squad viewing is captain-implicit)', () => {
       expect(isC3HSquadViewer('saad@challengerscc.ca')).toBe(true);

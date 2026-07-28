@@ -6,7 +6,9 @@
 // the Dugout (availability page) and the Field Editor (access guard +
 // audit-trail display) read from here.
 export const EMAIL_TO_PLAYER: Record<string, string> = {
-  'contact@challengerscc.ca': 'Mohammed Saad',
+  // contact@challengerscc.ca removed 2026-07-27 — shared inbox account
+  // compromised by a former member; it is blocked from sign-in (see
+  // BLOCKED_EMAILS in the NextAuth route). Saad signs in as saad@ / mbadru3434@.
   'saad@challengerscc.ca': 'Mohammed Saad',
   'mbadru3434@gmail.com': 'Mohammed Saad',
   'tarek@challengerscc.ca': 'Tarek Islam',

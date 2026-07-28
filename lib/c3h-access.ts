@@ -44,11 +44,14 @@ export const C3H_BOARD_EMAILS: readonly string[] = C3H_CAPTAIN_EMAILS;
 //
 // Today:
 //   - All captains (implicitly, via spread)
-//   - contact@challengerscc.ca (shared org inbox — multiple board members
-//     may have access; gets visibility but no edit rights)
+//
+// contact@challengerscc.ca was REMOVED 2026-07-27 — the shared inbox account
+// was compromised by a former member (see the BLOCKED_EMAILS note in the
+// NextAuth route). It also can no longer sign in, but it is dropped here too
+// as defense-in-depth so it holds no squad-view grant even if login is
+// restored before this list is revisited.
 export const C3H_SQUAD_VIEWER_EMAILS: readonly string[] = [
   ...C3H_CAPTAIN_EMAILS,
-  'contact@challengerscc.ca',
 ];
 
 const lc = (email?: string | null) => (email || '').toLowerCase();
