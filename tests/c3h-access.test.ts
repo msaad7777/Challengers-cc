@@ -52,18 +52,16 @@ describe('c3h-access predicates', () => {
       expect(isC3HCaptain('ankush@challengerscc.ca')).toBe(true);
       expect(isC3HCaptain('92ankusharora@gmail.com')).toBe(true);
     });
-    it('matches Shoeb (informal captain-level access — Match Plan reviewer)', () => {
-      // Whitelisted so he can access the Match Plan tab in /c3h/nets.
-      // Both workspace and personal Gmail must resolve to true so he
-      // can sign in via either path and still see captain-gated views.
-      expect(isC3HCaptain('shoeb@challengerscc.ca')).toBe(true);
-      expect(isC3HCaptain('shabyansari0023@gmail.com')).toBe(true);
+    it('rejects Shoeb (removed 2026-07-28 — left the Club)', () => {
+      // Captain access + login revoked; both his addresses are blocked.
+      expect(isC3HCaptain('shoeb@challengerscc.ca')).toBe(false);
+      expect(isC3HCaptain('shabyansari0023@gmail.com')).toBe(false);
     });
     it('is case-insensitive on email matching', () => {
       // Google sometimes preserves original case on personal Gmail;
       // the predicate should not care.
-      expect(isC3HCaptain('SHABYANSARI0023@GMAIL.COM')).toBe(true);
-      expect(isC3HCaptain('Shoeb@ChallengersCC.ca')).toBe(true);
+      expect(isC3HCaptain('92ANKUSHARORA@GMAIL.COM')).toBe(true);
+      expect(isC3HCaptain('Ankush@ChallengersCC.ca')).toBe(true);
     });
     it('rejects players who are not captains', () => {
       expect(isC3HCaptain('denisondavis9@gmail.com')).toBe(false);

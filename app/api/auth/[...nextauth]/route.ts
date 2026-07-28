@@ -15,6 +15,16 @@ import GoogleProvider from 'next-auth/providers/google';
 // to force-invalidate any active session immediately.
 const BLOCKED_EMAILS = [
   'contact@challengerscc.ca',
+  // Former members — explicitly blocked so their @challengerscc.ca workspace
+  // addresses can't slip through the domain auto-approve below even if the
+  // Google accounts still exist. Their personal Gmails are listed too for
+  // clarity. (The real fix is to delete/suspend these Workspace accounts.)
+  'qaiser@challengerscc.ca',    // Qaiser — left the Club 2026-06-22
+  'qureshiqaiser007@gmail.com',
+  'madhu@challengerscc.ca',     // Madhu — former member
+  'vantarimadhu@gmail.com',
+  'shoeb@challengerscc.ca',     // Shoeb — left the Club 2026-07-28
+  'shabyansari0023@gmail.com',
 ];
 
 // Board members & captains get full access (all 4 modules)
@@ -61,6 +71,7 @@ const PLAYER_EMAILS: string[] = [
   'shafiul078.aust@gmail.com',
   'sujelahmed06@gmail.com',
   'syedshahriar77@gmail.com',
+  // shabyansari0023@gmail.com (Shoeb) removed 2026-07-28 — left the Club; blocked above.
   'gmc715625@gmail.com',
   'atik1991rah@gmail.com',
   'majharulalam456@gmail.com',
@@ -73,9 +84,14 @@ const PLAYER_EMAILS: string[] = [
 
 function getUserRole(email: string): 'board' | 'player' | null {
   const lower = email.toLowerCase();
-  // Blocklist wins over everything, including the domain auto-approve below.
+  // Blocklist wins over everything.
   if (BLOCKED_EMAILS.includes(lower)) return null;
-  if (lower.endsWith('@challengerscc.ca')) return 'board';
+  // NOTE: we deliberately do NOT auto-approve every @challengerscc.ca address
+  // anymore (removed 2026-07-28). A blanket domain approve meant any former
+  // member whose Workspace mailbox still existed (contact@, qaiser@, madhu@,
+  // shoeb@ …) could sign in as board. Workspace addresses must now be listed
+  // explicitly in BOARD_EMAILS below — so a new director/officer is a one-line
+  // add, and an ex-member is denied by default the moment they're removed.
   if (BOARD_EMAILS.includes(lower)) return 'board';
   if (PLAYER_EMAILS.includes(lower)) return 'player';
   return null;

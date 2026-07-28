@@ -31,7 +31,7 @@ export const EMAIL_TO_PLAYER: Record<string, string> = {
   'farooqchoudhary123@gmail.com': 'Farooq Choudhary',
   'vijayvyadav1998@gmail.com': 'Vijay Yadav',
   'rajputshivam9558@gmail.com': 'Shivam Rajput',
-  'shabyansari0023@gmail.com': 'Shoeb Ahmad',
+  // Shoeb Ahmad (shabyansari0023@gmail.com) removed 2026-07-28 — left the Club.
   'manoharanukuri9@gmail.com': 'Manohar Anukuri',
   'mohayminul13@gmail.com': 'Mohayminul',
   'fahadakbar@gmail.com': 'Fahad Aktar',

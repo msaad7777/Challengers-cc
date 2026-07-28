@@ -55,7 +55,7 @@ const ALL_MATCHES = [
 
 const ALL_PLAYERS = [
   'Mohammed Saad', 'Tarek Islam', 'Gokul Prakash',
-  'Ankush Arora', 'Roman Mahmud', 'Judin Thomas', 'Saikrishna Goriparthi', 'Shoeb Ahmad',
+  'Ankush Arora', 'Roman Mahmud', 'Judin Thomas', 'Saikrishna Goriparthi',
   'Fahad Aktar', 'Fahad Ahmad', 'Denison Davis', 'Abhishek Ladva',
   'Salman Ahmed', 'Farooq Choudhary', 'Vijay Yadav', 'Shivam Rajput',
   'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
@@ -78,7 +78,7 @@ const LCL_ONLY = ['Shivam Rajput'];
 // Captains can still select them into the Playing 12 of the specific games
 // they actually played (via the Former section in the squad picker) so the
 // Tracker counts those appearances.
-const FORMER_PLAYERS = ['Qaiser Mahmood', 'Madhu Reddy'];
+const FORMER_PLAYERS = ['Qaiser Mahmood', 'Madhu Reddy', 'Shoeb Ahmad'];
 
 // Get players for a specific match based on league
 const getPlayersForMatch = (league: string) => {
