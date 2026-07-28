@@ -66,6 +66,10 @@ import {
   canClearLevel,
   nextJugglingTarget,
 } from '@/app/c3h/lib/juggling';
+import {
+  FOLLOW_ALONG_SESSIONS,
+  type FollowAlongSession,
+} from '@/app/c3h/lib/followAlong';
 
 // ── Progress entries (Firestore) ─────────────────────────────────────────
 type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast' | 'read' | 'mot' | 'vividness' | 'control' | 'juggle';
@@ -1010,6 +1014,106 @@ function PerceptualTrainer({ onLog }: PerceptualProps) {
 //     ball arrives. Scored on accuracy AND how early you committed, so you
 //     learn to read it off the hand, not off the pitch.
 
+// Follow-along visualization: long-form narrated performance rehearsal for a
+// chosen discipline (batting / bowling / keeping). Steps auto-advance with a
+// breathing circle; ends in a Vividness/Control self-rating. Fourth mode of
+// the Visualization tab.
+function FollowAlong({ onLog, onBack }: { onLog: (type: MetricType, value: number) => void; onBack: () => void }) {
+  const [session, setSession] = useState<FollowAlongSession>(FOLLOW_ALONG_SESSIONS[0]);
+  const [phase, setPhase] = useState<'intro' | 'run' | 'evaluate'>('intro');
+  const [stepIdx, setStepIdx] = useState(0);
+  const [running, setRunning] = useState(false);
+  const [vividness, setVividness] = useState<number | null>(null);
+  const [control, setControl] = useState<number | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!running) return;
+    const step = session.steps[stepIdx];
+    timer.current = setTimeout(() => {
+      if (stepIdx < session.steps.length - 1) setStepIdx((i) => i + 1);
+      else { setRunning(false); setPhase('evaluate'); }
+    }, step.seconds * 1000);
+    return () => { if (timer.current) clearTimeout(timer.current); };
+  }, [running, stepIdx, session]);
+
+  const start = () => { setStepIdx(0); setVividness(null); setControl(null); setRunning(true); setPhase('run'); };
+  const step = session.steps[stepIdx];
+  const totalSecs = session.steps.reduce((a, s) => a + s.seconds, 0);
+
+  return (
+    <div className="rounded-2xl p-5 border border-amber-500/30 bg-black/30 space-y-4">
+      <div className="flex items-center justify-between">
+        <h4 className="text-white font-bold flex items-center gap-2">🎥 Follow-along visualization</h4>
+        <button onClick={onBack} className="text-gray-500 text-xs hover:text-gray-300">← back</button>
+      </div>
+
+      {phase === 'intro' && (
+        <div className="space-y-3">
+          <p className="text-sm text-gray-300">A guided performance rehearsal — settle the breath, build the scene through your own eyes, and rehearse execution <em>and</em> recovering from mistakes. ~{Math.round(totalSecs / 60)} min. Pick your discipline:</p>
+          <div className="flex gap-2 flex-wrap">
+            {FOLLOW_ALONG_SESSIONS.map((s) => (
+              <button key={s.id} onClick={() => setSession(s)} className={`px-3 py-1.5 rounded-md text-sm border ${session.id === s.id ? 'bg-amber-500/20 text-amber-200 border-amber-500/50' : 'bg-white/5 text-gray-300 border-white/10'}`}>{s.emoji} {s.name}</button>
+            ))}
+          </div>
+          <button onClick={start} className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 text-white text-sm font-medium">Begin {session.name}</button>
+        </div>
+      )}
+
+      {phase === 'run' && (
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative h-36 w-36 flex items-center justify-center">
+            <div
+              className="rounded-full bg-gradient-to-br from-amber-400/30 to-orange-500/20 border border-amber-300/40"
+              style={{
+                width: 120, height: 120,
+                transform: `scale(${step.breathe && running ? 1 : 0.62})`,
+                transition: `transform ${step.breathe ? step.seconds : 0.6}s ease-in-out`,
+              }}
+            />
+            <span className="absolute text-3xl">{session.emoji}</span>
+          </div>
+          <p className="text-center text-gray-100 text-sm leading-relaxed max-w-md min-h-[96px]">{step.text}</p>
+          <div className="w-full max-w-sm h-1 bg-white/10 rounded-full overflow-hidden">
+            <div className="h-full bg-amber-400/70" style={{ width: `${((stepIdx + 1) / session.steps.length) * 100}%` }} />
+          </div>
+          {running
+            ? <button onClick={() => setRunning(false)} className="px-4 py-1.5 rounded-lg bg-white/10 border border-white/20 text-white text-sm">Pause</button>
+            : <button onClick={() => setRunning(true)} className="px-4 py-1.5 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-200 text-sm">Resume</button>}
+        </div>
+      )}
+
+      {phase === 'evaluate' && (
+        <div className="space-y-4">
+          <p className="text-sm text-gray-300">Rate this session — track it over time:</p>
+          {([['Vividness', vividness, setVividness, 'How realistic was it?'], ['Control', control, setControl, 'How well did you hold it?']] as const).map(
+            ([label, val, setter, hint]) => (
+              <div key={label}>
+                <p className="text-xs text-gray-400 mb-1">{label} <span className="text-gray-600">— {hint}</span></p>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button key={n} onClick={() => setter(n)} className={`h-9 w-9 rounded-md text-sm border ${val === n ? 'bg-amber-500/30 text-amber-100 border-amber-500/60' : 'bg-white/5 text-gray-400 border-white/10'}`}>{n}</button>
+                  ))}
+                </div>
+              </div>
+            ),
+          )}
+          <div className="flex gap-2">
+            <button
+              onClick={() => { if (vividness) onLog('vividness', vividness); if (control) onLog('control', control); setPhase('intro'); }}
+              disabled={!vividness || !control}
+              className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 text-white text-sm font-medium disabled:opacity-40"
+            >
+              Log &amp; finish
+            </button>
+            <button onClick={start} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 text-sm">Redo</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Guided imagery: scripted mental-representation practice (The Bat / The Ball)
 // ending in Vividness + Control self-ratings. Rendered inside the
 // Visualization tab as a third mode.
@@ -1121,7 +1225,7 @@ const lengthToBounceY = (len: Length): number =>
   len === 'short' ? BR_H * 0.5 : len === 'full' ? BR_H * 0.78 : BR_H * 0.64;
 
 function VisualizationTrainer({ onLog }: { onLog: (type: MetricType, value: number) => void }) {
-  const [stage, setStage] = useState<'setup' | 'rehearsal' | 'reps' | 'imagery'>('setup');
+  const [stage, setStage] = useState<'setup' | 'rehearsal' | 'reps' | 'imagery' | 'follow'>('setup');
   const [ground, setGround] = useState<Ground>(GROUNDS[0]);
   const [situation, setSituation] = useState<Situation>(SITUATIONS[0]);
   const [bowler, setBowler] = useState<BowlerType>('pace');
@@ -1323,9 +1427,11 @@ function VisualizationTrainer({ onLog }: { onLog: (type: MetricType, value: numb
         <button onClick={startRehearsal} className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 text-white text-sm font-medium">▶ Guided rehearsal</button>
         <button onClick={() => { setStage('reps'); }} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 text-sm">Bowler read →</button>
         <button onClick={() => { setStage('imagery'); }} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 text-sm">🧠 Guided imagery →</button>
+        <button onClick={() => { setStage('follow'); }} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 text-sm">🎥 Follow-along →</button>
       </div>
 
       {stage === 'imagery' && <GuidedImagery onLog={onLog} onBack={() => setStage('setup')} />}
+      {stage === 'follow' && <FollowAlong onLog={onLog} onBack={() => setStage('setup')} />}
 
       {/* Rehearsal stage */}
       {stage === 'rehearsal' && (
