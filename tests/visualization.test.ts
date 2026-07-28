@@ -4,6 +4,7 @@ import {
   scoreRead,
   GROUNDS,
   SITUATIONS,
+  IMAGERY_SESSIONS,
   type Delivery,
 } from '@/app/c3h/lib/visualization';
 
@@ -68,5 +69,18 @@ describe('scoreRead', () => {
     const s = scoreRead(actual, { line: 'off', length: 'good' }, -0.5);
     expect(s.earliness).toBe(100);
     expect(s.total).toBe(100);
+  });
+});
+
+describe('IMAGERY_SESSIONS', () => {
+  it('includes The Bat and The Ball, each opening with a breathing prepare step', () => {
+    const ids = IMAGERY_SESSIONS.map((s) => s.id);
+    expect(ids).toContain('bat');
+    expect(ids).toContain('ball');
+    for (const s of IMAGERY_SESSIONS) {
+      expect(s.steps.length).toBeGreaterThanOrEqual(4);
+      expect(s.steps[0].breathe).toBe(true);
+      expect(s.steps.every((st) => st.seconds > 0)).toBe(true);
+    }
   });
 });

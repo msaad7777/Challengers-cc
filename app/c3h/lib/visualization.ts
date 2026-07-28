@@ -124,3 +124,42 @@ export function scoreRead(actual: Delivery, guess: ReadGuess, commitFraction: nu
 
 export const LINES: Line[] = ['off', 'straight', 'leg'];
 export const LENGTHS: Length[] = ['full', 'good', 'short'];
+
+// ── Guided imagery (Neurovision Edge "Daily Practice") ───────────────────
+// Foundational mental-representation drills: build a vivid, controllable image
+// of the equipment you use every innings (bat, ball). Prepare → visualize →
+// feel → combine, then self-rate Vividness + Control (1-5) to track progress.
+// Same structure as the course's Week 1 daily practice; original wording.
+
+export interface ImageryStep { text: string; seconds: number; breathe: boolean; }
+export interface ImagerySession { id: string; name: string; steps: ImageryStep[]; }
+
+const PREPARE_STEP: ImageryStep = {
+  seconds: 20, breathe: true,
+  text: 'Find a quiet spot. Close your eyes or soften your gaze. Take three slow breaths — each exhale longer than the inhale. Settle into a calm but alert state.',
+};
+
+export const IMAGERY_SESSIONS: ImagerySession[] = [
+  {
+    id: 'bat',
+    name: 'The Bat',
+    steps: [
+      PREPARE_STEP,
+      { seconds: 16, breathe: false, text: 'Picture your own bat resting in front of you. See its full length, the shape of the blade and the shoulders, the swell on the back, the handle.' },
+      { seconds: 14, breathe: false, text: 'Notice the detail — the willow grain, the ball marks in the middle, the colour and condition of the grip, the worn areas where your hands normally hold it.' },
+      { seconds: 16, breathe: false, text: 'Now imagine picking it up. Feel its weight, its balance and pickup, the texture of the grip. Let your hands settle into your normal batting grip.' },
+      { seconds: 14, breathe: false, text: 'Combine what you see and what you feel into one complete, realistic image. If it fades, calmly bring it back.' },
+    ],
+  },
+  {
+    id: 'ball',
+    name: 'The Ball',
+    steps: [
+      PREPARE_STEP,
+      { seconds: 16, breathe: false, text: 'Picture a cricket ball in front of you — the deep red leather, the raised seam circling it, the stitching, the maker’s stamp, the shine on one side and the rough on the other.' },
+      { seconds: 14, breathe: false, text: 'Notice the detail — the scuffs and grass stains, the lacquer catching the light, the exact size sitting in your palm.' },
+      { seconds: 16, breathe: false, text: 'Now imagine holding it. Feel the weight, the hardness, the seam under your fingers, and your grip as you would hold it to bowl or throw.' },
+      { seconds: 14, breathe: false, text: 'Combine what you see and what you feel into one complete, realistic image. If it fades, calmly bring it back.' },
+    ],
+  },
+];

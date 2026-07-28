@@ -45,12 +45,14 @@ import {
   LENGTHS,
   buildRehearsalScript,
   scoreRead,
+  IMAGERY_SESSIONS,
   type Ground,
   type Situation,
   type Line,
   type Length,
   type Delivery,
   type RehearsalStep,
+  type ImagerySession,
 } from '@/app/c3h/lib/visualization';
 import {
   MOT_DIFFICULTY,
@@ -60,7 +62,7 @@ import {
 } from '@/app/c3h/lib/mot';
 
 // ── Progress entries (Firestore) ─────────────────────────────────────────
-type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast' | 'read' | 'mot';
+type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast' | 'read' | 'mot' | 'vividness' | 'control';
 
 interface ProgressEntry {
   type: MetricType;
@@ -77,6 +79,8 @@ const METRIC_META: Record<MetricType, { label: string; unit: string; color: stri
   'contrast': { label: 'Contrast threshold', unit: '%', color: '#f472b6', higherBetter: false },
   'read': { label: 'Bowler read (line/length/timing)', unit: 'pts', color: '#f59e0b', higherBetter: true },
   'mot': { label: 'Object tracking (MOT)', unit: '%', color: '#38bdf8', higherBetter: true },
+  'vividness': { label: 'Imagery vividness', unit: '/5', color: '#c084fc', higherBetter: true },
+  'control': { label: 'Imagery control', unit: '/5', color: '#e879f9', higherBetter: true },
 };
 
 const safeKey = (email: string) => email.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -783,7 +787,7 @@ function Sparkline({ values, color }: { values: number[]; color: string }) {
 
 function ProgressPanel({ entries }: { entries: ProgressEntry[] }) {
   const byType = useMemo(() => {
-    const m: Record<MetricType, ProgressEntry[]> = { 'ball-predict': [], 'ball-track': [], 'bolt': [], 'breath-hold': [], 'contrast': [], 'read': [], 'mot': [] };
+    const m: Record<MetricType, ProgressEntry[]> = { 'ball-predict': [], 'ball-track': [], 'bolt': [], 'breath-hold': [], 'contrast': [], 'read': [], 'mot': [], 'vividness': [], 'control': [] };
     for (const e of entries) m[e.type]?.push(e);
     return m;
   }, [entries]);
@@ -999,6 +1003,105 @@ function PerceptualTrainer({ onLog }: PerceptualProps) {
 //     ball arrives. Scored on accuracy AND how early you committed, so you
 //     learn to read it off the hand, not off the pitch.
 
+// Guided imagery: scripted mental-representation practice (The Bat / The Ball)
+// ending in Vividness + Control self-ratings. Rendered inside the
+// Visualization tab as a third mode.
+function GuidedImagery({ onLog, onBack }: { onLog: (type: MetricType, value: number) => void; onBack: () => void }) {
+  const [session, setSession] = useState<ImagerySession>(IMAGERY_SESSIONS[0]);
+  const [phase, setPhase] = useState<'intro' | 'run' | 'evaluate'>('intro');
+  const [stepIdx, setStepIdx] = useState(0);
+  const [running, setRunning] = useState(false);
+  const [vividness, setVividness] = useState<number | null>(null);
+  const [control, setControl] = useState<number | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!running) return;
+    const step = session.steps[stepIdx];
+    timer.current = setTimeout(() => {
+      if (stepIdx < session.steps.length - 1) setStepIdx((i) => i + 1);
+      else { setRunning(false); setPhase('evaluate'); }
+    }, step.seconds * 1000);
+    return () => { if (timer.current) clearTimeout(timer.current); };
+  }, [running, stepIdx, session]);
+
+  const start = () => { setStepIdx(0); setVividness(null); setControl(null); setRunning(true); setPhase('run'); };
+
+  const step = session.steps[stepIdx];
+
+  return (
+    <div className="rounded-2xl p-5 border border-purple-500/30 bg-black/30 space-y-4">
+      <div className="flex items-center justify-between">
+        <h4 className="text-white font-bold flex items-center gap-2">🧠 Guided imagery</h4>
+        <button onClick={onBack} className="text-gray-500 text-xs hover:text-gray-300">← back</button>
+      </div>
+
+      {phase === 'intro' && (
+        <div className="space-y-3">
+          <p className="text-sm text-gray-300">Build a vivid, controllable mental image of the gear you use every innings. ~5 minutes, quality over duration. Pick your object:</p>
+          <div className="flex gap-2">
+            {IMAGERY_SESSIONS.map((s) => (
+              <button key={s.id} onClick={() => setSession(s)} className={`px-3 py-1.5 rounded-md text-sm border ${session.id === s.id ? 'bg-purple-500/20 text-purple-200 border-purple-500/50' : 'bg-white/5 text-gray-300 border-white/10'}`}>{s.name}</button>
+            ))}
+          </div>
+          <button onClick={start} className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-fuchsia-500 text-white text-sm font-medium">Begin {session.name}</button>
+        </div>
+      )}
+
+      {phase === 'run' && (
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative h-36 w-36 flex items-center justify-center">
+            <div
+              className="rounded-full bg-gradient-to-br from-purple-400/30 to-fuchsia-500/20 border border-purple-300/40"
+              style={{
+                width: 120, height: 120,
+                transform: `scale(${step.breathe && running ? 1 : 0.6})`,
+                transition: `transform ${step.breathe ? step.seconds : 0.5}s ease-in-out`,
+              }}
+            />
+            <span className="absolute text-3xl">{session.id === 'bat' ? '🏏' : '🔴'}</span>
+          </div>
+          <p className="text-center text-gray-100 text-sm leading-relaxed max-w-md min-h-[72px]">{step.text}</p>
+          <div className="flex gap-1.5">
+            {session.steps.map((_, i) => <span key={i} className={`h-1.5 w-1.5 rounded-full ${i === stepIdx ? 'bg-purple-400' : i < stepIdx ? 'bg-purple-400/40' : 'bg-white/15'}`} />)}
+          </div>
+          {running
+            ? <button onClick={() => setRunning(false)} className="px-4 py-1.5 rounded-lg bg-white/10 border border-white/20 text-white text-sm">Pause</button>
+            : <button onClick={() => setRunning(true)} className="px-4 py-1.5 rounded-lg bg-purple-500/20 border border-purple-500/40 text-purple-200 text-sm">Resume</button>}
+        </div>
+      )}
+
+      {phase === 'evaluate' && (
+        <div className="space-y-4">
+          <p className="text-sm text-gray-300">Rate this session (be honest — this is what you track over time):</p>
+          {([['Vividness', vividness, setVividness, 'How realistic was the image?'], ['Control', control, setControl, 'How well could you hold it?']] as const).map(
+            ([label, val, setter, hint]) => (
+              <div key={label}>
+                <p className="text-xs text-gray-400 mb-1">{label} <span className="text-gray-600">— {hint}</span></p>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button key={n} onClick={() => setter(n)} className={`h-9 w-9 rounded-md text-sm border ${val === n ? 'bg-purple-500/30 text-purple-100 border-purple-500/60' : 'bg-white/5 text-gray-400 border-white/10'}`}>{n}</button>
+                  ))}
+                </div>
+              </div>
+            ),
+          )}
+          <div className="flex gap-2">
+            <button
+              onClick={() => { if (vividness) onLog('vividness', vividness); if (control) onLog('control', control); setPhase('intro'); }}
+              disabled={!vividness || !control}
+              className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-fuchsia-500 text-white text-sm font-medium disabled:opacity-40"
+            >
+              Log &amp; finish
+            </button>
+            <button onClick={start} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 text-sm">Redo</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 const BR_W = 320;
 const BR_H = 440;
 const BR_RELEASE_Y = 46;
@@ -1011,7 +1114,7 @@ const lengthToBounceY = (len: Length): number =>
   len === 'short' ? BR_H * 0.5 : len === 'full' ? BR_H * 0.78 : BR_H * 0.64;
 
 function VisualizationTrainer({ onLog }: { onLog: (type: MetricType, value: number) => void }) {
-  const [stage, setStage] = useState<'setup' | 'rehearsal' | 'reps'>('setup');
+  const [stage, setStage] = useState<'setup' | 'rehearsal' | 'reps' | 'imagery'>('setup');
   const [ground, setGround] = useState<Ground>(GROUNDS[0]);
   const [situation, setSituation] = useState<Situation>(SITUATIONS[0]);
   const [bowler, setBowler] = useState<BowlerType>('pace');
@@ -1211,8 +1314,11 @@ function VisualizationTrainer({ onLog }: { onLog: (type: MetricType, value: numb
 
       <div className="flex gap-2 flex-wrap">
         <button onClick={startRehearsal} className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 text-white text-sm font-medium">▶ Guided rehearsal</button>
-        <button onClick={() => { setStage('reps'); }} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 text-sm">Skip to bowler read →</button>
+        <button onClick={() => { setStage('reps'); }} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 text-sm">Bowler read →</button>
+        <button onClick={() => { setStage('imagery'); }} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 text-sm">🧠 Guided imagery →</button>
       </div>
+
+      {stage === 'imagery' && <GuidedImagery onLog={onLog} onBack={() => setStage('setup')} />}
 
       {/* Rehearsal stage */}
       {stage === 'rehearsal' && (
