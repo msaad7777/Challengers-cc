@@ -86,6 +86,7 @@ import {
   totalReps,
   type PowerProtocol,
 } from '@/app/c3h/lib/powerHitting';
+import { WARMUP_STEPS, WARMUP_SAFETY } from '@/app/c3h/lib/warmup';
 
 // ── Progress entries (Firestore) ─────────────────────────────────────────
 type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast' | 'read' | 'mot' | 'vividness' | 'control' | 'juggle' | 'power';
@@ -1990,6 +1991,39 @@ function MindsetTrainer({ email }: { email: string | null }) {
 }
 
 // ════════════════════════════════════════════════════════════════════════
+//  MODULE 0 — Daily Warm-Up (monocular eye stretches)
+// ════════════════════════════════════════════════════════════════════════
+//
+// Run FIRST, every day, before any other drill or a game. Activates each eye's
+// range (monocular) + the near-far / convergence system. Uses the shared
+// RoutinePlayer (function declaration, hoisted).
+function WarmUp() {
+  const [running, setRunning] = useState(false);
+  const totalSec = WARMUP_STEPS.reduce((a, s) => a + s.seconds, 0);
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl p-5 border-2 border-lime-500/40 bg-gradient-to-br from-lime-500/10 to-transparent">
+        <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2"><span className="text-2xl">👀</span> Daily Warm-Up</h3>
+        <p className="text-sm text-gray-300"><strong className="text-lime-300">Do this first, every day, before anything else</strong> — and before you bat. Monocular eye stretches wake up each eye’s full range, then near-far + convergence switch on the eye-brain link. Like loosening your muscles, but for your eyes. ~{Math.round(totalSec / 60)} min, no fatigue.</p>
+      </div>
+
+      {running ? (
+        <RoutinePlayer steps={WARMUP_STEPS} emoji="👀" onExit={() => setRunning(false)} />
+      ) : (
+        <div className="space-y-3">
+          <ul className="text-sm text-gray-300 space-y-1 list-disc list-inside">
+            <li>Each eye on its own — stretch it up/down, side/side, diagonals, circles.</li>
+            <li>Then both eyes: near-far focus snaps + a convergence rep.</li>
+          </ul>
+          <button onClick={() => setRunning(true)} className="px-5 py-2 rounded-lg bg-gradient-to-r from-lime-600 to-lime-500 text-black font-medium text-sm">Start warm-up</button>
+          <p className="text-[11px] text-gray-500 italic">{WARMUP_SAFETY}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════════════
 //  MODULE 10 — Power Hitting
 // ════════════════════════════════════════════════════════════════════════
 //
@@ -2164,7 +2198,7 @@ function PowerHittingTrainer({ onLog, email }: { onLog: (type: MetricType, value
 //  PAGE
 // ════════════════════════════════════════════════════════════════════════
 
-type LabTab = 'ball' | 'field' | 'perceptual' | 'visualize' | 'mot' | 'juggle' | 'power' | 'mindset' | 'breathing' | 'progress';
+type LabTab = 'warmup' | 'ball' | 'field' | 'perceptual' | 'visualize' | 'mot' | 'juggle' | 'power' | 'mindset' | 'breathing' | 'progress';
 
 export default function NeuroVisionPage() {
   const { data: session, status } = useSession();
@@ -2172,7 +2206,7 @@ export default function NeuroVisionPage() {
   const email = session?.user?.email ?? null;
   const isDirector = isC3HDirector(email);
 
-  const [tab, setTab] = useState<LabTab>('ball');
+  const [tab, setTab] = useState<LabTab>('warmup');
   const [entries, setEntries] = useState<ProgressEntry[]>([]);
   const [jugglingLevel, setJugglingLevel] = useState(0); // highest neuro-juggling level cleared
   const [saveError, setSaveError] = useState(false);
@@ -2255,6 +2289,7 @@ export default function NeuroVisionPage() {
   }
 
   const TABS: { key: LabTab; label: string; emoji: string }[] = [
+    { key: 'warmup', label: 'Warm-Up', emoji: '👀' },
     { key: 'ball', label: 'Ball Pickup', emoji: '🎯' },
     { key: 'field', label: 'Field Scanner', emoji: '🗺️' },
     { key: 'perceptual', label: 'Perceptual', emoji: '🌫️' },
@@ -2298,6 +2333,7 @@ export default function NeuroVisionPage() {
             ))}
           </div>
 
+          {tab === 'warmup' && <WarmUp />}
           {tab === 'ball' && <BallPickupTrainer onLog={logEntry} />}
           {tab === 'field' && <FieldScanner />}
           {tab === 'perceptual' && <PerceptualTrainer onLog={logEntry} />}
