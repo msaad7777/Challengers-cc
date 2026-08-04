@@ -70,6 +70,15 @@ import {
   FOLLOW_ALONG_SESSIONS,
   type FollowAlongSession,
 } from '@/app/c3h/lib/followAlong';
+import {
+  PRINCIPLES,
+  BREATH_PATTERNS,
+  buildCenteringRoutine,
+  RESET_ROUTINE,
+  regulateFor,
+  type RoutineStep,
+  type ArousalLevel,
+} from '@/app/c3h/lib/mindset';
 
 // ── Progress entries (Firestore) ─────────────────────────────────────────
 type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast' | 'read' | 'mot' | 'vividness' | 'control' | 'juggle';
@@ -1809,10 +1818,174 @@ function JugglingTracker({
 }
 
 // ════════════════════════════════════════════════════════════════════════
+//  MODULE 9 — Mindset (sport psychology + in-game state)
+// ════════════════════════════════════════════════════════════════════════
+
+// Small reusable step-player with a breathing circle — used for the pre-ball
+// centering routine and the reset "flush".
+function RoutinePlayer({ steps, emoji, onExit }: { steps: RoutineStep[]; emoji: string; onExit: () => void }) {
+  const [idx, setIdx] = useState(0);
+  const [running, setRunning] = useState(true);
+  const [done, setDone] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!running || done) return;
+    const step = steps[idx];
+    timer.current = setTimeout(() => {
+      if (idx < steps.length - 1) setIdx((i) => i + 1);
+      else { setRunning(false); setDone(true); }
+    }, step.seconds * 1000);
+    return () => { if (timer.current) clearTimeout(timer.current); };
+  }, [running, idx, steps, done]);
+
+  const step = steps[idx];
+
+  return (
+    <div className="flex flex-col items-center gap-3 rounded-xl p-5 border border-rose-500/30 bg-black/30">
+      <div className="relative h-32 w-32 flex items-center justify-center">
+        <div
+          className="rounded-full bg-gradient-to-br from-rose-400/30 to-pink-500/20 border border-rose-300/40"
+          style={{
+            width: 110, height: 110,
+            transform: `scale(${!done && step.breathe && running ? 1 : 0.62})`,
+            transition: `transform ${!done && step.breathe ? step.seconds : 0.5}s ease-in-out`,
+          }}
+        />
+        <span className="absolute text-3xl">{emoji}</span>
+      </div>
+      {!done ? (
+        <>
+          <p className="text-center text-gray-100 text-sm leading-relaxed max-w-sm min-h-[72px]">{step.text}</p>
+          <div className="flex gap-1.5">{steps.map((_, i) => <span key={i} className={`h-1.5 w-1.5 rounded-full ${i === idx ? 'bg-rose-400' : i < idx ? 'bg-rose-400/40' : 'bg-white/15'}`} />)}</div>
+          <div className="flex gap-2">
+            {running ? <button onClick={() => setRunning(false)} className="px-4 py-1.5 rounded-lg bg-white/10 border border-white/20 text-white text-sm">Pause</button>
+              : <button onClick={() => setRunning(true)} className="px-4 py-1.5 rounded-lg bg-rose-500/20 border border-rose-500/40 text-rose-200 text-sm">Resume</button>}
+            <button onClick={onExit} className="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-400 text-sm">Stop</button>
+          </div>
+        </>
+      ) : (
+        <div className="text-center space-y-2">
+          <p className="text-white text-sm">That’s the routine. The more you run it, the faster it fires in the game.</p>
+          <div className="flex gap-2 justify-center">
+            <button onClick={() => { setIdx(0); setDone(false); setRunning(true); }} className="px-4 py-1.5 rounded-lg bg-rose-500/20 text-rose-200 text-sm border border-rose-500/40">Again</button>
+            <button onClick={onExit} className="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-300 text-sm">Done</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MindsetTrainer({ email }: { email: string | null }) {
+  const [mode, setMode] = useState<'principles' | 'routine' | 'reset'>('principles');
+  const storeKey = `c3h:nv:mindset:${email ?? 'anon'}`;
+
+  // Personal cue word + breath pattern, persisted locally.
+  const [cue, setCue] = useState('');
+  const [patternId, setPatternId] = useState(BREATH_PATTERNS[0].id);
+  const [playing, setPlaying] = useState<null | 'centering' | 'reset'>(null);
+  const [arousal, setArousal] = useState<ArousalLevel | null>(null);
+
+  useEffect(() => {
+    try {
+      const raw = typeof window !== 'undefined' ? localStorage.getItem(storeKey) : null;
+      if (raw) { const j = JSON.parse(raw); setCue(j.cue ?? ''); setPatternId(j.patternId ?? BREATH_PATTERNS[0].id); }
+    } catch { /* ignore */ }
+  }, [storeKey]);
+
+  const persist = (nextCue: string, nextPattern: string) => {
+    setCue(nextCue); setPatternId(nextPattern);
+    try { localStorage.setItem(storeKey, JSON.stringify({ cue: nextCue, patternId: nextPattern })); } catch { /* ignore */ }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl p-5 border-2 border-rose-500/40 bg-gradient-to-br from-rose-500/10 to-transparent">
+        <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2"><span className="text-2xl">🧭</span> Mindset</h3>
+        <p className="text-sm text-gray-300">Skill isn’t enough if you can’t reach your best state under pressure. This is how you switch it <strong className="text-rose-300">on, on demand</strong> — a pre-ball trigger, a fast reset, and the sport-psych principles behind them.</p>
+      </div>
+
+      <div className="flex gap-2 flex-wrap">
+        {([['principles', 'Principles'], ['routine', 'Pre-ball routine'], ['reset', 'Reset & regulate']] as const).map(([k, label]) => (
+          <button key={k} onClick={() => { setMode(k); setPlaying(null); }} className={`px-3 py-1.5 rounded-lg text-sm border ${mode === k ? 'bg-rose-500/20 text-rose-200 border-rose-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{label}</button>
+        ))}
+      </div>
+
+      {mode === 'principles' && (
+        <div className="grid sm:grid-cols-2 gap-3">
+          {PRINCIPLES.map((p) => (
+            <div key={p.title} className="rounded-xl p-4 border border-white/10 bg-white/3">
+              <p className="text-white font-semibold text-sm flex items-start gap-2"><span className="text-lg leading-none">{p.icon}</span> {p.title}</p>
+              <p className="text-gray-300 text-xs mt-2 leading-relaxed">{p.body}</p>
+              <p className="text-rose-300 text-xs mt-2 italic">↳ {p.cue}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {mode === 'routine' && (
+        <div className="space-y-4">
+          {playing === 'centering' ? (
+            <RoutinePlayer steps={buildCenteringRoutine(cue, patternId)} emoji="🏏" onExit={() => setPlaying(null)} />
+          ) : (
+            <>
+              <p className="text-sm text-gray-300">Build your personal trigger. Same ritual before every ball = your best state, repeatable. Set it once, then rehearse it until it’s automatic.</p>
+              <label className="block">
+                <span className="text-xs text-gray-400">Your cue word / phrase (short — what refocuses you)</span>
+                <input value={cue} onChange={(e) => persist(e.target.value, patternId)} placeholder="e.g. watch the ball · still head · breathe" maxLength={40}
+                  className="mt-1 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20" />
+              </label>
+              <label className="block">
+                <span className="text-xs text-gray-400">Breath</span>
+                <select value={patternId} onChange={(e) => persist(cue, e.target.value)} className="mt-1 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-gray-200">
+                  {BREATH_PATTERNS.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
+                </select>
+              </label>
+              <button onClick={() => setPlaying('centering')} className="px-5 py-2 rounded-lg bg-gradient-to-r from-rose-600 to-pink-500 text-white text-sm font-medium">Rehearse my routine</button>
+              <p className="text-[11px] text-gray-500 italic">Do this a few times a day off the field. On match day, run it before every ball — step away, breathe, cue word, commit.</p>
+            </>
+          )}
+        </div>
+      )}
+
+      {mode === 'reset' && (
+        <div className="space-y-5">
+          {playing === 'reset' ? (
+            <RoutinePlayer steps={RESET_ROUTINE} emoji="🚿" onExit={() => setPlaying(null)} />
+          ) : (
+            <div className="space-y-2">
+              <p className="text-white font-semibold text-sm">The reset (after a mistake)</p>
+              <p className="text-sm text-gray-300">Play-and-miss, dropped catch, loose ball — it’s done. The same flush every time so it fires automatically. Rehearse it now.</p>
+              <button onClick={() => setPlaying('reset')} className="px-5 py-2 rounded-lg bg-gradient-to-r from-rose-600 to-pink-500 text-white text-sm font-medium">Practice the reset</button>
+            </div>
+          )}
+
+          <div className="rounded-xl p-4 border border-white/10 bg-white/3 space-y-3">
+            <p className="text-white font-semibold text-sm">Arousal check — where are you right now?</p>
+            <div className="flex gap-2 flex-wrap">
+              {([['flat', 'Too flat / slow'], ['dialled', 'Dialled in'], ['amped', 'Too amped / tight']] as const).map(([k, label]) => (
+                <button key={k} onClick={() => setArousal(k)} className={`px-3 py-1.5 rounded-md text-sm border ${arousal === k ? 'bg-rose-500/20 text-rose-200 border-rose-500/50' : 'bg-white/5 text-gray-300 border-white/10'}`}>{label}</button>
+              ))}
+            </div>
+            {arousal && (() => { const t = regulateFor(arousal); return (
+              <div className="rounded-md bg-rose-500/10 border-l-2 border-rose-500/60 px-3 py-2">
+                <p className="text-rose-200 text-sm font-medium">{t.title}</p>
+                <p className="text-gray-300 text-xs mt-1">{t.body}</p>
+              </div>
+            ); })()}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════════════
 //  PAGE
 // ════════════════════════════════════════════════════════════════════════
 
-type LabTab = 'ball' | 'field' | 'perceptual' | 'visualize' | 'mot' | 'juggle' | 'breathing' | 'progress';
+type LabTab = 'ball' | 'field' | 'perceptual' | 'visualize' | 'mot' | 'juggle' | 'mindset' | 'breathing' | 'progress';
 
 export default function NeuroVisionPage() {
   const { data: session, status } = useSession();
@@ -1909,6 +2082,7 @@ export default function NeuroVisionPage() {
     { key: 'visualize', label: 'Visualization', emoji: '🎬' },
     { key: 'mot', label: 'Tracking', emoji: '👁️‍🗨️' },
     { key: 'juggle', label: 'Juggling', emoji: '🤹' },
+    { key: 'mindset', label: 'Mindset', emoji: '🧭' },
     { key: 'breathing', label: 'Breathing', emoji: '🫁' },
     { key: 'progress', label: 'Progress', emoji: '📈' },
   ];
@@ -1950,6 +2124,7 @@ export default function NeuroVisionPage() {
           {tab === 'visualize' && <VisualizationTrainer onLog={logEntry} />}
           {tab === 'mot' && <MotTrainer onLog={logEntry} />}
           {tab === 'juggle' && <JugglingTracker clearedLevel={jugglingLevel} onClearLevel={clearJugglingLevel} onLog={logEntry} />}
+          {tab === 'mindset' && <MindsetTrainer email={email} />}
           {tab === 'breathing' && <BreathingPacer onLog={logEntry} />}
           {tab === 'progress' && <ProgressPanel entries={entries} />}
         </div>
