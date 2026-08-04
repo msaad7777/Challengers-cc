@@ -86,7 +86,7 @@ import {
   totalReps,
   type PowerProtocol,
 } from '@/app/c3h/lib/powerHitting';
-import { WARMUP_STEPS, WARMUP_SAFETY, FOUNDATIONAL_DRILLS, FOUNDATION_NOTE } from '@/app/c3h/lib/warmup';
+import { WARMUP_STEPS, WARMUP_SAFETY, NEUROVISION_WEEKS, PROGRAM_NOTE } from '@/app/c3h/lib/warmup';
 
 // ── Progress entries (Firestore) ─────────────────────────────────────────
 type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast' | 'read' | 'mot' | 'vividness' | 'control' | 'juggle' | 'power';
@@ -2006,7 +2006,9 @@ function MindsetTrainer({ email }: { email: string | null }) {
 function WarmUp() {
   const [running, setRunning] = useState(false);
   const [showFoundation, setShowFoundation] = useState(false);
+  const [weekIdx, setWeekIdx] = useState(0);
   const totalSec = WARMUP_STEPS.reduce((a, s) => a + s.seconds, 0);
+  const week = NEUROVISION_WEEKS[weekIdx];
   return (
     <div className="space-y-4">
       <div className="rounded-2xl p-5 border-2 border-lime-500/40 bg-gradient-to-br from-lime-500/10 to-transparent">
@@ -2031,13 +2033,19 @@ function WarmUp() {
       {!running && (
         <div className="rounded-2xl border border-white/10 bg-white/3">
           <button onClick={() => setShowFoundation((s) => !s)} className="w-full flex items-center justify-between px-4 py-3 text-left">
-            <span className="text-sm font-semibold text-white">📋 This week&apos;s foundation drills (off-field)</span>
+            <span className="text-sm font-semibold text-white">📋 Weekly program drills (off-field)</span>
             <span className="text-gray-500 text-xs">{showFoundation ? 'hide' : 'show'}</span>
           </button>
           {showFoundation && (
-            <div className="px-4 pb-4 space-y-2">
-              <p className="text-[11px] text-gray-400">Binocular vision, depth perception, hand-eye &amp; dual-task — done with your kit (pencil, boba straw, eye patch, Brock string, Hart chart, jump rope). Drill 1 is your warm-up above.</p>
-              {FOUNDATIONAL_DRILLS.map((d) => (
+            <div className="px-4 pb-4 space-y-3">
+              <div className="flex gap-2">
+                {NEUROVISION_WEEKS.map((w, i) => (
+                  <button key={w.week} onClick={() => setWeekIdx(i)} className={`px-3 py-1 rounded-md text-sm border ${weekIdx === i ? 'bg-lime-500/20 text-lime-200 border-lime-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>Week {w.week}</button>
+                ))}
+              </div>
+              <p className="text-xs text-lime-300/90 font-medium">{week.theme}</p>
+              <p className="text-[11px] text-gray-400">Done with your kit (eye patch, bullseye, Brock string, Hart chart, pencil + boba straw, balance board, jump rope, ping-pong ball). <strong>Drill 1 every week = your warm-up above.</strong></p>
+              {week.drills.map((d) => (
                 <div key={d.n} className="rounded-lg p-3 border border-white/10 bg-black/20">
                   <p className="text-white font-medium text-sm">{d.n}. {d.name}</p>
                   <p className="text-gray-300 text-xs mt-1">{d.what}</p>
@@ -2045,7 +2053,8 @@ function WarmUp() {
                   <p className="text-gray-400 text-[11px] mt-1 italic">🏏 {d.cricket}</p>
                 </div>
               ))}
-              <p className="text-[11px] text-gray-500 italic">{FOUNDATION_NOTE}</p>
+              <p className="text-[11px] text-gray-400 italic">{week.note}</p>
+              <p className="text-[11px] text-gray-500 italic">{PROGRAM_NOTE}</p>
             </div>
           )}
         </div>

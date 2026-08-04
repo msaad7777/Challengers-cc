@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { WARMUP_STEPS, WARMUP_SAFETY, FOUNDATIONAL_DRILLS } from '@/app/c3h/lib/warmup';
+import { WARMUP_STEPS, WARMUP_SAFETY, NEUROVISION_WEEKS } from '@/app/c3h/lib/warmup';
 
 describe('WARMUP_STEPS', () => {
   it('is a short routine with valid durations', () => {
@@ -24,20 +24,33 @@ describe('WARMUP_STEPS', () => {
   });
 });
 
-describe('FOUNDATIONAL_DRILLS', () => {
-  it('lists the 5 Week-5 drills with what/protocol/cricket detail', () => {
-    expect(FOUNDATIONAL_DRILLS).toHaveLength(5);
-    for (const d of FOUNDATIONAL_DRILLS) {
-      expect(d.what.length).toBeGreaterThan(10);
-      expect(d.protocol.length).toBeGreaterThan(10);
-      expect(d.cricket.length).toBeGreaterThan(10);
+describe('NEUROVISION_WEEKS', () => {
+  it('covers weeks 3, 4 and 5, each with a theme, drills and a note', () => {
+    expect(NEUROVISION_WEEKS.map((w) => w.week)).toEqual([3, 4, 5]);
+    for (const w of NEUROVISION_WEEKS) {
+      expect(w.theme.length).toBeGreaterThan(10);
+      expect(w.note.length).toBeGreaterThan(10);
+      expect(w.drills.length).toBeGreaterThanOrEqual(3);
+      for (const d of w.drills) {
+        expect(d.what.length).toBeGreaterThan(10);
+        expect(d.protocol.length).toBeGreaterThan(10);
+        expect(d.cricket.length).toBeGreaterThan(10);
+      }
     }
   });
 
-  it('captures the pencil-in-straw accuracy-then-speed protocol', () => {
-    const straw = FOUNDATIONAL_DRILLS.find((d) => d.name.toLowerCase().includes('straw'))!;
+  it('captures the Week 5 pencil-in-straw accuracy-then-speed protocol', () => {
+    const wk5 = NEUROVISION_WEEKS.find((w) => w.week === 5)!;
+    const straw = wk5.drills.find((d) => d.name.toLowerCase().includes('straw'))!;
     expect(straw.protocol.toLowerCase()).toContain('accuracy');
     expect(straw.protocol.toLowerCase()).toContain('fast');
     expect(straw.protocol.toLowerCase()).toContain('switch');
+  });
+
+  it('has Week 4 emphasise speed and multi-gaze', () => {
+    const wk4 = NEUROVISION_WEEKS.find((w) => w.week === 4)!;
+    const joined = wk4.drills.map((d) => `${d.name} ${d.protocol}`).join(' ').toLowerCase();
+    expect(joined).toContain('speed');
+    expect(joined).toContain('multi-gaze');
   });
 });
