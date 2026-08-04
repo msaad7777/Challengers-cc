@@ -86,7 +86,7 @@ import {
   totalReps,
   type PowerProtocol,
 } from '@/app/c3h/lib/powerHitting';
-import { WARMUP_STEPS, WARMUP_SAFETY } from '@/app/c3h/lib/warmup';
+import { WARMUP_STEPS, WARMUP_SAFETY, FOUNDATIONAL_DRILLS, FOUNDATION_NOTE } from '@/app/c3h/lib/warmup';
 
 // ── Progress entries (Firestore) ─────────────────────────────────────────
 type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast' | 'read' | 'mot' | 'vividness' | 'control' | 'juggle' | 'power';
@@ -1561,11 +1561,17 @@ function MotTrainer({ onLog }: { onLog: (type: MetricType, value: number) => voi
     ctx.fillStyle = '#facc15';
     ctx.beginPath(); ctx.arc(MOT_SIZE / 2, MOT_SIZE / 2, 4, 0, Math.PI * 2); ctx.fill();
     for (const b of state.current.balls) {
-      // ball (cricket red with a seam)
-      ctx.fillStyle = '#e11d48';
+      // White ODI ball with a green seam (as if watching a real day-night ball).
+      ctx.fillStyle = '#f3f4f6';
       ctx.beginPath(); ctx.arc(b.x, b.y, MOT_R, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(b.x - MOT_R + 3, b.y); ctx.lineTo(b.x + MOT_R - 3, b.y); ctx.stroke();
+      ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = 1; ctx.stroke();
+      // green seam across the ball with little stitch ticks
+      ctx.strokeStyle = '#16a34a'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(b.x - MOT_R + 2, b.y); ctx.lineTo(b.x + MOT_R - 2, b.y); ctx.stroke();
+      ctx.lineWidth = 1;
+      for (let sx = -MOT_R + 5; sx <= MOT_R - 5; sx += 4) {
+        ctx.beginPath(); ctx.moveTo(b.x + sx, b.y - 2.5); ctx.lineTo(b.x + sx, b.y + 2.5); ctx.stroke();
+      }
       // glow the targets during the reveal, or reveal them in results
       if (showTargets && b.target) {
         ctx.strokeStyle = '#facc15'; ctx.lineWidth = 3;
@@ -1999,6 +2005,7 @@ function MindsetTrainer({ email }: { email: string | null }) {
 // RoutinePlayer (function declaration, hoisted).
 function WarmUp() {
   const [running, setRunning] = useState(false);
+  const [showFoundation, setShowFoundation] = useState(false);
   const totalSec = WARMUP_STEPS.reduce((a, s) => a + s.seconds, 0);
   return (
     <div className="space-y-4">
@@ -2017,6 +2024,30 @@ function WarmUp() {
           </ul>
           <button onClick={() => setRunning(true)} className="px-5 py-2 rounded-lg bg-gradient-to-r from-lime-600 to-lime-500 text-black font-medium text-sm">Start warm-up</button>
           <p className="text-[11px] text-gray-500 italic">{WARMUP_SAFETY}</p>
+        </div>
+      )}
+
+      {/* This week's off-screen foundation drill set (Neurovision Edge Week 5) */}
+      {!running && (
+        <div className="rounded-2xl border border-white/10 bg-white/3">
+          <button onClick={() => setShowFoundation((s) => !s)} className="w-full flex items-center justify-between px-4 py-3 text-left">
+            <span className="text-sm font-semibold text-white">📋 This week&apos;s foundation drills (off-field)</span>
+            <span className="text-gray-500 text-xs">{showFoundation ? 'hide' : 'show'}</span>
+          </button>
+          {showFoundation && (
+            <div className="px-4 pb-4 space-y-2">
+              <p className="text-[11px] text-gray-400">Binocular vision, depth perception, hand-eye &amp; dual-task — done with your kit (pencil, boba straw, eye patch, Brock string, Hart chart, jump rope). Drill 1 is your warm-up above.</p>
+              {FOUNDATIONAL_DRILLS.map((d) => (
+                <div key={d.n} className="rounded-lg p-3 border border-white/10 bg-black/20">
+                  <p className="text-white font-medium text-sm">{d.n}. {d.name}</p>
+                  <p className="text-gray-300 text-xs mt-1">{d.what}</p>
+                  <p className="text-lime-300/90 text-xs mt-1"><strong>Do:</strong> {d.protocol}</p>
+                  <p className="text-gray-400 text-[11px] mt-1 italic">🏏 {d.cricket}</p>
+                </div>
+              ))}
+              <p className="text-[11px] text-gray-500 italic">{FOUNDATION_NOTE}</p>
+            </div>
+          )}
         </div>
       )}
     </div>
