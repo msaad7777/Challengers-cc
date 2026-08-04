@@ -79,9 +79,15 @@ import {
   type RoutineStep,
   type ArousalLevel,
 } from '@/app/c3h/lib/mindset';
+import {
+  POWER_PRINCIPLES,
+  POWER_PROTOCOLS,
+  totalReps,
+  type PowerProtocol,
+} from '@/app/c3h/lib/powerHitting';
 
 // ── Progress entries (Firestore) ─────────────────────────────────────────
-type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast' | 'read' | 'mot' | 'vividness' | 'control' | 'juggle';
+type MetricType = 'ball-predict' | 'ball-track' | 'bolt' | 'breath-hold' | 'contrast' | 'read' | 'mot' | 'vividness' | 'control' | 'juggle' | 'power';
 
 interface ProgressEntry {
   type: MetricType;
@@ -101,6 +107,7 @@ const METRIC_META: Record<MetricType, { label: string; unit: string; color: stri
   'vividness': { label: 'Imagery vividness', unit: '/5', color: '#c084fc', higherBetter: true },
   'control': { label: 'Imagery control', unit: '/5', color: '#e879f9', higherBetter: true },
   'juggle': { label: 'Neuro-juggling reps', unit: 'reps', color: '#4ade80', higherBetter: true },
+  'power': { label: 'Power-hitting reps', unit: 'reps', color: '#fb923c', higherBetter: true },
 };
 
 const safeKey = (email: string) => email.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -807,7 +814,7 @@ function Sparkline({ values, color }: { values: number[]; color: string }) {
 
 function ProgressPanel({ entries }: { entries: ProgressEntry[] }) {
   const byType = useMemo(() => {
-    const m: Record<MetricType, ProgressEntry[]> = { 'ball-predict': [], 'ball-track': [], 'bolt': [], 'breath-hold': [], 'contrast': [], 'read': [], 'mot': [], 'vividness': [], 'control': [], 'juggle': [] };
+    const m: Record<MetricType, ProgressEntry[]> = { 'ball-predict': [], 'ball-track': [], 'bolt': [], 'breath-hold': [], 'contrast': [], 'read': [], 'mot': [], 'vividness': [], 'control': [], 'juggle': [], 'power': [] };
     for (const e of entries) m[e.type]?.push(e);
     return m;
   }, [entries]);
@@ -1982,10 +1989,138 @@ function MindsetTrainer({ email }: { email: string | null }) {
 }
 
 // ════════════════════════════════════════════════════════════════════════
+//  MODULE 10 — Power Hitting
+// ════════════════════════════════════════════════════════════════════════
+//
+// Physical off-screen drill. The guided session walks set-by-set with a rest
+// timer so the player does full-intent sets with real rest (quality > grind),
+// then logs total reps. Bat used is a local convenience field.
+
+const POWER_BATS = ['Pro Velocity (training)', 'Match bat', 'Other'];
+
+function PowerHittingTrainer({ onLog }: { onLog: (type: MetricType, value: number) => void }) {
+  const [protocol, setProtocol] = useState<PowerProtocol>(POWER_PROTOCOLS[0]);
+  const [bat, setBat] = useState(POWER_BATS[0]);
+  const [phase, setPhase] = useState<'setup' | 'swing' | 'rest' | 'done'>('setup');
+  const [setNo, setSetNo] = useState(1);
+  const [restLeft, setRestLeft] = useState(0);
+  const [loggedReps, setLoggedReps] = useState(0);
+  const restTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const clearRest = () => { if (restTimer.current) { clearInterval(restTimer.current); restTimer.current = null; } };
+  useEffect(() => () => clearRest(), []);
+
+  const startSession = () => { clearRest(); setSetNo(1); setPhase('swing'); };
+
+  const completeSet = () => {
+    if (setNo >= protocol.sets) {
+      // Finished the last set.
+      setLoggedReps(totalReps(protocol));
+      setPhase('done');
+      return;
+    }
+    // Rest, then advance.
+    setRestLeft(protocol.restSec);
+    setPhase('rest');
+    clearRest();
+    restTimer.current = setInterval(() => {
+      setRestLeft((r) => {
+        if (r <= 1) { clearRest(); setSetNo((n) => n + 1); setPhase('swing'); return 0; }
+        return r - 1;
+      });
+    }, 1000);
+  };
+
+  const skipRest = () => { clearRest(); setSetNo((n) => n + 1); setPhase('swing'); };
+
+  const target = totalReps(protocol);
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl p-5 border-2 border-orange-500/40 bg-gradient-to-br from-orange-500/10 to-transparent">
+        <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2"><span className="text-2xl">💥</span> Power Hitting</h3>
+        <p className="text-sm text-gray-300">Build bat speed the right way — short, <strong className="text-orange-300">full-intent</strong> sets with real rest, off a tee or throwdowns. This is the multiplier once your eyes and timing are dialled in. Load early in the week; taper before you play.</p>
+      </div>
+
+      {phase === 'setup' && (
+        <>
+          <div className="grid sm:grid-cols-2 gap-2 text-sm">
+            <label className="flex flex-col gap-1">
+              <span className="text-xs text-gray-400">Protocol</span>
+              <select value={protocol.id} onChange={(e) => setProtocol(POWER_PROTOCOLS.find((p) => p.id === e.target.value)!)} className="bg-white/5 border border-white/10 rounded-md px-2 py-1.5 text-gray-200">
+                {POWER_PROTOCOLS.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+              </select>
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs text-gray-400">Bat</span>
+              <select value={bat} onChange={(e) => setBat(e.target.value)} className="bg-white/5 border border-white/10 rounded-md px-2 py-1.5 text-gray-200">
+                {POWER_BATS.map((b) => <option key={b} value={b}>{b}</option>)}
+              </select>
+            </label>
+          </div>
+
+          <div className="rounded-xl p-4 border border-orange-500/30 bg-black/30 text-sm">
+            <p className="text-white font-bold">{protocol.name}</p>
+            <p className="text-gray-300 mt-1">{protocol.sets} sets × {protocol.reps} reps · <span className="text-orange-300">{target} quality reps</span> · {protocol.restSec}s rest · {protocol.contact}</p>
+            <p className="text-gray-400 text-xs mt-2 italic">{protocol.cue}</p>
+          </div>
+
+          <button onClick={startSession} className="px-5 py-2 rounded-lg bg-gradient-to-r from-orange-600 to-orange-500 text-white text-sm font-medium">Start guided session</button>
+        </>
+      )}
+
+      {phase === 'swing' && (
+        <div className="rounded-xl p-6 border border-orange-500/30 bg-black/30 text-center space-y-3">
+          <p className="text-xs text-orange-300 uppercase tracking-wider">Set {setNo} of {protocol.sets}</p>
+          <p className="text-4xl font-bold text-white">{protocol.reps} <span className="text-lg text-gray-400 font-normal">reps</span></p>
+          <p className="text-sm text-gray-300">Max intent. Clean strike. Balanced finish. Stop early if the swing slows.</p>
+          <button onClick={completeSet} className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-orange-600 to-orange-500 text-white text-sm font-medium">✓ Set done</button>
+        </div>
+      )}
+
+      {phase === 'rest' && (
+        <div className="rounded-xl p-6 border border-orange-500/30 bg-black/30 text-center space-y-3">
+          <p className="text-xs text-gray-400 uppercase tracking-wider">Rest</p>
+          <p className="text-5xl font-bold text-orange-300 tabular-nums">{restLeft}s</p>
+          <p className="text-sm text-gray-400">Breathe. Next up: set {setNo + 1} of {protocol.sets}.</p>
+          <button onClick={skipRest} className="px-4 py-1.5 rounded-lg bg-white/10 border border-white/20 text-white text-sm">Skip rest →</button>
+        </div>
+      )}
+
+      {phase === 'done' && (
+        <div className="rounded-xl p-6 border border-orange-500/40 bg-black/30 text-center space-y-3">
+          <p className="text-white">Session complete 💪</p>
+          <div className="flex items-center justify-center gap-2 text-sm">
+            <span className="text-gray-400">Reps</span>
+            <input type="number" min={0} max={2000} value={loggedReps} onChange={(e) => setLoggedReps(Math.max(0, parseInt(e.target.value || '0', 10)))} className="w-20 bg-white/5 border border-white/10 rounded-md px-2 py-1 text-white text-center" />
+            <span className="text-gray-500 text-xs">({bat})</span>
+          </div>
+          <p className="text-[11px] text-gray-500">Edit if you cut a set short — log what you actually did.</p>
+          <div className="flex gap-2 justify-center">
+            <button onClick={() => { onLog('power', loggedReps); setPhase('setup'); }} className="px-3 py-1.5 rounded-lg bg-white/10 text-orange-300 text-xs border border-orange-500/40">Log {loggedReps} reps</button>
+            <button onClick={() => setPhase('setup')} className="px-3 py-1.5 rounded-lg bg-orange-500/20 text-orange-200 text-xs border border-orange-500/40">Done</button>
+          </div>
+        </div>
+      )}
+
+      <div className="grid sm:grid-cols-2 gap-3">
+        {POWER_PRINCIPLES.map((p) => (
+          <div key={p.title} className="rounded-lg p-3 border border-white/10 bg-white/3">
+            <p className="text-white font-semibold text-xs flex items-start gap-2"><span className="text-base leading-none">{p.icon}</span> {p.title}</p>
+            <p className="text-gray-400 text-[11px] mt-1.5 leading-relaxed">{p.body}</p>
+          </div>
+        ))}
+      </div>
+      <p className="text-[11px] text-gray-500 text-center italic">This week: load Tue/Wed, light Thu, none Fri, activate only on match day.</p>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════════════
 //  PAGE
 // ════════════════════════════════════════════════════════════════════════
 
-type LabTab = 'ball' | 'field' | 'perceptual' | 'visualize' | 'mot' | 'juggle' | 'mindset' | 'breathing' | 'progress';
+type LabTab = 'ball' | 'field' | 'perceptual' | 'visualize' | 'mot' | 'juggle' | 'power' | 'mindset' | 'breathing' | 'progress';
 
 export default function NeuroVisionPage() {
   const { data: session, status } = useSession();
@@ -2082,6 +2217,7 @@ export default function NeuroVisionPage() {
     { key: 'visualize', label: 'Visualization', emoji: '🎬' },
     { key: 'mot', label: 'Tracking', emoji: '👁️‍🗨️' },
     { key: 'juggle', label: 'Juggling', emoji: '🤹' },
+    { key: 'power', label: 'Power Hitting', emoji: '💥' },
     { key: 'mindset', label: 'Mindset', emoji: '🧭' },
     { key: 'breathing', label: 'Breathing', emoji: '🫁' },
     { key: 'progress', label: 'Progress', emoji: '📈' },
@@ -2124,6 +2260,7 @@ export default function NeuroVisionPage() {
           {tab === 'visualize' && <VisualizationTrainer onLog={logEntry} />}
           {tab === 'mot' && <MotTrainer onLog={logEntry} />}
           {tab === 'juggle' && <JugglingTracker clearedLevel={jugglingLevel} onClearLevel={clearJugglingLevel} onLog={logEntry} />}
+          {tab === 'power' && <PowerHittingTrainer onLog={logEntry} />}
           {tab === 'mindset' && <MindsetTrainer email={email} />}
           {tab === 'breathing' && <BreathingPacer onLog={logEntry} />}
           {tab === 'progress' && <ProgressPanel entries={entries} />}
