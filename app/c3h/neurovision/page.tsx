@@ -405,7 +405,7 @@ function BallPickupTrainer({ onLog }: BallTrainerProps) {
         height={CANVAS_H}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
-        className="w-full max-w-[340px] mx-auto block rounded-xl border border-white/10 touch-none cursor-crosshair"
+        className="w-full max-w-[460px] mx-auto block rounded-xl border border-white/10 touch-none cursor-crosshair"
         style={{ aspectRatio: `${CANVAS_W}/${CANVAS_H}` }}
       />
 
@@ -574,7 +574,7 @@ function FieldScanner() {
         <svg
           ref={svgRef}
           viewBox={`0 0 ${FIELD_SIZE} ${FIELD_SIZE}`}
-          className="w-full max-w-[320px] mx-auto touch-none select-none"
+          className="w-full max-w-[460px] mx-auto touch-none select-none"
           onPointerMove={(e) => { onMove(e); }}
           onPointerUp={onUp}
         >
@@ -869,7 +869,7 @@ function ProgressPanel({ entries }: { entries: ProgressEntry[] }) {
 // orientation judgement ("tilted left or right?") with contrast driven by the
 // adaptive staircase. Lower threshold over weeks = sharper low-contrast vision.
 
-const GABOR_SIZE = 180;
+const GABOR_SIZE = 320; // native render resolution — stays crisp when scaled up
 
 // Render a Gabor patch (sine grating × Gaussian window) into the canvas.
 function drawGabor(ctx: CanvasRenderingContext2D, contrast: number, tiltDeg: number) {
@@ -980,8 +980,8 @@ function PerceptualTrainer({ onLog }: PerceptualProps) {
           ref={canvasRef}
           width={GABOR_SIZE}
           height={GABOR_SIZE}
-          className="rounded-full border border-white/10"
-          style={{ width: GABOR_SIZE, height: GABOR_SIZE, background: 'rgb(128,128,128)' }}
+          className="rounded-full border border-white/10 w-full max-w-[320px] mx-auto"
+          style={{ aspectRatio: '1 / 1', background: 'rgb(128,128,128)' }}
         />
 
         {phase === 'idle' && (
@@ -1489,7 +1489,7 @@ function VisualizationTrainer({ onLog }: { onLog: (type: MetricType, value: numb
             ref={canvasRef}
             width={BR_W}
             height={BR_H}
-            className="rounded-xl border border-white/10 w-full max-w-[320px]"
+            className="rounded-xl border border-white/10 w-full max-w-[440px] mx-auto"
             style={{ aspectRatio: `${BR_W}/${BR_H}` }}
           />
 
@@ -1707,7 +1707,7 @@ function MotTrainer({ onLog }: { onLog: (type: MetricType, value: number) => voi
         width={MOT_SIZE}
         height={MOT_SIZE}
         onPointerDown={onCanvasClick}
-        className="w-full max-w-[340px] mx-auto block rounded-xl border border-white/10 touch-none"
+        className="w-full max-w-[480px] mx-auto block rounded-xl border border-white/10 touch-none"
         style={{ aspectRatio: '1 / 1', cursor: phase === 'select' ? 'pointer' : 'default' }}
       />
 
@@ -2346,7 +2346,7 @@ export default function NeuroVisionPage() {
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
       <Navbar />
       <section className="section-padding pt-32 md:pt-40">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <div className="mb-6">
             <Link href="/c3h/dashboard" className="text-gray-500 text-sm hover:text-primary-400 transition-colors mb-2 inline-block">← Dashboard</Link>
             <h1 className="text-3xl font-bold text-white">NeuroVision <span className="gradient-text">Lab</span></h1>
