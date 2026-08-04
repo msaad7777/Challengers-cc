@@ -64,3 +64,31 @@ export const POWER_PROTOCOLS: PowerProtocol[] = [
 ];
 
 export const totalReps = (p: PowerProtocol): number => p.sets * p.reps;
+
+// ── Drill progression ────────────────────────────────────────────────────
+// The ProVelocity swing progression (their branded drills — follow their own
+// videos for the exact method; the notes here are brief, general hitting cues
+// only) plus an added golf-style "connection" drill Saad asked for.
+
+export interface PowerDrill { n: number; name: string; note: string; source: 'ProVelocity' | 'Added'; }
+
+export const POWER_DRILLS: PowerDrill[] = [
+  { n: 1, name: 'One Click Hand Slot', note: 'Load into a strong, repeatable hitting position — hands “slotted” and ready to fire.', source: 'ProVelocity' },
+  { n: 2, name: 'Separation Drill', note: 'Create separation between the lower half and the hands so the swing uncoils in sequence, not all at once.', source: 'ProVelocity' },
+  { n: 3, name: 'Hand Slot & Separation', note: 'Combine the loaded hand slot with hip–hand separation into one move.', source: 'ProVelocity' },
+  { n: 4, name: 'Stop on Contact', note: 'Swing and freeze at the contact point to check your strike position and bat face.', source: 'ProVelocity' },
+  { n: 5, name: 'Three-Quarter Swing', note: 'Controlled ¾ swing to groove the path before adding full effort.', source: 'ProVelocity' },
+  { n: 6, name: 'Follow Thru', note: 'Full, balanced follow-through — finish under control every time.', source: 'ProVelocity' },
+  { n: 7, name: 'Full Swing', note: 'Complete swing at rhythm with a clean strike.', source: 'ProVelocity' },
+  { n: 8, name: 'Max Out', note: 'Full-intent, maximum bat-speed swings. Quality first — stop if it slows.', source: 'ProVelocity' },
+  { n: 9, name: 'Top Hand Isolation', note: 'Swing with the top hand only to train its control and swing path.', source: 'ProVelocity' },
+  { n: 10, name: 'Bottom Hand Isolation', note: 'Swing with the bottom hand only to train its power and whip.', source: 'ProVelocity' },
+  { n: 11, name: 'Full Toss', note: 'Hit full tosses to groove timing and clean contact.', source: 'ProVelocity' },
+  { n: 12, name: 'Half Volley', note: 'Drive the half-volley length — the classic scoring length.', source: 'ProVelocity' },
+  { n: 13, name: 'Self Feed', note: 'Drop/toss to yourself and hit — a solo rep builder.', source: 'ProVelocity' },
+  { n: 14, name: 'Cut Shot', note: 'Back-foot cut to width — free the arms through point.', source: 'ProVelocity' },
+  {
+    n: 15, name: 'Towel Connection (added)', source: 'Added',
+    note: 'Golf-style connection drill. Tuck a small towel or glove under your top-hand armpit and shadow-swing straight drives, keeping it pinned through contact and the follow-through. If it drops, your arms disconnected from your body. Trains a connected, body-driven swing and a compact arc = better power transfer. Best for straight-bat drives / down-the-ground hitting — not cross-bat pull or cut.',
+  },
+];

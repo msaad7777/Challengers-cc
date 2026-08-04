@@ -82,6 +82,7 @@ import {
 import {
   POWER_PRINCIPLES,
   POWER_PROTOCOLS,
+  POWER_DRILLS,
   totalReps,
   type PowerProtocol,
 } from '@/app/c3h/lib/powerHitting';
@@ -1998,10 +1999,26 @@ function MindsetTrainer({ email }: { email: string | null }) {
 
 const POWER_BATS = ['Pro Velocity (training)', 'Match bat', 'Other'];
 
-function PowerHittingTrainer({ onLog }: { onLog: (type: MetricType, value: number) => void }) {
+function PowerHittingTrainer({ onLog, email }: { onLog: (type: MetricType, value: number) => void; email: string | null }) {
+  const [view, setView] = useState<'session' | 'drills'>('session');
   const [protocol, setProtocol] = useState<PowerProtocol>(POWER_PROTOCOLS[0]);
   const [bat, setBat] = useState(POWER_BATS[0]);
   const [phase, setPhase] = useState<'setup' | 'swing' | 'rest' | 'done'>('setup');
+
+  // Which drills the player has grooved — tracked locally per player.
+  const drillsKey = `c3h:nv:power-drills:${email ?? 'anon'}`;
+  const [doneDrills, setDoneDrills] = useState<number[]>([]);
+  useEffect(() => {
+    try { const raw = typeof window !== 'undefined' ? localStorage.getItem(drillsKey) : null; if (raw) setDoneDrills(JSON.parse(raw)); }
+    catch { /* ignore */ }
+  }, [drillsKey]);
+  const toggleDrill = (n: number) => {
+    setDoneDrills((prev) => {
+      const next = prev.includes(n) ? prev.filter((x) => x !== n) : [...prev, n];
+      try { localStorage.setItem(drillsKey, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+  };
   const [setNo, setSetNo] = useState(1);
   const [restLeft, setRestLeft] = useState(0);
   const [loggedReps, setLoggedReps] = useState(0);
@@ -2042,6 +2059,32 @@ function PowerHittingTrainer({ onLog }: { onLog: (type: MetricType, value: numbe
         <p className="text-sm text-gray-300">Build bat speed the right way — short, <strong className="text-orange-300">full-intent</strong> sets with real rest, off a tee or throwdowns. This is the multiplier once your eyes and timing are dialled in. Load early in the week; taper before you play.</p>
       </div>
 
+      <div className="flex gap-2">
+        {([['session', 'Guided session'], ['drills', `Drills (${doneDrills.length}/${POWER_DRILLS.length})`]] as const).map(([k, label]) => (
+          <button key={k} onClick={() => setView(k)} className={`px-3 py-1.5 rounded-lg text-sm border ${view === k ? 'bg-orange-500/20 text-orange-200 border-orange-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{label}</button>
+        ))}
+      </div>
+
+      {view === 'drills' && (
+        <div className="space-y-2">
+          <p className="text-xs text-gray-400">The ProVelocity swing progression — work top to bottom. Follow the ProVelocity videos for the exact method; tick each as you groove it. The last one is the golf-style connection drill.</p>
+          {POWER_DRILLS.map((d) => {
+            const done = doneDrills.includes(d.n);
+            return (
+              <button key={d.n} onClick={() => toggleDrill(d.n)} className={`w-full text-left px-3 py-2 rounded-lg border flex items-start gap-3 ${done ? 'border-orange-500/40 bg-orange-500/10' : 'border-white/10 bg-white/3'}`}>
+                <span className="text-sm mt-0.5">{done ? '✅' : `${d.n}.`}</span>
+                <span className="flex-1">
+                  <span className="text-sm text-white font-medium">{d.name}{d.source === 'Added' && <span className="ml-2 text-[10px] text-orange-300 uppercase tracking-wider">connection</span>}</span>
+                  <span className="block text-[11px] text-gray-400 mt-0.5 leading-relaxed">{d.note}</span>
+                </span>
+              </button>
+            );
+          })}
+          <p className="text-[11px] text-gray-500 italic">ProVelocity drills are their product — this is a checklist to follow along with, not a substitute for their videos.</p>
+        </div>
+      )}
+
+      {view === 'session' && (<>
       {phase === 'setup' && (
         <>
           <div className="grid sm:grid-cols-2 gap-2 text-sm">
@@ -2112,6 +2155,7 @@ function PowerHittingTrainer({ onLog }: { onLog: (type: MetricType, value: numbe
         ))}
       </div>
       <p className="text-[11px] text-gray-500 text-center italic">This week: load Tue/Wed, light Thu, none Fri, activate only on match day.</p>
+      </>)}
     </div>
   );
 }
@@ -2260,7 +2304,7 @@ export default function NeuroVisionPage() {
           {tab === 'visualize' && <VisualizationTrainer onLog={logEntry} />}
           {tab === 'mot' && <MotTrainer onLog={logEntry} />}
           {tab === 'juggle' && <JugglingTracker clearedLevel={jugglingLevel} onClearLevel={clearJugglingLevel} onLog={logEntry} />}
-          {tab === 'power' && <PowerHittingTrainer onLog={logEntry} />}
+          {tab === 'power' && <PowerHittingTrainer onLog={logEntry} email={email} />}
           {tab === 'mindset' && <MindsetTrainer email={email} />}
           {tab === 'breathing' && <BreathingPacer onLog={logEntry} />}
           {tab === 'progress' && <ProgressPanel entries={entries} />}
