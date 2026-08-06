@@ -42,37 +42,41 @@ interface ScheduledMatch {
   homeAway?: 'home' | 'away';
 }
 
+// `time` on every fixture is the REPORTING time — when players must be at
+// the ground, not first ball. For LCL/LPL T30 that is the league's published
+// start time minus one hour (club rule, 2026-08-06); the LCL T20 times came
+// from the league as reporting times already.
 const ALL_MATCHES: ScheduledMatch[] = [
   // LCL T30
-  { id: 'lcl-1', league: 'LCL T30', date: 'May 10', fullDate: '2026-05-10', opponent: 'London Predators', time: '1:00 PM', venue: 'Northridge', clash: true },
-  { id: 'lcl-2', league: 'LCL T30', date: 'May 18', fullDate: '2026-05-18', opponent: 'Forest City Cricketers', time: '8:00 AM', venue: 'NLAF', clash: false },
-  { id: 'lcl-3', league: 'LCL T30', date: 'Jun 14', fullDate: '2026-06-14', opponent: 'Sarnia Spartans', time: '10:00 AM', venue: 'Sarnia', clash: false },
-  { id: 'lcl-4', league: 'LCL T30', date: 'Jun 27', fullDate: '2026-06-27', opponent: 'Western Cricket Academy B', time: '8:00 AM', venue: 'Silverwoods', clash: false },
-  { id: 'lcl-5', league: 'LCL T30', date: 'Jul 1', fullDate: '2026-07-01', opponent: 'London Rising Stars', time: '8:00 AM', venue: 'NLAF', clash: false },
-  { id: 'lcl-6', league: 'LCL T30', date: 'Jul 11', fullDate: '2026-07-11', opponent: 'LCC Maple Stars', time: '8:00 AM', venue: 'Northridge', clash: false },
-  { id: 'lcl-7', league: 'LCL T30', date: 'Jul 25', fullDate: '2026-07-25', opponent: 'LCC Mavericks', time: '1:00 PM', venue: 'NLAF', clash: true },
-  { id: 'lcl-8', league: 'LCL T30', date: 'Jul 26', fullDate: '2026-07-26', opponent: 'London Rising Stars', time: '1:00 PM', venue: 'NLAF', clash: false },
-  { id: 'lcl-9', league: 'LCL T30', date: 'Aug 2', fullDate: '2026-08-02', opponent: 'Western Cricket Academy B', time: '8:00 AM', venue: 'Northridge', clash: true },
-  { id: 'lcl-10', league: 'LCL T30', date: 'Aug 8', fullDate: '2026-08-08', opponent: 'Forest City Cricketers', time: '1:00 PM', venue: 'NLAF', clash: false },
-  { id: 'lcl-11', league: 'LCL T30', date: 'Aug 23', fullDate: '2026-08-23', opponent: 'Sarnia Spartans', time: '1:00 PM', venue: 'Northridge', clash: false },
-  { id: 'lcl-12', league: 'LCL T30', date: 'Sep 5', fullDate: '2026-09-05', opponent: 'London Eagle Predators', time: '3:00 PM', venue: 'Silverwoods', clash: false },
-  { id: 'lcl-13', league: 'LCL T30', date: 'Sep 12', fullDate: '2026-09-12', opponent: 'Inferno Spartans', time: '1:00 PM', venue: 'NLAF', clash: false },
-  { id: 'lcl-14', league: 'LCL T30', date: 'Sep 13', fullDate: '2026-09-13', opponent: 'Tigers Cricket Club', time: '3:00 PM', venue: 'Northridge', clash: false },
+  { id: 'lcl-1', league: 'LCL T30', date: 'May 10', fullDate: '2026-05-10', opponent: 'London Predators', time: '12:00 PM', venue: 'Northridge', clash: true },
+  { id: 'lcl-2', league: 'LCL T30', date: 'May 18', fullDate: '2026-05-18', opponent: 'Forest City Cricketers', time: '7:00 AM', venue: 'NLAF', clash: false },
+  { id: 'lcl-3', league: 'LCL T30', date: 'Jun 14', fullDate: '2026-06-14', opponent: 'Sarnia Spartans', time: '9:00 AM', venue: 'Sarnia', clash: false },
+  { id: 'lcl-4', league: 'LCL T30', date: 'Jun 27', fullDate: '2026-06-27', opponent: 'Western Cricket Academy B', time: '7:00 AM', venue: 'Silverwoods', clash: false },
+  { id: 'lcl-5', league: 'LCL T30', date: 'Jul 1', fullDate: '2026-07-01', opponent: 'London Rising Stars', time: '7:00 AM', venue: 'NLAF', clash: false },
+  { id: 'lcl-6', league: 'LCL T30', date: 'Jul 11', fullDate: '2026-07-11', opponent: 'LCC Maple Stars', time: '7:00 AM', venue: 'Northridge', clash: false },
+  { id: 'lcl-7', league: 'LCL T30', date: 'Jul 25', fullDate: '2026-07-25', opponent: 'LCC Mavericks', time: '12:00 PM', venue: 'NLAF', clash: true },
+  { id: 'lcl-8', league: 'LCL T30', date: 'Jul 26', fullDate: '2026-07-26', opponent: 'London Rising Stars', time: '12:00 PM', venue: 'NLAF', clash: false },
+  { id: 'lcl-9', league: 'LCL T30', date: 'Aug 2', fullDate: '2026-08-02', opponent: 'Western Cricket Academy B', time: '7:00 AM', venue: 'Northridge', clash: true },
+  { id: 'lcl-10', league: 'LCL T30', date: 'Aug 8', fullDate: '2026-08-08', opponent: 'Forest City Cricketers', time: '12:00 PM', venue: 'NLAF', clash: false },
+  { id: 'lcl-11', league: 'LCL T30', date: 'Aug 23', fullDate: '2026-08-23', opponent: 'Sarnia Spartans', time: '12:00 PM', venue: 'Northridge', clash: false },
+  { id: 'lcl-12', league: 'LCL T30', date: 'Sep 5', fullDate: '2026-09-05', opponent: 'London Eagle Predators', time: '2:00 PM', venue: 'Silverwoods', clash: false },
+  { id: 'lcl-13', league: 'LCL T30', date: 'Sep 12', fullDate: '2026-09-12', opponent: 'Inferno Spartans', time: '12:00 PM', venue: 'NLAF', clash: false },
+  { id: 'lcl-14', league: 'LCL T30', date: 'Sep 13', fullDate: '2026-09-13', opponent: 'Tigers Cricket Club', time: '2:00 PM', venue: 'Northridge', clash: false },
   // LPL T30
-  { id: 'lpl-1', league: 'LPL T30', date: 'May 10', fullDate: '2026-05-10', opponent: 'Maple Tigers', time: '10:00 AM', venue: 'Silverwoods', clash: true },
-  { id: 'lpl-2', league: 'LPL T30', date: 'May 24', fullDate: '2026-05-24', opponent: 'London Rhinos', time: '10:00 AM', venue: 'NLAF', clash: false },
-  { id: 'lpl-3', league: 'LPL T30', date: 'May 31', fullDate: '2026-05-31', opponent: 'NLCC', time: '2:00 PM', venue: 'Thamesville', clash: false },
-  { id: 'lpl-4', league: 'LPL T30', date: 'Jun 7', fullDate: '2026-06-07', opponent: 'Royal Tigers', time: '10:00 AM', venue: 'Silverwoods', clash: false },
-  { id: 'lpl-5', league: 'LPL T30', date: 'Jun 13', fullDate: '2026-06-13', opponent: 'Maple Tigers', time: '8:00 AM', venue: 'Northridge', clash: false },
-  { id: 'lpl-6', league: 'LPL T30', date: 'Jun 28', fullDate: '2026-06-28', opponent: 'Premier XI', time: '2:00 PM', venue: 'Thamesville', clash: false },
-  { id: 'lpl-7', league: 'LPL T30', date: 'Jul 4', fullDate: '2026-07-04', opponent: 'London Stars', time: '10:00 AM', venue: 'Northridge', clash: false },
-  { id: 'lpl-8', league: 'LPL T30', date: 'Jul 18', fullDate: '2026-07-18', opponent: 'Premier XI', time: '10:00 AM', venue: 'Northridge', clash: false },
-  { id: 'lpl-9', league: 'LPL T30', date: 'Jul 25', fullDate: '2026-07-25', opponent: 'London Rhinos', time: '8:00 AM', venue: 'Thamesville', clash: true },
-  { id: 'lpl-10', league: 'LPL T30', date: 'Aug 2', fullDate: '2026-08-02', opponent: 'NLCC', time: '10:00 AM', venue: 'Silverwoods', clash: true },
-  { id: 'lpl-11', league: 'LPL T30', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'Royal Tigers', time: '10:00 AM', venue: 'Silverwoods', clash: true },
-  { id: 'lpl-12', league: 'LPL T30', date: 'Sep 6', fullDate: '2026-09-06', opponent: 'London Stars', time: '1:00 PM', venue: 'NLAF', clash: false },
-  // LCL T20 — 6-game stage added 2026-08-06. Times below are the REPORTING
-  // times the league published (not first-ball), which is what players need.
+  { id: 'lpl-1', league: 'LPL T30', date: 'May 10', fullDate: '2026-05-10', opponent: 'Maple Tigers', time: '9:00 AM', venue: 'Silverwoods', clash: true },
+  { id: 'lpl-2', league: 'LPL T30', date: 'May 24', fullDate: '2026-05-24', opponent: 'London Rhinos', time: '9:00 AM', venue: 'NLAF', clash: false },
+  { id: 'lpl-3', league: 'LPL T30', date: 'May 31', fullDate: '2026-05-31', opponent: 'NLCC', time: '1:00 PM', venue: 'Thamesville', clash: false },
+  { id: 'lpl-4', league: 'LPL T30', date: 'Jun 7', fullDate: '2026-06-07', opponent: 'Royal Tigers', time: '9:00 AM', venue: 'Silverwoods', clash: false },
+  { id: 'lpl-5', league: 'LPL T30', date: 'Jun 13', fullDate: '2026-06-13', opponent: 'Maple Tigers', time: '7:00 AM', venue: 'Northridge', clash: false },
+  { id: 'lpl-6', league: 'LPL T30', date: 'Jun 28', fullDate: '2026-06-28', opponent: 'Premier XI', time: '1:00 PM', venue: 'Thamesville', clash: false },
+  { id: 'lpl-7', league: 'LPL T30', date: 'Jul 4', fullDate: '2026-07-04', opponent: 'London Stars', time: '9:00 AM', venue: 'Northridge', clash: false },
+  { id: 'lpl-8', league: 'LPL T30', date: 'Jul 18', fullDate: '2026-07-18', opponent: 'Premier XI', time: '9:00 AM', venue: 'Northridge', clash: false },
+  { id: 'lpl-9', league: 'LPL T30', date: 'Jul 25', fullDate: '2026-07-25', opponent: 'London Rhinos', time: '7:00 AM', venue: 'Thamesville', clash: true },
+  { id: 'lpl-10', league: 'LPL T30', date: 'Aug 2', fullDate: '2026-08-02', opponent: 'NLCC', time: '9:00 AM', venue: 'Silverwoods', clash: true },
+  { id: 'lpl-11', league: 'LPL T30', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'Royal Tigers', time: '9:00 AM', venue: 'Silverwoods', clash: true },
+  { id: 'lpl-12', league: 'LPL T30', date: 'Sep 6', fullDate: '2026-09-06', opponent: 'London Stars', time: '12:00 PM', venue: 'NLAF', clash: false },
+  // LCL T20 — 6-game stage added 2026-08-06. The league published these as
+  // reporting times already, so they are NOT shifted like the T30 fixtures.
   // Aug 15 is a double-header at the same ground; Aug 30 clashes with LPL M11.
   { id: 'lclt20-1', league: 'LCL T20', date: 'Aug 15', fullDate: '2026-08-15', opponent: 'LCC Titans', time: '8:00 AM', venue: 'Stratford', clash: true, homeAway: 'away' },
   { id: 'lclt20-2', league: 'LCL T20', date: 'Aug 15', fullDate: '2026-08-15', opponent: 'LSC', time: '3:00 PM', venue: 'Stratford', clash: true, homeAway: 'home' },
@@ -258,7 +262,7 @@ function getMatchStart(fullDate: string, time: string): Date {
 // Calendar invites should not fire too early — too many late drop-outs
 // before the match cause invite churn. Captains can review and edit the
 // squad freely; the Finalize & Notify button only unlocks 48 hours
-// before the match starts.
+// before the reporting time.
 const FINALIZE_UNLOCK_HOURS_BEFORE = 48;
 function getFinalizeUnlockTime(fullDate: string, time: string): Date {
   const matchStart = getMatchStart(fullDate, time);
@@ -286,10 +290,11 @@ function buildSquadCalendarLink(args: {
 }): string {
   const { match, squad, roles, emailToPlayer } = args;
 
-  // Match start (local time) — assume 4-hour duration for T30/T20 fixtures
+  // Calendar block runs from the REPORTING time (an hour before first ball
+  // for T30) — 5 hours covers the warm-up plus a full T30 fixture.
   const startStr = `${match.fullDate}T${to24Hour(match.time)}:00`;
   const start = new Date(startStr);
-  const end = new Date(start.getTime() + 4 * 60 * 60 * 1000);
+  const end = new Date(start.getTime() + 5 * 60 * 60 * 1000);
 
   const dates = `${fmtCalDate(start)}/${fmtCalDate(end)}`;
 
@@ -314,7 +319,7 @@ function buildSquadCalendarLink(args: {
   const description = [
     `Match: Challengers CC vs ${match.opponent}`,
     `League: ${match.league}`,
-    `Time: ${match.time}`,
+    `Reporting time: ${match.time}`,
     `Venue: ${match.venue}`,
     '',
     'Playing 12:',
@@ -743,6 +748,7 @@ export default function AvailabilityPage() {
             <Link href="/c3h/dashboard" className="text-gray-500 text-sm hover:text-primary-400 mb-2 inline-block">&larr; Dashboard</Link>
             <h1 className="text-3xl font-bold text-white">The <span className="gradient-text">Dugout</span></h1>
             <p className="text-gray-500 text-sm mt-1">Squad availability and team selection for the 2026 season</p>
+            <p className="text-gray-400 text-xs mt-2">⏰ All times are <span className="text-white font-semibold">reporting times</span> — be at the ground by then, not at first ball.</p>
           </div>
 
           {/* Filters */}
@@ -905,7 +911,7 @@ export default function AvailabilityPage() {
                           {m.clash && <span className="w-2 h-2 rounded-full bg-red-500 inline-block animate-pulse"></span>}
                         </div>
                         <p className="text-white font-bold text-base">vs {m.opponent}</p>
-                        <p className="text-gray-500 text-xs mt-0.5">{m.date} &middot; {m.time} &middot; {m.venue}</p>
+                        <p className="text-gray-500 text-xs mt-0.5">{m.date} &middot; report <span className="text-gray-300 font-semibold">{m.time}</span> &middot; {m.venue}</p>
                       </div>
                       <div className="text-right">
                         <div className="flex gap-3 text-sm font-bold">
@@ -955,7 +961,7 @@ export default function AvailabilityPage() {
                         {m.homeAway && <span className="ml-2 text-[10px] text-gray-500 uppercase tracking-wide">{m.homeAway === 'home' ? '🏠 Home' : '✈️ Away'}</span>}
                         {m.clash && <span className="ml-2 w-2 h-2 rounded-full bg-red-500 inline-block"></span>}
                         <p className="text-white font-bold text-sm">vs {m.opponent}</p>
-                        <p className="text-gray-500 text-xs">{m.date} | {m.time} | {m.venue}</p>
+                        <p className="text-gray-500 text-xs">{m.date} | report {m.time} | {m.venue}</p>
                       </div>
                       <div className="text-right">
                         <span className={`text-lg font-bold ${available.length >= 11 ? 'text-primary-400' : available.length >= 8 ? 'text-accent-400' : 'text-red-400'}`}>{available.length}</span>
