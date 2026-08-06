@@ -214,7 +214,7 @@ export interface PlayerAssignment {
   notes?: string;
 }
 
-export type LeagueKey = 'LPL' | 'LCL' | 'Practice' | 'Other';
+export type LeagueKey = 'LPL' | 'LCL' | 'LCL T20' | 'Practice' | 'Other';
 
 export interface MatchPlan {
   matchId: string;
@@ -287,6 +287,9 @@ export interface MatchPlan {
 export function detectLeagueFromLabel(label: string): LeagueKey {
   const m = (label || '').trim().toLowerCase();
   if (m.startsWith('lpl')) return 'LPL';
+  // Check the T20 prefix before the generic LCL one — they share a prefix
+  // but have different leadership and a different format.
+  if (m.startsWith('lcl t20')) return 'LCL T20';
   if (m.startsWith('lcl')) return 'LCL';
   if (m.includes('practice') || m.includes('nets')) return 'Practice';
   return 'Other';
@@ -314,6 +317,8 @@ export const T30_BATTING_FIRST_TEMPLATE = {
 export const LEAGUE_LEADERSHIP: Record<LeagueKey, { captainName: string; vcName: string }> = {
   LPL: { captainName: 'Tarek Islam', vcName: 'Mohammed Saad' },
   LCL: { captainName: 'Syed Shahriar', vcName: 'Ankush Arora' },
+  // LCL T20 (added 2026-08-06): same captain as LCL T30, different VC.
+  'LCL T20': { captainName: 'Syed Shahriar', vcName: 'Mohammed Saad' },
   Practice: { captainName: '', vcName: '' },
   Other: { captainName: '', vcName: '' },
 };

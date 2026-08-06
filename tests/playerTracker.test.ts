@@ -16,13 +16,16 @@ const MATCHES: TrackerMatch[] = [
   { id: 'lcl-3', league: 'LCL T30', fullDate: '2026-06-14' },
   { id: 'lpl-1', league: 'LPL T30', fullDate: '2026-05-10' },
   { id: 'lpl-2', league: 'LPL T30', fullDate: '2026-05-24' },
+  { id: 'lclt20-1', league: 'LCL T20', fullDate: '2026-08-15' },
+  { id: 'lclt20-2', league: 'LCL T20', fullDate: '2026-08-15' },
 ];
 
 const SQUADS: SquadsMap = {
   'lcl-1': ['Saad', 'Tarek'],
   'lcl-2': ['Saad'],
   'lpl-1': ['Saad', 'Tarek'],
-  // lcl-3 and lpl-2 squads not recorded yet
+  'lclt20-1': ['Saad'],
+  // lcl-3, lpl-2 and lclt20-2 squads not recorded yet
 };
 
 const AVAILABILITY: AvailabilityMap = {
@@ -34,6 +37,8 @@ describe('matchesInLeague', () => {
   it('splits fixtures by league', () => {
     expect(matchesInLeague(MATCHES, 'LCL T30')).toHaveLength(3);
     expect(matchesInLeague(MATCHES, 'LPL T30')).toHaveLength(2);
+    // 'LCL T20' must not fall into the 'LCL T30' bucket
+    expect(matchesInLeague(MATCHES, 'LCL T20')).toHaveLength(2);
   });
 });
 
@@ -79,6 +84,9 @@ describe('requiredForLeague', () => {
     expect(requiredForLeague('LCL T30', 12)).toBe(7); // 6 + 1
     expect(requiredForLeague('LCL T30', 10)).toBe(6); // 5 + 1
   });
+  it('applies the same LCL 50% + 1 rule to the T20 stage', () => {
+    expect(requiredForLeague('LCL T20', 6)).toBe(4); // 3 + 1
+  });
   it('returns 0 for an unconfigured league', () => {
     expect(requiredForLeague('T20 Cup', 10)).toBe(0);
   });
@@ -98,8 +106,18 @@ describe('computePlayerTracker', () => {
   it('aggregates per-league played + available and combined total', () => {
     expect(bySaad.lcl.played).toBe(2);
     expect(bySaad.lpl.played).toBe(1);
-    expect(bySaad.totalPlayed).toBe(3);
+    expect(bySaad.lclT20.played).toBe(1);
+    expect(bySaad.totalPlayed).toBe(4);
     expect(bySaad.lcl.available).toBe(2);
+  });
+
+  it('tracks LCL T20 separately with its own 50% + 1 threshold', () => {
+    expect(bySaad.lclT20.totalMatches).toBe(2);
+    expect(bySaad.lclT20.requiredForPlayoff).toBe(2); // floor(2/2) + 1
+    expect(bySaad.lclT20.remainingNeeded).toBe(1);
+    expect(bySaad.lclT20.eligible).toBe(false);
+    // T20 appearances must not leak into the T30 count
+    expect(bySaad.lcl.totalMatches).toBe(3);
   });
 
   it('computes remaining-needed toward the playoff threshold', () => {

@@ -645,6 +645,13 @@ const MATCHES = [
   { label: 'LPL M10 — vs NLCC (Aug 2)', index: 60, date: '2026-08-02' },
   { label: 'LPL M11 — vs Royal Tigers (Aug 30)', index: 61, date: '2026-08-30' },
   { label: 'LPL M12 — vs London Stars (Sep 6)', index: 62, date: '2026-09-06' },
+  // LCL T20
+  { label: 'LCL T20 M1 — vs LCC Titans (Aug 15)', index: 71, date: '2026-08-15' },
+  { label: 'LCL T20 M2 — vs LSC (Aug 15)', index: 72, date: '2026-08-15' },
+  { label: 'LCL T20 M3 — vs PB 22 Group (Aug 30)', index: 73, date: '2026-08-30' },
+  { label: 'LCL T20 M4 — vs Tigers CC (Sep 19)', index: 74, date: '2026-09-19' },
+  { label: 'LCL T20 M5 — vs London Stars (Sep 20)', index: 75, date: '2026-09-20' },
+  { label: 'LCL T20 M6 — vs Kingstrikers (Sep 26)', index: 76, date: '2026-09-26' },
   // Practice
   { label: 'Practice Match', index: 98, date: 'always' },
   { label: 'Practice Session', index: 99, date: 'always' },
@@ -1815,11 +1822,15 @@ export default function NetsPage() {
                 const leagueMatches = MATCHES.filter((m) => m.index !== 98 && m.index !== 99);
                 const today = new Date().toISOString().slice(0, 10);
                 const reflectionByLabel = new Map(reflections.map((r) => [r.match, r]));
-                const lclMatches = leagueMatches.filter((m) => m.label.startsWith('LCL'));
+                // 'LCL T20 …' also starts with 'LCL', so match the T30 labels
+                // on their narrower 'LCL M' prefix to keep the two apart.
+                const lclMatches = leagueMatches.filter((m) => m.label.startsWith('LCL M'));
                 const lplMatches = leagueMatches.filter((m) => m.label.startsWith('LPL'));
+                const t20Matches = leagueMatches.filter((m) => m.label.startsWith('LCL T20'));
                 const lclReflected = lclMatches.filter((m) => reflectionByLabel.has(m.label)).length;
                 const lplReflected = lplMatches.filter((m) => reflectionByLabel.has(m.label)).length;
-                const totalReflected = lclReflected + lplReflected;
+                const t20Reflected = t20Matches.filter((m) => reflectionByLabel.has(m.label)).length;
+                const totalReflected = lclReflected + lplReflected + t20Reflected;
                 const playedMatches = leagueMatches.filter((m) => m.date <= today);
                 const playedReflected = playedMatches.filter((m) => reflectionByLabel.has(m.label)).length;
                 const playedMissing = playedMatches.length - playedReflected;
@@ -1848,7 +1859,7 @@ export default function NetsPage() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
+                    <div className="grid grid-cols-3 gap-2 mb-3 text-xs">
                       <div className="rounded-lg bg-white/5 border border-white/10 p-2.5 text-center">
                         <p className="text-gray-500 uppercase tracking-wider text-[10px] mb-1">LCL T30</p>
                         <p className="text-white font-bold"><span className="text-emerald-300">{lclReflected}</span> / {lclMatches.length}</p>
@@ -1857,6 +1868,10 @@ export default function NetsPage() {
                         <p className="text-gray-500 uppercase tracking-wider text-[10px] mb-1">LPL T30</p>
                         <p className="text-white font-bold"><span className="text-emerald-300">{lplReflected}</span> / {lplMatches.length}</p>
                       </div>
+                      <div className="rounded-lg bg-white/5 border border-white/10 p-2.5 text-center">
+                        <p className="text-gray-500 uppercase tracking-wider text-[10px] mb-1">LCL T20</p>
+                        <p className="text-white font-bold"><span className="text-emerald-300">{t20Reflected}</span> / {t20Matches.length}</p>
+                      </div>
                     </div>
 
                     <details className="group">
@@ -1864,12 +1879,13 @@ export default function NetsPage() {
                         <svg className="w-3.5 h-3.5 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
-                        Show all 26 matches
+                        Show all {leagueMatches.length} matches
                       </summary>
                       <div className="mt-3 space-y-3">
                         {([
                           { name: 'London Cricket League (LCL T30)', list: lclMatches },
                           { name: 'London Premier League (LPL T30)', list: lplMatches },
+                          { name: 'London Cricket League (LCL T20)', list: t20Matches },
                         ] as const).map((group) => (
                           <div key={group.name}>
                             <p className="text-[10px] uppercase tracking-wider text-emerald-300/70 font-bold mb-1.5">{group.name}</p>

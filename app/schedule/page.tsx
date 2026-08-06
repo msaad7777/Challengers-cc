@@ -7,8 +7,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { matchDetailsToEvent, googleCalendarUrl, generateICS } from '@/app/c3h/events/data';
 
-// Dates where LCL T30 and LPL T30 overlap
-const CLASH_DATES = ['May 10, 2026', 'July 25, 2026', 'August 2, 2026'];
+// Dates carrying more than one Challengers fixture (across all competitions)
+const CLASH_DATES = ['May 10, 2026', 'July 25, 2026', 'August 2, 2026', 'August 15, 2026', 'August 30, 2026'];
 
 interface Match {
   league?: string;
@@ -24,7 +24,7 @@ interface Match {
 const lclT30Matches: Match[] = [
   { match: 1, date: 'May 10, 2026', sortKey: '2026-05-10-1300', day: 'Sunday', time: '1:00 PM', opponent: 'London Predators', venue: 'Northridge Cricket Ground' },
   { match: 2, date: 'May 18, 2026', sortKey: '2026-05-18-0800', day: 'Monday', time: '8:00 AM', opponent: 'Forest City Cricketers', venue: 'North London Athletic Fields' },
-  { match: 3, date: 'June 14, 2026', sortKey: '2026-06-14-1000', day: 'Sunday', time: '10:00 AM', opponent: 'Sarnia Spartans', venue: 'Mike Vier Park, Sarnia' },
+  { match: 3, date: 'June 14, 2026', sortKey: '2026-06-14-1000', day: 'Sunday', time: '10:00 AM', opponent: 'Sarnia Spartans', venue: 'Mike Weir Park, Sarnia' },
   { match: 4, date: 'June 27, 2026', sortKey: '2026-06-27-0800', day: 'Saturday', time: '8:00 AM', opponent: 'Western Cricket Academy B', venue: 'Silverwoods Cricket Ground' },
   { match: 5, date: 'July 1, 2026', sortKey: '2026-07-01-0800', day: 'Wednesday', time: '8:00 AM', opponent: 'London Rising Stars', venue: 'North London Athletic Fields' },
   { match: 6, date: 'July 11, 2026', sortKey: '2026-07-11-0800', day: 'Saturday', time: '8:00 AM', opponent: 'LCC - Maple Stars', venue: 'Northridge Cricket Ground' },
@@ -53,19 +53,41 @@ const lplT30Matches: Match[] = [
   { match: 12, date: 'September 6, 2026', sortKey: '2026-09-06-1300', day: 'Sunday', time: '1:00 PM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
 ];
 
+// LCL T20 — 6-game stage. Times shown are the reporting times the league
+// published. August 15 is a double-header at Stratford.
+const lclT20Matches: Match[] = [
+  { match: 1, date: 'August 15, 2026', sortKey: '2026-08-15-0800', day: 'Saturday', time: '8:00 AM', opponent: 'LCC Titans', venue: 'Stratford Cricket Ground' },
+  { match: 2, date: 'August 15, 2026', sortKey: '2026-08-15-1500', day: 'Saturday', time: '3:00 PM', opponent: 'LSC', venue: 'Stratford Cricket Ground' },
+  { match: 3, date: 'August 30, 2026', sortKey: '2026-08-30-1300', day: 'Sunday', time: '1:00 PM', opponent: 'PB 22 Group', venue: 'Stratford Cricket Ground' },
+  { match: 4, date: 'September 19, 2026', sortKey: '2026-09-19-0700', day: 'Saturday', time: '7:00 AM', opponent: 'Tigers CC', venue: 'North London Athletic Fields' },
+  { match: 5, date: 'September 20, 2026', sortKey: '2026-09-20-0700', day: 'Sunday', time: '7:00 AM', opponent: 'London Stars', venue: 'Venue TBC' },
+  { match: 6, date: 'September 26, 2026', sortKey: '2026-09-26-0900', day: 'Saturday', time: '9:00 AM', opponent: 'Kingstrikers', venue: 'Mike Weir Park, Sarnia' },
+];
+
 // Create separate arrays for each tab — sorted by sortKey (YYYY-MM-DD-HHMM)
 const lclOnly: Match[] = lclT30Matches.map(m => ({ ...m, league: 'LCL' }));
 const lplOnly: Match[] = lplT30Matches.map(m => ({ ...m, league: 'LPL' }));
+const t20Only: Match[] = lclT20Matches.map(m => ({ ...m, league: 'LCL T20' }));
 const allMatches: Match[] = [
-  ...lclT30Matches.map(m => ({ ...m, league: 'LCL' })),
-  ...lplT30Matches.map(m => ({ ...m, league: 'LPL' })),
+  ...lclOnly,
+  ...lplOnly,
+  ...t20Only,
 ].sort((a, b) => a.sortKey.localeCompare(b.sortKey));
 
-const tabs = [
-  { id: 'all', label: 'All Matches', matches: allMatches, status: 'active' as const },
-  { id: 'lcl-t30', label: 'LCL T30', matches: lclOnly, status: 'active' as const },
-  { id: 'lcl-t20', label: 'LCL T20', matches: [] as Match[], status: 'coming-soon' as const },
-  { id: 'lpl-t30', label: 'LPL T30', matches: lplOnly, status: 'active' as const },
+// `status` stays a widened union so the "coming soon" placeholder branch
+// below survives even when every current tab has published fixtures.
+interface ScheduleTab {
+  id: string;
+  label: string;
+  matches: Match[];
+  status: 'active' | 'coming-soon';
+}
+
+const tabs: ScheduleTab[] = [
+  { id: 'all', label: 'All Matches', matches: allMatches, status: 'active' },
+  { id: 'lcl-t30', label: 'LCL T30', matches: lclOnly, status: 'active' },
+  { id: 'lcl-t20', label: 'LCL T20', matches: t20Only, status: 'active' },
+  { id: 'lpl-t30', label: 'LPL T30', matches: lplOnly, status: 'active' },
 ];
 
 function matchToCalEvent(m: Match) {
@@ -288,7 +310,7 @@ function SchedulePageContent() {
             <div className="max-w-3xl mx-auto glass rounded-2xl p-6 mt-8">
               <div className="grid grid-cols-3 gap-6">
                 <div className="text-center">
-                  <div className="text-3xl font-bold gradient-text mb-2">26+</div>
+                  <div className="text-3xl font-bold gradient-text mb-2">{allMatches.length}</div>
                   <div className="text-sm text-gray-400">Matches</div>
                 </div>
                 <div className="text-center">
@@ -388,7 +410,7 @@ function SchedulePageContent() {
               <div className="flex items-start gap-3">
                 <span className="text-primary-400 mt-0.5">&#9679;</span>
                 <div>
-                  <div className="text-white font-medium">Mike Vier Park</div>
+                  <div className="text-white font-medium">Mike Weir Park</div>
                   <div className="text-gray-500">Sarnia, ON</div>
                 </div>
               </div>
@@ -397,6 +419,13 @@ function SchedulePageContent() {
                 <div>
                   <div className="text-white font-medium">Thamesville</div>
                   <div className="text-gray-500">Thamesville, ON (LPL)</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-primary-400 mt-0.5">&#9679;</span>
+                <div>
+                  <div className="text-white font-medium">Stratford Cricket Ground</div>
+                  <div className="text-gray-500">Stratford, ON (LCL T20)</div>
                 </div>
               </div>
             </div>

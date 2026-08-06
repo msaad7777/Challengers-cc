@@ -19,10 +19,32 @@ const VENUE_FULL_NAME: Record<string, string> = {
   'Northridge':  'Northridge Cricket Ground, London, Ontario',
   'NLAF':        'North London Athletic Fields, London, Ontario',
   'Thamesville': 'Thamesville Cricket Ground, Thamesville, Ontario',
-  'Sarnia':      'Mike Vier Park Cricket Ground, Sarnia, Ontario',
+  'Sarnia':      'Mike Weir Park Cricket Ground, Sarnia, Ontario',
+  'Stratford':   'Stratford Cricket Ground, Stratford, Ontario',
+  // LCL T20 M5 (Sep 20 vs London Stars) — ground not published yet.
+  'TBD':         'Venue to be confirmed',
 };
 
-const ALL_MATCHES = [
+interface ScheduledMatch {
+  id: string;
+  league: string;
+  date: string;
+  /** YYYY-MM-DD — the sortable/date-gating form. */
+  fullDate: string;
+  opponent: string;
+  time: string;
+  /** Key into VENUE_FULL_NAME. */
+  venue: string;
+  /** Another fixture the same day (either league) — shown as a red dot. */
+  clash: boolean;
+  /**
+   * Designated home/away side. Only published for LCL T20 so far; the
+   * T30 fixtures predate the league listing it, hence optional.
+   */
+  homeAway?: 'home' | 'away';
+}
+
+const ALL_MATCHES: ScheduledMatch[] = [
   // LCL T30
   { id: 'lcl-1', league: 'LCL T30', date: 'May 10', fullDate: '2026-05-10', opponent: 'London Predators', time: '1:00 PM', venue: 'Northridge', clash: true },
   { id: 'lcl-2', league: 'LCL T30', date: 'May 18', fullDate: '2026-05-18', opponent: 'Forest City Cricketers', time: '8:00 AM', venue: 'NLAF', clash: false },
@@ -49,8 +71,17 @@ const ALL_MATCHES = [
   { id: 'lpl-8', league: 'LPL T30', date: 'Jul 18', fullDate: '2026-07-18', opponent: 'Premier XI', time: '10:00 AM', venue: 'Northridge', clash: false },
   { id: 'lpl-9', league: 'LPL T30', date: 'Jul 25', fullDate: '2026-07-25', opponent: 'London Rhinos', time: '8:00 AM', venue: 'Thamesville', clash: true },
   { id: 'lpl-10', league: 'LPL T30', date: 'Aug 2', fullDate: '2026-08-02', opponent: 'NLCC', time: '10:00 AM', venue: 'Silverwoods', clash: true },
-  { id: 'lpl-11', league: 'LPL T30', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'Royal Tigers', time: '10:00 AM', venue: 'Silverwoods', clash: false },
+  { id: 'lpl-11', league: 'LPL T30', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'Royal Tigers', time: '10:00 AM', venue: 'Silverwoods', clash: true },
   { id: 'lpl-12', league: 'LPL T30', date: 'Sep 6', fullDate: '2026-09-06', opponent: 'London Stars', time: '1:00 PM', venue: 'NLAF', clash: false },
+  // LCL T20 — 6-game stage added 2026-08-06. Times below are the REPORTING
+  // times the league published (not first-ball), which is what players need.
+  // Aug 15 is a double-header at the same ground; Aug 30 clashes with LPL M11.
+  { id: 'lclt20-1', league: 'LCL T20', date: 'Aug 15', fullDate: '2026-08-15', opponent: 'LCC Titans', time: '8:00 AM', venue: 'Stratford', clash: true, homeAway: 'away' },
+  { id: 'lclt20-2', league: 'LCL T20', date: 'Aug 15', fullDate: '2026-08-15', opponent: 'LSC', time: '3:00 PM', venue: 'Stratford', clash: true, homeAway: 'home' },
+  { id: 'lclt20-3', league: 'LCL T20', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'PB 22 Group', time: '1:00 PM', venue: 'Stratford', clash: true, homeAway: 'home' },
+  { id: 'lclt20-4', league: 'LCL T20', date: 'Sep 19', fullDate: '2026-09-19', opponent: 'Tigers CC', time: '7:00 AM', venue: 'NLAF', clash: false, homeAway: 'home' },
+  { id: 'lclt20-5', league: 'LCL T20', date: 'Sep 20', fullDate: '2026-09-20', opponent: 'London Stars', time: '7:00 AM', venue: 'TBD', clash: false, homeAway: 'away' },
+  { id: 'lclt20-6', league: 'LCL T20', date: 'Sep 26', fullDate: '2026-09-26', opponent: 'Kingstrikers', time: '9:00 AM', venue: 'Sarnia', clash: false, homeAway: 'away' },
 ];
 
 const ALL_PLAYERS = [
@@ -83,8 +114,9 @@ const FORMER_PLAYERS = ['Qaiser Mahmood', 'Madhu Reddy', 'Shoeb Ahmad'];
 // Get players for a specific match based on league
 const getPlayersForMatch = (league: string) => {
   return ALL_PLAYERS.filter(p => {
-    if (LPL_ONLY.includes(p) && league !== 'LPL T30') return false;
-    if (LCL_ONLY.includes(p) && league !== 'LCL T30') return false;
+    // Prefix match so LCL-only players cover both LCL T30 and LCL T20.
+    if (LPL_ONLY.includes(p) && !league.startsWith('LPL')) return false;
+    if (LCL_ONLY.includes(p) && !league.startsWith('LCL')) return false;
     return true;
   });
 };
@@ -102,6 +134,15 @@ const SHORT_NAMES: Record<string, string> = {
   'Fahad Ahmad': 'Fahad Ahmad',
 };
 const shortName = (fullName: string) => SHORT_NAMES[fullName] || fullName.split(' ')[0];
+
+// One colour per competition so the three schedules stay distinguishable
+// at a glance: LCL T30 green, LPL T30 gold, LCL T20 blue.
+const LEAGUE_BADGE: Record<string, string> = {
+  'LCL T30': 'bg-primary-500/20 text-primary-400',
+  'LPL T30': 'bg-accent-500/20 text-accent-400',
+  'LCL T20': 'bg-sky-500/20 text-sky-400',
+};
+const leagueBadge = (league: string) => LEAGUE_BADGE[league] || 'bg-white/10 text-gray-300';
 
 // Map all emails (board + personal) to a single player name
 // EMAIL_TO_PLAYER lives in lib/c3h-roster.ts so the Field Editor can share it
@@ -312,7 +353,7 @@ interface AllAvailability {
 // opened in a new window that auto-triggers the print dialog.
 function buildTrackerPrintHtml(
   rows: PlayerTrackerRow[],
-  opts: { recorded: number; total: number; finalized: number; lclTotal: number; lplTotal: number; lclRequired: number; generatedAt: string; former: string[] },
+  opts: { recorded: number; total: number; finalized: number; lclTotal: number; lplTotal: number; t20Total: number; lclRequired: number; t20Required: number; generatedAt: string; former: string[] },
 ): string {
   const esc = (s: string) =>
     s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -325,10 +366,11 @@ function buildTrackerPrintHtml(
     return `<td class="num">${s.played}<span class="den">/${s.totalMatches}</span></td><td class="status">${status}</td><td class="avail">${s.available}</td>`;
   };
   const body = rows.map((r, i) => `
-    <tr class="${i % 2 ? 'alt' : ''}${r.lcl.eligible || r.lpl.eligible ? ' hot' : ''}">
+    <tr class="${i % 2 ? 'alt' : ''}${r.lcl.eligible || r.lpl.eligible || r.lclT20.eligible ? ' hot' : ''}">
       <td class="player">${esc(r.player)}${opts.former.includes(r.player) ? ' <span class="former">(former)</span>' : ''}</td>
       ${cell(r.lcl)}
       ${cell(r.lpl)}
+      ${cell(r.lclT20)}
       <td class="total">${r.totalPlayed}</td>
     </tr>`).join('');
   return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
@@ -344,7 +386,7 @@ function buildTrackerPrintHtml(
     caption{caption-side:top;text-align:left}
     th,td{border:1px solid #d4d4d8;padding:5px 8px;text-align:center}
     thead th{background:#f1f5f9;font-weight:700;font-size:11px}
-    th.lcl{background:#d1fae5}th.lpl{background:#fef3c7}
+    th.lcl{background:#d1fae5}th.lpl{background:#fef3c7}th.t20{background:#dbeafe}
     td.player{text-align:left;font-weight:600;white-space:nowrap}
     td.num{font-weight:700;font-size:13px}
     .den{color:#999;font-weight:400;font-size:10px}
@@ -363,25 +405,27 @@ function buildTrackerPrintHtml(
   <body>
     <h1>Challengers Cricket Club</h1>
     <h2>Player Games Tracker — 2026 Season</h2>
-    <p class="meta">${opts.recorded} of ${opts.total} squads recorded · ${opts.finalized} finalized · Playoff eligibility: LPL 5/${opts.lplTotal} (Div 2), LCL ${opts.lclRequired}/${opts.lclTotal} (50% + 1)</p>
+    <p class="meta">${opts.recorded} of ${opts.total} squads recorded · ${opts.finalized} finalized · Playoff eligibility: LPL 5/${opts.lplTotal} (Div 2), LCL T30 ${opts.lclRequired}/${opts.lclTotal} (50% + 1), LCL T20 ${opts.t20Required}/${opts.t20Total} (50% + 1)</p>
     <table>
       <thead>
         <tr>
           <th rowspan="2">Player</th>
           <th class="lcl" colspan="3">LCL T30</th>
           <th class="lpl" colspan="3">LPL T30</th>
+          <th class="t20" colspan="3">LCL T20</th>
           <th rowspan="2">Total</th>
         </tr>
         <tr>
           <th class="lcl">Games</th><th class="lcl">Playoff</th><th class="lcl">Avail</th>
           <th class="lpl">Games</th><th class="lpl">Playoff</th><th class="lpl">Avail</th>
+          <th class="t20">Games</th><th class="t20">Playoff</th><th class="t20">Avail</th>
         </tr>
       </thead>
       <tbody>${body}</tbody>
     </table>
     <p class="foot">
       A game counts once a player is in that match's saved Playing 12. "Avail" = matches the player marked available.<br>
-      Playoff thresholds: LPL Rule 23 (Division 2 = 5 of 12) · LCL 2026 Participation Rule (50% + 1 = ${opts.lclRequired} of ${opts.lclTotal}). Generated ${esc(opts.generatedAt)}.
+      Playoff thresholds: LPL Rule 23 (Division 2 = 5 of 12) · LCL 2026 Participation Rule (50% + 1 — T30: ${opts.lclRequired} of ${opts.lclTotal}, T20: ${opts.t20Required} of ${opts.t20Total}). Generated ${esc(opts.generatedAt)}.
     </p>
     <script>window.onload=function(){setTimeout(function(){window.print()},150)}<\/script>
   </body></html>`;
@@ -408,10 +452,10 @@ export default function AvailabilityPage() {
   const [trackerFinalizeMatchId, setTrackerFinalizeMatchId] = useState<string | null>(null);
 
   // isCaptain moved after isBoard declaration
-  const [leagueFilter, setLeagueFilter] = useState<'all' | 'LCL T30' | 'LPL T30'>('all');
+  const [leagueFilter, setLeagueFilter] = useState<'all' | 'LCL T30' | 'LPL T30' | 'LCL T20'>('all');
   const [viewMode, setViewMode] = useState<'player' | 'captain' | 'tracker'>('player');
   // Player Tracker sort column — LCL/LPL games or total played.
-  const [trackerSort, setTrackerSort] = useState<'total' | 'lcl' | 'lpl'>('total');
+  const [trackerSort, setTrackerSort] = useState<'total' | 'lcl' | 'lpl' | 't20'>('total');
 
   // C3H board-level access (captain view, squad management, last-saved-by)
   // is admin + captains only — see lib/c3h-access.ts for the allowlist.
@@ -706,7 +750,7 @@ export default function AvailabilityPage() {
           {/* Filters */}
           <div className="glass rounded-2xl p-4 mb-6 border border-white/5">
             <div className="flex flex-wrap gap-2 items-center">
-              {(['all', 'LCL T30', 'LPL T30'] as const).map(f => (
+              {(['all', 'LCL T30', 'LPL T30', 'LCL T20'] as const).map(f => (
                 <button key={f} onClick={() => setLeagueFilter(f)} className={`px-4 py-2 rounded-xl text-xs font-semibold border-2 transition-all ${leagueFilter === f ? 'bg-primary-500/20 text-primary-400 border-primary-500/50 shadow-lg shadow-primary-500/10' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'}`}>
                   {f === 'all' ? 'All (' + filteredMatches.length + ')' : f}
                 </button>
@@ -744,10 +788,12 @@ export default function AvailabilityPage() {
               .sort((a, b) => {
                 if (trackerSort === 'lcl') return b.lcl.played - a.lcl.played;
                 if (trackerSort === 'lpl') return b.lpl.played - a.lpl.played;
+                if (trackerSort === 't20') return b.lclT20.played - a.lclT20.played;
                 return b.totalPlayed - a.totalPlayed;
               });
             const lclTotal = ALL_MATCHES.filter(m => m.league === 'LCL T30').length;
             const lplTotal = ALL_MATCHES.filter(m => m.league === 'LPL T30').length;
+            const t20Total = ALL_MATCHES.filter(m => m.league === 'LCL T20').length;
             const recorded = Object.values(squads).filter(s => (s || []).length > 0).length;
             const finalizedCount = Object.values(squadMeta).filter(v => v.finalized).length;
             const StatCell = ({ s }: { s: LeagueStat }) => (
@@ -769,12 +815,12 @@ export default function AvailabilityPage() {
                   <div>
                     <h2 className="text-white font-bold">Player Tracker</h2>
                     <p className="text-gray-500 text-xs mt-0.5">
-                      Games in the playing-12 · {recorded} of {ALL_MATCHES.length} squads recorded · {finalizedCount} ✅ finalized · playoff needs: LPL 5/{lplTotal}, LCL {rows[0]?.lcl.requiredForPlayoff || '—'}/{lclTotal}
+                      Games in the playing-12 · {recorded} of {ALL_MATCHES.length} squads recorded · {finalizedCount} ✅ finalized · playoff needs: LPL 5/{lplTotal}, LCL {rows[0]?.lcl.requiredForPlayoff || '—'}/{lclTotal}, T20 {rows[0]?.lclT20.requiredForPlayoff || '—'}/{t20Total}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-1.5 ml-auto text-[11px] items-center">
                     <span className="text-gray-500">Sort:</span>
-                    {(['total', 'lcl', 'lpl'] as const).map(s => (
+                    {(['total', 'lcl', 'lpl', 't20'] as const).map(s => (
                       <button key={s} onClick={() => setTrackerSort(s)} className={`px-2.5 py-1 rounded-lg font-semibold border transition-all ${trackerSort === s ? 'bg-accent-500/20 text-accent-400 border-accent-500/40' : 'bg-white/5 text-gray-400 border-white/10'}`}>
                         {s === 'total' ? 'Total' : s.toUpperCase()}
                       </button>
@@ -783,8 +829,9 @@ export default function AvailabilityPage() {
                       onClick={() => {
                         const html = buildTrackerPrintHtml(rows, {
                           recorded, total: ALL_MATCHES.length, finalized: finalizedCount,
-                          lclTotal, lplTotal, former: FORMER_PLAYERS,
+                          lclTotal, lplTotal, t20Total, former: FORMER_PLAYERS,
                           lclRequired: rows[0]?.lcl.requiredForPlayoff ?? (Math.floor(lclTotal / 2) + 1),
+                          t20Required: rows[0]?.lclT20.requiredForPlayoff ?? (Math.floor(t20Total / 2) + 1),
                           generatedAt: new Date().toLocaleString('en-CA', { dateStyle: 'medium', timeStyle: 'short' }),
                         });
                         const w = window.open('', '_blank');
@@ -803,24 +850,26 @@ export default function AvailabilityPage() {
                 </p>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm border-collapse">
-                    <caption className="sr-only">Games played and playoff eligibility per player by league for the 2026 season. LCL needs 8 of 14 (50% + 1), LPL needs 5 of 12.</caption>
+                    <caption className="sr-only">Games played and playoff eligibility per player by league for the 2026 season. LCL T30 needs 8 of 14 (50% + 1), LPL needs 5 of 12, LCL T20 needs 4 of 6 (50% + 1).</caption>
                     <thead>
                       <tr className="text-gray-400 text-[11px] uppercase tracking-wide border-b border-white/10">
                         <th scope="col" className="text-left font-semibold py-2 pr-3">Player</th>
                         <th scope="col" className="text-center font-semibold py-2 px-3 text-primary-400/90">LCL T30 <span className="text-gray-600 normal-case">(/{lclTotal})</span></th>
                         <th scope="col" className="text-center font-semibold py-2 px-3 text-accent-400/90 border-l border-white/10">LPL T30 <span className="text-gray-600 normal-case">(/{lplTotal})</span></th>
+                        <th scope="col" className="text-center font-semibold py-2 px-3 text-sky-400/90 border-l border-white/10">LCL T20 <span className="text-gray-600 normal-case">(/{t20Total})</span></th>
                         <th scope="col" className="text-center font-semibold py-2 pl-3 border-l border-white/10">Total</th>
                       </tr>
                     </thead>
                     <tbody>
                       {rows.map((r, i) => (
-                        <tr key={r.player} className={`border-b border-white/5 ${(r.lcl.eligible || r.lpl.eligible) ? 'bg-primary-500/[0.05]' : i % 2 ? 'bg-white/[0.02]' : ''}`}>
+                        <tr key={r.player} className={`border-b border-white/5 ${(r.lcl.eligible || r.lpl.eligible || r.lclT20.eligible) ? 'bg-primary-500/[0.05]' : i % 2 ? 'bg-white/[0.02]' : ''}`}>
                           <th scope="row" className="py-2.5 pr-3 text-left text-gray-100 font-semibold whitespace-nowrap">
                             {shortName(r.player)}
                             {FORMER_PLAYERS.includes(r.player) && <span className="text-gray-500 font-normal text-[10px]"> (former)</span>}
                           </th>
                           <td className="py-2.5 px-3 text-center"><StatCell s={r.lcl} /></td>
                           <td className="py-2.5 px-3 text-center border-l border-white/10"><StatCell s={r.lpl} /></td>
+                          <td className="py-2.5 px-3 text-center border-l border-white/10"><StatCell s={r.lclT20} /></td>
                           <td className="py-2.5 pl-3 text-center text-accent-400 font-bold text-base border-l border-white/10">{r.totalPlayed}</td>
                         </tr>
                       ))}
@@ -849,7 +898,12 @@ export default function AvailabilityPage() {
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <div className="flex items-center gap-2 mb-1">
-                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${m.league === 'LCL T30' ? 'bg-primary-500/20 text-primary-400' : 'bg-accent-500/20 text-accent-400'}`}>{m.league}</span>
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${leagueBadge(m.league)}`}>{m.league}</span>
+                          {m.homeAway && (
+                            <span className="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded bg-white/10 text-gray-300">
+                              {m.homeAway === 'home' ? '🏠 Home' : '✈️ Away'}
+                            </span>
+                          )}
                           {m.clash && <span className="w-2 h-2 rounded-full bg-red-500 inline-block animate-pulse"></span>}
                         </div>
                         <p className="text-white font-bold text-base">vs {m.opponent}</p>
@@ -900,6 +954,7 @@ export default function AvailabilityPage() {
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <span className="text-xs text-gray-500">{m.league}</span>
+                        {m.homeAway && <span className="ml-2 text-[10px] text-gray-500 uppercase tracking-wide">{m.homeAway === 'home' ? '🏠 Home' : '✈️ Away'}</span>}
                         {m.clash && <span className="ml-2 w-2 h-2 rounded-full bg-red-500 inline-block"></span>}
                         <p className="text-white font-bold text-sm">vs {m.opponent}</p>
                         <p className="text-gray-500 text-xs">{m.date} | {m.time} | {m.venue}</p>
@@ -1171,10 +1226,12 @@ export default function AvailabilityPage() {
                             // Auto-assign defaults if not set
                             const getDisplayRole = (name: string) => {
                               if (roles[name]) return roles[name];
-                              if (name === 'Syed Shahriar' && m.league === 'LCL T30') return 'captain';
+                              // Shahriar captains both LCL competitions; the VC
+                              // differs — Ankush in T30, Saad in T20.
+                              if (name === 'Syed Shahriar' && m.league.startsWith('LCL')) return 'captain';
                               if (name === 'Tarek Islam' && m.league === 'LPL T30') return 'captain';
                               if (name === 'Ankush Arora' && m.league === 'LCL T30') return 'vc';
-                              if (name === 'Mohammed Saad' && m.league === 'LPL T30') return 'vc';
+                              if (name === 'Mohammed Saad' && (m.league === 'LPL T30' || m.league === 'LCL T20')) return 'vc';
                               if (name === 'Mohammed Saad') return 'wk';
                               return '';
                             };
@@ -1516,7 +1573,7 @@ function SquadCardModal({ match, players, roles, shortName, onClose }: {
           <div className="space-y-1 sm:space-y-1.5">
             {players.map((n, i) => {
               const savedRole = roles[n];
-              const displayRole = savedRole || (n === 'Syed Shahriar' && match.league === 'LCL T30' ? 'captain' : n === 'Tarek Islam' && match.league === 'LPL T30' ? 'captain' : n === 'Ankush Arora' && match.league === 'LCL T30' ? 'vc' : n === 'Mohammed Saad' && match.league === 'LPL T30' ? 'vc' : n === 'Mohammed Saad' ? 'wk' : '');
+              const displayRole = savedRole || (n === 'Syed Shahriar' && match.league.startsWith('LCL') ? 'captain' : n === 'Tarek Islam' && match.league === 'LPL T30' ? 'captain' : n === 'Ankush Arora' && match.league === 'LCL T30' ? 'vc' : n === 'Mohammed Saad' && (match.league === 'LPL T30' || match.league === 'LCL T20') ? 'vc' : n === 'Mohammed Saad' ? 'wk' : '');
               const roleText = displayRole === 'captain' ? '(c)' : displayRole === 'vc' ? '(vc)' : displayRole === 'wk' ? '(wk)' : displayRole === 'bat-sub' ? 'BAT SUB' : displayRole === 'bowl-sub' ? 'BOWL SUB' : '';
               const roleColor = displayRole === 'captain' ? 'text-accent-400' : displayRole === 'vc' ? 'text-purple-400' : displayRole === 'wk' ? 'text-blue-400' : displayRole === 'bat-sub' ? 'text-accent-400' : 'text-blue-400';
               return (

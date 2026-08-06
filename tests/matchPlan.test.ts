@@ -45,6 +45,9 @@ describe('detectLeagueFromLabel', () => {
   it('detects LCL by prefix', () => {
     expect(detectLeagueFromLabel('LCL M2 — vs Forest City Cricketers')).toBe('LCL');
   });
+  it('detects LCL T20 ahead of the generic LCL prefix', () => {
+    expect(detectLeagueFromLabel('LCL T20 M1 — vs LCC Titans (Aug 15)')).toBe('LCL T20');
+  });
   it('detects Practice by "practice" keyword', () => {
     expect(detectLeagueFromLabel('Practice Match')).toBe('Practice');
   });
@@ -313,6 +316,12 @@ describe('getLeadership', () => {
     const l = getLeadership('LCL');
     expect(l.captainName).toBe('Syed Shahriar');
     expect(l.vcName).toBe('Ankush Arora');
+  });
+
+  it('returns Shahriar + Saad for LCL T20 (same captain as T30, different VC)', () => {
+    const l = getLeadership('LCL T20');
+    expect(l.captainName).toBe('Syed Shahriar');
+    expect(l.vcName).toBe('Mohammed Saad');
   });
 
   it('returns empty names for Practice (user fills in manually)', () => {

@@ -13,7 +13,7 @@
 // It also mirrors LPL Rule 23, which counts appearances "in the playing
 // twelve", not runs or wickets.
 
-export type LeagueKey = 'LCL T30' | 'LPL T30';
+export type LeagueKey = 'LCL T30' | 'LPL T30' | 'LCL T20';
 
 /** Minimal shape the tracker needs from a scheduled fixture. */
 export interface TrackerMatch {
@@ -33,15 +33,16 @@ export type AvailabilityMap = Record<string, Record<string, string | undefined>>
 // differently, so this is a function, not a fixed table:
 //
 //   LPL T30 (Challengers = Division 2): a FIXED 5 of 12 — LPL 2026 Rule 23.
-//   LCL T30:                            50% + 1 of the league stage — LCL 2026
+//   LCL T30 / LCL T20:                  50% + 1 of the league stage — LCL 2026
 //     Participation Rule ("played at least 50% plus 1 game in the league
-//     stage"). For the 14-game LCL stage that works out to 8 of 14.
+//     stage"). For the 14-game LCL T30 stage that works out to 8 of 14; the
+//     6-game T20 stage gives 4 of 6.
 //
 // Returns 0 for an unrecognised league ("no threshold configured" — everyone
 // shows eligible).
 export function requiredForLeague(league: string, totalLeagueMatches: number): number {
   if (league === 'LPL T30') return 5;
-  if (league === 'LCL T30') return Math.floor(totalLeagueMatches / 2) + 1;
+  if (league === 'LCL T30' || league === 'LCL T20') return Math.floor(totalLeagueMatches / 2) + 1;
   return 0;
 }
 
@@ -64,7 +65,9 @@ export interface PlayerTrackerRow {
   player: string;
   lcl: LeagueStat;
   lpl: LeagueStat;
-  /** Combined LCL + LPL games in the playing-12. */
+  /** LCL T20 — the 6-game stage added for 2026. */
+  lclT20: LeagueStat;
+  /** Combined LCL T30 + LPL T30 + LCL T20 games in the playing-12. */
   totalPlayed: number;
 }
 
@@ -142,6 +145,7 @@ export function computePlayerTracker(
   return players.map((player) => {
     const lcl = leagueStat(player, 'LCL T30', matches, squads, availability, todayISO);
     const lpl = leagueStat(player, 'LPL T30', matches, squads, availability, todayISO);
-    return { player, lcl, lpl, totalPlayed: lcl.played + lpl.played };
+    const lclT20 = leagueStat(player, 'LCL T20', matches, squads, availability, todayISO);
+    return { player, lcl, lpl, lclT20, totalPlayed: lcl.played + lpl.played + lclT20.played };
   });
 }
