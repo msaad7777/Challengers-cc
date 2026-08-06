@@ -60,7 +60,7 @@ const lclT20Matches: Match[] = [
   { match: 2, date: 'August 15, 2026', sortKey: '2026-08-15-1500', day: 'Saturday', time: '3:00 PM', opponent: 'LSC', venue: 'Stratford Cricket Ground' },
   { match: 3, date: 'August 30, 2026', sortKey: '2026-08-30-1300', day: 'Sunday', time: '1:00 PM', opponent: 'PB 22 Group', venue: 'Stratford Cricket Ground' },
   { match: 4, date: 'September 19, 2026', sortKey: '2026-09-19-0700', day: 'Saturday', time: '7:00 AM', opponent: 'Tigers CC', venue: 'North London Athletic Fields' },
-  { match: 5, date: 'September 20, 2026', sortKey: '2026-09-20-0700', day: 'Sunday', time: '7:00 AM', opponent: 'London Stars', venue: 'Venue TBC' },
+  { match: 5, date: 'September 20, 2026', sortKey: '2026-09-20-0700', day: 'Sunday', time: '7:00 AM', opponent: 'London Stars', venue: 'Northridge Cricket Ground' },
   { match: 6, date: 'September 26, 2026', sortKey: '2026-09-26-0900', day: 'Saturday', time: '9:00 AM', opponent: 'Kingstrikers', venue: 'Mike Weir Park, Sarnia' },
 ];
 

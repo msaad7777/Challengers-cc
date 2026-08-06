@@ -21,8 +21,6 @@ const VENUE_FULL_NAME: Record<string, string> = {
   'Thamesville': 'Thamesville Cricket Ground, Thamesville, Ontario',
   'Sarnia':      'Mike Weir Park Cricket Ground, Sarnia, Ontario',
   'Stratford':   'Stratford Cricket Ground, Stratford, Ontario',
-  // LCL T20 M5 (Sep 20 vs London Stars) — ground not published yet.
-  'TBD':         'Venue to be confirmed',
 };
 
 interface ScheduledMatch {
@@ -80,7 +78,7 @@ const ALL_MATCHES: ScheduledMatch[] = [
   { id: 'lclt20-2', league: 'LCL T20', date: 'Aug 15', fullDate: '2026-08-15', opponent: 'LSC', time: '3:00 PM', venue: 'Stratford', clash: true, homeAway: 'home' },
   { id: 'lclt20-3', league: 'LCL T20', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'PB 22 Group', time: '1:00 PM', venue: 'Stratford', clash: true, homeAway: 'home' },
   { id: 'lclt20-4', league: 'LCL T20', date: 'Sep 19', fullDate: '2026-09-19', opponent: 'Tigers CC', time: '7:00 AM', venue: 'NLAF', clash: false, homeAway: 'home' },
-  { id: 'lclt20-5', league: 'LCL T20', date: 'Sep 20', fullDate: '2026-09-20', opponent: 'London Stars', time: '7:00 AM', venue: 'TBD', clash: false, homeAway: 'away' },
+  { id: 'lclt20-5', league: 'LCL T20', date: 'Sep 20', fullDate: '2026-09-20', opponent: 'London Stars', time: '7:00 AM', venue: 'Northridge', clash: false, homeAway: 'away' },
   { id: 'lclt20-6', league: 'LCL T20', date: 'Sep 26', fullDate: '2026-09-26', opponent: 'Kingstrikers', time: '9:00 AM', venue: 'Sarnia', clash: false, homeAway: 'away' },
 ];
 
