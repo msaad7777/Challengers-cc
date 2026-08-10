@@ -8,7 +8,7 @@ import Footer from '@/components/Footer';
 import { matchDetailsToEvent, googleCalendarUrl, generateICS } from '@/app/c3h/events/data';
 
 // Dates carrying more than one Challengers fixture (across all competitions)
-const CLASH_DATES = ['May 10, 2026', 'July 25, 2026', 'August 2, 2026', 'August 15, 2026', 'August 30, 2026'];
+const CLASH_DATES = ['May 10, 2026', 'July 25, 2026', 'August 2, 2026', 'August 30, 2026'];
 
 interface Match {
   league?: string;
@@ -57,10 +57,12 @@ const lplT30Matches: Match[] = [
   { match: 12, date: 'September 6, 2026', sortKey: '2026-09-06-1200', day: 'Sunday', time: '12:00 PM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
 ];
 
-// LCL T20 — 6-game stage. August 15 is a double-header at Stratford.
+// LCL T20 — 6-game stage, listed chronologically. M1 was rescheduled off the
+// August 15 double-header on 2026-08-10 but keeps its league match number, so
+// the numbering runs out of order here by design.
 const lclT20Matches: Match[] = [
-  { match: 1, date: 'August 15, 2026', sortKey: '2026-08-15-0800', day: 'Saturday', time: '8:00 AM', opponent: 'LCC Titans', venue: 'Stratford Cricket Ground' },
   { match: 2, date: 'August 15, 2026', sortKey: '2026-08-15-1500', day: 'Saturday', time: '3:00 PM', opponent: 'LSC', venue: 'Stratford Cricket Ground' },
+  { match: 1, date: 'August 22, 2026', sortKey: '2026-08-22-0900', day: 'Saturday', time: '9:00 AM', opponent: 'LCC Titans', venue: 'Stratford Cricket Ground' },
   { match: 3, date: 'August 30, 2026', sortKey: '2026-08-30-1300', day: 'Sunday', time: '1:00 PM', opponent: 'PB 22 Group', venue: 'Stratford Cricket Ground' },
   { match: 4, date: 'September 19, 2026', sortKey: '2026-09-19-0700', day: 'Saturday', time: '7:00 AM', opponent: 'Tigers CC', venue: 'North London Athletic Fields' },
   { match: 5, date: 'September 20, 2026', sortKey: '2026-09-20-0700', day: 'Sunday', time: '7:00 AM', opponent: 'London Stars', venue: 'Northridge Cricket Ground' },

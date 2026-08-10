@@ -646,8 +646,8 @@ const MATCHES = [
   { label: 'LPL M11 — vs Royal Tigers (Aug 30)', index: 61, date: '2026-08-30' },
   { label: 'LPL M12 — vs London Stars (Sep 6)', index: 62, date: '2026-09-06' },
   // LCL T20
-  { label: 'LCL T20 M1 — vs LCC Titans (Aug 15)', index: 71, date: '2026-08-15' },
   { label: 'LCL T20 M2 — vs LSC (Aug 15)', index: 72, date: '2026-08-15' },
+  { label: 'LCL T20 M1 — vs LCC Titans (Aug 22)', index: 71, date: '2026-08-22' },
   { label: 'LCL T20 M3 — vs PB 22 Group (Aug 30)', index: 73, date: '2026-08-30' },
   { label: 'LCL T20 M4 — vs Tigers CC (Sep 19)', index: 74, date: '2026-09-19' },
   { label: 'LCL T20 M5 — vs London Stars (Sep 20)', index: 75, date: '2026-09-20' },
