@@ -79,6 +79,13 @@ const allMatches: Match[] = [
   ...t20Only,
 ].sort((a, b) => a.sortKey.localeCompare(b.sortKey));
 
+// Live points tables live on CricClubs, the league's own platform. We link out
+// rather than embed: the pages sit behind Cloudflare bot protection, so both a
+// server-side fetch and an iframe get a challenge page instead of the table.
+// Only the two LCL competitions are on CricClubs — LPL is not, hence optional.
+const CRICCLUBS_POINTS_TABLE = (leagueId: number) =>
+  `https://cricclubs.com/LondonLeague/viewLeaguePointstable.do?league=${leagueId}&clubId=32268`;
+
 // `status` stays a widened union so the "coming soon" placeholder branch
 // below survives even when every current tab has published fixtures.
 interface ScheduleTab {
@@ -86,12 +93,14 @@ interface ScheduleTab {
   label: string;
   matches: Match[];
   status: 'active' | 'coming-soon';
+  /** CricClubs points table, where the league publishes one. */
+  pointsTableUrl?: string;
 }
 
 const tabs: ScheduleTab[] = [
   { id: 'all', label: 'All Matches', matches: allMatches, status: 'active' },
-  { id: 'lcl-t30', label: 'LCL T30', matches: lclOnly, status: 'active' },
-  { id: 'lcl-t20', label: 'LCL T20', matches: t20Only, status: 'active' },
+  { id: 'lcl-t30', label: 'LCL T30', matches: lclOnly, status: 'active', pointsTableUrl: CRICCLUBS_POINTS_TABLE(33) },
+  { id: 'lcl-t20', label: 'LCL T20', matches: t20Only, status: 'active', pointsTableUrl: CRICCLUBS_POINTS_TABLE(35) },
   { id: 'lpl-t30', label: 'LPL T30', matches: lplOnly, status: 'active' },
 ];
 
@@ -362,6 +371,24 @@ function SchedulePageContent() {
               </button>
             ))}
           </div>
+
+          {/* Live points table — external, league-hosted */}
+          {currentTab.pointsTableUrl && (
+            <div className="flex justify-center mb-8">
+              <a
+                href={currentTab.pointsTableUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary-500/50 text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300"
+              >
+                <svg className="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17V7m4 10V11m4 6V9M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                {currentTab.label} Points Table
+                <span className="text-gray-500 text-xs">on CricClubs &#8599;</span>
+              </a>
+            </div>
+          )}
 
           {/* Tab Content */}
           {currentTab.status === 'coming-soon' ? (
