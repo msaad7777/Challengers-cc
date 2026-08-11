@@ -43,9 +43,8 @@ interface ScheduledMatch {
 }
 
 // `time` on every fixture is the REPORTING time — when players must be at
-// the ground, not first ball. For LCL/LPL T30 that is the league's published
-// start time minus one hour (club rule, 2026-08-06); the LCL T20 times came
-// from the league as reporting times already.
+// the ground, not first ball: the league's published start time minus one
+// hour (club rule, 2026-08-06). This holds for all three competitions.
 const ALL_MATCHES: ScheduledMatch[] = [
   // LCL T30
   { id: 'lcl-1', league: 'LCL T30', date: 'May 10', fullDate: '2026-05-10', opponent: 'London Predators', time: '12:00 PM', venue: 'Northridge', clash: true },
@@ -73,22 +72,26 @@ const ALL_MATCHES: ScheduledMatch[] = [
   { id: 'lpl-8', league: 'LPL T30', date: 'Jul 18', fullDate: '2026-07-18', opponent: 'Premier XI', time: '9:00 AM', venue: 'Northridge', clash: false },
   { id: 'lpl-9', league: 'LPL T30', date: 'Jul 25', fullDate: '2026-07-25', opponent: 'London Rhinos', time: '7:00 AM', venue: 'Thamesville', clash: true },
   { id: 'lpl-10', league: 'LPL T30', date: 'Aug 2', fullDate: '2026-08-02', opponent: 'NLCC', time: '9:00 AM', venue: 'Silverwoods', clash: true },
-  { id: 'lpl-11', league: 'LPL T30', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'Royal Tigers', time: '9:00 AM', venue: 'Silverwoods', clash: false },
-  { id: 'lpl-12', league: 'LPL T30', date: 'Sep 6', fullDate: '2026-09-06', opponent: 'London Stars', time: '12:00 PM', venue: 'NLAF', clash: true },
-  // LCL T20 — 6 games, reconciled against the league's official fixture list
-  // on 2026-08-10. The league publishes START times; these are those minus one
-  // hour, same club rule as the T30 fixtures. Home/away is taken from which
-  // side the league lists first. Listed chronologically; the ids are Firestore
-  // keys for squads/availability, so they stay put when a fixture is moved.
-  { id: 'lclt20-2', league: 'LCL T20', date: 'Aug 15', fullDate: '2026-08-15', opponent: 'London Sports Club', time: '2:00 PM', venue: 'Stratford', clash: false, homeAway: 'home' },
-  // Moved off the Aug 15 double-header on 2026-08-10.
-  { id: 'lclt20-1', league: 'LCL T20', date: 'Aug 22', fullDate: '2026-08-22', opponent: 'LCC Titans', time: '8:00 AM', venue: 'Stratford', clash: false, homeAway: 'away' },
-  // Moved from Aug 30 on 2026-08-10 — now clashes with LPL M12 the same day.
-  { id: 'lclt20-3', league: 'LCL T20', date: 'Sep 6', fullDate: '2026-09-06', opponent: 'PB 22 Group', time: '8:00 AM', venue: 'Stratford', clash: true, homeAway: 'home' },
-  { id: 'lclt20-5', league: 'LCL T20', date: 'Sep 20', fullDate: '2026-09-20', opponent: 'London Stars', time: '7:00 AM', venue: 'Northridge', clash: false, homeAway: 'away' },
-  { id: 'lclt20-6', league: 'LCL T20', date: 'Sep 26', fullDate: '2026-09-26', opponent: 'Kingstrikers', time: '9:00 AM', venue: 'Sarnia', clash: false, homeAway: 'away' },
-  // Moved from Sep 19 on 2026-08-10 — pushes the season into October.
-  { id: 'lclt20-4', league: 'LCL T20', date: 'Oct 4', fullDate: '2026-10-04', opponent: 'Tigers CC', time: '11:00 AM', venue: 'NLAF', clash: false, homeAway: 'home' },
+  { id: 'lpl-11', league: 'LPL T30', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'Royal Tigers', time: '9:00 AM', venue: 'Silverwoods', clash: true },
+  { id: 'lpl-12', league: 'LPL T30', date: 'Sep 6', fullDate: '2026-09-06', opponent: 'London Stars', time: '12:00 PM', venue: 'NLAF', clash: false },
+  // LCL T20 — 6 games, re-reconciled against the league's fixture list on
+  // 2026-08-11. The league reshuffled which opponent we meet on each date; the
+  // dates themselves held except PB 22 Group, which came back from Sep 6 to
+  // Aug 30. Times are the league's START times minus one hour, same club rule
+  // as the T30 fixtures. Home/away is taken from which side the league lists
+  // first, so several flipped in this revision.
+  //
+  // Ids are Firestore keys for squads/availability and players have already
+  // responded, so an id stays with its DATE (that is what a response means),
+  // not with the opponent — which is why the numbering runs out of order.
+  { id: 'lclt20-2', league: 'LCL T20', date: 'Aug 15', fullDate: '2026-08-15', opponent: 'Titans', time: '1:30 PM', venue: 'Stratford', clash: false, homeAway: 'home' },
+  // Opponent not yet named by the league.
+  { id: 'lclt20-1', league: 'LCL T20', date: 'Aug 22', fullDate: '2026-08-22', opponent: 'TBD', time: '8:00 AM', venue: 'Stratford', clash: false, homeAway: 'home' },
+  // Moved back from Sep 6 on 2026-08-11 — clashes with LPL M11 again.
+  { id: 'lclt20-3', league: 'LCL T20', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'PB 22 Group', time: '1:00 PM', venue: 'Stratford', clash: true, homeAway: 'home' },
+  { id: 'lclt20-5', league: 'LCL T20', date: 'Sep 20', fullDate: '2026-09-20', opponent: 'Kingstrikers', time: '7:00 AM', venue: 'Northridge', clash: false, homeAway: 'away' },
+  { id: 'lclt20-6', league: 'LCL T20', date: 'Sep 26', fullDate: '2026-09-26', opponent: 'Tigers CC', time: '9:00 AM', venue: 'Sarnia', clash: false, homeAway: 'home' },
+  { id: 'lclt20-4', league: 'LCL T20', date: 'Oct 4', fullDate: '2026-10-04', opponent: 'London Stars', time: '7:30 AM', venue: 'NLAF', clash: false, homeAway: 'away' },
 ];
 
 const ALL_PLAYERS = [

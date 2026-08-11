@@ -8,7 +8,7 @@ import Footer from '@/components/Footer';
 import { matchDetailsToEvent, googleCalendarUrl, generateICS } from '@/app/c3h/events/data';
 
 // Dates carrying more than one Challengers fixture (across all competitions)
-const CLASH_DATES = ['May 10, 2026', 'July 25, 2026', 'August 2, 2026', 'September 6, 2026'];
+const CLASH_DATES = ['May 10, 2026', 'July 25, 2026', 'August 2, 2026', 'August 30, 2026'];
 
 interface Match {
   league?: string;
@@ -22,9 +22,8 @@ interface Match {
 }
 
 // Every `time` below is the REPORTING time — when players must be at the
-// ground, not first ball. LCL/LPL T30 are the league's published start times
-// minus one hour (club rule, 2026-08-06); the LCL T20 times arrived from the
-// league as reporting times already and are NOT shifted.
+// ground, not first ball: the league's published start time minus one hour
+// (club rule, 2026-08-06). This holds for all three competitions.
 const lclT30Matches: Match[] = [
   { match: 1, date: 'May 10, 2026', sortKey: '2026-05-10-1200', day: 'Sunday', time: '12:00 PM', opponent: 'London Predators', venue: 'Northridge Cricket Ground' },
   { match: 2, date: 'May 18, 2026', sortKey: '2026-05-18-0700', day: 'Monday', time: '7:00 AM', opponent: 'Forest City Cricketers', venue: 'North London Athletic Fields' },
@@ -57,16 +56,18 @@ const lplT30Matches: Match[] = [
   { match: 12, date: 'September 6, 2026', sortKey: '2026-09-06-1200', day: 'Sunday', time: '12:00 PM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
 ];
 
-// LCL T20 — 6 games, reconciled against the league's official fixture list on
-// 2026-08-10. Numbered chronologically (the league does not publish match
-// numbers, so these are ours) and renumbered whenever a fixture moves.
+// LCL T20 — 6 games, re-reconciled against the league's fixture list on
+// 2026-08-11: the opponents were reshuffled across the dates and PB 22 Group
+// came back from Sep 6 to Aug 30. Numbered chronologically (the league does
+// not publish match numbers, so these are ours) and renumbered whenever a
+// fixture moves.
 const lclT20Matches: Match[] = [
-  { match: 1, date: 'August 15, 2026', sortKey: '2026-08-15-1400', day: 'Saturday', time: '2:00 PM', opponent: 'London Sports Club', venue: 'Stratford Cricket Ground' },
-  { match: 2, date: 'August 22, 2026', sortKey: '2026-08-22-0800', day: 'Saturday', time: '8:00 AM', opponent: 'LCC Titans', venue: 'Stratford Cricket Ground' },
-  { match: 3, date: 'September 6, 2026', sortKey: '2026-09-06-0800', day: 'Sunday', time: '8:00 AM', opponent: 'PB 22 Group', venue: 'Stratford Cricket Ground' },
-  { match: 4, date: 'September 20, 2026', sortKey: '2026-09-20-0700', day: 'Sunday', time: '7:00 AM', opponent: 'London Stars', venue: 'Northridge Cricket Ground' },
-  { match: 5, date: 'September 26, 2026', sortKey: '2026-09-26-0900', day: 'Saturday', time: '9:00 AM', opponent: 'Kingstrikers', venue: 'Mike Weir Park, Sarnia' },
-  { match: 6, date: 'October 4, 2026', sortKey: '2026-10-04-1100', day: 'Sunday', time: '11:00 AM', opponent: 'Tigers Cricket Club', venue: 'North London Athletic Fields' },
+  { match: 1, date: 'August 15, 2026', sortKey: '2026-08-15-1330', day: 'Saturday', time: '1:30 PM', opponent: 'Titans', venue: 'Stratford Cricket Ground' },
+  { match: 2, date: 'August 22, 2026', sortKey: '2026-08-22-0800', day: 'Saturday', time: '8:00 AM', opponent: 'TBD', venue: 'Stratford Cricket Ground' },
+  { match: 3, date: 'August 30, 2026', sortKey: '2026-08-30-1300', day: 'Sunday', time: '1:00 PM', opponent: 'PB 22 Group', venue: 'Stratford Cricket Ground' },
+  { match: 4, date: 'September 20, 2026', sortKey: '2026-09-20-0700', day: 'Sunday', time: '7:00 AM', opponent: 'Kingstrikers', venue: 'Northridge Cricket Ground' },
+  { match: 5, date: 'September 26, 2026', sortKey: '2026-09-26-0900', day: 'Saturday', time: '9:00 AM', opponent: 'Tigers Cricket Club', venue: 'Mike Weir Park, Sarnia' },
+  { match: 6, date: 'October 4, 2026', sortKey: '2026-10-04-0730', day: 'Sunday', time: '7:30 AM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
 ];
 
 // Create separate arrays for each tab — sorted by sortKey (YYYY-MM-DD-HHMM)
