@@ -645,13 +645,16 @@ const MATCHES = [
   { label: 'LPL M10 — vs NLCC (Aug 2)', index: 60, date: '2026-08-02' },
   { label: 'LPL M11 — vs Royal Tigers (Aug 30)', index: 61, date: '2026-08-30' },
   { label: 'LPL M12 — vs London Stars (Sep 6)', index: 62, date: '2026-09-06' },
-  // LCL T20
-  { label: 'LCL T20 M2 — vs LSC (Aug 15)', index: 72, date: '2026-08-15' },
-  { label: 'LCL T20 M1 — vs LCC Titans (Aug 22)', index: 71, date: '2026-08-22' },
-  { label: 'LCL T20 M3 — vs PB 22 Group (Aug 30)', index: 73, date: '2026-08-30' },
-  { label: 'LCL T20 M4 — vs Tigers CC (Sep 19)', index: 74, date: '2026-09-19' },
-  { label: 'LCL T20 M5 — vs London Stars (Sep 20)', index: 75, date: '2026-09-20' },
-  { label: 'LCL T20 M6 — vs Kingstrikers (Sep 26)', index: 76, date: '2026-09-26' },
+  // LCL T20 — a label is a reflection's Firestore key, so once a match has
+  // been PLAYED its label must never change. These were renumbered on
+  // 2026-08-10 (league reschedule) while the stage was still entirely ahead
+  // of us and no reflections existed.
+  { label: 'LCL T20 M1 — vs London Sports Club (Aug 15)', index: 71, date: '2026-08-15' },
+  { label: 'LCL T20 M2 — vs LCC Titans (Aug 22)', index: 72, date: '2026-08-22' },
+  { label: 'LCL T20 M3 — vs PB 22 Group (Sep 6)', index: 73, date: '2026-09-06' },
+  { label: 'LCL T20 M4 — vs London Stars (Sep 20)', index: 74, date: '2026-09-20' },
+  { label: 'LCL T20 M5 — vs Kingstrikers (Sep 26)', index: 75, date: '2026-09-26' },
+  { label: 'LCL T20 M6 — vs Tigers CC (Oct 4)', index: 76, date: '2026-10-04' },
   // Practice
   { label: 'Practice Match', index: 98, date: 'always' },
   { label: 'Practice Session', index: 99, date: 'always' },

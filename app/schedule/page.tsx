@@ -8,7 +8,7 @@ import Footer from '@/components/Footer';
 import { matchDetailsToEvent, googleCalendarUrl, generateICS } from '@/app/c3h/events/data';
 
 // Dates carrying more than one Challengers fixture (across all competitions)
-const CLASH_DATES = ['May 10, 2026', 'July 25, 2026', 'August 2, 2026', 'August 30, 2026'];
+const CLASH_DATES = ['May 10, 2026', 'July 25, 2026', 'August 2, 2026', 'September 6, 2026'];
 
 interface Match {
   league?: string;
@@ -57,16 +57,16 @@ const lplT30Matches: Match[] = [
   { match: 12, date: 'September 6, 2026', sortKey: '2026-09-06-1200', day: 'Sunday', time: '12:00 PM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
 ];
 
-// LCL T20 — 6-game stage, listed chronologically. M1 was rescheduled off the
-// August 15 double-header on 2026-08-10 but keeps its league match number, so
-// the numbering runs out of order here by design.
+// LCL T20 — 6 games, reconciled against the league's official fixture list on
+// 2026-08-10. Numbered chronologically (the league does not publish match
+// numbers, so these are ours) and renumbered whenever a fixture moves.
 const lclT20Matches: Match[] = [
-  { match: 2, date: 'August 15, 2026', sortKey: '2026-08-15-1500', day: 'Saturday', time: '3:00 PM', opponent: 'LSC', venue: 'Stratford Cricket Ground' },
-  { match: 1, date: 'August 22, 2026', sortKey: '2026-08-22-0900', day: 'Saturday', time: '9:00 AM', opponent: 'LCC Titans', venue: 'Stratford Cricket Ground' },
-  { match: 3, date: 'August 30, 2026', sortKey: '2026-08-30-1300', day: 'Sunday', time: '1:00 PM', opponent: 'PB 22 Group', venue: 'Stratford Cricket Ground' },
-  { match: 4, date: 'September 19, 2026', sortKey: '2026-09-19-0700', day: 'Saturday', time: '7:00 AM', opponent: 'Tigers CC', venue: 'North London Athletic Fields' },
-  { match: 5, date: 'September 20, 2026', sortKey: '2026-09-20-0700', day: 'Sunday', time: '7:00 AM', opponent: 'London Stars', venue: 'Northridge Cricket Ground' },
-  { match: 6, date: 'September 26, 2026', sortKey: '2026-09-26-0900', day: 'Saturday', time: '9:00 AM', opponent: 'Kingstrikers', venue: 'Mike Weir Park, Sarnia' },
+  { match: 1, date: 'August 15, 2026', sortKey: '2026-08-15-1400', day: 'Saturday', time: '2:00 PM', opponent: 'London Sports Club', venue: 'Stratford Cricket Ground' },
+  { match: 2, date: 'August 22, 2026', sortKey: '2026-08-22-0800', day: 'Saturday', time: '8:00 AM', opponent: 'LCC Titans', venue: 'Stratford Cricket Ground' },
+  { match: 3, date: 'September 6, 2026', sortKey: '2026-09-06-0800', day: 'Sunday', time: '8:00 AM', opponent: 'PB 22 Group', venue: 'Stratford Cricket Ground' },
+  { match: 4, date: 'September 20, 2026', sortKey: '2026-09-20-0700', day: 'Sunday', time: '7:00 AM', opponent: 'London Stars', venue: 'Northridge Cricket Ground' },
+  { match: 5, date: 'September 26, 2026', sortKey: '2026-09-26-0900', day: 'Saturday', time: '9:00 AM', opponent: 'Kingstrikers', venue: 'Mike Weir Park, Sarnia' },
+  { match: 6, date: 'October 4, 2026', sortKey: '2026-10-04-1100', day: 'Sunday', time: '11:00 AM', opponent: 'Tigers Cricket Club', venue: 'North London Athletic Fields' },
 ];
 
 // Create separate arrays for each tab — sorted by sortKey (YYYY-MM-DD-HHMM)
@@ -323,7 +323,7 @@ function SchedulePageContent() {
                   <div className="text-sm text-gray-400">Leagues</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold gradient-text mb-2">May - Sep</div>
+                  <div className="text-3xl font-bold gradient-text mb-2">May - Oct</div>
                   <div className="text-sm text-gray-400">Season</div>
                 </div>
               </div>
