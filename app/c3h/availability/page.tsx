@@ -86,7 +86,7 @@ const ALL_MATCHES: ScheduledMatch[] = [
   // not with the opponent — which is why the numbering runs out of order.
   { id: 'lclt20-2', league: 'LCL T20', date: 'Aug 15', fullDate: '2026-08-15', opponent: 'Titans', time: '1:30 PM', venue: 'Stratford', clash: false, homeAway: 'home' },
   // Opponent not yet named by the league.
-  { id: 'lclt20-1', league: 'LCL T20', date: 'Aug 22', fullDate: '2026-08-22', opponent: 'TBD', time: '8:00 AM', venue: 'Stratford', clash: false, homeAway: 'home' },
+  { id: 'lclt20-1', league: 'LCL T20', date: 'Aug 22', fullDate: '2026-08-22', opponent: 'London Royals', time: '8:00 AM', venue: 'Stratford', clash: false, homeAway: 'home' },
   // Moved back from Sep 6 on 2026-08-11 — clashes with LPL M11 again.
   { id: 'lclt20-3', league: 'LCL T20', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'PB 22 Group', time: '1:00 PM', venue: 'Stratford', clash: true, homeAway: 'home' },
   { id: 'lclt20-5', league: 'LCL T20', date: 'Sep 20', fullDate: '2026-09-20', opponent: 'Kingstrikers', time: '7:00 AM', venue: 'Northridge', clash: false, homeAway: 'away' },
@@ -107,6 +107,10 @@ const ALL_PLAYERS = [
   // Joined after Jul 18 (roster-only — no login yet). Tracker only counts the
   // post–Jul-18 matches captains actually select them into.
   'Lovely', 'Sahaj', 'RP',
+  // Added Aug 2026 for the LCL T20 (roster-only — no login yet). Available in
+  // every league by default, same as the rest of the roster; there is no
+  // T20-only bucket. Must be registered in CricClubs by Sep 5 to play a T20.
+  'Shashank', 'Muhib', 'Mustajab',
 ];
 
 // Players restricted to specific leagues
