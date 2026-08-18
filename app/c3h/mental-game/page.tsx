@@ -1,13 +1,34 @@
+"use client";
+
+// Members-only. Public visitors reach this via the /mental-game redirect shim,
+// which pushes them through the C3H login flow. Page metadata lives in
+// app/c3h/layout.tsx (client components can't export `metadata`) and on the
+// public shim, which is what link previews and search engines actually see.
+
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 
-export const metadata = {
-  title: 'The Mental Game — Bounce Back Routine | Challengers Cricket Club',
-  description: 'Pre-match, during-match, and post-match mental drills for cricketers. The Bounce Back Routine — breathe, reflect, reset.',
-};
-
 export default function MentalGamePage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === 'unauthenticated') router.push('/c3h/login');
+  }, [status, router]);
+
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-primary-400 text-xl">Loading...</div>
+      </div>
+    );
+  }
+  if (!session) return null;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
       <Navbar />

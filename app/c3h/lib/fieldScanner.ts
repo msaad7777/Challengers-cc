@@ -287,3 +287,55 @@ export const PRESET_FIELDS: Record<string, Fielder[]> = {
     { id: 'p9', label: 'Cover', angle: 60, ring: 'in' },
   ],
 };
+
+// ── Random field generator (Rapid-scan drill) ───────────────────────────
+// The rapid drill flashes a fresh field every round to train the split-second
+// scan a batsman makes between balls / at the top of each over. Each generated
+// field is built to have ONE dominant run-scoring lane so the drill has a clear
+// right answer, while the other posts are jittered so no two fields look alike.
+//
+// `rng` is injectable (returns 0..1) so this stays pure and unit-testable — the
+// UI passes Math.random; tests pass a seeded generator.
+
+// Standard fielding posts (screen degrees) the generator draws from.
+const GENERATOR_POSTS: { label: string; angle: number }[] = [
+  { label: 'Mid-off', angle: 35 }, { label: 'Cover', angle: 65 },
+  { label: 'Point', angle: 95 }, { label: 'Backward point', angle: 125 },
+  { label: 'Third man', angle: 150 }, { label: 'Fine leg', angle: 210 },
+  { label: 'Square leg', angle: 262 }, { label: 'Mid-wicket', angle: 300 },
+  { label: 'Mid-on', angle: 333 }, { label: 'Long-on', angle: 350 },
+];
+
+// Candidate lanes to leave open (screen degrees) — all run-scoring regions.
+const GAP_CENTRES = [35, 65, 95, 125, 210, 262, 300, 340, 5];
+
+const angDist = (a: number, b: number): number => {
+  const d = Math.abs(norm360(a) - norm360(b));
+  return d > 180 ? 360 - d : d;
+};
+
+/**
+ * Build a random-but-realistic field with one dominant open lane, for the
+ * Rapid-scan drill. Deterministic given `rng`.
+ */
+export function generateField(rng: () => number): Fielder[] {
+  const gapCentre = GAP_CENTRES[Math.floor(rng() * GAP_CENTRES.length)];
+  // Keep a wide-enough half-window clear that the lane survives each fielder's
+  // coverage radius (≤20°) plus jitter (±8°) and stays the dominant gap.
+  const gapHalf = 52 + Math.floor(rng() * 12); // 52–63°
+
+  const fielders: Fielder[] = [];
+  let n = 0;
+  for (const post of GENERATOR_POSTS) {
+    if (angDist(post.angle, gapCentre) < gapHalf) continue; // leave the lane open
+    const jitter = (rng() - 0.5) * 16; // ±8°
+    fielders.push({
+      id: `gen${n++}`,
+      label: post.label,
+      angle: norm360(post.angle + jitter),
+      ring: rng() < 0.45 ? 'in' : 'out',
+    });
+  }
+  // Guard against a too-sparse field if the open window swallowed many posts.
+  return fielders;
+}

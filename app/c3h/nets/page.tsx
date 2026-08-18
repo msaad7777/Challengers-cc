@@ -2029,7 +2029,7 @@ export default function NetsPage() {
               </div>
 
               <div className="mt-4 glass rounded-xl p-4 border border-primary-500/20 text-center">
-                <Link href="/mental-game" className="text-primary-400 text-sm font-medium hover:text-primary-300 underline">Open The Mental Game Guide &rarr;</Link>
+                <Link href="/c3h/mental-game" className="text-primary-400 text-sm font-medium hover:text-primary-300 underline">Open The Mental Game Guide &rarr;</Link>
               </div>
             </>
           )}
@@ -6053,7 +6053,7 @@ export default function NetsPage() {
               <div className="glass rounded-2xl p-6 border border-accent-500/20">
                 <h3 className="text-lg font-bold text-white mb-2">Mental Preparation Guide</h3>
                 <p className="text-gray-400 text-sm mb-3">Mastering the Mind — visualization, goal setting, breathing techniques, resilience, and managing fear of failure.</p>
-                <a href="/mental-game" className="inline-block px-4 py-2 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30 text-sm font-medium hover:bg-accent-500/30 transition-all">
+                <a href="/c3h/mental-game" className="inline-block px-4 py-2 rounded-lg bg-accent-500/20 text-accent-400 border border-accent-500/30 text-sm font-medium hover:bg-accent-500/30 transition-all">
                   Read Mental Game Guide
                 </a>
               </div>

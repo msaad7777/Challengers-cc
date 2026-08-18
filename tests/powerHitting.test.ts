@@ -4,6 +4,7 @@ import {
   POWER_PROTOCOLS,
   POWER_DRILLS,
   totalReps,
+  matchWeekDrills,
 } from '@/app/c3h/lib/powerHitting';
 
 describe('POWER_PRINCIPLES', () => {
@@ -53,10 +54,46 @@ describe('POWER_DRILLS', () => {
     expect(added[0].note.toLowerCase()).toContain('connect');
   });
 
-  it('gives every drill a name and a coaching note', () => {
+  it('gives every drill a name, a coaching note and a phase', () => {
     for (const d of POWER_DRILLS) {
       expect(d.name.length).toBeGreaterThan(0);
       expect(d.note.length).toBeGreaterThan(10);
+      expect(['any', 'off-season']).toContain(d.phase);
     }
+  });
+
+  it('flags the towel connection drill as off-season, not match week', () => {
+    const towel = POWER_DRILLS.find((d) => d.source === 'Added')!;
+    expect(towel.phase).toBe('off-season');
+    const note = towel.note.toLowerCase();
+    // It must not be sold as a bat-speed drill, and must steer the player to
+    // cross-bat hitting rather than the vertical-bat drive it used to name.
+    expect(note).toContain('not a bat-speed drill');
+    expect(note).toMatch(/pull|hook|slog-sweep|cross-bat/);
+    expect(note).toMatch(/do not use it for the vertical-bat drive/);
+    expect(note).toMatch(/half or three-quarter/);
+  });
+
+  it('keeps every ProVelocity drill runnable in any phase', () => {
+    for (const d of POWER_DRILLS.filter((x) => x.source === 'ProVelocity')) {
+      expect(d.phase).toBe('any');
+    }
+  });
+});
+
+describe('matchWeekDrills', () => {
+  it('drops off-season drills and keeps the rest in order', () => {
+    const safe = matchWeekDrills();
+    expect(safe).toHaveLength(POWER_DRILLS.length - 1);
+    expect(safe.every((d) => d.phase !== 'off-season')).toBe(true);
+    expect(safe.map((d) => d.n)).toEqual([...safe.map((d) => d.n)].sort((a, b) => a - b));
+  });
+
+  it('accepts an explicit list', () => {
+    const drills: typeof POWER_DRILLS = [
+      { n: 1, name: 'a', note: 'a note long enough', source: 'ProVelocity', phase: 'any' },
+      { n: 2, name: 'b', note: 'b note long enough', source: 'Added', phase: 'off-season' },
+    ];
+    expect(matchWeekDrills(drills).map((d) => d.n)).toEqual([1]);
   });
 });

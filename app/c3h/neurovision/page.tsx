@@ -26,6 +26,7 @@ import { db, firebaseAuthReady } from '@/lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import {
   scanField,
+  generateField,
   PRESET_FIELDS,
   type Fielder,
   type Handedness,
@@ -74,6 +75,8 @@ import {
   PRINCIPLES,
   BREATH_PATTERNS,
   buildCenteringRoutine,
+  buildWalkoutRoutine,
+  QUIET_EYE,
   RESET_ROUTINE,
   regulateFor,
   type RoutineStep,
@@ -485,6 +488,21 @@ function FieldScanner() {
   const [flashGuess, setFlashGuess] = useState<number | null>(null);
   const [flashScore, setFlashScore] = useState<number | null>(null);
 
+  // Rapid-scan drill state — a run of N flashed fields, one after another.
+  const [rapidRounds, setRapidRounds] = useState(12);
+  const [rapid, setRapid] = useState<{
+    phase: 'off' | 'show' | 'guess' | 'reveal' | 'summary';
+    idx: number;
+    scores: number[];
+    field: Fielder[];
+    topAngle: number | null;
+    region: string;
+    guessAngle: number | null;
+    guessScore: number | null;
+  }>({ phase: 'off', idx: 0, scores: [], field: [], topAngle: null, region: '', guessAngle: null, guessScore: null });
+  const rapidTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (rapidTimer.current) clearTimeout(rapidTimer.current); }, []);
+
   const result = useMemo(() => scanField(fielders, hand, bowler), [fielders, hand, bowler]);
   const topGaps = result.gaps.filter((g) => g.isScoringGap).slice(0, 3);
 
@@ -539,13 +557,63 @@ function FieldScanner() {
     setFlashPhase('reveal');
   };
 
-  const fieldHidden = flashPhase === 'guess';
+  // Rapid scan: flash a freshly generated field, take one tap, reveal, then
+  // auto-advance to the next round. The flash gets a touch quicker each round.
+  const beginRapidRound = (idx: number, scores: number[]) => {
+    const field = generateField(Math.random);
+    const res = scanField(field, hand, bowler);
+    setRapid({
+      phase: 'show', idx, scores, field,
+      topAngle: res.topGap ? res.topGap.centerAngle : null,
+      region: res.topGap?.region ?? '',
+      guessAngle: null, guessScore: null,
+    });
+    const showMs = Math.max(650, 1100 - idx * 45);
+    rapidTimer.current = setTimeout(
+      () => setRapid((r) => (r.phase === 'show' ? { ...r, phase: 'guess' } : r)),
+      showMs,
+    );
+  };
+
+  const startRapid = () => {
+    setFlashPhase('off');
+    if (rapidTimer.current) clearTimeout(rapidTimer.current);
+    beginRapidRound(0, []);
+  };
+
+  const stopRapid = () => {
+    if (rapidTimer.current) clearTimeout(rapidTimer.current);
+    setRapid((r) => ({ ...r, phase: 'off' }));
+  };
+
+  const onRapidGuess = (e: React.PointerEvent) => {
+    if (rapid.phase !== 'guess' || rapid.topAngle === null) return;
+    const p = svgPoint(e.clientX, e.clientY);
+    const { angle } = pointToAngleRing(p.x, p.y);
+    let err = Math.abs(angle - rapid.topAngle);
+    if (err > 180) err = 360 - err;
+    const score = Math.max(0, Math.round(100 - (err / 90) * 100));
+    const scores = [...rapid.scores, score];
+    const nextIdx = rapid.idx + 1;
+    setRapid((r) => ({ ...r, phase: 'reveal', guessAngle: angle, guessScore: score, scores }));
+    rapidTimer.current = setTimeout(() => {
+      if (nextIdx >= rapidRounds) {
+        setRapid((r) => ({ ...r, phase: 'summary', scores }));
+      } else {
+        beginRapidRound(nextIdx, scores);
+      }
+    }, 850);
+  };
+
+  const rapidOn = rapid.phase !== 'off';
+  const rapidGuessing = rapid.phase === 'guess';
+  const fieldHidden = flashPhase === 'guess' || rapidGuessing || rapid.phase === 'summary';
 
   return (
     <div className="space-y-4">
       <div className="rounded-2xl p-5 border-2 border-emerald-500/40 bg-gradient-to-br from-emerald-500/10 to-transparent">
         <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2"><span className="text-2xl">🗺️</span> Quick Field Scanner</h3>
-        <p className="text-sm text-gray-300">Drag the fielders to match a real set. The tool finds the biggest gaps, tells the batsman <strong className="text-emerald-300">which shot</strong> opens each one, and tells the bowler <strong className="text-emerald-300">how to bowl</strong> to shut it. Use <strong>Flash scan</strong> to train the split-second read a batsman makes between balls.</p>
+        <p className="text-sm text-gray-300">Drag the fielders to match a real set. The tool finds the biggest gaps, tells the batsman <strong className="text-emerald-300">which shot</strong> opens each one, and tells the bowler <strong className="text-emerald-300">how to bowl</strong> to shut it. Use <strong>Flash scan</strong> for a single read, or <strong>Rapid scan</strong> to drill 10–20 fresh fields back-to-back — powerplay after powerplay — and sharpen the split-second scan a batsman makes between balls.</p>
       </div>
 
       <div className="flex flex-wrap gap-2 items-center text-xs">
@@ -567,7 +635,19 @@ function FieldScanner() {
           <option value="">Load preset…</option>
           {Object.keys(PRESET_FIELDS).map((k) => <option key={k} value={k}>{k}</option>)}
         </select>
-        <button onClick={startFlash} className="px-2.5 py-1 rounded-md border bg-amber-500/15 text-amber-300 border-amber-500/40 ml-auto">⚡ Flash scan</button>
+        <div className="ml-auto flex items-center gap-2">
+          <button onClick={startFlash} disabled={rapidOn} className="px-2.5 py-1 rounded-md border bg-amber-500/15 text-amber-300 border-amber-500/40 disabled:opacity-40">⚡ Flash scan</button>
+          {!rapidOn ? (
+            <>
+              <select value={rapidRounds} onChange={(e) => setRapidRounds(Number(e.target.value))} className="bg-white/5 border border-white/10 rounded-md px-2 py-1 text-gray-200" title="Fields per rapid run">
+                {[10, 12, 15, 20].map((n) => <option key={n} value={n}>{n} fields</option>)}
+              </select>
+              <button onClick={startRapid} className="px-2.5 py-1 rounded-md border bg-sky-500/15 text-sky-300 border-sky-500/40 font-semibold">▶ Rapid scan</button>
+            </>
+          ) : (
+            <button onClick={stopRapid} className="px-2.5 py-1 rounded-md border bg-rose-500/15 text-rose-300 border-rose-500/40">■ Stop</button>
+          )}
+        </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4 items-start">
@@ -586,8 +666,8 @@ function FieldScanner() {
           {/* Batsman marker */}
           <circle cx={FIELD_CX} cy={FIELD_CY + 34} r={4} fill="#fff" />
 
-          {/* Gap wedges (hidden during the guess phase) */}
-          {!fieldHidden && flashPhase !== 'showing' && topGaps.map((g, i) => (
+          {/* Gap wedges — manual mode only (hidden during the guess phase) */}
+          {!rapidOn && !fieldHidden && flashPhase !== 'showing' && topGaps.map((g, i) => (
             <path
               key={i}
               d={gapWedgePath(g.centerAngle, g.widthDeg, FIELD_R)}
@@ -598,42 +678,91 @@ function FieldScanner() {
           ))}
           {/* During flash 'showing' phase, we still draw fielders but not gaps */}
 
-          {/* Fielders */}
-          {!fieldHidden && fielders.map((f) => {
+          {/* Fielders — the generated field in rapid mode, the draggable one otherwise */}
+          {!fieldHidden && (rapidOn ? rapid.field : fielders).map((f) => {
             const { x, y } = angleToXY(f.angle, ringRadius(f.ring));
             return (
-              <g key={f.id} onPointerDown={onFielderDown(f.id)} style={{ cursor: 'grab' }}>
+              <g key={f.id} onPointerDown={rapidOn ? undefined : onFielderDown(f.id)} style={{ cursor: rapidOn ? 'default' : 'grab' }}>
                 <circle cx={x} cy={y} r={9} fill={f.ring === 'out' ? '#1e40af' : '#2563eb'} stroke="#fff" strokeWidth={1.5} />
                 <text x={x} y={y + 3} textAnchor="middle" fontSize={8} fill="#fff" pointerEvents="none">{f.label.slice(0, 2)}</text>
               </g>
             );
           })}
 
-          {/* Flash guess overlay */}
-          {fieldHidden && (
-            <g onPointerDown={onFlashGuess} style={{ cursor: 'crosshair' }}>
+          {/* Rapid round counter */}
+          {rapidOn && rapid.phase !== 'summary' && (
+            <text x={FIELD_CX} y={20} textAnchor="middle" fontSize={12} fill="#7dd3fc" fontWeight="bold">Field {rapid.idx + 1} / {rapidRounds}</text>
+          )}
+
+          {/* Guess overlay — routes to whichever drill is taking a tap */}
+          {(flashPhase === 'guess' || rapidGuessing) && (
+            <g onPointerDown={rapidGuessing ? onRapidGuess : onFlashGuess} style={{ cursor: 'crosshair' }}>
               <rect x={0} y={0} width={FIELD_SIZE} height={FIELD_SIZE} fill="transparent" />
               <text x={FIELD_CX} y={FIELD_CY - 60} textAnchor="middle" fontSize={11} fill="#fbbf24">tap the biggest gap</text>
             </g>
           )}
-          {flashPhase === 'reveal' && flashGuess !== null && (
+
+          {/* Manual flash reveal */}
+          {!rapidOn && flashPhase === 'reveal' && flashGuess !== null && (
             <>
               {(() => { const p = angleToXY(flashGuess, FIELD_R * 0.8); return <circle cx={p.x} cy={p.y} r={6} fill="#fbbf24" />; })()}
               {result.topGap && (() => { const p = angleToXY(result.topGap.centerAngle, FIELD_R * 0.8); return <circle cx={p.x} cy={p.y} r={7} fill="none" stroke="#34d399" strokeWidth={2} />; })()}
+            </>
+          )}
+
+          {/* Rapid reveal — your tap (yellow) vs the real biggest gap (green) */}
+          {rapid.phase === 'reveal' && rapid.guessAngle !== null && (
+            <>
+              {(() => { const p = angleToXY(rapid.guessAngle, FIELD_R * 0.8); return <circle cx={p.x} cy={p.y} r={6} fill="#fbbf24" />; })()}
+              {rapid.topAngle !== null && (() => { const p = angleToXY(rapid.topAngle, FIELD_R * 0.8); return <circle cx={p.x} cy={p.y} r={7} fill="none" stroke="#34d399" strokeWidth={2} />; })()}
             </>
           )}
         </svg>
 
         {/* Recommendations */}
         <div className="space-y-3">
-          {flashPhase === 'reveal' && flashScore !== null && (
+          {/* Rapid-scan live feedback + summary */}
+          {rapidOn && (
+            <div className="rounded-xl p-3 border border-sky-500/40 bg-sky-500/10 text-sm">
+              {rapid.phase === 'show' && <p className="text-sky-200">Field {rapid.idx + 1} of {rapidRounds} — <strong>watch</strong>…</p>}
+              {rapid.phase === 'guess' && <p className="text-amber-300 font-bold">Tap the biggest gap — quick!</p>}
+              {rapid.phase === 'reveal' && rapid.guessScore !== null && (
+                <>
+                  <p className={`font-bold ${rapid.guessScore >= 70 ? 'text-emerald-300' : rapid.guessScore >= 40 ? 'text-amber-300' : 'text-rose-300'}`}>{rapid.guessScore}/100 — {rapid.region}</p>
+                  <p className="text-gray-300 text-xs mt-0.5">Green = actual biggest gap, yellow = your read. Next field loading…</p>
+                </>
+              )}
+              {rapid.phase === 'summary' && (() => {
+                const s = rapid.scores;
+                const avg = s.length ? Math.round(s.reduce((a, b) => a + b, 0) / s.length) : 0;
+                const best = s.length ? Math.max(...s) : 0;
+                const hits = s.filter((x) => x >= 70).length;
+                return (
+                  <div>
+                    <p className="text-sky-200 font-bold text-base">Rapid scan complete</p>
+                    <div className="grid grid-cols-3 gap-2 mt-2 text-center">
+                      <div><p className="text-2xl font-bold text-white">{avg}</p><p className="text-[10px] uppercase tracking-wide text-gray-400">avg</p></div>
+                      <div><p className="text-2xl font-bold text-emerald-300">{hits}/{s.length}</p><p className="text-[10px] uppercase tracking-wide text-gray-400">good reads</p></div>
+                      <div><p className="text-2xl font-bold text-white">{best}</p><p className="text-[10px] uppercase tracking-wide text-gray-400">best</p></div>
+                    </div>
+                    <div className="flex gap-2 mt-3">
+                      <button onClick={startRapid} className="px-2.5 py-1 rounded-md border bg-sky-500/15 text-sky-300 border-sky-500/40 text-xs font-semibold">▶ Again</button>
+                      <button onClick={stopRapid} className="px-2.5 py-1 rounded-md border border-white/15 text-gray-300 text-xs">Done</button>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
+          {!rapidOn && flashPhase === 'reveal' && flashScore !== null && (
             <div className="rounded-xl p-3 border border-amber-500/40 bg-amber-500/10 text-sm">
               <p className="text-amber-300 font-bold">Flash scan: {flashScore}/100</p>
               <p className="text-gray-300 text-xs mt-1">Green ring = the actual biggest gap ({result.topGap?.region}). Yellow = your read. <button className="underline text-amber-300" onClick={() => setFlashPhase('off')}>Done</button></p>
             </div>
           )}
 
-          {result.topGap ? (
+          {!rapidOn && (result.topGap ? (
             <div className="rounded-xl p-4 border-2 border-amber-500/40 bg-gradient-to-br from-amber-500/10 to-transparent">
               <p className="text-[10px] uppercase tracking-wider text-amber-300 font-bold mb-1">Biggest gap</p>
               <p className="text-white font-bold">{result.topGap.region} <span className="text-xs text-gray-400 font-normal">({result.topGap.side} side · {Math.round(result.topGap.widthDeg)}° open)</span></p>
@@ -648,9 +777,9 @@ function FieldScanner() {
             </div>
           ) : (
             <div className="rounded-xl p-4 border border-white/10 text-sm text-gray-400">Field is packed — no exploitable scoring gap right now. Nudge a fielder to open one.</div>
-          )}
+          ))}
 
-          {topGaps.slice(1).map((g, i) => (
+          {!rapidOn && topGaps.slice(1).map((g, i) => (
             <div key={i} className="rounded-lg p-3 border border-white/10 bg-white/3 text-xs">
               <p className="text-white font-medium">{g.region} <span className="text-gray-500">· {Math.round(g.widthDeg)}° · {g.side}</span></p>
               <p className="text-cyan-300 mt-0.5">→ {g.shot}</p>
@@ -1893,13 +2022,13 @@ function RoutinePlayer({ steps, emoji, onExit }: { steps: RoutineStep[]; emoji: 
 }
 
 function MindsetTrainer({ email }: { email: string | null }) {
-  const [mode, setMode] = useState<'principles' | 'routine' | 'reset'>('principles');
+  const [mode, setMode] = useState<'principles' | 'routine' | 'walkout' | 'reset'>('principles');
   const storeKey = `c3h:nv:mindset:${email ?? 'anon'}`;
 
   // Personal cue word + breath pattern, persisted locally.
   const [cue, setCue] = useState('');
   const [patternId, setPatternId] = useState(BREATH_PATTERNS[0].id);
-  const [playing, setPlaying] = useState<null | 'centering' | 'reset'>(null);
+  const [playing, setPlaying] = useState<null | 'centering' | 'walkout' | 'reset'>(null);
   const [arousal, setArousal] = useState<ArousalLevel | null>(null);
 
   useEffect(() => {
@@ -1922,7 +2051,7 @@ function MindsetTrainer({ email }: { email: string | null }) {
       </div>
 
       <div className="flex gap-2 flex-wrap">
-        {([['principles', 'Principles'], ['routine', 'Pre-ball routine'], ['reset', 'Reset & regulate']] as const).map(([k, label]) => (
+        {([['principles', 'Principles'], ['routine', 'Pre-ball routine'], ['walkout', 'Walk-out & Quiet Eye'], ['reset', 'Reset & regulate']] as const).map(([k, label]) => (
           <button key={k} onClick={() => { setMode(k); setPlaying(null); }} className={`px-3 py-1.5 rounded-lg text-sm border ${mode === k ? 'bg-rose-500/20 text-rose-200 border-rose-500/50' : 'bg-white/5 text-gray-400 border-white/10'}`}>{label}</button>
         ))}
       </div>
@@ -1959,6 +2088,42 @@ function MindsetTrainer({ email }: { email: string | null }) {
               </label>
               <button onClick={() => setPlaying('centering')} className="px-5 py-2 rounded-lg bg-gradient-to-r from-rose-600 to-pink-500 text-white text-sm font-medium">Rehearse my routine</button>
               <p className="text-[11px] text-gray-500 italic">Do this a few times a day off the field. On match day, run it before every ball — step away, breathe, cue word, commit.</p>
+            </>
+          )}
+        </div>
+      )}
+
+      {mode === 'walkout' && (
+        <div className="space-y-4">
+          {playing === 'walkout' ? (
+            <RoutinePlayer steps={buildWalkoutRoutine(cue)} emoji="🚶" onExit={() => setPlaying(null)} />
+          ) : (
+            <>
+              <p className="text-sm text-gray-300">The 30 seconds walking to the crease decide the state you arrive in. Set your <strong className="text-rose-300">arousal</strong> with 4-6-2 coherence breaths on the walk, then set your <strong className="text-rose-300">attention</strong> with a Quiet Eye anchor before the first ball.</p>
+
+              <button onClick={() => setPlaying('walkout')} className="px-5 py-2 rounded-lg bg-gradient-to-r from-rose-600 to-pink-500 text-white text-sm font-medium">▶ Run the walk-out routine</button>
+              <p className="text-[11px] text-gray-500 italic">Uses your saved cue word{cue ? ` (“${cue.trim()}”)` : ' — set one in the Pre-ball routine tab'}. For the precise animated 4-6-2 pacer, use the 🫁 Breathing tab.</p>
+
+              <div className="rounded-xl p-4 border border-white/10 bg-white/3 space-y-2">
+                <p className="text-white font-semibold text-sm flex items-center gap-2"><span className="text-lg">👁️</span> Quiet Eye — the last thing you look at</p>
+                <p className="text-gray-300 text-xs leading-relaxed">{QUIET_EYE.what}</p>
+                <div className="rounded-md bg-rose-500/10 border-l-2 border-rose-500/60 px-3 py-2">
+                  <p className="text-rose-200 text-xs font-medium">In the game</p>
+                  <p className="text-gray-300 text-xs mt-1">{QUIET_EYE.anchor}</p>
+                </div>
+              </div>
+
+              <div className="rounded-xl p-4 border border-white/10 bg-white/3">
+                <p className="text-white font-semibold text-sm mb-2">Train it off the field</p>
+                <ol className="list-decimal list-inside space-y-1.5 text-xs text-gray-300">
+                  {QUIET_EYE.drill.map((d, i) => <li key={i} className="leading-relaxed">{d}</li>)}
+                </ol>
+              </div>
+
+              <div className="rounded-md bg-emerald-500/10 border-l-2 border-emerald-500/60 px-3 py-2">
+                <p className="text-emerald-200 text-xs font-medium">Does it help?</p>
+                <p className="text-gray-300 text-xs mt-1">Yes — the longer exhale (4-6-2) lowers heart rate into the alert-but-calm zone, and a steady Quiet Eye keeps your gaze from darting under nerves — the exact moment batters get out playing at nothing. Both are well-established and both hold up under pressure once trained.</p>
+              </div>
             </>
           )}
         </div>
@@ -2142,13 +2307,14 @@ function PowerHittingTrainer({ onLog, email }: { onLog: (type: MetricType, value
       {view === 'drills' && (
         <div className="space-y-2">
           <p className="text-xs text-gray-400">The ProVelocity swing progression — work top to bottom. Follow the ProVelocity videos for the exact method; tick each as you groove it. The last one is the golf-style connection drill.</p>
+          <p className="text-[11px] text-amber-300/90 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2 leading-relaxed">Drills tagged <span className="uppercase tracking-wider font-semibold">off-season</span> deliberately remodel a movement pattern. Skip them in match week — close to a game they can groove a fault you carry to the crease.</p>
           {POWER_DRILLS.map((d) => {
             const done = doneDrills.includes(d.n);
             return (
               <button key={d.n} onClick={() => toggleDrill(d.n)} className={`w-full text-left px-3 py-2 rounded-lg border flex items-start gap-3 ${done ? 'border-orange-500/40 bg-orange-500/10' : 'border-white/10 bg-white/3'}`}>
                 <span className="text-sm mt-0.5">{done ? '✅' : `${d.n}.`}</span>
                 <span className="flex-1">
-                  <span className="text-sm text-white font-medium">{d.name}{d.source === 'Added' && <span className="ml-2 text-[10px] text-orange-300 uppercase tracking-wider">connection</span>}</span>
+                  <span className="text-sm text-white font-medium">{d.name}{d.source === 'Added' && <span className="ml-2 text-[10px] text-orange-300 uppercase tracking-wider">connection</span>}{d.phase === 'off-season' && <span className="ml-2 text-[10px] text-amber-300 uppercase tracking-wider">off-season</span>}</span>
                   <span className="block text-[11px] text-gray-400 mt-0.5 leading-relaxed">{d.note}</span>
                 </span>
               </button>

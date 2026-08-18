@@ -1,11 +1,24 @@
 import { describe, it, expect } from 'vitest';
 import {
   scanField,
+  generateField,
   regionForScreenAngle,
   toCanonical,
   PRESET_FIELDS,
   type Fielder,
 } from '@/app/c3h/lib/fieldScanner';
+
+// Deterministic RNG (mulberry32) so generateField tests are reproducible.
+function mulberry32(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a += 0x6d2b79f5;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
 // A packed off side with the whole leg side (roughly 200–330°) left empty.
 const OFF_HEAVY: Fielder[] = [
@@ -96,5 +109,37 @@ describe('scanField', () => {
   it('adds a spin-specific note when a bowler type is given', () => {
     const withSpin = scanField(OFF_HEAVY, 'RH', 'leg-spin');
     expect(withSpin.topGap!.bowlingPlan).toMatch(/leg-spinner/);
+  });
+});
+
+describe('generateField (Rapid-scan drill)', () => {
+  it('is deterministic for a given rng seed', () => {
+    const a = generateField(mulberry32(42));
+    const b = generateField(mulberry32(42));
+    expect(a).toEqual(b);
+  });
+
+  it('produces a varied but plausible field size', () => {
+    const f = generateField(mulberry32(7));
+    expect(f.length).toBeGreaterThanOrEqual(5);
+    expect(f.length).toBeLessThanOrEqual(10);
+    expect(f.every(x => x.angle >= 0 && x.angle < 360)).toBe(true);
+  });
+
+  it('always leaves one clear run-scoring gap for the drill to score', () => {
+    // The drill needs a definite right answer every round.
+    for (let seed = 0; seed < 60; seed++) {
+      const { topGap } = scanField(generateField(mulberry32(seed)), 'RH');
+      expect(topGap).not.toBeNull();
+      expect(topGap!.isScoringGap).toBe(true);
+      expect(topGap!.widthDeg).toBeGreaterThanOrEqual(40);
+    }
+  });
+
+  it('generates different fields across rounds', () => {
+    const rng = mulberry32(99);
+    const fields = Array.from({ length: 5 }, () => generateField(rng));
+    const signatures = new Set(fields.map(f => f.map(x => Math.round(x.angle)).join(',')));
+    expect(signatures.size).toBeGreaterThan(1);
   });
 });
