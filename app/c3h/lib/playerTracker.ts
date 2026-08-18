@@ -32,17 +32,26 @@ export type AvailabilityMap = Record<string, Record<string, string | undefined>>
 // to qualify for a league's playoffs. The two leagues express this
 // differently, so this is a function, not a fixed table:
 //
-//   LPL T30 (Challengers = Division 2): a FIXED 5 of 12 — LPL 2026 Rule 23.
-//   LCL T30 / LCL T20:                  50% + 1 of the league stage — LCL 2026
-//     Participation Rule ("played at least 50% plus 1 game in the league
-//     stage"). For the 14-game LCL T30 stage that works out to 8 of 14; the
-//     6-game T20 stage gives 4 of 6.
+//   LPL T30 (Challengers = Division 2): a FIXED 5 of 12 — LPL 2026 Rule 23
+//     ("at least 6 out of 14 for Division 1 or 5 out of 12 matches for
+//     Division 2 T30"). LPL Rule 3.1 additionally voids an appearance if the
+//     player was on the field for less than 70% of that game — the tracker
+//     cannot see field time, so a recorded playing-12 appearance always
+//     counts here; verify against the league's own count before finals.
+//   LCL T30: 50% + 1 of the league stage — LCL 2026 Participation Rule
+//     ("played at least 50% plus 1 game in the league stage"). The 14-game
+//     stage works out to 8 of 14.
+//   LCL T20: a FIXED 3, per the league for the 2026 T20 stage. Note this is
+//     NOT the LCL 50% + 1 formula, which would give 4 of the 6 T20 fixtures —
+//     the fixed 3 is what the league confirmed, so it is hardcoded rather
+//     than derived. Revisit if the league restates the rule.
 //
 // Returns 0 for an unrecognised league ("no threshold configured" — everyone
 // shows eligible).
 export function requiredForLeague(league: string, totalLeagueMatches: number): number {
   if (league === 'LPL T30') return 5;
-  if (league === 'LCL T30' || league === 'LCL T20') return Math.floor(totalLeagueMatches / 2) + 1;
+  if (league === 'LCL T20') return 3;
+  if (league === 'LCL T30') return Math.floor(totalLeagueMatches / 2) + 1;
   return 0;
 }
 

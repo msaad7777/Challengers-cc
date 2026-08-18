@@ -8,7 +8,7 @@ import { db, firebaseAuthReady } from '@/lib/firebase';
 import { collection, doc, setDoc, updateDoc, getDocs } from 'firebase/firestore';
 import { isC3HBoard, isC3HCaptain, isC3HSquadViewer } from '@/lib/c3h-access';
 import { EMAIL_TO_PLAYER } from '@/lib/c3h-roster';
-import { computePlayerTracker, type PlayerTrackerRow, type LeagueStat } from '@/app/c3h/lib/playerTracker';
+import { computePlayerTracker, requiredForLeague, type PlayerTrackerRow, type LeagueStat } from '@/app/c3h/lib/playerTracker';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
@@ -420,7 +420,7 @@ function buildTrackerPrintHtml(
   <body>
     <h1>Challengers Cricket Club</h1>
     <h2>Player Games Tracker — 2026 Season</h2>
-    <p class="meta">${opts.recorded} of ${opts.total} squads recorded · ${opts.finalized} finalized · Playoff eligibility: LPL 5/${opts.lplTotal} (Div 2), LCL T30 ${opts.lclRequired}/${opts.lclTotal} (50% + 1), LCL T20 ${opts.t20Required}/${opts.t20Total} (50% + 1)</p>
+    <p class="meta">${opts.recorded} of ${opts.total} squads recorded · ${opts.finalized} finalized · Playoff eligibility: LPL 5/${opts.lplTotal} (Div 2), LCL T30 ${opts.lclRequired}/${opts.lclTotal} (50% + 1), LCL T20 ${opts.t20Required}/${opts.t20Total}</p>
     <table>
       <thead>
         <tr>
@@ -440,7 +440,7 @@ function buildTrackerPrintHtml(
     </table>
     <p class="foot">
       A game counts once a player is in that match's saved Playing 12. "Avail" = matches the player marked available.<br>
-      Playoff thresholds: LPL Rule 23 (Division 2 = 5 of 12) · LCL 2026 Participation Rule (50% + 1 — T30: ${opts.lclRequired} of ${opts.lclTotal}, T20: ${opts.t20Required} of ${opts.t20Total}). Generated ${esc(opts.generatedAt)}.
+      Playoff thresholds: LPL Rule 23 (Division 2 = 5 of 12) · LCL T30 — 2026 Participation Rule, 50% + 1 (${opts.lclRequired} of ${opts.lclTotal}) · LCL T20 — ${opts.t20Required} of ${opts.t20Total} per the league. Generated ${esc(opts.generatedAt)}.
     </p>
     <script>window.onload=function(){setTimeout(function(){window.print()},150)}<\/script>
   </body></html>`;
@@ -847,7 +847,7 @@ export default function AvailabilityPage() {
                           recorded, total: ALL_MATCHES.length, finalized: finalizedCount,
                           lclTotal, lplTotal, t20Total, former: FORMER_PLAYERS,
                           lclRequired: rows[0]?.lcl.requiredForPlayoff ?? (Math.floor(lclTotal / 2) + 1),
-                          t20Required: rows[0]?.lclT20.requiredForPlayoff ?? (Math.floor(t20Total / 2) + 1),
+                          t20Required: rows[0]?.lclT20.requiredForPlayoff ?? requiredForLeague('LCL T20', t20Total),
                           generatedAt: new Date().toLocaleString('en-CA', { dateStyle: 'medium', timeStyle: 'short' }),
                         });
                         const w = window.open('', '_blank');
@@ -866,7 +866,7 @@ export default function AvailabilityPage() {
                 </p>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm border-collapse">
-                    <caption className="sr-only">Games played and playoff eligibility per player by league for the 2026 season. LCL T30 needs 8 of 14 (50% + 1), LPL needs 5 of 12, LCL T20 needs 4 of 6 (50% + 1).</caption>
+                    <caption className="sr-only">Games played and playoff eligibility per player by league for the 2026 season. LCL T30 needs 8 of 14 (50% + 1), LPL needs 5 of 12, LCL T20 needs 3.</caption>
                     <thead>
                       <tr className="text-gray-400 text-[11px] uppercase tracking-wide border-b border-white/10">
                         <th scope="col" className="text-left font-semibold py-2 pr-3">Player</th>

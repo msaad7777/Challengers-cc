@@ -79,13 +79,15 @@ describe('requiredForLeague', () => {
     expect(requiredForLeague('LPL T30', 12)).toBe(5);
     expect(requiredForLeague('LPL T30', 20)).toBe(5);
   });
-  it('computes LCL as 50% + 1 of the league stage (LCL 2026 Participation Rule)', () => {
+  it('computes LCL T30 as 50% + 1 of the league stage (LCL 2026 Participation Rule)', () => {
     expect(requiredForLeague('LCL T30', 14)).toBe(8); // 7 + 1
     expect(requiredForLeague('LCL T30', 12)).toBe(7); // 6 + 1
     expect(requiredForLeague('LCL T30', 10)).toBe(6); // 5 + 1
   });
-  it('applies the same LCL 50% + 1 rule to the T20 stage', () => {
-    expect(requiredForLeague('LCL T20', 6)).toBe(4); // 3 + 1
+  it('uses the FIXED LCL T20 threshold of 3, not the 50% + 1 formula', () => {
+    expect(requiredForLeague('LCL T20', 6)).toBe(3); // NOT floor(6/2) + 1 = 4
+    expect(requiredForLeague('LCL T20', 2)).toBe(3);
+    expect(requiredForLeague('LCL T20', 10)).toBe(3);
   });
   it('returns 0 for an unconfigured league', () => {
     expect(requiredForLeague('T20 Cup', 10)).toBe(0);
@@ -111,10 +113,10 @@ describe('computePlayerTracker', () => {
     expect(bySaad.lcl.available).toBe(2);
   });
 
-  it('tracks LCL T20 separately with its own 50% + 1 threshold', () => {
+  it('tracks LCL T20 separately with its own fixed threshold', () => {
     expect(bySaad.lclT20.totalMatches).toBe(2);
-    expect(bySaad.lclT20.requiredForPlayoff).toBe(2); // floor(2/2) + 1
-    expect(bySaad.lclT20.remainingNeeded).toBe(1);
+    expect(bySaad.lclT20.requiredForPlayoff).toBe(3); // fixed, not games-derived
+    expect(bySaad.lclT20.remainingNeeded).toBe(2);
     expect(bySaad.lclT20.eligible).toBe(false);
     // T20 appearances must not leak into the T30 count
     expect(bySaad.lcl.totalMatches).toBe(3);
