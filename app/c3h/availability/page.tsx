@@ -111,6 +111,9 @@ const ALL_PLAYERS = [
   // every league by default, same as the rest of the roster; there is no
   // T20-only bucket. Must be registered in CricClubs by Sep 5 to play a T20.
   'Shashank', 'Muhib', 'Mustajab',
+  // Added 2026-08-23 for the LCL T20 (roster-only — no login yet). Distinct
+  // from the existing 'RP' above, who is a different player.
+  'Rahul Patel',
 ];
 
 // Players restricted to specific leagues
