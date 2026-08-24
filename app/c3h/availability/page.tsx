@@ -87,8 +87,12 @@ const ALL_MATCHES: ScheduledMatch[] = [
   { id: 'lclt20-2', league: 'LCL T20', date: 'Aug 15', fullDate: '2026-08-15', opponent: 'Titans', time: '1:30 PM', venue: 'Stratford', clash: false, homeAway: 'home' },
   // Opponent not yet named by the league.
   { id: 'lclt20-1', league: 'LCL T20', date: 'Aug 22', fullDate: '2026-08-22', opponent: 'London Royals', time: '8:00 AM', venue: 'Stratford', clash: false, homeAway: 'home' },
-  // Moved back from Sep 6 on 2026-08-11 — clashes with LPL M11 again.
-  { id: 'lclt20-3', league: 'LCL T20', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'PB 22 Group', time: '1:00 PM', venue: 'Stratford', clash: true, homeAway: 'home' },
+  // Moved back from Sep 6 on 2026-08-11. League pushed the start to 4:00 PM on
+  // 2026-08-24, so it no longer overlaps LPL M11 (Silverwoods, first ball
+  // ~10:00 AM, allotted to ~2:55 PM). Still flagged `clash` because it is the
+  // same day at a different ground roughly an hour away — anyone playing both
+  // has no margin, and the squads need planning around the turnaround.
+  { id: 'lclt20-3', league: 'LCL T20', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'PB 22 Group', time: '3:00 PM', venue: 'Stratford', clash: true, homeAway: 'home' },
   { id: 'lclt20-5', league: 'LCL T20', date: 'Sep 20', fullDate: '2026-09-20', opponent: 'Kingstrikers', time: '7:00 AM', venue: 'Northridge', clash: false, homeAway: 'away' },
   { id: 'lclt20-6', league: 'LCL T20', date: 'Sep 26', fullDate: '2026-09-26', opponent: 'Tigers CC', time: '9:00 AM', venue: 'Sarnia', clash: false, homeAway: 'home' },
   { id: 'lclt20-4', league: 'LCL T20', date: 'Oct 4', fullDate: '2026-10-04', opponent: 'London Stars', time: '7:30 AM', venue: 'NLAF', clash: false, homeAway: 'away' },
