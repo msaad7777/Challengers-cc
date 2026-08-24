@@ -63,8 +63,10 @@ const lplT30Matches: Match[] = [
 // fixture moves.
 const lclT20Matches: Match[] = [
   { match: 1, date: 'August 15, 2026', sortKey: '2026-08-15-1330', day: 'Saturday', time: '1:30 PM', opponent: 'Titans', venue: 'Stratford Cricket Ground' },
-  { match: 2, date: 'August 22, 2026', sortKey: '2026-08-22-0800', day: 'Saturday', time: '8:00 AM', opponent: 'TBD', venue: 'Stratford Cricket Ground' },
-  { match: 3, date: 'August 30, 2026', sortKey: '2026-08-30-1300', day: 'Sunday', time: '1:00 PM', opponent: 'PB 22 Group', venue: 'Stratford Cricket Ground' },
+  { match: 2, date: 'August 22, 2026', sortKey: '2026-08-22-0800', day: 'Saturday', time: '8:00 AM', opponent: 'London Royals', venue: 'Stratford Cricket Ground' },
+  // League pushed M3 to a 4:00 PM start on 2026-08-24 (reporting 3:00 PM), so
+  // it no longer overlaps LPL M11 at Silverwoods the same morning.
+  { match: 3, date: 'August 30, 2026', sortKey: '2026-08-30-1500', day: 'Sunday', time: '3:00 PM', opponent: 'PB 22 Group', venue: 'Stratford Cricket Ground' },
   { match: 4, date: 'September 20, 2026', sortKey: '2026-09-20-0700', day: 'Sunday', time: '7:00 AM', opponent: 'Kingstrikers', venue: 'Northridge Cricket Ground' },
   { match: 5, date: 'September 26, 2026', sortKey: '2026-09-26-0900', day: 'Saturday', time: '9:00 AM', opponent: 'Tigers Cricket Club', venue: 'Mike Weir Park, Sarnia' },
   { match: 6, date: 'October 4, 2026', sortKey: '2026-10-04-0730', day: 'Sunday', time: '7:30 AM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
