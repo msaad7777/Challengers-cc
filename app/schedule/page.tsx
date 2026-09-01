@@ -67,9 +67,12 @@ const lclT20Matches: Match[] = [
   // League pushed M3 to a 4:00 PM start on 2026-08-24 (reporting 3:00 PM), so
   // it no longer overlaps LPL M11 at Silverwoods the same morning.
   { match: 3, date: 'August 30, 2026', sortKey: '2026-08-30-1500', day: 'Sunday', time: '3:00 PM', opponent: 'PB 22 Group', venue: 'Stratford Cricket Ground' },
-  { match: 4, date: 'September 20, 2026', sortKey: '2026-09-20-0700', day: 'Sunday', time: '7:00 AM', opponent: 'Kingstrikers', venue: 'Northridge Cricket Ground' },
-  { match: 5, date: 'September 26, 2026', sortKey: '2026-09-26-0900', day: 'Saturday', time: '9:00 AM', opponent: 'Tigers Cricket Club', venue: 'Mike Weir Park, Sarnia' },
-  { match: 6, date: 'October 4, 2026', sortKey: '2026-10-04-0730', day: 'Sunday', time: '7:30 AM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
+  // 7th T20 fixture added 2026-08-31 (Labour Day Monday). Later matches
+  // renumbered to keep the list chronological, per the convention above.
+  { match: 4, date: 'September 7, 2026', sortKey: '2026-09-07-0730', day: 'Monday', time: '7:30 AM', opponent: 'Tigers', venue: 'Silverwoods Cricket Ground' },
+  { match: 5, date: 'September 20, 2026', sortKey: '2026-09-20-0700', day: 'Sunday', time: '7:00 AM', opponent: 'Kingstrikers', venue: 'Northridge Cricket Ground' },
+  { match: 6, date: 'September 26, 2026', sortKey: '2026-09-26-0900', day: 'Saturday', time: '9:00 AM', opponent: 'Tigers Cricket Club', venue: 'Mike Weir Park, Sarnia' },
+  { match: 7, date: 'October 4, 2026', sortKey: '2026-10-04-0730', day: 'Sunday', time: '7:30 AM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
 ];
 
 // Create separate arrays for each tab — sorted by sortKey (YYYY-MM-DD-HHMM)

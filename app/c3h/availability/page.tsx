@@ -93,6 +93,10 @@ const ALL_MATCHES: ScheduledMatch[] = [
   // same day at a different ground roughly an hour away — anyone playing both
   // has no margin, and the squads need planning around the turnaround.
   { id: 'lclt20-3', league: 'LCL T20', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'PB 22 Group', time: '3:00 PM', venue: 'Stratford', clash: true, homeAway: 'home' },
+  // Added 2026-08-31 as a 7th T20 fixture — Labour Day Monday, the third match
+  // day in a row after LCL T30 on the Sat and LPL T30 on the Sun. Not flagged
+  // `clash` (nothing overlaps it) but worth knowing when picking the squad.
+  { id: 'lclt20-7', league: 'LCL T20', date: 'Sep 7', fullDate: '2026-09-07', opponent: 'Tigers', time: '7:30 AM', venue: 'Silverwoods', clash: false },
   { id: 'lclt20-5', league: 'LCL T20', date: 'Sep 20', fullDate: '2026-09-20', opponent: 'Kingstrikers', time: '7:00 AM', venue: 'Northridge', clash: false, homeAway: 'away' },
   { id: 'lclt20-6', league: 'LCL T20', date: 'Sep 26', fullDate: '2026-09-26', opponent: 'Tigers CC', time: '9:00 AM', venue: 'Sarnia', clash: false, homeAway: 'home' },
   { id: 'lclt20-4', league: 'LCL T20', date: 'Oct 4', fullDate: '2026-10-04', opponent: 'London Stars', time: '7:30 AM', venue: 'NLAF', clash: false, homeAway: 'away' },

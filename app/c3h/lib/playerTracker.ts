@@ -42,7 +42,7 @@ export type AvailabilityMap = Record<string, Record<string, string | undefined>>
 //     ("played at least 50% plus 1 game in the league stage"). The 14-game
 //     stage works out to 8 of 14.
 //   LCL T20: a FIXED 3, per the league for the 2026 T20 stage. Note this is
-//     NOT the LCL 50% + 1 formula, which would give 4 of the 6 T20 fixtures —
+//     NOT the LCL 50% + 1 formula, which would give 4 of the 7 T20 fixtures —
 //     the fixed 3 is what the league confirmed, so it is hardcoded rather
 //     than derived. Revisit if the league restates the rule.
 //
@@ -74,7 +74,7 @@ export interface PlayerTrackerRow {
   player: string;
   lcl: LeagueStat;
   lpl: LeagueStat;
-  /** LCL T20 — the 6-game stage added for 2026. */
+  /** LCL T20 — the 2026 T20 stage (7 fixtures as of 2026-08-31). */
   lclT20: LeagueStat;
   /** Combined LCL T30 + LPL T30 + LCL T20 games in the playing-12. */
   totalPlayed: number;
