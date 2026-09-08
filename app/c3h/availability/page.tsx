@@ -40,6 +40,8 @@ interface ScheduledMatch {
    * T30 fixtures predate the league listing it, hence optional.
    */
   homeAway?: 'home' | 'away';
+  /** Knockout fixture — excluded from Player Tracker eligibility counts. */
+  playoff?: boolean;
 }
 
 // `time` on every fixture is the REPORTING time — when players must be at
@@ -74,11 +76,11 @@ const ALL_MATCHES: ScheduledMatch[] = [
   { id: 'lpl-10', league: 'LPL T30', date: 'Aug 2', fullDate: '2026-08-02', opponent: 'NLCC', time: '9:00 AM', venue: 'Silverwoods', clash: true },
   { id: 'lpl-11', league: 'LPL T30', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'Royal Tigers', time: '9:00 AM', venue: 'Silverwoods', clash: true },
   { id: 'lpl-12', league: 'LPL T30', date: 'Sep 6', fullDate: '2026-09-06', opponent: 'London Stars', time: '12:00 PM', venue: 'NLAF', clash: false },
-  // LPL playoffs. `league` stays 'LPL T30' so the fixture lands in the existing
-  // Dugout filter and league column. Note this makes the Player Tracker's LPL
-  // "played" count league stage + playoffs — harmless, because
-  // requiredForLeague('LPL T30') is a fixed 5 and ignores the fixture count.
-  { id: 'lpl-sf', league: 'LPL T30', date: 'Sep 12', fullDate: '2026-09-12', opponent: 'London Stars (LPL Semi-Final)', time: '12:00 PM', venue: 'Northridge', clash: true },
+  // LPL playoffs. `league` stays 'LPL T30' so the fixture shows in the existing
+  // Dugout filter and column, but `playoff: true` keeps it out of the Player
+  // Tracker — qualification counts league-stage games only, so the denominator
+  // must stay 12.
+  { id: 'lpl-sf', league: 'LPL T30', date: 'Sep 12', fullDate: '2026-09-12', opponent: 'London Stars (LPL Semi-Final)', time: '12:00 PM', venue: 'Northridge', clash: true, playoff: true },
   // LCL T20 — 6 games, re-reconciled against the league's fixture list on
   // 2026-08-11. The league reshuffled which opponent we meet on each date; the
   // dates themselves held except PB 22 Group, which came back from Sep 6 to

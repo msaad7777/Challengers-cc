@@ -140,3 +140,20 @@ describe('computePlayerTracker', () => {
     expect(r.lpl.eligible).toBe(false);
   });
 });
+
+describe('playoff fixtures', () => {
+  const matches = [
+    { id: 'lpl-1', league: 'LPL T30', fullDate: '2026-05-10' },
+    { id: 'lpl-2', league: 'LPL T30', fullDate: '2026-05-24' },
+    { id: 'lpl-sf', league: 'LPL T30', fullDate: '2026-09-12', playoff: true },
+  ];
+
+  it('excludes knockout fixtures from the league-stage fixture count', () => {
+    expect(matchesInLeague(matches, 'LPL T30').map((m) => m.id)).toEqual(['lpl-1', 'lpl-2']);
+  });
+
+  it('does not count a playoff appearance towards qualification', () => {
+    const squads = { 'lpl-1': ['Swapnil'], 'lpl-sf': ['Swapnil'] };
+    expect(gamesPlayed('Swapnil', 'LPL T30', matches, squads, '2026-09-30')).toBe(1);
+  });
+});

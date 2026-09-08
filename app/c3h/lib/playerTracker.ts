@@ -20,6 +20,14 @@ export interface TrackerMatch {
   id: string;
   league: string;
   fullDate: string;
+  /**
+   * Knockout fixture (semi-final, final). Excluded from every tracker
+   * computation: qualification is earned in the LEAGUE STAGE only — LPL
+   * Appendix C says "league stage games", and the LCL threshold is derived
+   * from the stage length, so counting a playoff would silently move the
+   * bar it is measured against.
+   */
+  playoff?: boolean;
 }
 
 /** matchId -> playing-12 (array of player display names). */
@@ -82,7 +90,7 @@ export interface PlayerTrackerRow {
 
 /** Count fixtures in `matches` belonging to `league`. */
 export function matchesInLeague(matches: TrackerMatch[], league: string): TrackerMatch[] {
-  return matches.filter((m) => m.league === league);
+  return matches.filter((m) => m.league === league && !m.playoff);
 }
 
 /**
