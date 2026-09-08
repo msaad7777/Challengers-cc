@@ -8,7 +8,7 @@ import { db, firebaseAuthReady } from '@/lib/firebase';
 import { collection, doc, setDoc, updateDoc, getDocs } from 'firebase/firestore';
 import { isC3HBoard, isC3HCaptain, isC3HSquadViewer } from '@/lib/c3h-access';
 import { EMAIL_TO_PLAYER } from '@/lib/c3h-roster';
-import { computePlayerTracker, requiredForLeague, type PlayerTrackerRow, type LeagueStat } from '@/app/c3h/lib/playerTracker';
+import { computePlayerTracker, requiredForLeague, matchesInLeague, type PlayerTrackerRow, type LeagueStat } from '@/app/c3h/lib/playerTracker';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
@@ -432,7 +432,13 @@ function buildTrackerPrintHtml(
   // ── Single-league sheet (the one that goes to a league office) ──────
   if (league !== 'all') {
     const meta = TRACKER_LEAGUE_META[league];
-    const sorted = [...rows].sort((a, b) => meta.pick(b).played - meta.pick(a).played);
+    // Players with no appearance in THIS competition are dropped — most are
+    // registered for another format, and a league office reading an eligibility
+    // sheet should not have to scan 20 rows of zeros to find the 3 that matter.
+    const sorted = [...rows]
+      .filter((r) => meta.pick(r).played > 0)
+      .sort((a, b) => meta.pick(b).played - meta.pick(a).played);
+    const omitted = rows.length - sorted.length;
     const first = meta.pick(sorted[0] ?? rows[0]);
     const required = first?.requiredForPlayoff ?? 0;
     const total = first?.totalMatches ?? 0;
@@ -483,7 +489,7 @@ function buildTrackerPrintHtml(
     </table>
     <p class="foot">
       ${esc(meta.rule(required, total))}<br>
-      A game is counted once the player appears in that match's recorded playing twelve. Generated ${esc(opts.generatedAt)} by Challengers CC.
+      A game is counted once the player appears in that match's recorded playing twelve.${omitted > 0 ? ` ${omitted} registered player${omitted === 1 ? '' : 's'} with no appearance in this competition ${omitted === 1 ? 'is' : 'are'} omitted.` : ''} Generated ${esc(opts.generatedAt)} by Challengers CC.
     </p>
     <script>window.onload=function(){setTimeout(function(){window.print()},150)}<\/script>
   </body></html>`;
@@ -916,9 +922,13 @@ export default function AvailabilityPage() {
                 if (trackerSort === 't20') return b.lclT20.played - a.lclT20.played;
                 return b.totalPlayed - a.totalPlayed;
               });
-            const lclTotal = ALL_MATCHES.filter(m => m.league === 'LCL T30').length;
-            const lplTotal = ALL_MATCHES.filter(m => m.league === 'LPL T30').length;
-            const t20Total = ALL_MATCHES.filter(m => m.league === 'LCL T20').length;
+            // Via matchesInLeague, never a raw filter — it is the one place that
+            // excludes knockout fixtures, and qualification counts league-stage
+            // games only. A local `.filter(m => m.league === ...)` here silently
+            // put the semi-final back in the denominator.
+            const lclTotal = matchesInLeague(ALL_MATCHES, 'LCL T30').length;
+            const lplTotal = matchesInLeague(ALL_MATCHES, 'LPL T30').length;
+            const t20Total = matchesInLeague(ALL_MATCHES, 'LCL T20').length;
             const recorded = Object.values(squads).filter(s => (s || []).length > 0).length;
             const finalizedCount = Object.values(squadMeta).filter(v => v.finalized).length;
             const StatCell = ({ s }: { s: LeagueStat }) => (
