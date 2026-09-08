@@ -59,7 +59,7 @@ const ALL_MATCHES: ScheduledMatch[] = [
   { id: 'lcl-10', league: 'LCL T30', date: 'Aug 8', fullDate: '2026-08-08', opponent: 'Forest City Cricketers', time: '12:00 PM', venue: 'NLAF', clash: false },
   { id: 'lcl-11', league: 'LCL T30', date: 'Aug 23', fullDate: '2026-08-23', opponent: 'Sarnia Spartans', time: '12:00 PM', venue: 'Northridge', clash: false },
   { id: 'lcl-12', league: 'LCL T30', date: 'Sep 5', fullDate: '2026-09-05', opponent: 'London Eagle Predators', time: '2:00 PM', venue: 'Silverwoods', clash: false },
-  { id: 'lcl-13', league: 'LCL T30', date: 'Sep 12', fullDate: '2026-09-12', opponent: 'Inferno Spartans', time: '12:00 PM', venue: 'NLAF', clash: false },
+  { id: 'lcl-13', league: 'LCL T30', date: 'Sep 12', fullDate: '2026-09-12', opponent: 'Inferno Spartans', time: '12:00 PM', venue: 'NLAF', clash: true },
   { id: 'lcl-14', league: 'LCL T30', date: 'Sep 13', fullDate: '2026-09-13', opponent: 'Tigers Cricket Club', time: '2:00 PM', venue: 'Northridge', clash: false },
   // LPL T30
   { id: 'lpl-1', league: 'LPL T30', date: 'May 10', fullDate: '2026-05-10', opponent: 'Maple Tigers', time: '9:00 AM', venue: 'Silverwoods', clash: true },
@@ -74,6 +74,11 @@ const ALL_MATCHES: ScheduledMatch[] = [
   { id: 'lpl-10', league: 'LPL T30', date: 'Aug 2', fullDate: '2026-08-02', opponent: 'NLCC', time: '9:00 AM', venue: 'Silverwoods', clash: true },
   { id: 'lpl-11', league: 'LPL T30', date: 'Aug 30', fullDate: '2026-08-30', opponent: 'Royal Tigers', time: '9:00 AM', venue: 'Silverwoods', clash: true },
   { id: 'lpl-12', league: 'LPL T30', date: 'Sep 6', fullDate: '2026-09-06', opponent: 'London Stars', time: '12:00 PM', venue: 'NLAF', clash: false },
+  // LPL playoffs. `league` stays 'LPL T30' so the fixture lands in the existing
+  // Dugout filter and league column. Note this makes the Player Tracker's LPL
+  // "played" count league stage + playoffs — harmless, because
+  // requiredForLeague('LPL T30') is a fixed 5 and ignores the fixture count.
+  { id: 'lpl-sf', league: 'LPL T30', date: 'Sep 12', fullDate: '2026-09-12', opponent: 'London Stars (LPL Semi-Final)', time: '12:00 PM', venue: 'Northridge', clash: true },
   // LCL T20 — 6 games, re-reconciled against the league's fixture list on
   // 2026-08-11. The league reshuffled which opponent we meet on each date; the
   // dates themselves held except PB 22 Group, which came back from Sep 6 to

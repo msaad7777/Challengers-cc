@@ -8,11 +8,16 @@ import Footer from '@/components/Footer';
 import { matchDetailsToEvent, googleCalendarUrl, generateICS } from '@/app/c3h/events/data';
 
 // Dates carrying more than one Challengers fixture (across all competitions)
-const CLASH_DATES = ['May 10, 2026', 'July 25, 2026', 'August 2, 2026', 'August 30, 2026'];
+const CLASH_DATES = ['May 10, 2026', 'July 25, 2026', 'August 2, 2026', 'August 30, 2026', 'September 12, 2026'];
 
 interface Match {
   league?: string;
   match: number;
+  /**
+   * Playoff label ('Semi-Final', 'Final'). When set it replaces the "M{n}"
+   * badge — a knockout game is not league match n and must not read as one.
+   */
+  stage?: string;
   date: string;
   sortKey: string; // YYYY-MM-DD-HHMM for reliable sorting
   day: string;
@@ -54,6 +59,9 @@ const lplT30Matches: Match[] = [
   { match: 10, date: 'August 2, 2026', sortKey: '2026-08-02-0900', day: 'Sunday', time: '9:00 AM', opponent: 'NLCC', venue: 'Silverwoods Cricket Ground' },
   { match: 11, date: 'August 30, 2026', sortKey: '2026-08-30-0900', day: 'Sunday', time: '9:00 AM', opponent: 'Royal Tigers', venue: 'Silverwoods Cricket Ground' },
   { match: 12, date: 'September 6, 2026', sortKey: '2026-09-06-1200', day: 'Sunday', time: '12:00 PM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
+  // Playoffs. Reporting time as published by the league (12:00 PM report,
+  // ~1:00 PM first ball). Clashes with LCL T30 M13 the same day at NLAF.
+  { match: 13, stage: 'Semi-Final', date: 'September 12, 2026', sortKey: '2026-09-12-1200', day: 'Saturday', time: '12:00 PM', opponent: 'London Stars', venue: 'Northridge Cricket Ground' },
 ];
 
 // LCL T20 — 6 games, re-reconciled against the league's fixture list on
@@ -173,7 +181,7 @@ function MatchTable({ matches }: { matches: Match[] }) {
             {matches.map((m) => (
               <tr key={`${m.league ?? ''}-${m.match}`} className={`border-b border-white/5 hover:bg-white/5 transition-colors ${CLASH_DATES.includes(m.date) ? 'bg-red-500/5' : ''}`}>
                 <td className="px-6 py-4">
-                  <span className="text-sm font-bold text-primary-400">{m.league ? `${m.league} ` : ''}M{m.match}</span>
+                  <span className="text-sm font-bold text-primary-400">{m.league ? `${m.league} ` : ''}{m.stage ?? `M${m.match}`}</span>
                 </td>
                 <td className="px-6 py-4">
                   <div className="text-sm text-white font-medium flex items-center gap-1.5">{m.date}{CLASH_DATES.includes(m.date) && <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block flex-shrink-0" title="Schedule clash with other league"></span>}</div>
