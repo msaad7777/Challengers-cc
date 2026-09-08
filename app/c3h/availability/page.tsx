@@ -382,9 +382,40 @@ interface AllAvailability {
 // Deliberately light-background + black text (the app is dark-themed, which
 // prints poorly and wastes ink) and fully self-contained (inline styles),
 // opened in a new window that auto-triggers the print dialog.
+/**
+ * Which competition the printout covers. 'all' is the internal three-league
+ * sheet; the single-league variants are the ones sent to a league office,
+ * so they carry that league's rule citation and nothing else — a league
+ * has no business seeing our other competitions' selection record.
+ */
+export type TrackerLeague = 'all' | 'lcl' | 'lpl' | 't20';
+
+const TRACKER_LEAGUE_META: Record<Exclude<TrackerLeague, 'all'>, {
+  title: string;
+  pick: (r: PlayerTrackerRow) => LeagueStat;
+  rule: (required: number, total: number) => string;
+}> = {
+  lcl: {
+    title: 'London Cricket League — T30',
+    pick: (r) => r.lcl,
+    rule: (req, tot) => `LCL 2026 Participation Rule — 50% + 1 of the league stage (${req} of ${tot}).`,
+  },
+  lpl: {
+    title: 'London Premier League — T30, Division 2',
+    pick: (r) => r.lpl,
+    rule: (req, tot) => `LPL 2026 Rule 23 — Division 2 T30 requires ${req} of ${tot} league-stage matches in the playing twelve.`,
+  },
+  t20: {
+    title: 'London Cricket League — T20',
+    pick: (r) => r.lclT20,
+    rule: (req, tot) => `LCL T20 2026 — ${req} of ${tot} matches, per the league.`,
+  },
+};
+
 function buildTrackerPrintHtml(
   rows: PlayerTrackerRow[],
   opts: { recorded: number; total: number; finalized: number; lclTotal: number; lplTotal: number; t20Total: number; lclRequired: number; t20Required: number; generatedAt: string; former: string[] },
+  league: TrackerLeague = 'all',
 ): string {
   const esc = (s: string) =>
     s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -396,6 +427,66 @@ function buildTrackerPrintHtml(
         : `<span class="togo">${s.remainingNeeded} to go</span>`;
     return `<td class="num">${s.played}<span class="den">/${s.totalMatches}</span></td><td class="status">${status}</td><td class="avail">${s.available}</td>`;
   };
+  // ── Single-league sheet (the one that goes to a league office) ──────
+  if (league !== 'all') {
+    const meta = TRACKER_LEAGUE_META[league];
+    const sorted = [...rows].sort((a, b) => meta.pick(b).played - meta.pick(a).played);
+    const first = meta.pick(sorted[0] ?? rows[0]);
+    const required = first?.requiredForPlayoff ?? 0;
+    const total = first?.totalMatches ?? 0;
+    const lrows = sorted.map((r, i) => {
+      const st = meta.pick(r);
+      const status = st.requiredForPlayoff <= 0
+        ? ''
+        : st.eligible
+          ? '<span class="elig">\u2713 Eligible</span>'
+          : `<span class="togo">Short by ${st.remainingNeeded}</span>`;
+      return `<tr class="${i % 2 ? 'alt' : ''}">
+        <td class="player">${esc(r.player)}${opts.former.includes(r.player) ? ' <span class="former">(former member)</span>' : ''}</td>
+        <td class="num">${st.played}<span class="den">/${st.totalMatches}</span></td>
+        <td class="status">${status}</td>
+      </tr>`;
+    }).join('');
+    return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Challengers CC \u2014 ${esc(meta.title)} \u2014 Playing Record</title>
+  <style>
+    *{box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#111;margin:24px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    h1{color:#047857;margin:0;font-size:22px;letter-spacing:-.01em}
+    h2{margin:2px 0 4px;font-size:15px;font-weight:600;color:#222}
+    .meta{color:#555;font-size:11px;margin:0 0 14px}
+    table{border-collapse:collapse;width:100%;font-size:12px;max-width:560px}
+    th,td{border:1px solid #d4d4d8;padding:6px 10px;text-align:center}
+    thead th{background:#f1f5f9;font-weight:700;font-size:11px}
+    td.player{text-align:left;font-weight:600;white-space:nowrap}
+    td.num{font-weight:700;font-size:13px}
+    .den{color:#999;font-weight:400;font-size:10px}
+    td.status{font-size:11px}
+    .elig{color:#047857;font-weight:700}
+    .togo{color:#92400e;font-weight:600}
+    .former{color:#999;font-weight:400;font-size:10px}
+    tr.alt td{background:#fafafa}
+    .foot{color:#666;font-size:10px;margin-top:12px;line-height:1.5;max-width:560px}
+    @page{size:portrait;margin:12mm}
+    @media print{body{margin:0}}
+  </style></head>
+  <body>
+    <h1>Challengers Cricket Club</h1>
+    <h2>${esc(meta.title)} \u2014 2026 Playing Record</h2>
+    <p class="meta">Appearances in the playing twelve. Playoff qualification: <strong>${required} of ${total}</strong>.</p>
+    <table>
+      <thead><tr><th>Player</th><th>Games played</th><th>Playoff status</th></tr></thead>
+      <tbody>${lrows}</tbody>
+    </table>
+    <p class="foot">
+      ${esc(meta.rule(required, total))}<br>
+      A game is counted once the player appears in that match's recorded playing twelve. Generated ${esc(opts.generatedAt)} by Challengers CC.
+    </p>
+    <script>window.onload=function(){setTimeout(function(){window.print()},150)}<\/script>
+  </body></html>`;
+  }
+
   const body = rows.map((r, i) => `
     <tr class="${i % 2 ? 'alt' : ''}${r.lcl.eligible || r.lpl.eligible || r.lclT20.eligible ? ' hot' : ''}">
       <td class="player">${esc(r.player)}${opts.former.includes(r.player) ? ' <span class="former">(former)</span>' : ''}</td>
@@ -857,24 +948,36 @@ export default function AvailabilityPage() {
                         {s === 'total' ? 'Total' : s.toUpperCase()}
                       </button>
                     ))}
-                    <button
-                      onClick={() => {
-                        const html = buildTrackerPrintHtml(rows, {
-                          recorded, total: ALL_MATCHES.length, finalized: finalizedCount,
-                          lclTotal, lplTotal, t20Total, former: FORMER_PLAYERS,
-                          lclRequired: rows[0]?.lcl.requiredForPlayoff ?? (Math.floor(lclTotal / 2) + 1),
-                          t20Required: rows[0]?.lclT20.requiredForPlayoff ?? requiredForLeague('LCL T20', t20Total),
-                          generatedAt: new Date().toLocaleString('en-CA', { dateStyle: 'medium', timeStyle: 'short' }),
-                        });
-                        const w = window.open('', '_blank');
-                        if (!w) { alert('Please allow pop-ups to print or save the tracker as PDF.'); return; }
-                        w.document.write(html);
-                        w.document.close();
-                      }}
-                      className="px-2.5 py-1 rounded-lg font-bold border bg-primary-500/20 text-primary-400 border-primary-500/40 hover:bg-primary-500/30"
-                    >
-                      🖨️ Print / PDF
-                    </button>
+                    <span className="text-gray-500 ml-1">Print:</span>
+                    {([
+                      ['all', 'All', 'bg-primary-500/20 text-primary-400 border-primary-500/40 hover:bg-primary-500/30'],
+                      ['lcl', 'LCL T30', 'bg-primary-500/10 text-primary-300 border-primary-500/30 hover:bg-primary-500/20'],
+                      ['lpl', 'LPL T30', 'bg-accent-500/10 text-accent-300 border-accent-500/30 hover:bg-accent-500/20'],
+                      ['t20', 'LCL T20', 'bg-sky-500/10 text-sky-300 border-sky-500/30 hover:bg-sky-500/20'],
+                    ] as const).map(([key, label, cls]) => (
+                      <button
+                        key={key}
+                        title={key === 'all'
+                          ? 'Internal three-league sheet'
+                          : `${label} only — one league per page, with that league's rule cited. Use this when sending to the league office.`}
+                        onClick={() => {
+                          const html = buildTrackerPrintHtml(rows, {
+                            recorded, total: ALL_MATCHES.length, finalized: finalizedCount,
+                            lclTotal, lplTotal, t20Total, former: FORMER_PLAYERS,
+                            lclRequired: rows[0]?.lcl.requiredForPlayoff ?? (Math.floor(lclTotal / 2) + 1),
+                            t20Required: rows[0]?.lclT20.requiredForPlayoff ?? requiredForLeague('LCL T20', t20Total),
+                            generatedAt: new Date().toLocaleString('en-CA', { dateStyle: 'medium', timeStyle: 'short' }),
+                          }, key);
+                          const w = window.open('', '_blank');
+                          if (!w) { alert('Please allow pop-ups to print or save the tracker as PDF.'); return; }
+                          w.document.write(html);
+                          w.document.close();
+                        }}
+                        className={`px-2.5 py-1 rounded-lg font-bold border transition-all ${cls}`}
+                      >
+                        {key === 'all' ? '🖨️ All' : label}
+                      </button>
+                    ))}
                   </div>
                 </div>
                 <p className="text-gray-500 text-[11px] mb-2">
