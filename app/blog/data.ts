@@ -1,3 +1,14 @@
+/** One photo in a post's sliding gallery. */
+export interface GalleryItem {
+  src: string;
+  /** Player being celebrated — used as the caption. */
+  name: string;
+  /** Label for the nav chip. Defaults to the first word of `name`, which is
+   *  wrong for anyone who goes by their second name (Mohammed Saad → Saad). */
+  short?: string;
+  caption?: string;
+}
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -8,6 +19,8 @@ export interface BlogPost {
   date: string;
   image: string | null;
   video: string | null;
+  /** Optional sliding banner rendered above the article body. */
+  gallery?: GalleryItem[];
   featured: boolean;
   sponsorContact?: {
     name: string;
@@ -17,6 +30,88 @@ export interface BlogPost {
 }
 
 export const blogPosts: BlogPost[] = [
+  {
+    slug: 't30-2026-thank-you-to-our-heroes',
+    title: 'Thank You to the Heroes of Our First T30 Season',
+    excerpt:
+      'Our first T30 season is done — two leagues, twenty-six matches, and a run to the LPL Division 2 semi-final in our debut year. Here are the players who won Man of the Match along the way, and our thanks to everyone who made it happen.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        That&apos;s a wrap on our <strong class="text-white">2026 T30 season</strong>. Two leagues,
+        twenty-six fixtures, early-morning starts at Silverwoods, long afternoons at Northridge and
+        NLAF, and a squad that kept turning up for each other all summer.
+      </p>
+
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        When we entered the <strong class="text-white">London Premier League</strong> this year, we
+        did it as a brand-new club with no history in the competition and no idea how we&apos;d
+        measure up. We finished the league stage inside the top four and reached the
+        <strong class="text-white">Division 2 semi-final in our very first season</strong>. For a
+        club playing its debut year, that is something this group should be proud of for a long time.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Our Man of the Match winners</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        The banner above is our favourite thing we made this season — every Challengers player who
+        walked off with a Man of the Match award in the T30 campaign. Different grounds, different
+        opponents, different match situations, same green shirt. Congratulations to
+        <strong class="text-white">Abhishek, Denison, Dhamu, Saad, Sai, Shahriar, Shivam and
+        Siva</strong>.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">To every player</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Awards only ever tell part of the story. A season is built by the players who drove an hour
+        to field in the cold, who came in at number nine and saw out a tight finish, who bowled into
+        the wind so someone else could bowl with it, and who showed up at 7:00 AM on a Sunday because
+        the team was a player short. <strong class="text-white">Every single one of you made this
+        season what it was</strong>, and the eight names above would be the first to say so.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">To the leagues</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Our sincere thanks to the <strong class="text-white">London Cricket League</strong> and the
+        <strong class="text-white">London Premier League</strong> for having us in our first season.
+        Running a league is a volunteer job that is mostly invisible when it goes well — the
+        fixtures, the grounds, the rescheduling around weather, the points tables, and the umpires
+        who stood in the heat every weekend. Thank you for making room for a new club and giving our
+        players somewhere to compete.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">And to everyone behind the boundary</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        To our sponsors, who backed a first-year club on nothing more than a plan. To the families
+        who gave up their weekends, carried the kit, and cheered from the ropes. And to everyone who
+        followed a live stream or a scorecard from another time zone — thank you.
+      </p>
+
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        The T20 season is still running, and 2027 planning starts now. If you want to be part of it,
+        <a href="/#registration" class="text-primary-400 hover:text-primary-300 underline">register your interest</a>
+        — we&apos;d love to have you.
+      </p>
+
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        <strong class="text-white">Thank you, Challengers. What a first season.</strong>
+      </p>
+    `,
+    category: 'Club News',
+    author: 'Challengers CC',
+    date: '2026-09-14',
+    image: null,
+    video: null,
+    gallery: [
+      { src: '/motm/abhishek.jpg', name: 'Abhishek Ladva', short: 'Abhishek', caption: 'Man of the Match — T30 2026' },
+      { src: '/motm/denison.jpg', name: 'Denison Davis', short: 'Denison', caption: 'Man of the Match — T30 2026' },
+      { src: '/motm/dhamu.jpg', name: 'Dhamu', short: 'Dhamu', caption: 'Man of the Match — T30 2026' },
+      { src: '/motm/saad.jpg', name: 'Mohammed Saad', short: 'Saad', caption: 'Man of the Match — T30 2026' },
+      { src: '/motm/sai.jpg', name: 'Saikrishna Goriparthi', short: 'Sai', caption: 'Man of the Match — T30 2026' },
+      { src: '/motm/shariar.jpg', name: 'Syed Shahriar', short: 'Shahriar', caption: 'Man of the Match — T30 2026' },
+      { src: '/motm/shivam.jpg', name: 'Shivam Rajput', short: 'Shivam', caption: 'Man of the Match — T30 2026' },
+      { src: '/motm/siva.jpg', name: 'Siva Sriram', short: 'Siva', caption: 'Man of the Match — T30 2026' },
+    ],
+    featured: true,
+  },
   {
     slug: 'inside-the-challengers-player-hub-2026',
     title: 'More Than a Club — Everything Challengers Gives You to Improve Your Game',

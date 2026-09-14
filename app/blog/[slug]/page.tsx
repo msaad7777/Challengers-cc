@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { blogPosts, getPostBySlug, getRelatedPosts } from '../data';
 import SponsorContactForm from '../SponsorContactForm';
+import MotmCarousel from '@/components/MotmCarousel';
 
 const categoryColors: Record<string, string> = {
   'Sponsor Spotlight': 'bg-accent-500/20 text-accent-400 border-accent-500/30',
@@ -133,6 +134,11 @@ export default async function BlogPostPage({
                 className="w-full h-auto object-contain"
               />
             </div>
+          )}
+
+          {/* Sliding gallery (photos that don't share an aspect ratio) */}
+          {post.gallery && post.gallery.length > 0 && (
+            <MotmCarousel items={post.gallery} />
           )}
 
           {/* Video Player */}
