@@ -48,7 +48,7 @@ export default function MotmCarousel({ items }: { items: GalleryItem[] }) {
       <div className="px-6 pt-6 pb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <h3 className="text-white font-bold text-lg">Man of the Match — T30 2026</h3>
         <span className="text-gray-500 text-xs font-semibold tracking-wide uppercase">
-          {count} moments
+          LCL &amp; LPL · {count} moments
         </span>
       </div>
 

@@ -53,8 +53,9 @@ export const blogPosts: BlogPost[] = [
       <h3 class="text-2xl font-bold text-white mb-4">Our Man of the Match winners</h3>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         The banner above is our favourite thing we made this season — every Challengers player who
-        walked off with a Man of the Match award in the T30 campaign. Different grounds, different
-        opponents, different match situations, same green shirt. Congratulations to
+        walked off with a Man of the Match award across <strong class="text-white">both our T30
+        competitions, the London Cricket League and the London Premier League</strong>. Different
+        leagues, different grounds, different match situations, same green shirt. Congratulations to
         <strong class="text-white">Abhishek, Denison, Dhamu, Saad, Sai, Shahriar, Shivam and
         Siva</strong>.
       </p>
@@ -101,14 +102,14 @@ export const blogPosts: BlogPost[] = [
     image: null,
     video: null,
     gallery: [
-      { src: '/motm/abhishek.jpg', name: 'Abhishek Ladva', short: 'Abhishek', caption: 'Man of the Match — T30 2026' },
-      { src: '/motm/denison.jpg', name: 'Denison Davis', short: 'Denison', caption: 'Man of the Match — T30 2026' },
-      { src: '/motm/dhamu.jpg', name: 'Dhamu', short: 'Dhamu', caption: 'Man of the Match — T30 2026' },
-      { src: '/motm/saad.jpg', name: 'Mohammed Saad', short: 'Saad', caption: 'Man of the Match — T30 2026' },
-      { src: '/motm/sai.jpg', name: 'Saikrishna Goriparthi', short: 'Sai', caption: 'Man of the Match — T30 2026' },
-      { src: '/motm/shariar.jpg', name: 'Syed Shahriar', short: 'Shahriar', caption: 'Man of the Match — T30 2026' },
-      { src: '/motm/shivam.jpg', name: 'Shivam Rajput', short: 'Shivam', caption: 'Man of the Match — T30 2026' },
-      { src: '/motm/siva.jpg', name: 'Siva Sriram', short: 'Siva', caption: 'Man of the Match — T30 2026' },
+      { src: '/motm/abhishek.jpg', name: 'Abhishek Ladva', short: 'Abhishek', caption: 'T30 2026 · LCL & LPL' },
+      { src: '/motm/denison.jpg', name: 'Denison Davis', short: 'Denison', caption: 'T30 2026 · LCL & LPL' },
+      { src: '/motm/dhamu.jpg', name: 'Dhamu', short: 'Dhamu', caption: 'T30 2026 · LCL & LPL' },
+      { src: '/motm/saad.jpg', name: 'Mohammed Saad', short: 'Saad', caption: 'T30 2026 · LCL & LPL' },
+      { src: '/motm/sai.jpg', name: 'Saikrishna Goriparthi', short: 'Sai', caption: 'T30 2026 · LCL & LPL' },
+      { src: '/motm/shariar.jpg', name: 'Syed Shahriar', short: 'Shahriar', caption: 'T30 2026 · LCL & LPL' },
+      { src: '/motm/shivam.jpg', name: 'Shivam Rajput', short: 'Shivam', caption: 'T30 2026 · LCL & LPL' },
+      { src: '/motm/siva.jpg', name: 'Siva Sriram', short: 'Siva', caption: 'T30 2026 · LCL & LPL' },
     ],
     featured: true,
   },
