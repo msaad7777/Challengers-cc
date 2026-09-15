@@ -57,7 +57,7 @@ export default function TierCalculator() {
         </p>
         <p className="text-gray-400 text-sm mt-1">
           {isFull
-            ? '$150 on registration, $150 in March 2027. Priority selection and a guaranteed minimum number of matches.'
+            ? '$150 on registration, $150 in March 2027. Priority consideration, and selection managed so you reach playoff eligibility.'
             : '$150 on registration, nothing further. Full access to nets, the coaching hub and the members portal.'}
         </p>
         {games > 0 && games < 13 && (

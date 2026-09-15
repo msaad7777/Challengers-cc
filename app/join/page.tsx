@@ -72,7 +72,7 @@ export default function JoinPage() {
               <ul className="mt-5 space-y-2.5 text-sm text-gray-400">
                 <li>13 or more of the 26 T30 matches</li>
                 <li>Everything in Part Season</li>
-                <li><span className="text-gray-200">Guaranteed minimum matches</span> if you meet your availability commitment</li>
+                <li><span className="text-gray-200">Selection managed so you reach playoff eligibility</span>, if you meet your availability commitment</li>
                 <li>Priority selection, including playoff squads</li>
                 <li>$150 now, $150 in March 2027</li>
               </ul>
@@ -129,6 +129,37 @@ export default function JoinPage() {
       {/* What is not included + terms */}
       <section className="pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
+          <div className="glass rounded-2xl p-6 sm:p-8">
+            <h3 className="text-xl font-bold text-white">How selection works</h3>
+            <p className="text-gray-400 mt-2">
+              Registering as a Full Season member makes you available for more cricket. It does{' '}
+              <span className="text-gray-200">not</span> guarantee you a place in any particular
+              squad, and we would rather say that plainly now than have it come as a surprise in July.
+            </p>
+            <p className="text-gray-400 mt-3">
+              Captains, vice-captains and the board pick each squad on four things: the availability
+              you marked in advance, your attendance at practice, your current form and skill level,
+              and{' '}
+              <span className="text-gray-200">squad balance</span> — a side needs a certain number of
+              bowlers, batters and a keeper, and the right mix for the opposition and the ground.
+              Even a player available for every match will sometimes miss out because the balance
+              calls for something else that week.
+            </p>
+            <p className="text-gray-400 mt-3">
+              <span className="text-white font-semibold">What we do commit to.</span> If you are a
+              Full Season member and you meet your availability commitment, we will manage selection
+              across the year so that you reach{' '}
+              <span className="text-gray-200">playoff eligibility</span> — 8 of 14 matches in the LCL,
+              5 of 12 in the LPL. We schedule that deliberately in the first half of the season rather
+              than leaving it to chance, so that one omission never costs you your place in a knockout.
+            </p>
+            <p className="text-gray-400 mt-3">
+              And if you are left out, a captain will tell you before the squad is announced, with the
+              reason and when you are next in. Nobody at this club should find out by reading a team
+              sheet.
+            </p>
+          </div>
+
           <div className="glass rounded-2xl p-6 sm:p-8">
             <h3 className="text-xl font-bold text-white">The T20 season is separate</h3>
             <p className="text-gray-400 mt-2">
