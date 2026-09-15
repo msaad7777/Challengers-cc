@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent, useRef } from 'react';
+import { trackConversion } from '@/lib/gtag';
 
 export default function Registration() {
   const [formData, setFormData] = useState({
@@ -34,6 +35,7 @@ export default function Registration() {
 
     // Show success message after brief delay
     setTimeout(() => {
+      trackConversion('registration');
       setSubmitMessage('success');
       setFormData({ name: '', email: '', phone: '', skillLevel: '', willingToPlay: '', playingRole: '', jerseySize: '', jerseyType: '', trouserWaistSize: '' });
       setIsSubmitting(false);

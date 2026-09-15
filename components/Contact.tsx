@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from 'react';
+import { trackConversion } from '@/lib/gtag';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -38,6 +39,7 @@ export default function Contact() {
         body: formBody.toString(),
       });
 
+      trackConversion('contact');
       setSubmitMessage('Message sent successfully! We\'ll get back to you soon.');
       setFormData({ name: '', email: '', message: '' });
     } catch (error) {

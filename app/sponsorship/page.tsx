@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from 'react';
+import { trackConversion } from '@/lib/gtag';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import VerifiedBanner from '@/components/VerifiedBanner';
@@ -50,6 +51,7 @@ export default function SponsorshipPage() {
         body: formBody.toString(),
       });
 
+      trackConversion('sponsorship');
       setSubmitMessage('Thank you for your interest! We\'ll be in touch soon to discuss partnership opportunities.');
       setFormData({ organizationName: '', contactName: '', email: '', phone: '', sponsorshipLevel: '', message: '' });
     } catch (error) {
