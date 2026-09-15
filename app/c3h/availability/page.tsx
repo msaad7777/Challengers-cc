@@ -105,7 +105,6 @@ const ALL_MATCHES: ScheduledMatch[] = [
   // `clash` (nothing overlaps it) but worth knowing when picking the squad.
   { id: 'lclt20-7', league: 'LCL T20', date: 'Sep 7', fullDate: '2026-09-07', opponent: 'Tigers', time: '7:30 AM', venue: 'Silverwoods', clash: false },
   { id: 'lclt20-5', league: 'LCL T20', date: 'Sep 20', fullDate: '2026-09-20', opponent: 'Kingstrikers', time: '7:00 AM', venue: 'Northridge', clash: false, homeAway: 'away' },
-  { id: 'lclt20-6', league: 'LCL T20', date: 'Sep 26', fullDate: '2026-09-26', opponent: 'Tigers CC', time: '9:00 AM', venue: 'Sarnia', clash: false, homeAway: 'home' },
   { id: 'lclt20-4', league: 'LCL T20', date: 'Oct 4', fullDate: '2026-10-04', opponent: 'London Stars', time: '7:30 AM', venue: 'NLAF', clash: false, homeAway: 'away' },
 ];
 

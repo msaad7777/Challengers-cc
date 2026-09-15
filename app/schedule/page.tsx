@@ -79,7 +79,6 @@ const lclT20Matches: Match[] = [
   // renumbered to keep the list chronological, per the convention above.
   { match: 4, date: 'September 7, 2026', sortKey: '2026-09-07-0730', day: 'Monday', time: '7:30 AM', opponent: 'Tigers', venue: 'Silverwoods Cricket Ground' },
   { match: 5, date: 'September 20, 2026', sortKey: '2026-09-20-0700', day: 'Sunday', time: '7:00 AM', opponent: 'Kingstrikers', venue: 'Northridge Cricket Ground' },
-  { match: 6, date: 'September 26, 2026', sortKey: '2026-09-26-0900', day: 'Saturday', time: '9:00 AM', opponent: 'Tigers Cricket Club', venue: 'Mike Weir Park, Sarnia' },
   { match: 7, date: 'October 4, 2026', sortKey: '2026-10-04-0730', day: 'Sunday', time: '7:30 AM', opponent: 'London Stars', venue: 'North London Athletic Fields' },
 ];
 
