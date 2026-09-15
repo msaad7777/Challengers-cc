@@ -73,7 +73,7 @@ export default function JoinPage() {
                 <li>13 or more of the 26 T30 matches</li>
                 <li>Everything in Part Season</li>
                 <li><span className="text-gray-200">Selection managed so you reach playoff eligibility</span>, if you meet your availability commitment</li>
-                <li>Priority selection, including playoff squads</li>
+                <li>Priority consideration for selection, including playoff squads</li>
                 <li>$150 now, $150 in March 2027</li>
               </ul>
             </div>
@@ -147,11 +147,17 @@ export default function JoinPage() {
             </p>
             <p className="text-gray-400 mt-3">
               <span className="text-white font-semibold">What we do commit to.</span> If you are a
-              Full Season member and you meet your availability commitment, we will manage selection
-              across the year so that you reach{' '}
+              Full Season member and you meet the availability you committed to, the club will
+              actively manage selection across the season with the object of getting you to{' '}
               <span className="text-gray-200">playoff eligibility</span> — 8 of 14 matches in the LCL,
-              5 of 12 in the LPL. We schedule that deliberately in the first half of the season rather
-              than leaving it to chance, so that one omission never costs you your place in a knockout.
+              5 of 12 in the LPL. We plan the first half of the season around this rather than leaving
+              it to chance, so that one omission never costs you a place in a knockout.
+            </p>
+            <p className="text-gray-400 mt-3">
+              This is a commitment we build the season around, not an aspiration — but it is not an
+              absolute guarantee, and it cannot be. Injury, late withdrawals, weather, league
+              rescheduling and your own availability all affect it. Where we fall short of it for a
+              member who kept their side of the commitment, we will say so and explain why.
             </p>
             <p className="text-gray-400 mt-3">
               And if you are left out, a captain will tell you before the squad is announced, with the
@@ -177,6 +183,26 @@ export default function JoinPage() {
               2027. After that point the money is already committed to league deposits and winter
               facility bookings, and cannot be refunded. We will tell you the exact date before
               it passes.
+            </p>
+          </div>
+
+          <div className="glass rounded-2xl p-6 sm:p-8">
+            <h3 className="text-xl font-bold text-white">If you think you have been treated unfairly</h3>
+            <p className="text-gray-400 mt-2">
+              Raise it with your captain first. If that does not resolve it, write to{' '}
+              <span className="text-gray-200">contact@challengerscc.ca</span> and the board will
+              consider it and reply. We would much rather hear about a problem in June than lose a
+              player in July.
+            </p>
+            <p className="text-gray-400 mt-3">
+              Registration is subject to our{' '}
+              <Link href="/legal/code-of-conduct" className="text-primary-400 hover:text-primary-300 underline">
+                Code of Conduct
+              </Link>{' '}
+              and{' '}
+              <Link href="/legal/terms-of-service" className="text-primary-400 hover:text-primary-300 underline">
+                Terms of Service
+              </Link>. You will be asked to confirm you have read the registration terms when you sign up.
             </p>
           </div>
 
