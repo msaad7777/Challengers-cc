@@ -2,7 +2,11 @@
 
 import { useState } from 'react';
 
-/** Combined T30 fixtures across both leagues — the denominator for the tier rule. */
+/**
+ * Combined T30 fixtures across both leagues in 2026 — used as the working
+ * basis because the 2027 fixture list is not published yet. The tier rule is
+ * a PERCENTAGE, so it holds whatever the final 2027 count turns out to be.
+ */
 const T30_FIXTURES = 26;
 /** At or above this share of T30 fixtures, a member is full season. */
 const FULL_SEASON_THRESHOLD = 0.5;
@@ -18,8 +22,10 @@ export default function TierCalculator() {
     <div className="glass rounded-2xl p-6 sm:p-8">
       <h3 className="text-xl font-bold text-white">Which tier are you?</h3>
       <p className="text-gray-400 text-sm mt-1">
-        The 2027 T30 season is <span className="text-white font-semibold">{T30_FIXTURES} matches</span> across
-        both leagues. Your tier depends only on how many of them you can commit to.
+        Based on <span className="text-white font-semibold">2026 — {T30_FIXTURES} T30 matches</span> across
+        both leagues. The 2027 fixture list is not out yet, so we use last season as the basis. Your tier
+        is set by <span className="text-white font-semibold">percentage</span>, so it holds whatever the
+        final 2027 count turns out to be.
       </p>
 
       <label htmlFor="games" className="block mt-6 text-sm font-semibold text-gray-300">
@@ -63,8 +69,8 @@ export default function TierCalculator() {
         {games > 0 && games < 13 && (
           <p className="text-accent-400/90 text-xs mt-3">
             Note: below 50% you are unlikely to reach the league playoff thresholds
-            (8 of 14 in LCL, 5 of 12 in LPL), so part-season members are not usually
-            available for knockout matches.
+            (in 2026: 8 of 14 in LCL, 5 of 12 in LPL), so part-season members are not
+            usually available for knockout matches.
           </p>
         )}
         {games === 0 && (
@@ -76,7 +82,9 @@ export default function TierCalculator() {
       </div>
 
       <p className="text-gray-500 text-xs mt-4">
-        Playing one league in full is 14 of 26 — that is 54%, so it counts as Full Season.
+        Playing one league in full was 14 of 26 in 2026 — 54%, so it counts as Full Season.
+        Once the 2027 schedules are published we will confirm the real fixture count, and you will
+        mark your availability match by match in the members portal.
       </p>
     </div>
   );

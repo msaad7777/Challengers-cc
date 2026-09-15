@@ -59,7 +59,7 @@ export default function JoinPage() {
               <p className="text-4xl font-bold text-gray-200 mt-2">$150</p>
               <p className="text-gray-500 text-xs mt-1">Under 50% of the T30 season</p>
               <ul className="mt-5 space-y-2.5 text-sm text-gray-400">
-                <li>Fewer than 13 of the 26 T30 matches</li>
+                <li>Under 50% of the T30 fixtures — 13 of 26 on 2026 numbers</li>
                 <li>Indoor winter nets and outdoor practice</li>
                 <li>Full access to the members portal and coaching hub</li>
                 <li>Nothing further to pay</li>
@@ -70,7 +70,7 @@ export default function JoinPage() {
               <p className="text-4xl font-bold text-primary-400 mt-2">$300</p>
               <p className="text-gray-500 text-xs mt-1">50% or more of the T30 season</p>
               <ul className="mt-5 space-y-2.5 text-sm text-gray-400">
-                <li>13 or more of the 26 T30 matches</li>
+                <li>50% or more of the T30 fixtures — 13 of 26 on 2026 numbers</li>
                 <li>Everything in Part Season</li>
                 <li><span className="text-gray-200">Selection managed so you reach playoff eligibility</span>, if you meet your availability commitment</li>
                 <li>Priority consideration for selection, including playoff squads</li>
@@ -130,6 +130,33 @@ export default function JoinPage() {
       <section className="pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
           <div className="glass rounded-2xl p-6 sm:p-8">
+            <h3 className="text-xl font-bold text-white">The 2027 fixture list is not out yet</h3>
+            <p className="text-gray-400 mt-2">
+              Neither league has published its 2027 schedule, and we do not yet know how many teams
+              will be in each division. Every number on this page is therefore based on{' '}
+              <span className="text-gray-200">2026, when we played 26 T30 matches</span> — 14 in the
+              LCL and 12 in the LPL.
+            </p>
+            <p className="text-gray-400 mt-3">
+              That is why the tiers are set by <span className="text-gray-200">percentage rather than
+              a fixed number of games</span>. Whatever the 2027 count turns out to be, 50% or more is
+              Full Season and below that is Part Season. Nothing you agree to now changes if the
+              fixture list does.
+            </p>
+            <p className="text-gray-400 mt-3">
+              One thing that may change it: the LPL operates promotion and relegation, and we reached
+              the Division 2 semi-final. <span className="text-gray-200">If we go up to Division 1,
+              both the number of fixtures and the playoff qualification threshold change.</span> We
+              will confirm as soon as the leagues publish.
+            </p>
+            <p className="text-gray-400 mt-3">
+              <span className="text-white font-semibold">Once the schedules are released</span>, you
+              get access to the members portal to mark your availability match by match. That is what
+              your commitment is measured against — not a number you picked in October.
+            </p>
+          </div>
+
+          <div className="glass rounded-2xl p-6 sm:p-8">
             <h3 className="text-xl font-bold text-white">How selection works</h3>
             <p className="text-gray-400 mt-2">
               Registering as a Full Season member makes you available for more cricket. It does{' '}
@@ -149,8 +176,8 @@ export default function JoinPage() {
               <span className="text-white font-semibold">What we do commit to.</span> If you are a
               Full Season member and you meet the availability you committed to, the club will
               actively manage selection across the season with the object of getting you to{' '}
-              <span className="text-gray-200">playoff eligibility</span> — 8 of 14 matches in the LCL,
-              5 of 12 in the LPL. We plan the first half of the season around this rather than leaving
+              <span className="text-gray-200">playoff eligibility</span> — on 2026 numbers that was
+              8 of 14 matches in the LCL and 5 of 12 in the LPL. We plan the first half of the season around this rather than leaving
               it to chance, so that one omission never costs you a place in a knockout.
             </p>
             <p className="text-gray-400 mt-3">
