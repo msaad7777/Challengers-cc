@@ -34,7 +34,9 @@ export default function Navbar() {
     { label: 'Blog', href: '/blog', isPage: true },
     { label: 'Sponsorship', href: '/sponsorship', isPage: true },
     { label: 'Payments', href: '/payments', isPage: true },
-    { label: 'Register', href: isHomePage ? '#interest-section' : '/#interest-section', isPage: false },
+    // Points at /join — the 2027 tiers, fee breakdown and terms — rather than
+    // dropping people straight onto the form with no context.
+    { label: 'Join 2027', href: '/join', isPage: true },
     { label: 'Contact', href: isHomePage ? '#contact' : '/#contact', isPage: false },
     { label: 'C3H', href: '/c3h', isPage: true },
   ];
