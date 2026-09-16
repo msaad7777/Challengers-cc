@@ -20,7 +20,7 @@ export default function LookingForSponsorsPage() {
               <svg className="w-4 h-4 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
               </svg>
-              <span className="text-sm text-gray-300">2026 Season</span>
+              <span className="text-sm text-gray-300">2027 Season</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
@@ -34,9 +34,47 @@ export default function LookingForSponsorsPage() {
             <p className="text-lg text-gray-400 max-w-3xl mx-auto">
               Challengers Cricket Club, established in 2025, is a Not-for-Profit Corporation dedicated to
               fostering cricket development, promoting diversity, and building community connections in
-              London, Ontario. We are seeking sponsors for our 2026 season to help grow the sport we love.
+              London, Ontario. We are seeking sponsors for our 2027 season to help grow the sport we love.
               We are not a registered charity and do not issue charitable tax receipts.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 2026 Season In Numbers */}
+      <section className="py-16 bg-black border-y border-white/5">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2">
+              Our <span className="gradient-text">2026 Season</span>
+            </h2>
+            <p className="text-gray-400 text-sm">What your sponsorship builds on</p>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="glass rounded-2xl p-6 text-center glass-hover">
+              <div className="text-3xl sm:text-4xl font-bold gradient-text mb-1">45</div>
+              <div className="text-sm text-gray-300 font-medium">Players on the roster</div>
+              <div className="text-xs text-gray-500 mt-1">Across all squads in 2026</div>
+            </div>
+
+            <div className="glass rounded-2xl p-6 text-center glass-hover">
+              <div className="text-3xl sm:text-4xl font-bold gradient-text mb-1">33</div>
+              <div className="text-sm text-gray-300 font-medium">Fixtures played</div>
+              <div className="text-xs text-gray-500 mt-1">A full competitive season</div>
+            </div>
+
+            <div className="glass rounded-2xl p-6 text-center glass-hover">
+              <div className="text-3xl sm:text-4xl font-bold gradient-text mb-1">3</div>
+              <div className="text-sm text-gray-300 font-medium">Leagues entered</div>
+              <div className="text-xs text-gray-500 mt-1">LCL T30, LPL T30, LCL T20</div>
+            </div>
+
+            <div className="glass rounded-2xl p-6 text-center glass-hover">
+              <div className="text-3xl sm:text-4xl font-bold gradient-text mb-1">Live</div>
+              <div className="text-sm text-gray-300 font-medium">Matches streamed</div>
+              <div className="text-xs text-gray-500 mt-1">On our YouTube channel</div>
+            </div>
           </div>
         </div>
       </section>
@@ -482,7 +520,7 @@ export default function LookingForSponsorsPage() {
                   View Full Sponsorship Packages
                 </Link>
                 <a
-                  href="mailto:contact@challengerscc.ca?subject=2026 Season Sponsorship Inquiry"
+                  href="mailto:contact@challengerscc.ca?subject=2027 Season Sponsorship Inquiry"
                   className="inline-block px-8 py-4 glass glass-hover rounded-lg font-semibold border border-white/10 hover:border-primary-500/50 transition-all duration-300"
                 >
                   Email Us Directly

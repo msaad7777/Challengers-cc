@@ -69,7 +69,7 @@ export default function SponsorshipPage() {
       color: "from-accent-600 to-accent-500",
       icon: "🏆",
       benefits: [
-        "Exclusive naming rights for the 2026 season",
+        "Exclusive naming rights for the 2027 season",
         "Example: \"Challengers Cricket Club powered by <Your Business>\"",
         "Largest logo placement on all player jerseys (front center)",
         "Primary branding on all social media posters & announcements",
