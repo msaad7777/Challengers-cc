@@ -53,15 +53,15 @@ export default function LookingForSponsorsPage() {
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <div className="glass rounded-2xl p-6 text-center glass-hover">
-              <div className="text-3xl sm:text-4xl font-bold gradient-text mb-1">45</div>
-              <div className="text-sm text-gray-300 font-medium">Players on the roster</div>
-              <div className="text-xs text-gray-500 mt-1">Across all squads in 2026</div>
+              <div className="text-3xl sm:text-4xl font-bold gradient-text mb-1">26</div>
+              <div className="text-sm text-gray-300 font-medium">T30 matches played</div>
+              <div className="text-xs text-gray-500 mt-1">14 in the LCL, 12 in the LPL</div>
             </div>
 
             <div className="glass rounded-2xl p-6 text-center glass-hover">
-              <div className="text-3xl sm:text-4xl font-bold gradient-text mb-1">33</div>
-              <div className="text-sm text-gray-300 font-medium">Fixtures played</div>
-              <div className="text-xs text-gray-500 mt-1">A full competitive season</div>
+              <div className="text-3xl sm:text-4xl font-bold gradient-text mb-1">Semi</div>
+              <div className="text-sm text-gray-300 font-medium">LPL Division 2 semi-final</div>
+              <div className="text-xs text-gray-500 mt-1">Reached in our debut season</div>
             </div>
 
             <div className="glass rounded-2xl p-6 text-center glass-hover">
