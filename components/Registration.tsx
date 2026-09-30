@@ -1,7 +1,47 @@
 "use client";
 
-import { useState, FormEvent, useRef } from 'react';
+import { useState, FormEvent, useRef, useEffect } from 'react';
 import { trackConversion } from '@/lib/gtag';
+import { buildAdvice, T30_FIXTURES, weekendSharePct } from '@/lib/registrationAdvice';
+
+/**
+ * Google Form field mapping. Every input's `name` comes from here rather than
+ * being written inline, so the whole mapping is auditable in one place.
+ *
+ * ⚠️ THE LAST THREE ARE NOT WIRED UP YET. The questions exist on this page and
+ * drive the on-page recommendation, but the Google Form has no matching fields,
+ * so their answers are NOT recorded. To capture them:
+ *   1. Open the Google Form and add three questions (any order):
+ *        "In 2027 you will be..."            (multiple choice)
+ *        "Weekend availability"              (multiple choice)
+ *        "Matches you can commit to (of 26)" (short answer)
+ *   2. Preview the form, inspect each field, and copy its `entry.NNNNNN` name.
+ *   3. Paste them below. Nothing else needs to change.
+ * A blank id means the input renders with no `name`, so it is simply not
+ * submitted — never silently posted to the wrong question.
+ * See GOOGLE_FORMS_SETUP.md for the full walkthrough.
+ */
+const ENTRY_IDS = {
+  name: 'entry.1407381676',
+  email: 'entry.112847984',
+  phone: 'entry.578432831',
+  skillLevel: 'entry.980943308',
+  willingToPlay: 'entry.1652603126',
+  playingRole: 'entry.1089654944',
+  jerseySize: 'entry.1146547898',
+  jerseyType: 'entry.1555965869',
+  trouserWaistSize: 'entry.1033675185',
+  workPattern: '',
+  weekendAvailability: '',
+  gamesCommitted: '',
+} as const;
+
+/** Undefined (rather than "") so React omits the attribute entirely. */
+const fieldName = (key: keyof typeof ENTRY_IDS): string | undefined =>
+  ENTRY_IDS[key] || undefined;
+
+/** A genuine person does not complete this form in under four seconds. */
+const MIN_HUMAN_SECONDS = 4;
 
 export default function Registration() {
   const [formData, setFormData] = useState({
@@ -11,14 +51,29 @@ export default function Registration() {
     skillLevel: '',
     willingToPlay: '',
     playingRole: '',
+    workPattern: '',
+    weekendAvailability: '',
+    gamesCommitted: 13,
     jerseySize: '',
     jerseyType: '',
     trouserWaistSize: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
+  const [honeypot, setHoneypot] = useState('');
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const mountedAt = useRef<number>(0);
+
+  useEffect(() => {
+    mountedAt.current = Date.now();
+  }, []);
+
+  const advice = buildAdvice({
+    gamesCommitted: formData.gamesCommitted,
+    weekendAvailability: formData.weekendAvailability as never,
+    workPattern: formData.workPattern as never,
+  });
 
   // Google Form URL - just change this if you create a new form
   const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfVYSWAYY8wgl_KIjsNwENzf2w57xp4ZcMBWXLeXRkY7L4DxQ/formResponse";
@@ -28,16 +83,25 @@ export default function Registration() {
     setIsSubmitting(true);
     setSubmitMessage('');
 
-    // Submit the form to iframe
-    if (formRef.current) {
+    // Two client-side filters for automated submissions: a field no human can
+    // see, and a floor on how fast the form can be completed. Both fail quietly
+    // — a bot is shown the same success state, so it learns nothing.
+    const tooFast =
+      mountedAt.current > 0 &&
+      (Date.now() - mountedAt.current) / 1000 < MIN_HUMAN_SECONDS;
+    const looksAutomated = honeypot.trim().length > 0 || tooFast;
+
+    if (!looksAutomated && formRef.current) {
       formRef.current.submit();
     }
 
     // Show success message after brief delay
     setTimeout(() => {
-      trackConversion('registration');
+      if (!looksAutomated) {
+        trackConversion('registration');
+      }
       setSubmitMessage('success');
-      setFormData({ name: '', email: '', phone: '', skillLevel: '', willingToPlay: '', playingRole: '', jerseySize: '', jerseyType: '', trouserWaistSize: '' });
+      setFormData({ name: '', email: '', phone: '', skillLevel: '', willingToPlay: '', playingRole: '', workPattern: '', weekendAvailability: '', gamesCommitted: 13, jerseySize: '', jerseyType: '', trouserWaistSize: '' });
       setIsSubmitting(false);
     }, 1000);
   };
@@ -121,7 +185,7 @@ export default function Registration() {
                 <input
                   type="text"
                   id="name"
-                  name="entry.1407381676"
+                  name={fieldName('name')}
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -137,7 +201,7 @@ export default function Registration() {
                 <input
                   type="email"
                   id="email"
-                  name="entry.112847984"
+                  name={fieldName('email')}
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -153,7 +217,7 @@ export default function Registration() {
                 <input
                   type="tel"
                   id="phone"
-                  name="entry.578432831"
+                  name={fieldName('phone')}
                   required
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -168,7 +232,7 @@ export default function Registration() {
                 </label>
                 <select
                   id="skillLevel"
-                  name="entry.980943308"
+                  name={fieldName('skillLevel')}
                   required
                   value={formData.skillLevel}
                   onChange={(e) => setFormData({ ...formData, skillLevel: e.target.value })}
@@ -187,7 +251,7 @@ export default function Registration() {
                 </label>
                 <select
                   id="willingToPlay"
-                  name="entry.1652603126"
+                  name={fieldName('willingToPlay')}
                   required
                   value={formData.willingToPlay}
                   onChange={(e) => setFormData({ ...formData, willingToPlay: e.target.value })}
@@ -206,7 +270,7 @@ export default function Registration() {
                 </label>
                 <select
                   id="playingRole"
-                  name="entry.1089654944"
+                  name={fieldName('playingRole')}
                   required
                   value={formData.playingRole}
                   onChange={(e) => setFormData({ ...formData, playingRole: e.target.value })}
@@ -220,13 +284,110 @@ export default function Registration() {
                 </select>
               </div>
 
+              {/* ── Availability ──────────────────────────────────────────
+                  Most of a season is decided here, not in the cricket answers
+                  above: 30 of our 33 fixtures in 2026 fell on a weekend. */}
+              <div className="pt-2 mt-2 border-t border-white/10">
+                <h4 className="text-base font-bold text-white">Your 2027 availability</h4>
+                <p className="text-sm text-gray-400 mt-1">
+                  {weekendSharePct()}% of our 2026 fixtures were on a Saturday or Sunday — the only
+                  three that were not fell on public holidays. These answers matter more than
+                  anything above.
+                </p>
+              </div>
+
+              <div>
+                <label htmlFor="workPattern" className="block text-sm font-medium text-gray-300 mb-2">
+                  In 2027 you will be *
+                </label>
+                <select
+                  id="workPattern"
+                  name={fieldName('workPattern')}
+                  required
+                  value={formData.workPattern}
+                  onChange={(e) => setFormData({ ...formData, workPattern: e.target.value })}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition-all text-white"
+                >
+                  <option value="" className="bg-gray-900 text-gray-400">Select one</option>
+                  <option value="Working full time" className="bg-gray-900 text-white">Working full time</option>
+                  <option value="Working part time" className="bg-gray-900 text-white">Working part time</option>
+                  <option value="Shift work or rotating roster" className="bg-gray-900 text-white">Shift work or rotating roster</option>
+                  <option value="Studying" className="bg-gray-900 text-white">Studying</option>
+                  <option value="Something else" className="bg-gray-900 text-white">Something else</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="weekendAvailability" className="block text-sm font-medium text-gray-300 mb-2">
+                  Do you work weekends? *
+                </label>
+                <select
+                  id="weekendAvailability"
+                  name={fieldName('weekendAvailability')}
+                  required
+                  value={formData.weekendAvailability}
+                  onChange={(e) => setFormData({ ...formData, weekendAvailability: e.target.value })}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition-all text-white"
+                >
+                  <option value="" className="bg-gray-900 text-gray-400">Select one</option>
+                  <option value="free" className="bg-gray-900 text-white">No — my weekends are generally free</option>
+                  <option value="some" className="bg-gray-900 text-white">Some weekends — maybe one or two a month</option>
+                  <option value="most" className="bg-gray-900 text-white">Yes — I work most weekends</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="gamesCommitted" className="block text-sm font-medium text-gray-300 mb-2">
+                  Matches you can genuinely commit to *
+                </label>
+                <input
+                  type="range"
+                  id="gamesCommitted"
+                  min={0}
+                  max={T30_FIXTURES}
+                  value={formData.gamesCommitted}
+                  onChange={(e) => setFormData({ ...formData, gamesCommitted: Number(e.target.value) })}
+                  className="w-full accent-primary-500 cursor-pointer"
+                  aria-describedby="registration-advice"
+                />
+                <input type="hidden" name={fieldName('gamesCommitted')} value={formData.gamesCommitted} />
+                <div className="flex justify-between text-[11px] text-gray-500 font-mono mt-1">
+                  <span>0</span><span>13 · half a season</span><span>{T30_FIXTURES}</span>
+                </div>
+              </div>
+
+              {/* Rule-based guidance — lib/registrationAdvice.ts */}
+              <div
+                id="registration-advice"
+                aria-live="polite"
+                className={`rounded-xl border p-5 ${
+                  advice.tier === 'full'
+                    ? 'bg-primary-500/10 border-primary-500/40'
+                    : 'bg-white/5 border-white/15'
+                }`}
+              >
+                <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                  What we would recommend
+                </p>
+                <p className={`mt-2 text-lg font-bold ${advice.tier === 'full' ? 'text-primary-400' : 'text-gray-200'}`}>
+                  {advice.headline}
+                </p>
+                <p className="text-sm text-gray-400 mt-2">{advice.body}</p>
+                <p className="text-sm text-gray-500 mt-2">{advice.playoff}</p>
+                {advice.caution && (
+                  <p className="text-sm text-accent-400/90 mt-3 pt-3 border-t border-white/10">
+                    {advice.caution}
+                  </p>
+                )}
+              </div>
+
               <div>
                 <label htmlFor="jerseySize" className="block text-sm font-medium text-gray-300 mb-2">
                   Jersey Size (Optional)
                 </label>
                 <select
                   id="jerseySize"
-                  name="entry.1146547898"
+                  name={fieldName('jerseySize')}
                   value={formData.jerseySize}
                   onChange={(e) => setFormData({ ...formData, jerseySize: e.target.value })}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all text-white"
@@ -248,7 +409,7 @@ export default function Registration() {
                 </label>
                 <select
                   id="jerseyType"
-                  name="entry.1555965869"
+                  name={fieldName('jerseyType')}
                   value={formData.jerseyType}
                   onChange={(e) => setFormData({ ...formData, jerseyType: e.target.value })}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all text-white"
@@ -267,12 +428,54 @@ export default function Registration() {
                 <input
                   type="text"
                   id="trouserWaistSize"
-                  name="entry.1033675185"
+                  name={fieldName('trouserWaistSize')}
                   value={formData.trouserWaistSize}
                   onChange={(e) => setFormData({ ...formData, trouserWaistSize: e.target.value })}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
                   placeholder="e.g., 32, 34, 36 (optional)"
                 />
+              </div>
+
+              {/* Not visible to a person, not announced to a screen reader, and
+                  impossible to tab into — anything in here came from a script. */}
+              <div
+                aria-hidden="true"
+                style={{ position: 'absolute', left: '-9999px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }}
+              >
+                <label htmlFor="website-url">Leave this field empty</label>
+                <input
+                  type="text"
+                  id="website-url"
+                  name="website-url"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                />
+              </div>
+
+              <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+                <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
+                  What happens after you submit
+                </p>
+                <ol className="space-y-3">
+                  {[
+                    ['1', 'We read your form', 'A person, not an autoresponder. If anything looks unclear we will just ask.'],
+                    ['2', `Pay your $${advice.feeNow} registration`, 'We send you the payment details. Your place is held once it clears.'],
+                    ['3', 'You are added to the WhatsApp group', 'This happens after payment — it is where nets, fixtures and selection are organised.'],
+                    ['4', 'Winter nets start', 'You are in the squad from that point, not from the first match in May.'],
+                  ].map(([n, title, detail]) => (
+                    <li key={n} className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-500/20 border border-primary-500/40 text-primary-400 text-xs font-bold flex items-center justify-center">
+                        {n}
+                      </span>
+                      <span>
+                        <span className="block text-sm font-semibold text-gray-200">{title}</span>
+                        <span className="block text-xs text-gray-500 mt-0.5">{detail}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ol>
               </div>
 
               <button
@@ -285,8 +488,14 @@ export default function Registration() {
 
               {submitMessage === 'success' && (
                 <div className="p-6 rounded-lg bg-primary-500/20 border border-primary-500/30">
-                  <p className="text-sm text-center mb-4">
-                    Thank you for registering! We&apos;ll add you to our official WhatsApp group soon. If you&apos;re not added within 48 hours, please email us at contact@challengerscc.ca
+                  <p className="text-sm text-center mb-2">
+                    <strong>Thank you for registering.</strong> We&apos;ll be in touch with how to pay
+                    your $150 — and once that clears we&apos;ll add you to the club WhatsApp group,
+                    where nets and fixtures get organised.
+                  </p>
+                  <p className="text-xs text-center text-gray-400 mb-4">
+                    Not heard from us within 48 hours? Email{' '}
+                    <a href="mailto:contact@challengerscc.ca" className="text-primary-400 hover:text-primary-300 underline">contact@challengerscc.ca</a>.
                   </p>
                   <div className="flex flex-col items-center gap-3">
                     <p className="text-sm text-gray-300">Follow us for updates, match results, and events!</p>
