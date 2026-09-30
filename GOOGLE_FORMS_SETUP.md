@@ -142,6 +142,56 @@ You have **3 more forms** to create for embedded functionality on your website:
 
 ---
 
+## 🤖 Adding the 2027 availability questions (scripted)
+
+The registration form on the website asks three questions the Google Form does
+not have yet. Their answers are **not being recorded** until you do this.
+
+Rather than clicking through the Forms UI and hunting entry IDs by hand, run
+`scripts/setup-registration-form.gs`. It creates the questions and prints the
+entry IDs in one pass.
+
+1. Go to **script.google.com → New project**, signed in as the account that
+   **owns** the form.
+2. Paste in the contents of `scripts/setup-registration-form.gs`.
+3. Run `listMyForms`, authorise when prompted, and copy the registration form's
+   **edit** URL from the log.
+4. Paste that into `FORM_EDIT_URL` at the top of the script.
+5. Run `addRegistrationQuestions`. The log ends with a `title -> entry.NNNNN`
+   listing.
+6. Copy the three new IDs into `ENTRY_IDS` in `components/Registration.tsx`:
+   `workPattern`, `weekendAvailability`, `gamesCommitted`.
+
+Re-running is safe — questions are matched by title and never duplicated, so
+the script also works as "print the entry IDs again".
+
+### Two things that will silently break the form
+
+**Never mark these questions Required in Google Forms.** A required question
+with no matching `entry.NNN` on the website causes Google to reject *every*
+submission — including the nine fields that work today. The website submits
+through a hidden iframe, so a rejection shows the player a success message
+anyway and you would never know. The website already enforces "required"
+client-side. Leave them optional in Google.
+
+**The choice strings must match exactly.** `WEEKEND_OPTIONS` and
+`WORK_PATTERN_OPTIONS` in `lib/registrationAdvice.ts` are the source of truth;
+the script builds the Google Form choices from the same strings. Google rejects
+a response whose multiple-choice value is not one of the listed choices, and
+again, that failure is invisible. They are deliberately plain ASCII — an em dash
+or curly quote that survives one copy but not the other is an outage you cannot
+see. There is a unit test enforcing this.
+
+### If you get spam submissions
+
+The website has a honeypot field and a minimum completion time, but those only
+stop bots that drive the page. The form endpoint is public and can be POSTed to
+directly. The real fix is Google's own setting — `hardenAgainstSpam()` in the
+script turns on "require sign-in" and "limit to one response per user". It is
+not applied automatically because it turns away anyone without a Google account.
+
+---
+
 ## 🎯 How to Find Entry IDs (Detailed)
 
 ### Method 1: Browser Inspector (Recommended)

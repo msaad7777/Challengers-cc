@@ -5,6 +5,10 @@ import {
   T30_FIXTURES,
   PART_SEASON_FEE,
   FULL_SEASON_TOPUP,
+  weekendCodeFor,
+  workPatternCodeFor,
+  WEEKEND_OPTIONS,
+  WORK_PATTERN_OPTIONS,
   type AdviceInput,
 } from '@/lib/registrationAdvice';
 
@@ -117,5 +121,42 @@ describe('buildAdvice — playoff guidance', () => {
 describe('weekendSharePct', () => {
   it('reports the 2026 weekend share as 91%', () => {
     expect(weekendSharePct()).toBe(91);
+  });
+});
+
+describe('submitted labels <-> advice codes', () => {
+  it('maps every weekend label back to its code', () => {
+    expect(WEEKEND_OPTIONS.map((o) => weekendCodeFor(o.label))).toEqual(
+      WEEKEND_OPTIONS.map((o) => o.code),
+    );
+  });
+
+  it('maps every work-pattern label back to its code', () => {
+    expect(WORK_PATTERN_OPTIONS.map((o) => workPatternCodeFor(o.label))).toEqual(
+      WORK_PATTERN_OPTIONS.map((o) => o.code),
+    );
+  });
+
+  it('treats an unknown label as unset rather than guessing', () => {
+    expect(weekendCodeFor('most')).toBe('');
+    expect(weekendCodeFor('')).toBe('');
+    expect(workPatternCodeFor('Full time')).toBe('');
+  });
+
+  // These strings are copied by hand into the Google Form (and into
+  // scripts/setup-registration-form.gs). Google rejects a response whose value
+  // is not an exact choice, and the hidden-iframe POST makes that silent — so
+  // keep them plain ASCII where a copy/paste can go wrong.
+  it('keeps submitted labels free of characters that break on copy', () => {
+    const labels = [...WEEKEND_OPTIONS, ...WORK_PATTERN_OPTIONS].map((o) => o.label);
+    for (const label of labels) {
+      expect(label).toMatch(/^[\x20-\x7E]+$/);
+      expect(label.trim()).toBe(label);
+    }
+  });
+
+  it('keeps labels unique, so a code is never ambiguous', () => {
+    const labels = [...WEEKEND_OPTIONS, ...WORK_PATTERN_OPTIONS].map((o) => o.label);
+    expect(new Set(labels).size).toBe(labels.length);
   });
 });

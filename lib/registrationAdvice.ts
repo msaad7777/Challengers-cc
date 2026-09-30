@@ -31,6 +31,47 @@ export type WeekendAvailability = 'free' | 'some' | 'most' | '';
 /** What they will be doing in 2027 — context for us, not a filter. */
 export type WorkPattern = 'full-time' | 'part-time' | 'shift' | 'student' | 'other' | '';
 
+/**
+ * The answer strings submitted to Google Forms, and the code each maps to.
+ *
+ * These labels are the single source of truth for BOTH sides of the wire: the
+ * <option> values on the form and the choices in the Google Form question must
+ * be character-for-character identical, or Google rejects the response — and a
+ * hidden-iframe POST gives no error when it does. scripts/setup-registration-form.gs
+ * builds the Google Form questions from these same strings.
+ *
+ * Deliberately plain ASCII: an em dash or a curly quote that survives one copy
+ * and not the other is an outage you cannot see.
+ */
+export const WEEKEND_OPTIONS: ReadonlyArray<{
+  label: string;
+  code: Exclude<WeekendAvailability, ''>;
+}> = [
+  { label: 'No, my weekends are generally free', code: 'free' },
+  { label: 'Some weekends, one or two a month', code: 'some' },
+  { label: 'Yes, I work most weekends', code: 'most' },
+];
+
+export const WORK_PATTERN_OPTIONS: ReadonlyArray<{
+  label: string;
+  code: Exclude<WorkPattern, ''>;
+}> = [
+  { label: 'Working full time', code: 'full-time' },
+  { label: 'Working part time', code: 'part-time' },
+  { label: 'Shift work or a rotating roster', code: 'shift' },
+  { label: 'Studying', code: 'student' },
+  { label: 'Something else', code: 'other' },
+];
+
+/** Map a submitted label back to its code. Unknown input is treated as unset. */
+export function weekendCodeFor(label: string): WeekendAvailability {
+  return WEEKEND_OPTIONS.find((o) => o.label === label)?.code ?? '';
+}
+
+export function workPatternCodeFor(label: string): WorkPattern {
+  return WORK_PATTERN_OPTIONS.find((o) => o.label === label)?.code ?? '';
+}
+
 export interface AdviceInput {
   /** Matches out of T30_FIXTURES they say they can commit to. */
   gamesCommitted: number;

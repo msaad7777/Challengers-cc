@@ -2,7 +2,15 @@
 
 import { useState, FormEvent, useRef, useEffect } from 'react';
 import { trackConversion } from '@/lib/gtag';
-import { buildAdvice, T30_FIXTURES, weekendSharePct } from '@/lib/registrationAdvice';
+import {
+  buildAdvice,
+  T30_FIXTURES,
+  weekendSharePct,
+  weekendCodeFor,
+  workPatternCodeFor,
+  WEEKEND_OPTIONS,
+  WORK_PATTERN_OPTIONS,
+} from '@/lib/registrationAdvice';
 
 /**
  * Google Form field mapping. Every input's `name` comes from here rather than
@@ -69,10 +77,12 @@ export default function Registration() {
     mountedAt.current = Date.now();
   }, []);
 
+  // The form submits human-readable labels (they have to match the Google Form
+  // choices exactly); the advice engine works in codes.
   const advice = buildAdvice({
     gamesCommitted: formData.gamesCommitted,
-    weekendAvailability: formData.weekendAvailability as never,
-    workPattern: formData.workPattern as never,
+    weekendAvailability: weekendCodeFor(formData.weekendAvailability),
+    workPattern: workPatternCodeFor(formData.workPattern),
   });
 
   // Google Form URL - just change this if you create a new form
@@ -309,11 +319,9 @@ export default function Registration() {
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition-all text-white"
                 >
                   <option value="" className="bg-gray-900 text-gray-400">Select one</option>
-                  <option value="Working full time" className="bg-gray-900 text-white">Working full time</option>
-                  <option value="Working part time" className="bg-gray-900 text-white">Working part time</option>
-                  <option value="Shift work or rotating roster" className="bg-gray-900 text-white">Shift work or rotating roster</option>
-                  <option value="Studying" className="bg-gray-900 text-white">Studying</option>
-                  <option value="Something else" className="bg-gray-900 text-white">Something else</option>
+                  {WORK_PATTERN_OPTIONS.map((o) => (
+                    <option key={o.code} value={o.label} className="bg-gray-900 text-white">{o.label}</option>
+                  ))}
                 </select>
               </div>
 
@@ -330,9 +338,9 @@ export default function Registration() {
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition-all text-white"
                 >
                   <option value="" className="bg-gray-900 text-gray-400">Select one</option>
-                  <option value="free" className="bg-gray-900 text-white">No — my weekends are generally free</option>
-                  <option value="some" className="bg-gray-900 text-white">Some weekends — maybe one or two a month</option>
-                  <option value="most" className="bg-gray-900 text-white">Yes — I work most weekends</option>
+                  {WEEKEND_OPTIONS.map((o) => (
+                    <option key={o.code} value={o.label} className="bg-gray-900 text-white">{o.label}</option>
+                  ))}
                 </select>
               </div>
 
