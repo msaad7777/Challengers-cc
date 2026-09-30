@@ -31,6 +31,159 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'challengers-win-lpl-fair-play-award-2026',
+    title: 'Challengers Win the LPL Fair Play Award 2026',
+    excerpt:
+      'In our first season we reached the LPL Division 2 semi-final and finished sixth in the LCL T30 Premier Division. The London Premier League also handed us something we did not expect: the Fair Play Award 2026.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        A first season gives a club plenty to be proud of and not much to put on a shelf. Ours ended
+        with both. Challengers Cricket Club has been awarded the
+        <strong class="text-white">London Premier League Fair Play Award 2026</strong> for T30 Division 2,
+        presented at the League&apos;s Division 2 presentation ceremony.
+      </p>
+
+      <div class="glass rounded-2xl overflow-hidden mb-8">
+        <img
+          src="/fair-play-award-2026.jpeg"
+          alt="The London Premier League T30 Division 2 Fair Play Award 2026 trophy, beside a presentation cheque for two hundred dollars"
+          class="w-full h-auto object-contain"
+        />
+      </div>
+
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        The award comes with a trophy and a <strong class="text-white">$200 prize</strong>. Printed along the
+        bottom of the cheque are the League&apos;s own three words for what it is meant to stand for:
+        <strong class="text-white">sportsmanship, respect and integrity</strong>. We did not know the award
+        existed when the season started, which is probably the right way to win it.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Why this one means something to a first-year club</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Results take time. A new club cannot decide to be good in its first year — it has to find
+        players, learn the grounds, work out who bowls when, and lose a few games figuring it out.
+        <strong class="text-white">Conduct is the one thing that is available from day one.</strong> How you
+        treat an umpire on a call that goes against you, how you talk to an opposition batter having a
+        bad morning, whether you turn up on time and with eleven players — none of that requires
+        experience. It only requires deciding to.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        So of everything the club could have been given at the end of a debut season, this is the one
+        that says the most about the group. It was not won by our best players. It was won by all of
+        them, in every fixture, including the ones we lost.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">The season behind it</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        In the <strong class="text-white">London Premier League</strong> we finished the Division 2 league
+        stage inside the top four and reached the <strong class="text-white">semi-final in our very first
+        season</strong>. In the <strong class="text-white">London Cricket League</strong> we finished
+        <strong class="text-white">sixth in the T30 Premier Division</strong> — a competitive placing in a
+        division we had never played in before, against clubs with years of history in it.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Twenty-six T30 fixtures across the two leagues, early starts at Silverwoods, long afternoons
+        at Northridge and NLAF, and a squad that kept showing up for each other from May to September.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Thank you</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        To the <strong class="text-white">London Premier League</strong> for the award, and for making room
+        for a brand-new club in its first year. To the umpires who stood through the whole summer, and
+        to every opposition side we played — an award like this is only ever earned in front of other
+        people, and it is their season as much as ours.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        And to our players. You are the reason the club has this. Thank you.
+      </p>
+
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Registration for 2027 is open. If you want to play for a club that plays it this way,
+        <a href="/join" class="text-primary-400 hover:text-primary-300 underline">have a look at the 2027 season</a>.
+      </p>
+    `,
+    category: 'Club News',
+    author: 'Challengers CC',
+    date: '2026-09-30',
+    image: '/fair-play-award-2026-presentation.jpeg',
+    video: null,
+    featured: true,
+  },
+  {
+    slug: 'syed-shahriar-lpl-best-bowler-2026',
+    title: 'Syed Shahriar Named Best Bowler of LPL Division 2',
+    excerpt:
+      'Across every side in T30 Division 2, the London Premier League named one bowler the best of the 2026 season — and he plays for Challengers.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        The London Premier League has named <strong class="text-white">Syed Shahriar</strong> the
+        <strong class="text-white">Best Bowler of T30 Division 2 for the 2026 season</strong>. Not our best
+        bowler — the division&apos;s. Across every club in the competition, in the first season
+        Challengers has ever played in it.
+      </p>
+
+      <div class="grid sm:grid-cols-2 gap-4 mb-8">
+        <figure class="m-0">
+          <img
+            src="/shariar-best-bowler-lpl-2026.jpeg"
+            alt="The T30 Division 2 Best Bowler trophy, LPL 2026"
+            class="w-full h-80 object-cover rounded-xl"
+          />
+          <figcaption class="text-gray-500 text-sm mt-3 mb-0">T30 Division 2 · Best Bowler · LPL 2026</figcaption>
+        </figure>
+        <figure class="m-0">
+          <img
+            src="/motm/shariar.jpg"
+            alt="Syed Shahriar with the Challengers during the 2026 T30 season"
+            class="w-full h-80 object-cover rounded-xl"
+          />
+          <figcaption class="text-gray-500 text-sm mt-3 mb-0">Shahriar during the 2026 T30 season</figcaption>
+        </figure>
+      </div>
+
+      <h3 class="text-2xl font-bold text-white mb-4">A league award, not a club one</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        It is worth being clear about what this is, because the two things get confused. Clubs give
+        out their own awards and they matter. This is not one of those.
+        <strong class="text-white">The League picked one bowler out of the entire division</strong>, judged
+        on a full season of cricket against every side in it — and the club he plays for had existed
+        for a matter of months.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">What he does for this club</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Shahriar <strong class="text-white">captains our LCL T30 side and our LCL T20 side</strong>, which
+        means that for most of the season he was setting fields, managing bowlers and handling the
+        toss — and then coming on and out-bowling a division. He was also one of eight Challengers
+        players to win a <strong class="text-white">Man of the Match award</strong> across our two T30
+        competitions this year.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Anyone who has captained a side while being its most important bowler knows the two jobs pull
+        against each other. You are thinking about the over you are setting up for someone else while
+        you are meant to be thinking about your own. Doing both well enough that a league notices is
+        genuinely hard.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">From all of us</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Congratulations, Shahriar. The club is very proud of this one — and so is everyone who spent
+        a summer fielding behind you.
+      </p>
+
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        The 2027 season is open for registration. If you would like to play alongside him,
+        <a href="/join" class="text-primary-400 hover:text-primary-300 underline">the 2027 details are here</a>.
+      </p>
+    `,
+    category: 'Player Profile',
+    author: 'Challengers CC',
+    date: '2026-09-30',
+    image: null,
+    video: null,
+    featured: true,
+  },
+  {
     slug: 't30-2026-thank-you-to-our-heroes',
     title: 'Thank You to the Heroes of Our First T30 Season',
     excerpt:
