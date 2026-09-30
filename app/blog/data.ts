@@ -31,6 +31,93 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'thank-you-to-our-2026-sponsors',
+    title: 'The Businesses That Backed a Club With No History',
+    excerpt:
+      'Nine local businesses sponsored Challengers Cricket Club in 2026 — before we had played a single league match, and with nothing to go on but a plan. Here is every one of them, and what they made possible.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        In early 2026 we were asking local businesses to sponsor a cricket club that had never played
+        a league match. No results, no photographs, no history — just an incorporation certificate and
+        a plan. <strong class="text-white">Nine of them said yes anyway.</strong>
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        That season has now finished: 26 T30 matches across two London leagues, a run to the
+        London Premier League Division 2 semi-final in our debut year, sixth place in the LCL T30
+        Premier Division, the League&apos;s Fair Play Award, and its Division 2 Best Bowler. None of
+        that happens without the people below.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Platinum Sponsor</h3>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc pl-6 space-y-3">
+        <li><strong class="text-white">Bhupinder Singh</strong> — Realtor, Century 21 First Canadian Corp., London. Our first and largest sponsor, and the one who backed us earliest, when backing us was the least obvious decision.</li>
+      </ul>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Gold Sponsors</h3>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc pl-6 space-y-3">
+        <li><strong class="text-white">Freddy George</strong> — Financial Advisor, London.</li>
+        <li><strong class="text-white">Ashvak Sheik</strong> — Future Nest Realty, London.</li>
+        <li><strong class="text-white">RabyIT</strong> — Accounting Services, London.</li>
+      </ul>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Community Partners</h3>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc pl-6 space-y-3">
+        <li><strong class="text-white">MakZiN Media</strong> — Software development, London.</li>
+        <li><strong class="text-white">Sai Thai Chef</strong> — Authentic Thai cuisine, London.</li>
+        <li><strong class="text-white">Curry Culture Bistro</strong> — Authentic Indian cuisine, Kitchener.</li>
+        <li><strong class="text-white">Kover Drive</strong> — Cricket equipment and gear.</li>
+      </ul>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Official Coaching Partner</h3>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc pl-6 space-y-3">
+        <li><strong class="text-white">TPG Cricket Academy</strong> — coaching support through the season. Not every contribution is a cheque, and this one showed up in how the side played.</li>
+      </ul>
+
+      <h3 class="text-2xl font-bold text-white mb-4">What it actually paid for</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Sponsorship is not decoration on a jersey. It is the difference between a club existing and
+        not existing. In practical terms it paid our league entry fees for two competitions, the
+        permits for the grounds we played on, our field insurance, the indoor facility hire that kept
+        us training through a London winter, and the shared kit bag that means a player who has just
+        arrived in Canada can walk onto a field without buying $600 of equipment first.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        That last one matters more than it sounds. A large part of our squad moved to London in the
+        last few years. For a lot of them the club is how they met people in this city. The businesses
+        above paid for the bats and the ground time that made those introductions possible.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">To each of you</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Thank you. You took a risk on an unproven club in its first year, and the club repaid it with
+        a semi-final and an award for how it conducted itself. We hope that reads as a decent return.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        We will be in touch about 2027, and we would be glad to have every one of you back.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">If you are a business reading this</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        We are looking for partners for the 2027 season. The tiers, what is included, and an honest
+        account of what we can and cannot offer are at
+        <a href="/sponsorship" class="text-primary-400 hover:text-primary-300 underline">challengerscc.ca/sponsorship</a>. One date worth knowing:
+        jerseys go to print at the start of March, so anything confirmed before then carries a logo on
+        the kit for the whole season.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        We are a federal not-for-profit, not a registered charity, so we cannot issue a charitable tax
+        receipt — and we will tell you that up front rather than let you find out later. What we can
+        offer is a genuine local association and a straight account of where your money went.
+      </p>
+    `,
+    category: 'Club News',
+    author: 'Challengers CC',
+    date: '2026-09-30',
+    image: null,
+    video: null,
+    featured: true,
+  },
+  {
     slug: 'registration-open-2027-season',
     title: 'Registration for the 2027 Season Is Open',
     excerpt:
