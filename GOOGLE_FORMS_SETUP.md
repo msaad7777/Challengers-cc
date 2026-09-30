@@ -142,6 +142,30 @@ You have **3 more forms** to create for embedded functionality on your website:
 
 ---
 
+## 🔍 Reading entry IDs without any credentials
+
+A published Google Form ships its whole structure to the browser — that is how
+it renders — so its questions and `entry.NNNNN` IDs are readable from the public
+page. No API, no token, no Apps Script:
+
+```bash
+node scripts/read-form-entry-ids.mjs           # list questions + entry IDs
+node scripts/read-form-entry-ids.mjs --check   # compare against Registration.tsx
+```
+
+`--check` is the useful one. It reads `ENTRY_IDS` and `GOOGLE_FORM_URL` straight
+out of `components/Registration.tsx` and reports:
+
+- **UNWIRED** — a website field with no entry ID; its answers are not recorded.
+- **DEAD** — a wired entry ID that no longer exists on the form (a renamed or
+  rebuilt question gets a *new* ID), so those submissions go nowhere.
+- **BREAKING** — a question marked Required in Google that the website never
+  submits. Google rejects the entire response, the hidden iframe hides the
+  error, and the player still sees "thank you". Exits non-zero.
+
+Run it after any change to the form. It is the fastest way to confirm the
+website and the form still agree.
+
 ## 🤖 Adding the 2027 availability questions (scripted)
 
 The registration form on the website asks three questions the Google Form does
