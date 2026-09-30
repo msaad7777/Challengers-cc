@@ -28,7 +28,7 @@ npx tsc --noEmit                                # typecheck only (no npm script 
 
 There is no `typecheck` npm script — `npm run build` is the only thing that type-checks in CI, so run `npx tsc --noEmit` before pushing anything non-trivial.
 
-The suite is currently 19 files / ~330 tests and runs in ~3s — it is cheap, so run it after any change to `app/c3h/lib/`, `app/c3h/scorer/types.ts`, or `lib/c3h-access.ts`.
+The suite is currently 19 files / 333 tests and runs in ~3s — it is cheap, so run it after any change to `app/c3h/lib/`, `app/c3h/scorer/types.ts`, or `lib/c3h-access.ts`.
 
 **Several portal pages are very large single-file client components** — `app/c3h/nets/page.tsx` (~6.8k lines), `app/c3h/neurovision/page.tsx` (~2.6k), `app/c3h/scorer/page.tsx` (~2.1k), `app/c3h/availability/page.tsx` (~1.6k). Grep for the tab label, constant, or collection name you need rather than reading these end-to-end; the extractable logic already lives in `app/c3h/lib/`, and new logic belongs there too (pure + unit-tested) rather than inline in the page.
 
@@ -80,7 +80,7 @@ There is no CMS and no content collection in Firestore. Every piece of editorial
 
 | File | Drives | Shape |
 | --- | --- | --- |
-| `app/blog/data.ts` | `/blog`, `/blog/[slug]` | posts |
+| `app/blog/data.ts` | `/blog`, `/blog/[slug]` | `BlogPost[]` — plus optional `gallery: GalleryItem[]` (rendered by `MotmCarousel`) and `sponsorContact` (renders `SponsorContactForm`) |
 | `app/partners/data.ts` | `/partners/[slug]`, `Partners.tsx` | sponsor tier, hours, order links |
 | `app/c3h/events/data.ts` | `/c3h/events` | `ClubEvent[]` + ICS/Google-Calendar helpers |
 | `app/c3h/replays/data.ts` | `/c3h/replays` | `MatchReplay[]` (YouTube + manual scorecard) |
@@ -149,7 +149,8 @@ The `/legal/*` document pages are static content, but five of them mount a clien
 - **/payments** — info-only; "Proceed to Payment" links to `STRIPE_DONATION_LINK` (Stripe-hosted). The secondary Zeffy donation option was removed (commit `fd8e5d6`)
 - **/payments/success** — receipt with print, calls `/api/payment-details` (uses `<Suspense>` for `useSearchParams`, required by Next 15)
 - **/payments/cancel**
-- **/looking-for-sponsors** — 2026 sponsor recruitment landing page
+- **/looking-for-sponsors** — 2027 sponsor recruitment landing page. The four-stat strip at the top must use the vetted `/join` numbers (see *Public-facing club numbers* below)
+- **/join** — 2027 player registration landing page (server component + `TierCalculator` client island). Holds the fee tiers ($150 part season / $300 full season), the **percentage-based** tier rule (`T30_FIXTURES` / `FULL_SEASON_THRESHOLD` in `TierCalculator.tsx`), the `ALLOCATION` where-the-money-goes breakdown, the selection policy and the grievance route. Linked from the navbar as "Join 2027". This page had a deliberate compliance pass — it is the **canonical** source for public claims about the club's season (see *Public-facing club numbers*); don't restate a season figure elsewhere without matching it here
 - **/blog** + **/blog/[slug]** — content from `app/blog/data.ts` (in-repo; no CMS)
 - **/legal** — index (`LegalDocsGrid.tsx`) + 10 sub-pages (`bylaws`, `code-of-conduct`, `conflict-of-interest`, `financial-policy`, `ip-ownership`, `liability-waiver`, `photography-consent`, `privacy`, `terms-of-service`, `volunteer-agreement`). Each page footers its own version line (e.g. Financial Policy is at v1.3, effective 19 June 2026)
 - **/partners/[slug]** — partner pages from `app/partners/data.ts` (sponsor tier, hours, order links)
@@ -163,7 +164,7 @@ The `/legal/*` document pages are static content, but five of them mount a clien
 - `/c3h/availability` — player availability per match. Match list (`ALL_MATCHES`) is hardcoded in this file with `fullDate`, `venue`, `clash` fields. Adds Google Calendar invites via `VENUE_FULL_NAME` lookup. Also hosts the captain-only **Player Tracker** tab (games played per league + playoff eligibility, backed by `app/c3h/lib/playerTracker.ts`): squad-driven, only counts matches already played (date-gated, not future plans), surfaces Former players (Qaiser/Madhu) for recording past games, and exports a printable PDF. Captains can also record the actual Playing 12 ("Finalize & Add to Tracker") independently of the availability responses.
 - `/c3h/scorer` — live ball-by-ball scoring, writes to `matches`. Auto-save with status indicator. Takeover confirmation when claiming a match someone else started. Auto-shows the bowler-pick modal at every over boundary; enforces "no consecutive overs by the same bowler".
 - `/c3h/live` — **publicly readable** read-only scoreboard, subscribes to in-flight `matches` via `onSnapshot`, plus shows the `MatchSummary` card on completed matches. The only `/c3h/*` page that does not require login.
-- `/c3h/nets` — the club's coaching hub, a large single-file tabbed surface (`app/c3h/nets/page.tsx` is ~6.5k lines; treat it as the one place all player-development content lives). Tabs:
+- `/c3h/nets` — the club's coaching hub, a large single-file tabbed surface (`app/c3h/nets/page.tsx` is ~6.8k lines; treat it as the one place all player-development content lives). Tabs:
   - **Reflection** — the original post-match reflection + coach-level review form. Match dropdown lists actual completed `matches` from Firestore (not just generic "Practice"); selecting one auto-pulls the player's batting/bowling stats from the match document. Renders `PlayerCoachCard` (per-player rule-based analysis) and an "Auto Coach Insight" derived from the reflection form. Full reflection history is preserved with per-card Edit / Delete. Writes to `reflections`.
   - **Batting Principles / Shot Mechanics / Team Roles** — static, in-app coaching content (player-facing role briefs, shot deep-dives, batting masterclass cards). Pure JSX — no Firestore. "Recommended for You" maps a player's reflection mistakes to relevant Batting Principles.
   - **Match Plan** — captain/VC pre-match planner (gated to captain-level access via `isC3HCaptain`). Auto-fills captain + VC from the selected league, covers all 4 toss outcomes, has a one-click "Apply T30 template", and a Match Coverage tracker over all 26 season matches showing reflection status. Persists to `match_plans/{matchId}`.
@@ -211,7 +212,9 @@ When adding rule-based analysis, extend these modules — keep them LLM-free and
 ### Server vs client components
 
 Default-server (no `"use client"`): About, BoardMembers, Footer, LegalDocuments, Partners, Programs, SponsorshipBanner, LiveStreaming, Clubhouse (`Clubhouse.tsx` is dead — imported nowhere).
-Client (`"use client"`): Navbar, Hero, Registration, Contact, VerifiedNonprofit (uses `canvas-confetti` + IntersectionObserver), VerifiedBanner, UserMenu, PublicLiveScore (homepage live-match strip — subscribes to in-flight `matches` via `onSnapshot`), the `app/legal/**` SignBlocks and `_shared/` helpers, and **all** `app/c3h/**/*.tsx` pages.
+Client (`"use client"`): Navbar, Hero, Registration, Contact, VerifiedNonprofit (uses `canvas-confetti` + IntersectionObserver), VerifiedBanner, UserMenu, PublicLiveScore (homepage live-match strip — subscribes to in-flight `matches` via `onSnapshot`), MotmCarousel, `app/blog/BlogGrid.tsx` (category filter) + `app/blog/SponsorContactForm.tsx`, `app/join/TierCalculator.tsx`, the `app/legal/**` SignBlocks and `_shared/` helpers, and **all** `app/c3h/**/*.tsx` pages.
+
+The public pages that need interactivity keep the page itself a server component and push the state into one small client island (`/join` + `TierCalculator`, `/blog` + `BlogGrid`, `/blog/[slug]` + `MotmCarousel`/`SponsorContactForm`) — that is how those routes keep their `metadata` export. Prefer this over marking a whole public page `"use client"`.
 
 ### Design System
 
@@ -239,12 +242,19 @@ Two submission techniques in use — pick to match the existing component you're
 
 Setup: form ID from URL → inspect fields for `entry.123…` IDs → update constants. `GOOGLE_FORMS_SETUP.md` at the repo root has the detailed walkthrough (partially stale — Contact and Sponsorship are now configured).
 
+### Google Ads conversion tracking
+
+`app/layout.tsx` injects the gtag script (`AW-18005598397`); `lib/gtag.ts` is the only thing that fires events. `trackConversion(key, value?)` is called on successful submit from exactly three places — `components/Registration.tsx` (`'registration'`), `components/Contact.tsx` (`'contact'`), `app/sponsorship/page.tsx` (`'sponsorship'`).
+
+⚠️ **All three `CONVERSION_LABELS` in `lib/gtag.ts` are currently empty strings, which is a deliberate no-op** — nothing is reported to Ads until the conversion actions are created in the Ads UI and their `send_to` labels are pasted in. `trackConversion` also no-ops during SSR and when the tag has not loaded, so it is safe to call from anywhere. Adding a new tracked form means adding a key to `CONVERSION_LABELS`, not calling `gtag` directly.
+
 ### Stripe payment flow
 
 `/payments` links straight to a Stripe-hosted donation page (`STRIPE_DONATION_LINK`). On success Stripe redirects to `/payments/success?session_id=...` which calls `/api/payment-details` to render the receipt. The `create-checkout` route exists but is dormant.
 
 ### Known duplication and gotchas
 
+- ⚠️ **Public-facing club numbers have one source of truth: `/join`.** Player counts, fixture counts and season claims appear on `/join`, `/looking-for-sponsors`, `/sponsorship` and in outreach email — and they drifted into three different fixture counts at once (the sponsor strip counted the `app/schedule/page.tsx` arrays and said 33, `/join` said 26 T30, outreach said 26). `/join` had a deliberate compliance pass and wins: **26 T30 matches played in 2026 — 14 LCL + 12 LPL**. The raw roster count (45) includes part-time players with no login and overstates "members" to a sponsor, so it is not used on sponsor surfaces. Never derive a sponsor-facing number by counting a schedule array; copy the vetted figure, and keep unverified claims off these pages entirely.
 - ⚠️ **The season fixture list is duplicated in two files and drifts.** `app/schedule/page.tsx` holds the public schedule as three per-league arrays (`lclT30Matches`, `lplT30Matches`, `lclT20Matches`, merged into `allMatches`); `app/c3h/availability/page.tsx` holds `ALL_MATCHES` for the Dugout. They are separate shapes with no shared source, and git history shows the same real-world change landing in only one of them (`09597e8` touched just the public schedule, `bd681cc` just the availability page — both were the *same* LCL T20 M3 time change). **Any fixture add / time change / opponent rename must be applied to both**, and reporting times differ from first-ball times (see the schedule convention below).
 - **Sponsorship tiers** live in three places: `app/payments/page.tsx` (`SPONSORSHIP_TIERS`, display only), `app/sponsorship/page.tsx` (full benefits/colors/icons), and `app/partners/data.ts` (per-partner sponsor tier). Keep amounts in sync by hand.
 - **Social media links** (Instagram, Facebook, YouTube) are hardcoded in 6+ locations — no centralized constant.
@@ -294,3 +304,9 @@ Skipping step 2 or 3 is the classic bug: the player signs in fine but `resolvePl
 **Add a club event**: append to `events` in `app/c3h/events/data.ts` — ICS and Google Calendar links generate from it. Recurring entries use `recurrenceRule` (RRULE with `UNTIL=`).
 
 **Add a match replay**: append to `matchReplays` in `app/c3h/replays/data.ts` (YouTube URL + hand-entered scorecard); nothing is read from Firestore for the replay list itself.
+
+**Add a blog post**: append to `blogPosts` in `app/blog/data.ts`. `content` is a raw HTML string rendered with `dangerouslySetInnerHTML`, so it carries its own Tailwind classes — copy the class pattern off an existing post. Add `gallery` for the sliding photo banner (`short` overrides the nav chip when the first word of `name` is not what the player goes by) and `sponsorContact` to render the sponsor enquiry form under the article.
+
+**Add a tracked form conversion**: add a key to `CONVERSION_LABELS` in `lib/gtag.ts`, paste the Ads `send_to` label, and call `trackConversion('<key>')` on successful submit. Never call `window.gtag` directly from a component.
+
+**Change a public-facing club number** (players, fixtures, season claims): update `/join` first, then mirror it onto `/looking-for-sponsors` and `/sponsorship`. Do not recount the schedule arrays — see the warning under *Known duplication and gotchas*.
