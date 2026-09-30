@@ -43,7 +43,9 @@ export default function Registration() {
   };
 
   return (
-    <section id="interest-section" className="section-padding bg-gradient-to-b from-black to-gray-950 relative overflow-hidden">
+    <section id="registration" className="section-padding bg-gradient-to-b from-black to-gray-950 relative overflow-hidden">
+      {/* Legacy anchor — older links and emails point at #interest-section. */}
+      <span id="interest-section" aria-hidden="true" />
       {/* Hidden iframe for form submission */}
       <iframe
         ref={iframeRef}
@@ -67,13 +69,17 @@ export default function Registration() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 glass px-4 py-1.5 rounded-full mb-4 border border-accent-500/30">
             <span className="w-1.5 h-1.5 rounded-full bg-accent-400 animate-pulse"></span>
-            <span className="text-xs font-bold uppercase tracking-wider text-accent-400">2027 Pre-Registration</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-accent-400">2027 Registration Open</span>
           </div>
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
             Join <span className="gradient-text">Our Club</span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            2026 squad is full — sign up now to reserve your spot for the 2027 season, get on the waitlist for any mid-season opportunities, and stay connected with the club.
+            Registration for the 2027 season is open. <span className="text-white font-semibold">$150 secures your place</span> — indoor winter nets, time with the squad before the season starts, and a spot in the queue for 2027 jerseys. The full-season option opens in March.
+          </p>
+          <p className="text-gray-500 text-sm max-w-2xl mx-auto mt-3">
+            Full fees, what is included and how selection works are on the{' '}
+            <a href="/join" className="text-primary-400 hover:text-primary-300 underline">2027 season page</a>.
           </p>
           <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto rounded-full mt-6"></div>
         </div>
@@ -94,8 +100,10 @@ export default function Registration() {
             </div>
 
             <p className="text-gray-300 mb-6">
-              Fill out the form below to express interest in Challengers Cricket Club. Share your details,
-              cricket background, and preferences. We&apos;ll add you to our 2027 pre-registration list and reach out with updates.
+              Fill out the form below to register for the 2027 season. Share your details, cricket
+              background and kit sizes, and we&apos;ll be in touch with how to pay your $150 and what
+              happens next. New to the club or new to London? Say so — we&apos;ll get you into winter
+              nets and introduce you to the group.
             </p>
 
             <form

@@ -20,12 +20,14 @@ export default function TierCalculator() {
 
   return (
     <div className="glass rounded-2xl p-6 sm:p-8">
-      <h3 className="text-xl font-bold text-white">Which tier are you?</h3>
+      <h3 className="text-xl font-bold text-white">Which tier will you land in?</h3>
       <p className="text-gray-400 text-sm mt-1">
+        You pay $150 to register either way — this is just so you can see where you are likely to end up
+        when the full-season option opens in <span className="text-white font-semibold">March 2027</span>.
         Based on <span className="text-white font-semibold">2026 — {T30_FIXTURES} T30 matches</span> across
-        both leagues. The 2027 fixture list is not out yet, so we use last season as the basis. Your tier
-        is set by <span className="text-white font-semibold">percentage</span>, so it holds whatever the
-        final 2027 count turns out to be.
+        both leagues, since the 2027 fixture list is not out yet. Your tier is set by{' '}
+        <span className="text-white font-semibold">percentage</span>, so it holds whatever the final 2027
+        count turns out to be.
       </p>
 
       <label htmlFor="games" className="block mt-6 text-sm font-semibold text-gray-300">
@@ -63,8 +65,8 @@ export default function TierCalculator() {
         </p>
         <p className="text-gray-400 text-sm mt-1">
           {isFull
-            ? '$150 on registration, $150 in March 2027. Priority consideration, and selection managed so you reach playoff eligibility.'
-            : '$150 on registration, nothing further. Full access to nets, the coaching hub and the members portal.'}
+            ? '$150 now, then a further $150 in March 2027 when full season opens. Priority consideration, and selection managed so you reach playoff eligibility.'
+            : '$150 now, nothing further. Indoor winter nets, the jersey queue, the coaching hub and the members portal.'}
         </p>
         {games > 0 && games < 13 && (
           <p className="text-accent-400/90 text-xs mt-3">

@@ -31,6 +31,76 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'registration-open-2027-season',
+    title: 'Registration for the 2027 Season Is Open',
+    excerpt:
+      'One step to start: $150 secures your place, gets you into indoor winter nets, and puts you in the queue for 2027 jerseys. The full-season decision waits until March, when the fixture lists are out.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Our first season is done, and it ended better than a first season has any right to: a
+        <strong class="text-white">semi-final in LPL Division 2</strong>, <strong class="text-white">sixth in the
+        LCL T30 Premier Division</strong>, the League&apos;s <strong class="text-white">Fair Play Award</strong>,
+        and the <strong class="text-white">Best Bowler of Division 2</strong> in our dressing room.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        <strong class="text-white">Registration for 2027 is now open.</strong>
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">It starts with one step, not a choice</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        <strong class="text-white">$150 secures your place.</strong> That is the whole ask right now.
+        You do not have to decide today whether you are a full-season player, because neither league
+        has published its 2027 fixture list yet — and picking a tier before you know how many matches
+        there are, or when they fall, is guesswork for you and for us.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        The full-season option opens in <strong class="text-white">March 2027</strong>, once the schedules
+        are out. If you want it then, it is a further $150. If you do not, you have paid what you have
+        paid and nothing more is owed.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">What the $150 gets you, starting immediately</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        This is not a deposit that sits there until May. It is the start of your season:
+      </p>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc pl-6 space-y-2">
+        <li><strong class="text-white">Indoor winter nets.</strong> Batting and bowling through the cold months, which is when players actually improve.</li>
+        <li><strong class="text-white">Time with the squad before the season.</strong> Turning up to your first fixture already knowing the group is worth more than any amount of pre-season theory.</li>
+        <li><strong class="text-white">A place in the queue for 2027 jerseys.</strong> Kit is ordered in registration order, so the earlier you are in, the earlier you are in the queue.</li>
+        <li><strong class="text-white">The members portal.</strong> Coaching hub, match plans, availability, live scoring and your own player analysis.</li>
+      </ul>
+
+      <h3 class="text-2xl font-bold text-white mb-4">New to the club, or new to London?</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Say so on the form. A good chunk of last season&apos;s squad had never played together before
+        May, and several had only just moved to the city. Winter nets exist partly so nobody walks
+        into their first match as a stranger.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        We are a not-for-profit. Nobody takes a salary, and the fees go into league entry, nets, kit
+        and match days — the full breakdown is published on the season page, because members and
+        funders both ask.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">Register</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        The <a href="/join" class="text-primary-400 hover:text-primary-300 underline">2027 season page</a> has the fees, what is included, how
+        selection works and the terms. When you are ready,
+        <a href="/#registration" class="text-primary-400 hover:text-primary-300 underline">fill in the registration form</a> — we will be in touch
+        with how to pay and what happens next.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        <strong class="text-white">Come and play. It was a good first year, and 2027 starts now.</strong>
+      </p>
+    `,
+    category: 'Club News',
+    author: 'Challengers CC',
+    date: '2026-09-30',
+    image: null,
+    video: null,
+    featured: true,
+  },
+  {
     slug: 'challengers-win-lpl-fair-play-award-2026',
     title: 'Challengers Win the LPL Fair Play Award 2026',
     excerpt:

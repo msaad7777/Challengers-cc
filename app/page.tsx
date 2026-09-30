@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
+import RegistrationBanner from '@/components/RegistrationBanner';
 import About from '@/components/About';
 import VerifiedBanner from '@/components/VerifiedBanner';
 import SponsorshipBanner from '@/components/SponsorshipBanner';
@@ -23,6 +24,7 @@ export default function Home() {
         <PublicLiveScore />
       </div>
       <Hero />
+      <RegistrationBanner />
       <About />
       <VerifiedBanner />
       <SponsorshipBanner />

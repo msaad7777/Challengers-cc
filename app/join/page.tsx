@@ -39,43 +39,74 @@ export default function JoinPage() {
             Play for Challengers in <span className="gradient-text">2027</span>
           </h1>
           <p className="text-gray-300 text-lg leading-relaxed mt-5 max-w-2xl">
-            We are a community cricket club in London, Ontario, playing two T30 leagues.
-            In our first season we reached the LPL Division 2 semi-final. You do not need
-            to have played here before, and you do not need to pay for a whole season up front.
+            We are a community cricket club in London, Ontario, playing two T30 leagues. In our
+            first season we reached the <span className="text-gray-200">LPL Division 2 semi-final</span>,
+            finished <span className="text-gray-200">sixth in the LCL T30 Premier Division</span>, and
+            were given the <span className="text-gray-200">LPL Fair Play Award 2026</span>. You do not
+            need to have played here before.
           </p>
           <p className="text-gray-400 mt-4 max-w-2xl">
             <span className="text-white font-semibold">$150 secures your place.</span>{' '}
-            Full-season members pay the remaining $150 in March 2027.
+            That is the whole ask for now — the full-season decision comes in March 2027, once the
+            leagues have published their schedules and you can see what you would be committing to.
           </p>
         </div>
       </section>
 
-      {/* Tiers */}
+      {/* How registration works — two steps, not two choices */}
       <section className="pb-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-5">
-            <div className="glass rounded-2xl p-7 glass-hover">
-              <h2 className="text-2xl font-bold text-white">Part Season</h2>
-              <p className="text-4xl font-bold text-gray-200 mt-2">$150</p>
-              <p className="text-gray-500 text-xs mt-1">Under 50% of the T30 season</p>
+          <h2 className="text-2xl sm:text-3xl font-bold">How registration <span className="gradient-text">works</span></h2>
+          <p className="text-gray-400 mt-2 max-w-2xl">
+            Two steps, and only the first one is open. You are not choosing between two tiers today.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-5 mt-6">
+            {/* Step 1 — open */}
+            <div className="glass rounded-2xl p-7 glass-hover border border-primary-500/40 relative">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-primary-400 bg-primary-500/15 border border-primary-500/30 rounded-full px-3 py-1">
+                  Step 1 · Open now
+                </span>
+              </div>
+              <h3 className="text-2xl font-bold text-white mt-4">Part Season</h3>
+              <p className="text-4xl font-bold text-primary-400 mt-2">$150</p>
+              <p className="text-gray-500 text-xs mt-1">Everyone starts here</p>
               <ul className="mt-5 space-y-2.5 text-sm text-gray-400">
-                <li>Under 50% of the T30 fixtures — 13 of 26 on 2026 numbers</li>
-                <li>Indoor winter nets and outdoor practice</li>
+                <li><span className="text-gray-200">Indoor winter nets</span> from the moment you register</li>
+                <li><span className="text-gray-200">Get to know the squad</span> before the season starts</li>
+                <li><span className="text-gray-200">Added to the queue for 2027 jerseys</span> — kit is ordered in registration order</li>
                 <li>Full access to the members portal and coaching hub</li>
-                <li>Nothing further to pay</li>
+                <li>Covers up to 50% of the T30 season — nothing further to pay</li>
               </ul>
+              <Link
+                href="/#registration"
+                className="mt-6 inline-block w-full text-center px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-bold text-white shadow-lg hover:shadow-primary-500/50 transition-all duration-300"
+              >
+                Register for 2027
+              </Link>
             </div>
-            <div className="glass rounded-2xl p-7 glass-hover border border-primary-500/30">
-              <h2 className="text-2xl font-bold text-white">Full Season</h2>
-              <p className="text-4xl font-bold text-primary-400 mt-2">$300</p>
-              <p className="text-gray-500 text-xs mt-1">50% or more of the T30 season</p>
-              <ul className="mt-5 space-y-2.5 text-sm text-gray-400">
-                <li>50% or more of the T30 fixtures — 13 of 26 on 2026 numbers</li>
-                <li>Everything in Part Season</li>
-                <li><span className="text-gray-200">Selection managed so you reach playoff eligibility</span>, if you meet your availability commitment</li>
+
+            {/* Step 2 — not yet */}
+            <div className="rounded-2xl p-7 border border-dashed border-white/15 bg-white/[0.02]">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 bg-white/5 border border-white/10 rounded-full px-3 py-1">
+                  Step 2 · Opens March 2027
+                </span>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-300 mt-4">Go Full Season</h3>
+              <p className="text-4xl font-bold text-gray-400 mt-2">+ $150</p>
+              <p className="text-gray-500 text-xs mt-1">$300 for the season in total</p>
+              <ul className="mt-5 space-y-2.5 text-sm text-gray-500">
+                <li>50% or more of the T30 fixtures</li>
+                <li><span className="text-gray-300">Selection managed so you reach playoff eligibility</span>, if you meet your availability commitment</li>
                 <li>Priority consideration for selection, including playoff squads</li>
-                <li>$150 now, $150 in March 2027</li>
+                <li>Everything in Part Season, for the rest of the season</li>
               </ul>
+              <p className="text-gray-500 text-xs mt-6 border-t border-white/10 pt-4">
+                Nothing to do now. We will come back to you in March, once the 2027 fixture lists
+                are out — deciding before then would be guesswork for both of us.
+              </p>
             </div>
           </div>
         </div>
