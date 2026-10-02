@@ -129,10 +129,14 @@ const ALL_PLAYERS = [
   // Added 2026-08-23 for the LCL T20 (roster-only — no login yet). Distinct
   // from the existing 'RP' above, who is a different player.
   'Rahul Patel',
+  // Added 2026-10-02 for the LCL T20 (roster-only — no login yet).
+  'Tanishq',
 ];
 
 // Players restricted to specific leagues
-const LPL_ONLY = ['Siva Sriram', 'Rajath Shetty', 'Noman', 'Aleem Quadri', 'Raunak'];
+// Aleem Quadri removed 2026-10-02 — he is registered for the LCL T20 as well,
+// and LPL_ONLY was hiding him from every non-LPL fixture.
+const LPL_ONLY = ['Siva Sriram', 'Rajath Shetty', 'Noman', 'Raunak'];
 const LCL_ONLY = ['Shivam Rajput'];
 
 // Former players — left the club (login/email access removed) but appear in
