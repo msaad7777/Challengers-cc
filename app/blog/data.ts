@@ -753,7 +753,7 @@ export const blogPosts: BlogPost[] = [
 
       <p class="text-gray-400 text-sm italic">
         Challengers Cricket Club — London, Ontario&apos;s inclusive community cricket club.
-        Registered Ontario Not-For-Profit Corporation #1746974-8. Follow us on
+        Canada Not-For-Profit Corporation #1746974-8. Follow us on
         <a href="https://www.instagram.com/challengers.cc/" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">@challengers.cc</a>
         and subscribe on
         <a href="https://www.youtube.com/@Challengersccldn" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">YouTube</a>
@@ -904,7 +904,7 @@ export const blogPosts: BlogPost[] = [
 
       <p class="text-gray-400 text-sm italic">
         Challengers Cricket Club — London, Ontario&apos;s inclusive community cricket club.
-        Registered Ontario Not-For-Profit Corporation #1746974-8. Follow us on
+        Canada Not-For-Profit Corporation #1746974-8. Follow us on
         <a href="https://www.instagram.com/challengers.cc/" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">@challengers.cc</a>
         and subscribe on
         <a href="https://www.youtube.com/@Challengersccldn" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">YouTube</a>
@@ -1091,7 +1091,7 @@ export const blogPosts: BlogPost[] = [
 
       <p class="text-gray-400 text-sm italic">
         Challengers Cricket Club — London, Ontario&apos;s inclusive community cricket club.
-        Registered Ontario Not-For-Profit Corporation #1746974-8. Follow us on
+        Canada Not-For-Profit Corporation #1746974-8. Follow us on
         <a href="https://www.instagram.com/challengers.cc/" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">@challengers.cc</a>
         and subscribe on
         <a href="https://www.youtube.com/@Challengersccldn" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">YouTube</a>
