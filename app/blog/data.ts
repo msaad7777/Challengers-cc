@@ -39,7 +39,7 @@ export const blogPosts: BlogPost[] = [
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         In early 2026 we were asking local businesses to sponsor a cricket club that had never played
         a league match. No results, no photographs, no history — just an incorporation certificate and
-        a plan. <strong class="text-white">Nine of them said yes anyway.</strong>
+        a plan. <strong class="text-white">Eight of them said yes anyway.</strong>
       </p>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         That season has now finished: 26 T30 matches across two London leagues, a run to the
@@ -48,7 +48,7 @@ export const blogPosts: BlogPost[] = [
         that happens without the people below.
       </p>
 
-      <h3 class="text-2xl font-bold text-white mb-4">Platinum Sponsor</h3>
+      <h3 class="text-2xl font-bold text-white mb-4">Title Sponsor</h3>
       <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc pl-6 space-y-3">
         <li><strong class="text-white">Bhupinder Singh</strong> — Realtor, Century 21 First Canadian Corp., London. Our first and largest sponsor, and the one who backed us earliest, when backing us was the least obvious decision.</li>
       </ul>
@@ -66,11 +66,6 @@ export const blogPosts: BlogPost[] = [
         <li><strong class="text-white">Sai Thai Chef</strong> — Authentic Thai cuisine, London.</li>
         <li><strong class="text-white">Curry Culture Bistro</strong> — Authentic Indian cuisine, Kitchener.</li>
         <li><strong class="text-white">Kover Drive</strong> — Cricket equipment and gear.</li>
-      </ul>
-
-      <h3 class="text-2xl font-bold text-white mb-4">Official Coaching Partner</h3>
-      <ul class="text-gray-300 text-lg leading-relaxed mb-6 list-disc pl-6 space-y-3">
-        <li><strong class="text-white">TPG Cricket Academy</strong> — coaching support through the season. Not every contribution is a cheque, and this one showed up in how the side played.</li>
       </ul>
 
       <h3 class="text-2xl font-bold text-white mb-4">What it actually paid for</h3>
