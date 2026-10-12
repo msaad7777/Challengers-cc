@@ -64,3 +64,37 @@ describe('setupMechanics', () => {
     expect(text).not.toMatch(/\d+\s?%/);
   });
 });
+
+describe('bat path and space', () => {
+  it('defines one bat path per intent and pairs it with the setup', async () => {
+    const { BAT_PATHS, batPathFor, fullSetupFor, STRIKE_PATH_DEGREES } =
+      await import('@/app/c3h/lib/setupMechanics');
+    expect(BAT_PATHS).toHaveLength(2);
+    expect(batPathFor('strike').intent).toBe('strike');
+    const full = fullSetupFor('strike');
+    expect(full.grip.intent).toBe('strike');
+    expect(full.stance.intent).toBe('strike');
+    expect(full.batPath.intent).toBe('strike');
+    expect(STRIKE_PATH_DEGREES[0]).toBeLessThan(STRIKE_PATH_DEGREES[1]);
+  });
+
+  it('throws rather than guessing for an unknown intent', async () => {
+    const { batPathFor } = await import('@/app/c3h/lib/setupMechanics');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(() => batPathFor('heave' as any)).toThrow(/heave/);
+  });
+
+  // The striking path is only safe from the striking setup. If a future edit
+  // drops that warning, a player could take the bat path without the base.
+  it('warns that the striking path needs the striking setup', async () => {
+    const { batPathFor } = await import('@/app/c3h/lib/setupMechanics');
+    expect(batPathFor('strike').tradeoff.toLowerCase()).toMatch(/grip|base|setup/);
+  });
+
+  it('republishes no exit-velocity or percentage figures', async () => {
+    const m = await import('@/app/c3h/lib/setupMechanics');
+    const text = JSON.stringify({ g: m.GRIPS, s: m.STANCES, b: m.BAT_PATHS, c: m.SETUP_CONSTANTS });
+    expect(text).not.toMatch(/\d+\s?%/);
+    expect(text.toLowerCase()).not.toMatch(/\d+\s?mph/);
+  });
+});
