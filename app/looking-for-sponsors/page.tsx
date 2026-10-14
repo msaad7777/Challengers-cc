@@ -2,6 +2,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import VerifiedBanner from '@/components/VerifiedBanner';
 import Link from 'next/link';
+import SponsorPackageLink from '@/components/SponsorPackageLink';
 
 export default function LookingForSponsorsPage() {
   return (
@@ -519,6 +520,7 @@ export default function LookingForSponsorsPage() {
                 >
                   View Full Sponsorship Packages
                 </Link>
+                <SponsorPackageLink />
                 <a
                   href="mailto:contact@challengerscc.ca?subject=2027 Season Sponsorship Inquiry"
                   className="inline-block px-8 py-4 glass glass-hover rounded-lg font-semibold border border-white/10 hover:border-primary-500/50 transition-all duration-300"

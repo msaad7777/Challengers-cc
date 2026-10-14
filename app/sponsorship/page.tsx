@@ -5,6 +5,7 @@ import { trackConversion } from '@/lib/gtag';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import VerifiedBanner from '@/components/VerifiedBanner';
+import SponsorPackageLink from '@/components/SponsorPackageLink';
 
 export default function SponsorshipPage() {
   const [formData, setFormData] = useState({
@@ -242,6 +243,9 @@ export default function SponsorshipPage() {
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
               Choose the partnership level that fits your organization
             </p>
+            <div className="mt-6">
+              <SponsorPackageLink />
+            </div>
             <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto rounded-full mt-6"></div>
           </div>
 
