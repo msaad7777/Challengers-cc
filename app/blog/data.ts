@@ -31,6 +31,126 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'challengers-mvp-top-3-2026',
+    title: 'Our 2026 MVPs: Denison, Shahriar and Ankush',
+    excerpt:
+      'Three competitions, one season, and three players who did the most for Challengers across all of it. Denison Davis, Syed Shahriar and Ankush Arora are our top three MVPs of 2026.',
+    content: `
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        In 2026 Challengers played three competitions: the <strong class="text-white">LCL T30</strong>,
+        the <strong class="text-white">LPL T30</strong> and the <strong class="text-white">LCL T20</strong>.
+        We added up every player&apos;s MVP points across all three, and three names finished clear at
+        the top.
+      </p>
+
+      <div class="glass rounded-2xl p-6 mb-8 border border-white/10 overflow-x-auto">
+        <table class="w-full text-left text-gray-300 min-w-[480px]">
+          <thead>
+            <tr class="text-gray-500 text-sm uppercase tracking-wider border-b border-white/10">
+              <th class="py-3 pr-4">#</th>
+              <th class="py-3 pr-4">Player</th>
+              <th class="py-3 pr-4 text-right">LCL T20</th>
+              <th class="py-3 pr-4 text-right">LCL T30</th>
+              <th class="py-3 pr-4 text-right">LPL T30</th>
+              <th class="py-3 text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-white/5">
+              <td class="py-3 pr-4">🥇</td>
+              <td class="py-3 pr-4 text-white font-semibold">Denison Davis</td>
+              <td class="py-3 pr-4 text-right">153</td>
+              <td class="py-3 pr-4 text-right">290</td>
+              <td class="py-3 pr-4 text-right">1,206</td>
+              <td class="py-3 text-right text-white font-bold">1,649</td>
+            </tr>
+            <tr class="border-b border-white/5">
+              <td class="py-3 pr-4">🥈</td>
+              <td class="py-3 pr-4 text-white font-semibold">Syed Shahriar</td>
+              <td class="py-3 pr-4 text-right">153</td>
+              <td class="py-3 pr-4 text-right">470</td>
+              <td class="py-3 pr-4 text-right">1,015</td>
+              <td class="py-3 text-right text-white font-bold">1,638</td>
+            </tr>
+            <tr>
+              <td class="py-3 pr-4">🥉</td>
+              <td class="py-3 pr-4 text-white font-semibold">Ankush Arora</td>
+              <td class="py-3 pr-4 text-right">320</td>
+              <td class="py-3 pr-4 text-right">408</td>
+              <td class="py-3 pr-4 text-right">638</td>
+              <td class="py-3 text-right text-white font-bold">1,366</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="text-gray-300 text-lg leading-relaxed mb-8">
+        Eleven points separate first and second over an entire season. A batter and a bowler, almost
+        exactly level. And the third topped our T20 MVP list on his own.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mb-4">🥇 Denison Davis: 1,649 points</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-4">
+        Denison was the bat that held our season together. In the LPL T30 he scored
+        <strong class="text-white">343 runs</strong>, more than double any other Challengers batter in that
+        competition, and finished as the club&apos;s top MVP in the LPL.
+      </p>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-8 list-disc pl-6 space-y-2">
+        <li><strong class="text-white">LPL T30:</strong> 343 runs, our top run-scorer · 1,206 MVP points, #1 for the club</li>
+        <li><strong class="text-white">LCL T30:</strong> 184 runs, our second-highest run-scorer</li>
+        <li><strong class="text-white">LCL T20:</strong> 86 runs, our second-highest run-scorer</li>
+        <li><strong class="text-white">613 runs</strong> across all three competitions</li>
+      </ul>
+
+      <h3 class="text-2xl font-bold text-white mb-4">🥈 Syed Shahriar: 1,638 points</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-4">
+        Shahriar was our leading wicket-taker in <strong class="text-white">both</strong> T30 leagues, and
+        captained our LCL T30 and T20 sides while doing it. The London Premier League also named him
+        <a href="/blog/syed-shahriar-lpl-best-bowler-2026" class="text-primary-400 hover:text-primary-300 underline">Best Bowler of T30 Division 2</a>.
+      </p>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-8 list-disc pl-6 space-y-2">
+        <li><strong class="text-white">LPL T30:</strong> 23 wickets, our leading wicket-taker · 1,015 MVP points</li>
+        <li><strong class="text-white">LCL T30:</strong> 15 wickets, our leading wicket-taker · 470 MVP points</li>
+        <li><strong class="text-white">LCL T20:</strong> 5 wickets, our second-highest wicket-taker</li>
+        <li><strong class="text-white">43 wickets</strong> across all three competitions</li>
+      </ul>
+
+      <h3 class="text-2xl font-bold text-white mb-4">🥉 Ankush Arora: 1,366 points</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-4">
+        Ankush is the all-rounder of the three: wickets with his mystery spin, and catches everywhere.
+        He was our <strong class="text-white">T20 MVP with 320 points</strong>, twice the next player, and
+        took more catches than anyone in the LCL T30.
+      </p>
+      <ul class="text-gray-300 text-lg leading-relaxed mb-8 list-disc pl-6 space-y-2">
+        <li><strong class="text-white">LCL T20:</strong> 11 wickets, our leading wicket-taker · 320 MVP points, #1 for the club</li>
+        <li><strong class="text-white">LCL T30:</strong> 9 catches, the most in the side · 408 MVP points</li>
+        <li><strong class="text-white">LPL T30:</strong> 11 wickets and 5 catches · 638 MVP points</li>
+        <li><strong class="text-white">22 wickets and 16 catches</strong> across all three competitions</li>
+      </ul>
+
+      <h3 class="text-2xl font-bold text-white mb-4">From all of us</h3>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Denison, Shahriar and Ankush: congratulations, and thank you. You delivered in every
+        competition we entered, and that is what put you on this list.
+      </p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">
+        Registration for 2027 is open. If you&apos;d like to play alongside them,
+        <a href="/join" class="text-primary-400 hover:text-primary-300 underline">the 2027 details are here</a>.
+      </p>
+    `,
+    category: 'Player Profile',
+    author: 'Challengers CC',
+    date: '2026-10-14',
+    image: null,
+    video: null,
+    gallery: [
+      { src: '/motm/denison.jpg', name: 'Denison Davis', short: 'Denison', caption: '#1 MVP 2026 · 1,649 points' },
+      { src: '/motm/shariar.jpg', name: 'Syed Shahriar', short: 'Shahriar', caption: '#2 MVP 2026 · 1,638 points' },
+      { src: '/Ankush-boardm.jpeg', name: 'Ankush Arora', short: 'Ankush', caption: '#3 MVP 2026 · 1,366 points' },
+    ],
+    featured: true,
+  },
+  {
     slug: 'thank-you-to-our-2026-sponsors',
     title: 'The Businesses That Backed a Club With No History',
     excerpt:

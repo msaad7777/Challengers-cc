@@ -17,12 +17,29 @@ export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
 }
 
-export function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-  // Next.js 15 makes params a Promise but generateMetadata can be sync for static params
-  // We look up using the slug from the generated static params
+// Per-post title/description/image so shared links (WhatsApp, Instagram,
+// Facebook) preview the article itself rather than a generic "Blog" card.
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
+  if (!post) {
+    return {
+      title: 'Blog | Challengers Cricket Club',
+      description: 'Read the latest from Challengers Cricket Club.',
+    };
+  }
+
+  const image = post.image ?? post.gallery?.[0]?.src;
   return {
-    title: 'Blog | Challengers Cricket Club',
-    description: 'Read the latest from Challengers Cricket Club.',
+    title: `${post.title} | Challengers Cricket Club`,
+    description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: 'article',
+      publishedTime: post.date,
+      ...(image ? { images: [image] } : {}),
+    },
   };
 }
 
