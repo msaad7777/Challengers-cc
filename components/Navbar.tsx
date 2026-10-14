@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -9,6 +9,8 @@ import UserMenu, { MobileUserCard } from './UserMenu';
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const isHomePage = pathname === '/';
 
@@ -17,29 +19,56 @@ export default function Navbar() {
       setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close the desktop "More" menu on outside click, and both menus on Escape.
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setIsMoreOpen(false);
+    };
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsMoreOpen(false);
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, []);
+
+  useEffect(() => {
+    setIsMoreOpen(false);
+  }, [pathname]);
 
   // Close menu when clicking outside or on a link
   const closeMenu = () => setIsOpen(false);
 
-  const menuItems = [
-    { label: 'Home', href: '/', isPage: true },
-    { label: 'About', href: isHomePage ? '#about' : '/#about', isPage: false },
-    { label: 'Schedule', href: '/schedule', isPage: true },
-    { label: 'Events', href: '/c3h/events', isPage: true },
-    { label: 'Watch', href: '/c3h/watch', isPage: true },
-    { label: 'Mental Game', href: '/mental-game', isPage: true },
-    { label: 'Blog', href: '/blog', isPage: true },
-    { label: 'Sponsorship', href: '/sponsorship', isPage: true },
-    { label: 'Payments', href: '/payments', isPage: true },
-    // Points at /join — the 2027 tiers, fee breakdown and terms — rather than
-    // dropping people straight onto the form with no context.
-    { label: 'Join 2027', href: '/join', isPage: true },
-    { label: 'Contact', href: isHomePage ? '#contact' : '/#contact', isPage: false },
-    { label: 'C3H', href: '/c3h', isPage: true },
+  // Desktop shows the primary links inline and tucks the rest under "More";
+  // the mobile drawer lists everything. Join 2027 is rendered separately as
+  // the highlighted CTA — it points at /join (tiers, fee breakdown, terms)
+  // rather than dropping people straight onto the form with no context.
+  const primaryItems = [
+    { label: 'Schedule', href: '/schedule' },
+    { label: 'Blog', href: '/blog' },
+    { label: 'Sponsorship', href: '/sponsorship' },
+    { label: 'Contact', href: isHomePage ? '#contact' : '/#contact' },
   ];
+  const moreItems = [
+    { label: 'About', href: isHomePage ? '#about' : '/#about' },
+    { label: 'Events', href: '/c3h/events' },
+    { label: 'Watch', href: '/c3h/watch' },
+    { label: 'Mental Game', href: '/mental-game' },
+    { label: 'Payments', href: '/payments' },
+    { label: 'Members Portal (C3H)', href: '/c3h' },
+  ];
+  const menuItems = [{ label: 'Home', href: '/' }, ...primaryItems, ...moreItems];
+  const moreIsActive = moreItems.some((item) => pathname === item.href);
 
   return (
     <>
@@ -70,7 +99,7 @@ export default function Navbar() {
 
             {/* Desktop Menu */}
             <div className="hidden lg:flex items-center gap-1">
-              {menuItems.map((item) => (
+              {primaryItems.map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}
@@ -83,29 +112,88 @@ export default function Navbar() {
                   {item.label}
                 </Link>
               ))}
+
+              <div ref={moreRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsMoreOpen((open) => !open)}
+                  aria-expanded={isMoreOpen}
+                  aria-haspopup="true"
+                  className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    moreIsActive || isMoreOpen
+                      ? 'text-primary-400 bg-primary-500/10'
+                      : 'text-gray-300 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  More
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-200 ${isMoreOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isMoreOpen && (
+                  <div className="absolute right-0 mt-2 w-56 rounded-xl bg-gray-950 border border-white/10 shadow-2xl shadow-black/50 py-2">
+                    {moreItems.map((item) => (
+                      <Link
+                        key={item.label}
+                        href={item.href}
+                        onClick={() => setIsMoreOpen(false)}
+                        className={`block px-4 py-2.5 text-sm transition-colors ${
+                          pathname === item.href
+                            ? 'text-primary-400 bg-primary-500/10'
+                            : 'text-gray-300 hover:text-white hover:bg-white/5'
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <Link
+                href="/join"
+                className="ml-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-primary-600 to-primary-500 shadow-lg hover:shadow-primary-500/40 transition-all duration-200 hover:scale-105"
+              >
+                Join 2027
+              </Link>
               <div className="ml-2 pl-2 border-l border-white/10">
                 <UserMenu />
               </div>
             </div>
 
-            {/* Hamburger Button */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden relative w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all"
-              aria-label="Toggle menu"
-            >
-              <div className="w-5 h-4 relative flex flex-col justify-between">
-                <span className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
-                  isOpen ? 'rotate-45 translate-y-1.5' : ''
-                }`}></span>
-                <span className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
-                  isOpen ? 'opacity-0' : ''
-                }`}></span>
-                <span className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
-                  isOpen ? '-rotate-45 -translate-y-2' : ''
-                }`}></span>
-              </div>
-            </button>
+            {/* Mobile: Join CTA + Hamburger */}
+            <div className="flex items-center gap-2 lg:hidden">
+              <Link
+                href="/join"
+                className="px-3.5 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-primary-600 to-primary-500 shadow-lg"
+              >
+                Join 2027
+              </Link>
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                aria-expanded={isOpen}
+                className="relative w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all"
+                aria-label="Toggle menu"
+              >
+                <div className="w-5 h-4 relative flex flex-col justify-between">
+                  <span className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
+                    isOpen ? 'rotate-45 translate-y-1.5' : ''
+                  }`}></span>
+                  <span className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
+                    isOpen ? 'opacity-0' : ''
+                  }`}></span>
+                  <span className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
+                    isOpen ? '-rotate-45 -translate-y-2' : ''
+                  }`}></span>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </nav>
@@ -156,7 +244,7 @@ export default function Navbar() {
                 }`}
               >
                 {item.label}
-                {item.isPage && item.href !== '/' && (
+                {!item.href.includes('#') && item.href !== '/' && (
                   <svg className="w-4 h-4 ml-auto text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>

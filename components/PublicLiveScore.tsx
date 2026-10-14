@@ -75,7 +75,7 @@ export default function PublicLiveScore() {
   return (
     <Link
       href="/c3h/live"
-      className="block w-full max-w-7xl mx-auto px-4 mb-6"
+      className="block w-full max-w-7xl mx-auto px-4 mt-12 md:mt-16 mb-6"
     >
       <div className="glass rounded-2xl p-4 md:p-5 border-2 border-red-500/40 bg-red-500/5 hover:border-red-500/60 transition-all">
         <div className="flex items-start gap-3 md:gap-4">

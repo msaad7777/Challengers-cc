@@ -1,13 +1,7 @@
-"use client";
-
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Hero() {
-  const scrollToInterest = () => {
-    const element = document.getElementById('interest-section');
-    element?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Video Background */}
@@ -65,7 +59,7 @@ export default function Hero() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-8 animate-slide-up" style={{ animationDelay: '0.1s' }}>
             <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
-            <span className="text-sm text-gray-300">New Club • London, Ontario</span>
+            <span className="text-sm text-gray-300">2027 Registration Open • London, Ontario</span>
           </div>
 
           {/* Main Heading */}
@@ -78,35 +72,40 @@ export default function Hero() {
           <p className="text-xl sm:text-2xl md:text-3xl text-gray-300 mb-4 font-light animate-slide-up" style={{ animationDelay: '0.3s' }}>
             One Team. One Dream.
           </p>
-          <p className="text-lg sm:text-xl text-primary-400 mb-12 animate-slide-up" style={{ animationDelay: '0.4s' }}>
-            London, Ontario
+          <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-12 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+            Community cricket in London, Ontario. Two T30 leagues, one squad,
+            open to newcomers and experienced players alike.
           </p>
 
-          {/* CTA Button */}
-          <div className="flex justify-center items-center animate-slide-up" style={{ animationDelay: '0.5s' }}>
-            <button
-              onClick={scrollToInterest}
-              className="group relative px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold text-lg shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105"
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 animate-slide-up" style={{ animationDelay: '0.5s' }}>
+            <Link
+              href="/join"
+              className="group relative px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold text-lg shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
             >
-              <span className="relative z-10">Join Our Club</span>
+              <span className="relative z-10">Register for 2027</span>
               <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-primary-400 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </button>
+            </Link>
+            <Link
+              href="/schedule"
+              className="px-8 py-4 bg-white/5 border border-white/10 rounded-lg font-semibold text-lg text-gray-200 hover:bg-white/10 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
+            >
+              See the schedule
+            </Link>
           </div>
 
-          {/* Stats Preview */}
-          <div className="grid grid-cols-3 gap-4 sm:gap-8 max-w-3xl mx-auto mt-20 animate-fade-in" style={{ animationDelay: '0.7s' }}>
-            <div className="glass rounded-xl p-4 sm:p-6">
-              <div className="text-2xl sm:text-3xl font-bold gradient-text">Est. 2025</div>
-              <div className="text-xs sm:text-sm text-gray-400 mt-1">New Beginning</div>
-            </div>
-            <div className="glass rounded-xl p-4 sm:p-6">
-              <div className="text-2xl sm:text-3xl font-bold gradient-text">Open</div>
-              <div className="text-xs sm:text-sm text-gray-400 mt-1">To All Players</div>
-            </div>
-            <div className="glass rounded-xl p-4 sm:p-6">
-              <div className="text-2xl sm:text-3xl font-bold gradient-text">United</div>
-              <div className="text-xs sm:text-sm text-gray-400 mt-1">One Community</div>
-            </div>
+          {/* 2026 season — figures match the vetted copy on /join */}
+          <div className="grid grid-cols-3 gap-3 sm:gap-8 max-w-3xl mx-auto mt-20 animate-fade-in" style={{ animationDelay: '0.7s' }}>
+            {[
+              ['26', 'T30 matches in 2026'],
+              ['Semi-final', 'LPL Division 2'],
+              ['Fair Play', 'LPL Award 2026'],
+            ].map(([value, label]) => (
+              <div key={label} className="glass rounded-xl p-4 sm:p-6">
+                <div className="text-xl sm:text-3xl font-bold gradient-text">{value}</div>
+                <div className="text-xs sm:text-sm text-gray-400 mt-1">{label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

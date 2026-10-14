@@ -19,8 +19,10 @@ export default function Home() {
     <main className="min-h-screen">
       <Navbar />
       {/* Live score banner — visible to anyone, no login required.
-          Auto-disappears when no match is active. */}
-      <div className="pt-28 md:pt-32">
+          Auto-disappears when no match is active. The wrapper only clears the
+          fixed navbar; the strip carries its own top margin so no empty band
+          is left behind when it renders nothing. */}
+      <div className="pt-16">
         <PublicLiveScore />
       </div>
       <Hero />

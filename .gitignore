@@ -131,3 +131,14 @@ service-account*.json
 
 # Source photo drops (optimised copies are committed under /public)
 /T30-challengers/
+
+# Private club documents — grant applications, sponsorship packages, budgets.
+# Keep them in /private/ (never committed, never served). Anything in public/
+# is published at challengerscc.ca with no login.
+/private/
+/*.html
+*Application*.pdf
+*Grant*.pdf
+*Sponsorship_Package*
+*Partnership*.html
+*Budget_Proposal*

@@ -286,7 +286,7 @@ Setup: form ID from URL → inspect fields for `entry.123…` IDs → update con
 
 **Legal doc surfaces**: edit content directly in `app/legal/<slug>/page.tsx`. `LegalDocuments.tsx` is the homepage card grid that points to those pages.
 
-**Static assets**: `/public/...` (images, videos), `/public/documents/` (PDFs). Reference with leading slash (`/image.jpg`). ⚠️ **Everything under `/public/` is served publicly and unauthenticated** — `challengerscc.ca/documents/<filename>` needs no login and is crawlable. The root-level `.gitignore` guards (`/*.pdf`, `/*.jpeg`, …) deliberately **do not** apply inside `public/`, so a grant application, ID scan, or bank letter dropped there will be committed and published. Check what is in `public/documents/` before committing.
+**Static assets**: `/public/...` (images, videos), `/public/documents/` (PDFs). Reference with leading slash (`/image.jpg`). ⚠️ **Everything under `/public/` is served publicly and unauthenticated** — `challengerscc.ca/documents/<filename>` needs no login and is crawlable. The root-level `.gitignore` guards (`/*.pdf`, `/*.jpeg`, …) deliberately **do not** apply inside `public/`, so a grant application, ID scan, or bank letter dropped there will be committed and published. Check what is in `public/documents/` before committing. Grant applications, sponsorship packages and budgets belong in the gitignored `/private/` folder at the repo root — never in `public/`.
 
 **Payment display amounts**: edit `PAYMENT_OPTIONS` and `SPONSORSHIP_TIERS` in `app/payments/page.tsx`. Actual charge amounts are configured on the Stripe-hosted donation page, not in code.
 

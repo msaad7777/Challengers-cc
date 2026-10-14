@@ -16,12 +16,12 @@ export default function Programs() {
     {
       title: "London Challengers",
       subtitle: "Adult Competitive Squad",
-      description: "Our adult squad playing competitive league cricket in London — LCL T30 and LPL T20. Open to experienced players ready to compete.",
+      description: "Our adult squad playing competitive league cricket in London — the LCL and LPL T30 leagues, plus the LCL T20 in September.",
       features: [
         "LCL T30 league matches",
-        "LPL T20 league matches",
-        "Saturday practice sessions",
-        "Match-day analysis"
+        "LPL T30 league matches",
+        "LCL T20 competition (September)",
+        "Weekly team training"
       ],
       status: "active",
       icon: (
@@ -49,9 +49,9 @@ export default function Programs() {
     {
       title: "Community Cricket",
       subtitle: "Practice + Friendlies",
-      description: "Casual Saturday practice sessions and friendly matches throughout the season. All skill levels welcome — newcomers, returning players, and first-timers alike.",
+      description: "Team training and friendly matches throughout the season. All skill levels welcome — newcomers, returning players, and first-timers alike.",
       features: [
-        "Saturday practice (May–September)",
+        "Weekly training through the season",
         "Friendly matches",
         "All skill levels welcome",
         "Beginner-friendly atmosphere"
@@ -142,11 +142,11 @@ export default function Programs() {
 
                 {/* CTA */}
                 <a
-                  href="#interest-section"
+                  href={program.status === "planned" ? "/#registration" : "/join"}
                   className="w-full py-3 glass glass-hover rounded-lg font-semibold text-sm group-hover:bg-white/10 transition-all duration-300 text-center"
                 >
                   <span className="gradient-text">
-                    {program.status === "planned" ? "Notify Me When Available" : "Express Interest"}
+                    {program.status === "planned" ? "Notify Me When Available" : "Register for 2027"}
                   </span>
                 </a>
 
@@ -165,10 +165,10 @@ export default function Programs() {
               Join London&apos;s united cricket community and be part of something special.
             </p>
             <a
-              href="#interest-section"
+              href="/join"
               className="inline-block px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105"
             >
-              Get Started Today
+              Register for 2027
             </a>
           </div>
         </div>
