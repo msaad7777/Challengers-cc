@@ -114,7 +114,7 @@ export default function PavilionPage() {
 
     // Pull signatures for every active governance doc plus every legacy
     // doc id referenced by a `carryForwardFrom` on an active doc. Legacy
-    // signatures (e.g. from the prior combined Gokul + Qaiser LoD) are
+    // signatures (e.g. from an earlier combined LoD) are
     // promoted in-memory below to count toward the split successor
     // docs, so directors who already signed the combined doc do not
     // need to re-sign each split one.

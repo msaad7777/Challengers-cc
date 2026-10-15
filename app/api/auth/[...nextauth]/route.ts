@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 
@@ -6,10 +7,8 @@ import GoogleProvider from 'next-auth/providers/google';
 // sign-in outright.
 //
 // 2026-07-27: contact@challengerscc.ca (the shared Workspace inbox) is
-// blocked. The account was compromised by a former member (Qaiser, now
-// subject of legal action) who changed its recovery phone/email and may
-// have sent/deleted mail. Blocking it here severs the app-side access while
-// the Google Workspace account is secured. This is a temporary lockout —
+// blocked while the Google Workspace account is secured after a security
+// incident. Blocking it here severs the app-side access in the meantime. This is a temporary lockout —
 // remove from this list only once the account is fully recovered + secured.
 // NOTE: existing JWT sessions persist up to `maxAge`; rotate NEXTAUTH_SECRET
 // to force-invalidate any active session immediately.
@@ -19,13 +18,24 @@ const BLOCKED_EMAILS = [
   // addresses can't slip through the domain auto-approve below even if the
   // Google accounts still exist. Their personal Gmails are listed too for
   // clarity. (The real fix is to delete/suspend these Workspace accounts.)
-  'qaiser@challengerscc.ca',    // Qaiser — left the Club 2026-06-22
-  'qureshiqaiser007@gmail.com',
   'madhu@challengerscc.ca',     // Madhu — former member
   'vantarimadhu@gmail.com',
   'shoeb@challengerscc.ca',     // Shoeb — left the Club 2026-07-28
   'shabyansari0023@gmail.com',
 ];
+
+// Further blocked addresses, stored as SHA-256 hashes of the lowercased email
+// so the addresses themselves are not published in the repository. To add one:
+//   node -e "console.log(require('crypto').createHash('sha256').update('x@y.com').digest('hex'))"
+const BLOCKED_EMAIL_HASHES = new Set([
+  'ea52eed2018786754b9241af5eb21ad9ed46e388e8e76cde34e9c54b8a6a75fd',
+  'ccb1afe123de1a50cd0ff99794bb1572f451e855e3bbc53219b2bc76ee499cc4',
+]);
+
+function isBlocked(lowerEmail: string): boolean {
+  if (BLOCKED_EMAILS.includes(lowerEmail)) return true;
+  return BLOCKED_EMAIL_HASHES.has(createHash('sha256').update(lowerEmail).digest('hex'));
+}
 
 // Board members & captains get full access (all 4 modules)
 // Includes both @challengerscc.ca and personal Gmail
@@ -85,11 +95,10 @@ const PLAYER_EMAILS: string[] = [
 function getUserRole(email: string): 'board' | 'player' | null {
   const lower = email.toLowerCase();
   // Blocklist wins over everything.
-  if (BLOCKED_EMAILS.includes(lower)) return null;
+  if (isBlocked(lower)) return null;
   // NOTE: we deliberately do NOT auto-approve every @challengerscc.ca address
   // anymore (removed 2026-07-28). A blanket domain approve meant any former
-  // member whose Workspace mailbox still existed (contact@, qaiser@, madhu@,
-  // shoeb@ …) could sign in as board. Workspace addresses must now be listed
+  // member whose Workspace mailbox still existed (contact@, madhu@, shoeb@ …) could sign in as board. Workspace addresses must now be listed
   // explicitly in BOARD_EMAILS below — so a new director/officer is a one-line
   // add, and an ex-member is denied by default the moment they're removed.
   if (BOARD_EMAILS.includes(lower)) return 'board';

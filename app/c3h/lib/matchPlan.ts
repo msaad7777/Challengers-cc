@@ -193,7 +193,7 @@ export const TEMPERAMENTS = [
 export type Temperament = (typeof TEMPERAMENTS)[number];
 
 export const TEMPERAMENT_BRIEF: Record<Temperament, string> = {
-  'anchor': 'Risk-free cricket. Rotates strike, plays late, holds one end while others attack. Examples: Ameeya, Shoeb, Denison, Qaiser type players.',
+  'anchor': 'Risk-free cricket. Rotates strike, plays late, holds one end while others attack. Examples: Ameeya, Shoeb, Denison type players.',
   'aggressor': 'Attacks from ball 1. Scores quickly. Takes down a specific bowler. Funds the anchor with quick runs in the powerplay.',
   'balanced': 'Adapts based on situation. Can anchor if a wicket falls early, can accelerate if the platform is set. Versatile.',
   'specialist': 'Single-skill player — usually a bowler with limited batting (lower order) or a pure defender. Don\'t ask them to do the opposite role.',

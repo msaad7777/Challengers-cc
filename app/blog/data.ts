@@ -900,8 +900,8 @@ export const blogPosts: BlogPost[] = [
       </p>
       <p class="text-gray-300 text-lg leading-relaxed mb-6">
         Challengers posted <strong class="text-white">177/6 in 20 overs</strong>, with Rajath
-        Shetty setting the tempo at the top, Qaiser Mahmood anchoring through the middle, and
-        a string of useful cameos through the lower order. Chahtham came out fast in reply but
+        Shetty setting the tempo at the top and a string of useful cameos through the lower
+        order. Chahtham came out fast in reply but
         couldn&apos;t sustain it — Challengers&apos; bowling unit kept chipping wickets in the
         powerplay and the middle overs to close out the chase at
         <strong class="text-white">164/6 in 20</strong>. Final margin: 13 runs.
@@ -916,7 +916,6 @@ export const blogPosts: BlogPost[] = [
           <ul class="text-gray-300 space-y-1.5 text-sm">
             <li><strong class="text-white">Batting</strong></li>
             <li>Rajath Shetty — 45 (24), 5×4, 1×6, SR 187.5</li>
-            <li>Qaiser Mahmood — 29* (33)</li>
             <li>Siva — 26 (16), 2×4, 1×6, SR 162.5</li>
             <li>Shoeb Ahmad — 13* (8), 2×4, SR 162.5</li>
             <li class="pt-2"><strong class="text-white">Bowling</strong></li>
@@ -953,8 +952,7 @@ export const blogPosts: BlogPost[] = [
         <strong class="text-white">First innings.</strong> Rajath Shetty came out swinging at
         the top and put on the foundation Challengers needed — five fours and a six in a
         24-ball 45 that gave the innings shape. Mohammed Saad (10 off 12) walked off to a
-        Sujel delivery before Qaiser Mahmood took over the role of anchor, finishing
-        unbeaten on 29 from 33. Siva chipped in with a quick 26 (16), and a tail of Shoeb
+        Sujel delivery. Siva chipped in with a quick 26 (16), and a tail of Shoeb
         Ahmad (13*), Farooq Choudhary (7*), Gokul Prakash (7), and Judin Thomas (6*) made
         sure the scoreboard kept ticking. 27 extras — 20 wides, 7 no-balls — pushed the
         total to <strong class="text-white">177/6</strong>.
@@ -1144,7 +1142,6 @@ export const blogPosts: BlogPost[] = [
             <li>Shoaib — 23 runs</li>
             <li>Ankush — 22 runs</li>
             <li>Manohar — 21 runs</li>
-            <li>Qaiser — 21 runs</li>
           </ul>
         </div>
         <div class="glass rounded-xl p-5 border border-blue-500/20">

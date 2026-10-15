@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { GOVERNANCE_DOCS, findDoc } from '@/app/c3h/pavilion/governanceDocs';
+import { GOVERNANCE_DOCS, findDoc, LEGACY_COMBINED_LOD_ID } from '@/app/c3h/pavilion/governanceDocs';
 
 describe('governanceDocs', () => {
   it('exports at least the TGR, the Gokul LoD, and President Appointment', () => {
@@ -9,16 +9,12 @@ describe('governanceDocs', () => {
     expect(GOVERNANCE_DOCS.find((d) => d.id === 'president-appointment-gokul-2026')).toBeDefined();
   });
 
-  it('the combined LoD is retired and the Qaiser LoD has been retired', () => {
-    // The original combined `lod-cibc-gokul-qaiser-2026` was split into
-    // per-recipient LoDs on 2026-06-01. The Qaiser LoD
-    // (`lod-cibc-qaiser-2026`) was then retired on 2026-06-22 when Qaiser
-    // left the Club. Only the Gokul LoD remains active; its signatures
-    // carry forward from the combined doc via `carryForwardFrom`.
-    expect(GOVERNANCE_DOCS.find((d) => d.id === 'lod-cibc-gokul-qaiser-2026')).toBeUndefined();
-    expect(GOVERNANCE_DOCS.find((d) => d.id === 'lod-cibc-qaiser-2026')).toBeUndefined();
+  it('the combined LoD is retired and its signatures carry forward to the Gokul LoD', () => {
+    // 4 of the 5 director signatures on the Gokul LoD are stored under the
+    // legacy combined doc id, so dropping the carry-forward would lose them.
+    expect(GOVERNANCE_DOCS.find((d) => d.id === LEGACY_COMBINED_LOD_ID)).toBeUndefined();
     const gokulLod = GOVERNANCE_DOCS.find((d) => d.id === 'lod-cibc-gokul-2026');
-    expect(gokulLod?.carryForwardFrom).toContain('lod-cibc-gokul-qaiser-2026');
+    expect(gokulLod?.carryForwardFrom).toContain(LEGACY_COMBINED_LOD_ID);
   });
 
   it('every doc has a non-empty stable id, version, title and effective date', () => {
@@ -48,7 +44,6 @@ describe('governanceDocs', () => {
   it('findDoc returns the matching doc', () => {
     expect(findDoc('technology-governance-record-2026')?.shortTitle).toBe('Technology Governance Record');
     expect(findDoc('lod-cibc-gokul-2026')?.shortTitle).toBe('Letter of Direction — CIBC (Gokul)');
-    expect(findDoc('lod-cibc-qaiser-2026')).toBeUndefined();
     expect(findDoc('president-appointment-gokul-2026')?.shortTitle).toBe('President Appointment — Gokul Prakash');
   });
 

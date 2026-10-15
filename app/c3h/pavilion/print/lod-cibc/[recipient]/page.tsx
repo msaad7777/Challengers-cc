@@ -1,16 +1,12 @@
 "use client";
 
 // Print-ready version of a Letter of Direction adding a single new
-// signing authority to the Corporation's CIBC operating account. The
-// same page renders both the Gokul Prakash and Qaiser Qureshi LoDs;
-// they differ only in the recipient block and a small amount of role
-// language.
+// signing authority to the Corporation's CIBC operating account, keyed
+// by recipient.
 //
-// The combined Gokul + Qaiser LoD that previously lived at
-// /c3h/pavilion/print/lod-cibc has been split into two per-recipient
-// LoDs. Signatures collected on the combined LoD carry forward to the
-// matching split LoD — fresh signatures on the split LoD take precedence
-// if both exist for the same director.
+// Signatures collected on the earlier combined LoD (LEGACY_COMBINED_LOD_ID)
+// carry forward to this LoD — fresh signatures here take precedence if
+// both exist for the same director.
 //
 // Access: directors + governance readers (Treasurer, Secretary).
 
@@ -30,11 +26,9 @@ import {
   isC3HDirector,
   isC3HGovernanceReader,
 } from '@/lib/c3h-access';
-import { findDoc } from '../../../governanceDocs';
+import { findDoc, LEGACY_COMBINED_LOD_ID } from '../../../governanceDocs';
 import LetterPaper from '../../../LetterPaper';
 
-// The companion Qaiser Qureshi LoD was retired on 2026-06-22 when Qaiser
-// left the Club; only the Gokul recipient remains valid here.
 type Recipient = 'gokul';
 
 type RecipientProfile = {
@@ -101,7 +95,7 @@ export default function LoDPrintPage() {
     // split doc take precedence over carried-forward legacy ones.
     const sigQ = query(
       collection(db, 'governance_signatures'),
-      where('docId', 'in', [r.docId, 'lod-cibc-gokul-qaiser-2026']),
+      where('docId', 'in', [r.docId, LEGACY_COMBINED_LOD_ID]),
     );
     // Revocations are written against the active (split) doc only. A
     // director who has withdrawn their signature must NOT appear on the
@@ -167,8 +161,7 @@ export default function LoDPrintPage() {
         <div className="max-w-md text-center">
           <h1 className="text-xl font-bold mb-2 text-gray-900">Unknown recipient</h1>
           <p className="text-sm text-gray-600 mb-4">
-            Use <code>/c3h/pavilion/print/lod-cibc/gokul</code>. (The Qaiser
-            Letter of Direction was retired.)
+            Use <code>/c3h/pavilion/print/lod-cibc/gokul</code>.
           </p>
           <button
             onClick={() => router.push('/c3h/pavilion')}
@@ -441,7 +434,7 @@ export default function LoDPrintPage() {
             Challengers Cricket Club. Signature records — including each signer&apos;s name, role, workspace email,
             server timestamp, and signature image — are retained in the Club&apos;s permanent Firestore governance
             ledger under document id <code>{r.docId}</code> · version {doc.version} (with carry-forward from the
-            prior combined LoD <code>lod-cibc-gokul-qaiser-2026</code> for directors who already signed it). Issued
+            earlier combined Letter of Direction for directors who already signed it). Issued
             under seal of the Corporation, in accordance with the Bylaws adopted 25 February 2026 (rev. 8 May 2026).
             For verification of director status please consult the federal corporate profile filed with Corporations
             Canada under Corporation #1746974-8, or contact the Corporation at contact@challengerscc.ca.

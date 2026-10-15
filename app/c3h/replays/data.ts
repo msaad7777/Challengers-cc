@@ -95,7 +95,6 @@ export const matchReplays: MatchReplay[] = [
       { name: 'Shoaib', runs: 23 },
       { name: 'Ankush', runs: 22 },
       { name: 'Manohar', runs: 21 },
-      { name: 'Qaiser', runs: 21 },
     ],
     reflectionPrompt:
       'Watch your innings and the bowlers you faced. Note one thing you did well and one thing to improve. Open The Nets to fill out a reflection card while it\'s fresh.',

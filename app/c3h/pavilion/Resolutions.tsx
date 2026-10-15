@@ -682,7 +682,7 @@ function ResolutionForm({
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder='e.g. "Q3 2026 Treasurer review (Qaiser)"'
+          placeholder='e.g. "Q3 2026 Treasurer review"'
           className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
         />
       </div>

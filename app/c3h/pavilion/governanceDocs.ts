@@ -40,6 +40,12 @@ export type GovernanceDoc = {
   requiresPresidentApproval?: boolean;
 };
 
+// Firestore doc id of the earlier combined CIBC Letter of Direction, which was
+// split into per-recipient LoDs. It is a database key, not a label: 4 of the 5
+// director signatures on the Gokul LoD are stored under it and reach that LoD
+// only via `carryForwardFrom`. Do not rename or remove it.
+export const LEGACY_COMBINED_LOD_ID = 'lod-cibc-gokul-qaiser-2026';
+
 export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
   {
     id: 'technology-governance-record-2026',
@@ -53,13 +59,10 @@ export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
     whoMustSign: 'all-directors',
   },
   {
-    // Split from the prior combined `lod-cibc-gokul-qaiser-2026` so
-    // each new signing authority is approved by the Board independently.
-    // Existing signatures on the combined doc carry forward to BOTH split
-    // LoDs via `carryForwardFrom` — directors who already signed the
-    // combined LoD do not need to re-sign. Directors who declined the
-    // combined LoD (or have not yet signed) sign each split LoD
-    // individually.
+    // Successor to an earlier combined LoD (LEGACY_COMBINED_LOD_ID), split
+    // so each signing authority is approved by the Board independently.
+    // Signatures on the combined doc carry forward via `carryForwardFrom`,
+    // so directors who already signed it do not need to re-sign.
     id: 'lod-cibc-gokul-2026',
     version: '1.0',
     title: 'Letter of Direction — CIBC Signing Authority (Gokul Prakash)',
@@ -68,17 +71,11 @@ export const GOVERNANCE_DOCS: readonly GovernanceDoc[] = [
     inline: 'lod-cibc-gokul-2026',
     printUrl: '/c3h/pavilion/print/lod-cibc/gokul',
     summary:
-      'Directs CIBC to add Gokul Prakash (Director) as a signing authority on the Club’s operating account (transit 04582, account ending ****1517), in addition to Mohammed Saad who is already on file. Gokul serves in a strictly volunteer capacity. The account continues to operate under the Club’s dual-signatory governance policy. Must be signed by all five directors before being submitted to CIBC. Signatures already collected on the prior combined Letter of Direction (Gokul + Qaiser) carry forward to this Letter; only directors who did not sign the combined Letter need to sign here.',
+      'Directs CIBC to add Gokul Prakash (Director) as a signing authority on the Club’s operating account (transit 04582, account ending ****1517), in addition to Mohammed Saad who is already on file. Gokul serves in a strictly volunteer capacity. The account continues to operate under the Club’s dual-signatory governance policy. Must be signed by all five directors before being submitted to CIBC. Signatures already collected on the earlier combined Letter of Direction carry forward to this Letter; only directors who did not sign the combined Letter need to sign here.',
     whoMustSign: 'all-directors',
-    carryForwardFrom: ['lod-cibc-gokul-qaiser-2026'],
+    carryForwardFrom: [LEGACY_COMBINED_LOD_ID],
     requiresPresidentApproval: true,
   },
-  // NOTE: The Qaiser Qureshi LoD (`lod-cibc-qaiser-2026`) was retired on
-  // 2026-06-22 — Qaiser left the Club, so he is no longer being added as a
-  // CIBC signing authority / Treasurer. The doc is removed from the active
-  // Pavilion list and from the print recipient set. Any signatures already
-  // recorded against it remain in the append-only `governance_signatures`
-  // ledger as a historical record; they are simply no longer surfaced.
   {
     id: 'president-appointment-gokul-2026',
     version: '1.0',

@@ -145,7 +145,7 @@ const LCL_ONLY = ['Shivam Rajput'];
 // Captains can still select them into the Playing 12 of the specific games
 // they actually played (via the Former section in the squad picker) so the
 // Tracker counts those appearances.
-const FORMER_PLAYERS = ['Qaiser Mahmood', 'Madhu Reddy', 'Shoeb Ahmad'];
+const FORMER_PLAYERS = ['Madhu Reddy', 'Shoeb Ahmad'];
 
 // Get players for a specific match based on league
 const getPlayersForMatch = (league: string) => {
@@ -1402,7 +1402,7 @@ export default function AvailabilityPage() {
                               if (r === 'bowl-sub') return 'bg-blue-500/20 text-blue-400';
                               return 'bg-primary-500/20 text-primary-400';
                             };
-                            const WK_ELIGIBLE = ['Mohammed Saad', 'Denison Davis', 'Atik Rahman', 'Rajath Shetty', 'Qaiser Mahmood'];
+                            const WK_ELIGIBLE = ['Mohammed Saad', 'Denison Davis', 'Atik Rahman', 'Rajath Shetty'];
                             return (
                             <div className="space-y-1 mb-2">
                               {(squads[m.id] || []).map((n, i) => {
@@ -1437,7 +1437,7 @@ export default function AvailabilityPage() {
                           {selectingSquad === m.id && (
                             <div className="glass rounded-xl p-3 border border-primary-500/20 mt-2">
                               <p className="text-gray-500 text-xs mb-2">
-                                Tap to pick the <span className="text-gray-300 font-semibold">Playing 12 who actually played</span> (max 12). Include anyone who turned up — even if they marked ❌ or didn&apos;t respond. This is the record the Tracker counts. <span className="text-amber-300/90">Former players (Qaiser, Madhu) are in the box at the bottom.</span>
+                                Tap to pick the <span className="text-gray-300 font-semibold">Playing 12 who actually played</span> (max 12). Include anyone who turned up — even if they marked ❌ or didn&apos;t respond. This is the record the Tracker counts. <span className="text-amber-300/90">Former players are in the box at the bottom.</span>
                               </p>
                               <div className="flex flex-wrap gap-1">
                                 {available.map(n => {

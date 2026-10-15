@@ -138,8 +138,7 @@ export const C3H_OFFICER_ROSTER: readonly OfficerEntry[] = [
   // officer+officer combinations).
   //
   // The Treasurer and Secretary slots are intentionally vacant —
-  // appointments are on hold pending the 2026 enrolment cycle. (The
-  // prior Treasurer appointee, Qaiser, left the Club.) Do not re-add
+  // appointments are on hold pending the 2026 enrolment cycle. Do not re-add
   // anyone here without a fresh Director Resolution + signed Officer
   // Appointment Letter in the Pavilion.
   //

@@ -1,10 +1,9 @@
 // Inline content of the Letter of Direction adding a single new signing
 // authority to the Corporation's CIBC operating account. Currently renders
-// the Gokul Prakash LoD. (The companion Qaiser Qureshi LoD was retired on
-// 2026-06-22 when Qaiser left the Club; the recipient set is kept generic
-// so a future authority can be added without restructuring.) Signed by all
-// five directors via the Pavilion (with signatures from the prior combined
-// Gokul + Qaiser LoD carried forward for directors who already signed it).
+// the Gokul Prakash LoD; the recipient set is kept generic so a future
+// authority can be added without restructuring. Signed by all five
+// directors via the Pavilion (with signatures from the earlier combined
+// LoD carried forward for directors who already signed it).
 //
 // Personal-detail fields (DOB / home address / mobile) are intentionally
 // left blank — the recipient writes those in at the CIBC branch when
@@ -62,7 +61,7 @@ export default function LetterOfDirection({ recipient }: { recipient: Recipient 
         </p>
         <p className="mt-2 text-xs text-gray-400 italic">
           All five directors of the Corporation must sign this Letter before it is submitted to CIBC. Signatures on the
-          prior combined Letter of Direction (Gokul + Qaiser) carry forward to this Letter; directors who already signed
+          earlier combined Letter of Direction carry forward to this Letter; directors who already signed
           the combined Letter do not need to re-sign.
         </p>
       </div>

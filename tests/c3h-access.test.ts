@@ -76,10 +76,6 @@ describe('c3h-access predicates', () => {
   });
 
   describe('isC3HSquadViewer', () => {
-    it('excludes Qaiser (left the Club; Treasurer read-only access removed)', () => {
-      expect(isC3HSquadViewer('qaiser@challengerscc.ca')).toBe(false);
-      expect(isC3HSquadViewer('qureshiqaiser007@gmail.com')).toBe(false);
-    });
     it('excludes contact@ shared inbox (access revoked 2026-07-27 — account compromised)', () => {
       expect(isC3HSquadViewer('contact@challengerscc.ca')).toBe(false);
     });
@@ -130,7 +126,6 @@ describe('c3h-access predicates', () => {
       expect(resolveDirectorWorkspaceEmail('gokulprakash663@gmail.com')).toBe('gokul@challengerscc.ca');
     });
     it('returns null for non-directors', () => {
-      expect(resolveDirectorWorkspaceEmail('qaiser@challengerscc.ca')).toBeNull();
       expect(resolveDirectorWorkspaceEmail('madhu@challengerscc.ca')).toBeNull();
       expect(resolveDirectorWorkspaceEmail('contact@challengerscc.ca')).toBeNull();
     });
