@@ -142,3 +142,7 @@ service-account*.json
 *Sponsorship_Package*
 *Partnership*.html
 *Budget_Proposal*
+
+# No PDFs anywhere in the repo (it is published). Share documents via the
+# club Google Drive instead. The two league rulebooks predate this rule.
+*.pdf
