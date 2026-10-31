@@ -5,7 +5,8 @@ import Footer from '@/components/Footer';
 import TierCalculator from './TierCalculator';
 
 export const metadata: Metadata = {
-  title: 'Join for 2027 | Challengers Cricket Club',
+  title: 'Join a Cricket Club in London, Ontario — 2027 Registration | Challengers CC',
+  alternates: { canonical: '/join' },
   description:
     'Registration is open for the 2027 season. $150 secures your place; full-season members pay the balance in March. Cricket in London, Ontario — open to newcomers and experienced players alike.',
 };

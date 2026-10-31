@@ -1,8 +1,16 @@
+import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import VerifiedBanner from '@/components/VerifiedBanner';
 import Link from 'next/link';
 import SponsorPackageLink from '@/components/SponsorPackageLink';
+
+export const metadata: Metadata = {
+  title: 'Looking for 2027 Sponsors | Challengers Cricket Club, London, Ontario',
+  description:
+    'Challengers Cricket Club is looking for local businesses to back its 2027 season in London, Ontario. See what sponsorship pays for and how sponsors are credited.',
+  alternates: { canonical: '/looking-for-sponsors' },
+};
 
 export default function LookingForSponsorsPage() {
   return (
