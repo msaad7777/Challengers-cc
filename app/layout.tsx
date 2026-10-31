@@ -6,7 +6,7 @@ import Providers from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://challengerscc.ca'),
+  metadataBase: new URL('https://www.challengerscc.ca'),
   title: "Challengers Cricket Club | Cricket Club in London, Ontario",
   description: "Community cricket club in London, Ontario playing the London Cricket League and London Premier League. Open to newcomers and experienced players. Registration open for 2027.",
   icons: {
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "Challengers Cricket Club | Cricket Club in London, Ontario",
     description: "Community cricket club in London, Ontario playing the London Cricket League and London Premier League. Open to newcomers and experienced players. Registration open for 2027.",
     images: ['/ccc-logo.png'],
-    url: 'https://challengerscc.ca',
+    url: 'https://www.challengerscc.ca',
     siteName: 'Challengers Cricket Club',
     locale: 'en_CA',
     type: 'website',
@@ -38,8 +38,8 @@ const ORGANIZATION_JSON_LD = {
   name: 'Challengers Cricket Club',
   alternateName: 'Challengers CC',
   sport: 'Cricket',
-  url: 'https://challengerscc.ca',
-  logo: 'https://challengerscc.ca/ccc-logo.png',
+  url: 'https://www.challengerscc.ca',
+  logo: 'https://www.challengerscc.ca/ccc-logo.png',
   email: 'contact@challengerscc.ca',
   foundingDate: '2025',
   areaServed: 'London, Ontario',

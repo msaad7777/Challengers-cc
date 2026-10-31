@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { blogPosts } from './blog/data';
 import { getAllPartnerSlugs } from './partners/data';
 
-const BASE = 'https://challengerscc.ca';
+const BASE = 'https://www.challengerscc.ca';
 
 // Public pages only. /c3h (members), /payments and /api stay out; robots.ts
 // disallows them too.
