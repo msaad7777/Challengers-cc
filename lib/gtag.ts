@@ -21,7 +21,7 @@ export const CONVERSION_LABELS = {
   /** Player registration / interest form submitted. */
   registration: 'NIH_CNyn3K8dEL3B3olD',
   /** Sponsorship enquiry submitted. */
-  sponsorship: '',
+  sponsorship: 'S-faCIiD3a8dEL3B3olD',
   /** General contact form submitted. */
   contact: 'BrYGCMiP468dEL3B3olD',
 } as const;
