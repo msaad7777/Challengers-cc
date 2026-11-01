@@ -1,6 +1,12 @@
 // Parses the "Dashboard" tab that the Google Ads Script
 // (challengers-outreach/2027/google-ads/ads-agent.js) writes, published from
-// Google Sheets as CSV. Rows are typed: campaign, alert or change.
+// Google Sheets as CSV. Rows are typed: campaign, alert, change or metric.
+// A metric row carries one account-level number: name = key, note = value
+// (e.g. cost_mtd, conv_signup_30d, players_registered_total).
+
+// Google Ad Grants: up to $10,000 USD a month, spent at most ~$329 a day.
+export const GRANT_MONTHLY_USD = 10000;
+export const GRANT_DAILY_CAP_USD = 329;
 
 export type AdsCampaign = {
   name: string;
@@ -19,6 +25,7 @@ export type AdsReport = {
   alerts: string[];
   changes: string[];
   updated: string | null;
+  metrics: Record<string, number>;
   totals: { impressions: number; clicks: number; ctr: number; conversions: number; cost: number };
 };
 
@@ -57,6 +64,7 @@ export function parseAdsReport(csv: string): AdsReport {
   const campaigns: AdsCampaign[] = [];
   const alerts: string[] = [];
   const changes: string[] = [];
+  const metrics: Record<string, number> = {};
   let updated: string | null = null;
 
   for (const r of rows) {
@@ -64,6 +72,7 @@ export function parseAdsReport(csv: string): AdsReport {
     updated = get(r, 'updated') || updated;
     if (type === 'alert') alerts.push(get(r, 'note'));
     else if (type === 'change') changes.push(get(r, 'note'));
+    else if (type === 'metric' && get(r, 'name')) metrics[get(r, 'name')] = num(get(r, 'note'));
     else if (type === 'campaign') {
       // Sheets may publish the CTR as 0.052 or, if the cell was formatted, as 5.2%.
       const rawCtr = get(r, 'ctr_30d');
@@ -91,6 +100,7 @@ export function parseAdsReport(csv: string): AdsReport {
     alerts,
     changes,
     updated,
+    metrics,
     totals: {
       impressions,
       clicks,

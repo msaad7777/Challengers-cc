@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { isC3HAdmin } from '@/lib/c3h-access';
+import { isC3HAdmin, isC3HDashboardViewer } from '@/lib/c3h-access';
 import { parseAdsReport } from '@/lib/ads-report';
 
-// Admin-only. ADS_REPORT_CSV_URL is the "Publish to web → CSV" link of the
-// Dashboard tab; ADS_CONTROLS_URL is the sheet's normal edit link. Both stay
-// server-side so they never ship in the public bundle.
+// Directors can read the figures; only the admin (Saad, Treasurer) gets the
+// controls link, which opens the editable sheet: it is withheld here on the
+// server, not just hidden in the page. ADS_REPORT_CSV_URL is the
+// "Publish to web → CSV" link of the Dashboard tab; ADS_CONTROLS_URL is the
+// sheet's normal edit link. Both stay server-side so they never ship in the
+// public bundle.
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   const token = await getToken({ req });
-  if (!isC3HAdmin(token?.email)) {
+  if (!isC3HDashboardViewer(token?.email)) {
     return NextResponse.json({ error: 'forbidden' }, { status: 403 });
   }
 
@@ -22,7 +25,7 @@ export async function GET(req: NextRequest) {
     if (!res.ok) throw new Error(`sheet returned ${res.status}`);
     return NextResponse.json({
       configured: true,
-      controlsUrl: process.env.ADS_CONTROLS_URL || null,
+      controlsUrl: isC3HAdmin(token?.email) ? process.env.ADS_CONTROLS_URL || null : null,
       ...parseAdsReport(await res.text()),
     });
   } catch (err) {
