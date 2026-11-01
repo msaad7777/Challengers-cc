@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import PublicLiveScore from '@/components/PublicLiveScore';
-import { isC3HAdmin, isC3HBoard, isC3HDirector, isC3HOfficer, isC3HGovernanceReader } from '@/lib/c3h-access';
+import { isC3HAdmin, isC3HBoard, isC3HCommittee, isC3HDirector, isC3HOfficer, isC3HGovernanceReader } from '@/lib/c3h-access';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -32,6 +32,7 @@ export default function DashboardPage() {
   const isOfficer = isC3HOfficer(session.user?.email);
   const isGovernanceReader = isC3HGovernanceReader(session.user?.email);
   const isAdmin = isC3HAdmin(session.user?.email);
+  const isCommittee = isC3HCommittee(session.user?.email);
   const userName = session.user?.name || 'Player';
   const userImage = session.user?.image || '';
 
@@ -233,6 +234,37 @@ export default function DashboardPage() {
                   their signed copy and print/save as PDF for the corporate record.
                 </p>
                 <span className="text-xs px-3 py-1 rounded-full bg-primary-500/20 text-primary-400 border border-primary-500/30">
+                  Open
+                </span>
+              </a>
+            )}
+
+            {/* Sponsor Outreach — directors + officers, read-only */}
+            {isCommittee && (
+              <a href="/c3h/outreach" className="glass rounded-2xl p-6 border-2 border-green-500/20 hover:border-green-500/50 transition-all duration-300 block">
+                <div className="text-3xl mb-3">✉️</div>
+                <h2 className="text-xl font-bold text-white mb-1">Sponsor Outreach</h2>
+                <p className="text-green-400 text-xs font-medium mb-3">Committee · Daily sponsor emails</p>
+                <p className="text-gray-400 text-sm mb-4">
+                  How many sponsorship emails went out, who replied, bounces and opt-outs, warm leads with their
+                  next step, and whether today&apos;s automatic run worked.
+                </p>
+                <span className="text-xs px-3 py-1 rounded-full bg-green-500/20 text-green-400 border border-green-500/30">
+                  Open
+                </span>
+              </a>
+            )}
+
+            {/* Google Ads — Admin Only */}
+            {isAdmin && (
+              <a href="/c3h/ads" className="glass rounded-2xl p-6 border-2 border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 block">
+                <div className="text-3xl mb-3">📈</div>
+                <h2 className="text-xl font-bold text-white mb-1">Google Ads</h2>
+                <p className="text-blue-400 text-xs font-medium mb-3">Admin · Ad Grants account</p>
+                <p className="text-gray-400 text-sm mb-4">
+                  Clicks, conversions and grant spend for the last 30 days, plus anything the Ads script changed.
+                </p>
+                <span className="text-xs px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">
                   Open
                 </span>
               </a>

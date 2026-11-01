@@ -221,3 +221,8 @@ export const isC3HGovernanceReader = (email?: string | null) => {
       (o.workspaceEmail === lower || o.personalEmail?.toLowerCase() === lower),
   );
 };
+
+// Committee = directors + formal officers (+ admin). Used for read-only
+// club-operations pages such as /c3h/outreach (sponsor outreach summary).
+export const isC3HCommittee = (email?: string | null) =>
+  isC3HAdmin(email) || isC3HDirector(email) || isC3HOfficer(email);
