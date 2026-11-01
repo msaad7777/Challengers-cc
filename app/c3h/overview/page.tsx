@@ -88,6 +88,18 @@ export default function OverviewPage() {
 
   const awaiting = o?.awaiting ?? [];
 
+  // Today's run (launchd, Mon–Fri 9:30). "Today" is the viewer's date.
+  const todayLocal = new Date().toLocaleDateString('en-CA');
+  const runDate = o ? o.lastRun.runDate ?? o.lastRun.reportDate : null;
+  const ranToday = !!o && runDate === todayLocal;
+  const sentToday = !o ? 0 : o.lastRun.reportDate === todayLocal ? o.lastRun.sent : o.today === todayLocal ? o.sent.today : 0;
+  const nextRun = o?.schedule
+    ? new Date(o.schedule.nextRun).toLocaleString('en-CA', { weekday: 'short', hour: 'numeric', minute: '2-digit' })
+    : 'weekdays 9:30';
+  const runState: [Status, string] = !o || o.lastRun.status === 'none' ? ['warn', 'No run yet']
+    : o.lastRun.status === 'error' ? ['bad', 'Had a problem']
+    : o.lastRun.status === 'skipped' ? ['good', 'Nothing to send'] : ['good', 'Completed'];
+
   const attention = [
     ...(a?.alerts ?? []),
     ...(o?.alerts ?? []).filter((t) => !/waiting for a personal answer/.test(t)),   // shown in the reply list
@@ -165,6 +177,24 @@ export default function OverviewPage() {
                 : 'Mailbox coverage unknown: the summary on the club Mac is older than this page.'}
               {' '}Open the email in that inbox to reply; addresses and messages are never shown here.
             </p>
+          </section>
+        )}
+
+        {/* Today's outreach run: refreshed by the Mac right after each 9:30 run */}
+        {o && (
+          <section>
+            <h2 className="text-sm uppercase tracking-wide text-gray-400 mb-2">Today&apos;s outreach run</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <Kpi label="Sent today" value={ranToday ? fmt.int(sentToday) : 'No run today'}
+                sub={ranToday ? `${fmt.date(todayLocal)} run${o.lastRun.failed ? ` · ${o.lastRun.failed} failed` : ''}` : `next: ${nextRun}`} />
+              <Kpi label="Last run"
+                value={runDate ? `${fmt.date(runDate)}${o.lastRun.startedAt ? ` ${o.lastRun.startedAt}` : ''}` : '—'}
+                sub={runDate ? `automatic, ${o.schedule?.label ?? 'Mon–Fri 9:30'}` : `first run: ${nextRun}`}
+                status={runState[0]} statusLabel={runState[1]} />
+              <Kpi label="Businesses left to reach" value={o.contactsLeft ? fmt.int(o.contactsLeft.contacts) : '—'}
+                sub={o.contactsLeft ? `about ${Math.ceil(o.contactsLeft.contacts / 100)} sending days` : 'unknown'}
+                status={o.contactsLeft && o.contactsLeft.contacts < 300 ? 'warn' : undefined} />
+            </div>
           </section>
         )}
 

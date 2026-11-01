@@ -27,6 +27,7 @@ export type OutreachSummary = {
   generated: string;
   today: string;
   n8n: 'up' | 'down';
+  schedule?: { label: string; nextRun: string };   // launchd daily-outreach job
   seasonStart: string;
   sent: { today: number; week: number; season: number; allTime: number; lastSendDay: string | null };
   bounces: { week: number; season: number; rate: number };
@@ -35,6 +36,9 @@ export type OutreachSummary = {
   contactsLeft: { openCategories: number; contacts: number } | null;
   lastRun: {
     reportDate: string | null;
+    runDate?: string | null;      // day of the last run (from daily-auto.log)
+    startedAt?: string | null;    // HH:MM local
+    finishedAt?: string | null;   // ISO
     status: 'ok' | 'error' | 'skipped' | 'none';
     sent: number;
     planned: number;
