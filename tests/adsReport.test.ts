@@ -49,8 +49,17 @@ describe('parseAdsReport', () => {
 
   it('returns an empty report for an empty sheet', () => {
     expect(parseAdsReport('')).toEqual({
-      campaigns: [], alerts: [], changes: [], updated: null,
+      campaigns: [], alerts: [], changes: [], updated: null, metrics: {},
       totals: { impressions: 0, clicks: 0, ctr: 0, conversions: 0, cost: 0 },
     });
+  });
+
+  it('reads metric rows as account-level numbers', () => {
+    const csv = [
+      'type,name,status,daily_budget,impressions_30d,clicks_30d,ctr_30d,conversions_30d,cost_30d,clicks_yesterday,note,updated',
+      'metric,cost_mtd,,,,,,,,,"1,234.50",',
+      'metric,players_registered_total,,,,,,,,,31,',
+    ].join('\n');
+    expect(parseAdsReport(csv).metrics).toEqual({ cost_mtd: 1234.5, players_registered_total: 31 });
   });
 });

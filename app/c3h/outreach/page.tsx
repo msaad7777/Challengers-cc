@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { isC3HAdmin, isC3HCommittee } from '@/lib/c3h-access';
 import { staleHours, type OutreachSummary } from '@/lib/outreach-summary';
+import { Kpi, fmt } from '@/app/c3h/lib/Kpi';
 import Navbar from '@/components/Navbar';
 
 type Response =
@@ -143,37 +144,22 @@ export default function OutreachDashboardPage() {
 
             <h2 className="text-sm uppercase tracking-wide text-gray-400 mb-2">Emails sent</h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-              {[
-                ['Today', s.sent.today],
-                ['This week', s.sent.week],
-                [`This season (since ${fmtDate(s.seasonStart)})`, s.sent.season],
-                ['All time', s.sent.allTime],
-              ].map(([label, value]) => (
-                <div key={String(label)} className="glass rounded-xl p-4 border border-white/10">
-                  <div className="text-xs uppercase tracking-wide text-gray-400">{label}</div>
-                  <div className="text-2xl font-bold text-white">{Number(value).toLocaleString()}</div>
-                </div>
-              ))}
+              <Kpi hero label="Today" value={fmt.int(s.sent.today)} />
+              <Kpi hero label="This week" value={fmt.int(s.sent.week)} />
+              <Kpi hero label="This season" value={fmt.int(s.sent.season)} sub={`since ${fmtDate(s.seasonStart)}`} />
+              <Kpi hero label="All time" value={fmt.int(s.sent.allTime)} />
             </div>
 
             <h2 className="text-sm uppercase tracking-wide text-gray-400 mb-2">What came back this season</h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-              {([
-                ['Replies', s.replies.total, `${s.replies.waiting} waiting for an answer`, s.replies.waiting > 0],
-                ['Bounces', s.bounces.season, `${(s.bounces.rate * 100).toFixed(1)}% of emails (keep under 5%)`, s.bounces.rate > 0.05],
-                ['Asked to stop', s.optOuts.season, 'never emailed again', false],
-                ['Contacts left', s.contactsLeft?.contacts ?? '—',
-                  s.contactsLeft ? `about ${Math.ceil(s.contactsLeft.contacts / 100)} sending days` : 'unknown',
-                  !!s.contactsLeft && s.contactsLeft.contacts < 300],
-              ] as [string, number | string, string, boolean][]).map(([label, value, hint, warn]) => (
-                <div key={label} className="glass rounded-xl p-4 border border-white/10">
-                  <div className="text-xs uppercase tracking-wide text-gray-400">{label}</div>
-                  <div className={`text-2xl font-bold ${warn ? 'text-amber-300' : 'text-white'}`}>
-                    {typeof value === 'number' ? value.toLocaleString() : value}
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">{hint}</div>
-                </div>
-              ))}
+              <Kpi label="Replies" value={fmt.int(s.replies.total)} sub={`${s.replies.waiting} waiting for an answer`}
+                status={s.replies.waiting ? 'warn' : undefined} statusLabel={s.replies.waiting ? 'Reply today' : undefined} />
+              <Kpi label="Bounces" value={fmt.int(s.bounces.season)} sub={`${fmt.pct(s.bounces.rate)} of emails (keep under 5%)`}
+                status={s.bounces.rate > 0.05 ? 'bad' : 'good'} />
+              <Kpi label="Asked to stop" value={fmt.int(s.optOuts.season)} sub="never emailed again" />
+              <Kpi label="Contacts left" value={s.contactsLeft ? fmt.int(s.contactsLeft.contacts) : '—'}
+                sub={s.contactsLeft ? `about ${Math.ceil(s.contactsLeft.contacts / 100)} sending days` : 'unknown'}
+                status={s.contactsLeft && s.contactsLeft.contacts < 300 ? 'warn' : undefined} />
             </div>
 
             <div className="glass rounded-2xl p-5 border border-white/10 mb-6">

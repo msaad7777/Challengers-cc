@@ -239,6 +239,21 @@ export default function DashboardPage() {
               </a>
             )}
 
+            {/* Club Overview — directors + officers: ads, players, outreach */}
+            {isCommittee && (
+              <a href="/c3h/overview" className="glass rounded-2xl p-6 border-2 border-primary-500/30 hover:border-primary-500/60 transition-all duration-300 block">
+                <div className="text-3xl mb-3">📊</div>
+                <h2 className="text-xl font-bold text-white mb-1">Club Overview</h2>
+                <p className="text-primary-400 text-xs font-medium mb-3">Committee · Executive summary</p>
+                <p className="text-gray-400 text-sm mb-4">
+                  Ad Grant spend and reach, new player registrations, and sponsor outreach replies on one page.
+                </p>
+                <span className="text-xs px-3 py-1 rounded-full bg-primary-500/20 text-primary-400 border border-primary-500/30">
+                  Open
+                </span>
+              </a>
+            )}
+
             {/* Sponsor Outreach — directors + officers, read-only */}
             {isCommittee && (
               <a href="/c3h/outreach" className="glass rounded-2xl p-6 border-2 border-green-500/20 hover:border-green-500/50 transition-all duration-300 block">

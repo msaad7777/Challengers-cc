@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { isC3HAdmin } from '@/lib/c3h-access';
-import type { AdsReport } from '@/lib/ads-report';
+import { GRANT_MONTHLY_USD, type AdsReport } from '@/lib/ads-report';
+import { Kpi, Meter, fmt } from '@/app/c3h/lib/Kpi';
 import Navbar from '@/components/Navbar';
 
 type Response =
@@ -99,18 +100,19 @@ export default function AdsDashboardPage() {
 
         {data && 'totals' in data && (
           <>
+            <div className="glass rounded-2xl p-5 border border-white/10 mb-4">
+              <Meter label={'cost_mtd' in data.metrics ? 'Grant used this month' : 'Grant used (last 30 days)'}
+                value={data.metrics.cost_mtd ?? data.totals.cost} max={GRANT_MONTHLY_USD} format={fmt.usd}
+                note="Google Ad Grants allow up to $10,000 a month." />
+            </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-              {[
-                ['Clicks', data.totals.clicks.toLocaleString()],
-                ['CTR', pct(data.totals.ctr), data.totals.impressions >= 100 && data.totals.ctr < 0.05],
-                ['Conversions', data.totals.conversions.toLocaleString()],
-                ['Grant spend', usd(data.totals.cost)],
-              ].map(([label, value, warn]) => (
-                <div key={String(label)} className="glass rounded-xl p-4 border border-white/10">
-                  <div className="text-xs uppercase tracking-wide text-gray-400">{label}</div>
-                  <div className={`text-2xl font-bold ${warn ? 'text-red-400' : 'text-white'}`}>{value}</div>
-                </div>
-              ))}
+              <Kpi hero label="Clicks" value={fmt.int(data.totals.clicks)} sub={`${fmt.int(data.totals.impressions)} impressions`} />
+              <Kpi hero label="CTR" value={pct(data.totals.ctr)} sub="Google requires 5%+"
+                status={data.totals.impressions >= 100 ? (data.totals.ctr < 0.05 ? 'bad' : 'good') : undefined}
+                statusLabel={data.totals.impressions >= 100 && data.totals.ctr < 0.05 ? 'Below 5%' : undefined} />
+              <Kpi hero label="Conversions" value={fmt.int(data.totals.conversions)}
+                sub={`${data.totals.clicks ? pct(data.totals.conversions / data.totals.clicks) : '0.0%'} of clicks`} />
+              <Kpi hero label="Grant spend" value={usd(data.totals.cost)} sub="last 30 days" />
             </div>
 
             {data.alerts.length > 0 && (
