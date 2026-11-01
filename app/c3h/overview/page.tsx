@@ -86,9 +86,11 @@ export default function OverviewPage() {
     Number(/replied/.test(y.status)) - Number(/replied/.test(x.status))
     || (x.nextStepDate || '9').localeCompare(y.nextStepDate || '9')).slice(0, 6) : [];
 
+  const awaiting = o?.awaiting ?? [];
+
   const attention = [
     ...(a?.alerts ?? []),
-    ...(o?.alerts ?? []),
+    ...(o?.alerts ?? []).filter((t) => !/waiting for a personal answer/.test(t)),   // shown in the reply list
     ...(o && staleHours(o) > 30 ? [`The outreach summary is ${(staleHours(o) / 24).toFixed(1)} days old: the club Mac may have missed a run.`] : []),
   ];
 
@@ -125,6 +127,46 @@ export default function OverviewPage() {
             status={o && o.replies.waiting ? 'warn' : undefined}
             statusLabel={o && o.replies.waiting ? `${o.replies.waiting} to answer` : undefined} />
         </div>
+
+        {/* Replies waiting for a personal answer: the first thing to act on */}
+        {o && (
+          <section className={`rounded-2xl p-5 sm:p-6 border ${awaiting.length ? 'border-amber-500/50 bg-amber-500/[0.07]' : 'border-white/10 bg-white/[0.03]'}`}>
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <h2 className="text-lg font-bold text-white">
+                {awaiting.length ? `Reply to ${awaiting.length === 1 ? 'this business' : `these ${awaiting.length} businesses`}` : 'No sponsor replies waiting'}
+              </h2>
+              <StatusPill status={awaiting.length ? 'warn' : 'good'} label={awaiting.length ? 'Answer personally' : 'All answered'} />
+            </div>
+            {awaiting.length > 0 && (
+              <ul className="divide-y divide-white/10 rounded-xl border border-white/10 bg-black/30">
+                {awaiting.map((r) => (
+                  <li key={r.name} className="px-4 py-3 grid gap-1 sm:grid-cols-[1fr_auto] sm:items-baseline">
+                    <div>
+                      <span className="text-white font-semibold">{r.name}</span>
+                      <span className="text-gray-400 text-sm"> · {r.mailbox.includes('@') ? `came in to ${r.mailbox}` : r.mailbox}</span>
+                      <div className="text-xs text-gray-400">{r.nextStep.replace(/_/g, ' ') || 'Reply personally'}</div>
+                    </div>
+                    <div className="text-sm sm:text-right whitespace-nowrap">
+                      <span className="text-gray-300">{fmt.date(r.received)}</span>
+                      {r.waitingDays !== null && (
+                        <span className={r.waitingDays >= 2 ? 'text-red-300 font-semibold' : 'text-amber-200'}>
+                          {' · '}{r.waitingDays === 0 ? 'today' : `waiting ${r.waitingDays} day${r.waitingDays === 1 ? '' : 's'}`}
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="text-xs text-gray-400 mt-3">
+              {o.tracking
+                ? <>Tracked automatically: replies to {o.tracking.checked.join(', ')}.
+                    {o.tracking.notChecked.length > 0 && <> <span className="text-amber-200">Not included: replies to {o.tracking.notChecked.join(', ')}. Check that inbox yourself.</span></>}</>
+                : 'Mailbox coverage unknown: the summary on the club Mac is older than this page.'}
+              {' '}Open the email in that inbox to reply; addresses and messages are never shown here.
+            </p>
+          </section>
+        )}
 
         {attention.length > 0 && (
           <div className="rounded-2xl p-5 border border-amber-500/40 bg-amber-500/10">
