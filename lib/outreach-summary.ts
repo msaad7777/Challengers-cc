@@ -14,10 +14,20 @@ export type OutreachLead = {
   lastContact: string;
 };
 
+// A reply that still needs a personal answer. Business name and dates only.
+export type OutreachAwaiting = {
+  name: string;
+  mailbox: string;          // club mailbox it came in to, or "logged by hand"
+  received: string;         // YYYY-MM-DD it was logged
+  waitingDays: number | null;
+  nextStep: string;
+};
+
 export type OutreachSummary = {
   generated: string;
   today: string;
   n8n: 'up' | 'down';
+  schedule?: { label: string; nextRun: string };   // launchd daily-outreach job
   seasonStart: string;
   sent: { today: number; week: number; season: number; allTime: number; lastSendDay: string | null };
   bounces: { week: number; season: number; rate: number };
@@ -26,6 +36,9 @@ export type OutreachSummary = {
   contactsLeft: { openCategories: number; contacts: number } | null;
   lastRun: {
     reportDate: string | null;
+    runDate?: string | null;      // day of the last run (from daily-auto.log)
+    startedAt?: string | null;    // HH:MM local
+    finishedAt?: string | null;   // ISO
     status: 'ok' | 'error' | 'skipped' | 'none';
     sent: number;
     planned: number;
@@ -38,6 +51,9 @@ export type OutreachSummary = {
     errors: string[];
   };
   leads: OutreachLead[];
+  // Added 2026-11-01; older summaries lack them.
+  awaiting?: OutreachAwaiting[];
+  tracking?: { checked: string[]; notChecked: string[] };
   alerts: string[];
 };
 
