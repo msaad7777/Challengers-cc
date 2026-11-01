@@ -19,7 +19,7 @@ export const GOOGLE_ADS_ID = 'AW-18005598397';
 
 export const CONVERSION_LABELS = {
   /** Player registration / interest form submitted. */
-  registration: '',
+  registration: 'NIH_CNyn3K8dEL3B3olD',
   /** Sponsorship enquiry submitted. */
   sponsorship: '',
   /** General contact form submitted. */
