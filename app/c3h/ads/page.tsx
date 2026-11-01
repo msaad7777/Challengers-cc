@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { isC3HAdmin } from '@/lib/c3h-access';
+import { isC3HAdmin, isC3HDashboardViewer } from '@/lib/c3h-access';
 import { GRANT_MONTHLY_USD, type AdsReport } from '@/lib/ads-report';
 import { Kpi, Meter, fmt } from '@/app/c3h/lib/Kpi';
 import Navbar from '@/components/Navbar';
@@ -27,7 +27,7 @@ export default function AdsDashboardPage() {
   }, [status, router]);
 
   useEffect(() => {
-    if (!isC3HAdmin(session?.user?.email)) return;
+    if (!isC3HDashboardViewer(session?.user?.email)) return;
     fetch('/api/ads-report')
       .then((r) => r.json())
       .then(setData)
@@ -42,15 +42,15 @@ export default function AdsDashboardPage() {
     );
   }
   if (!session) return null;
-  if (!isC3HAdmin(session.user?.email)) {
+  if (!isC3HDashboardViewer(session.user?.email)) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
         <Navbar />
         <div className="pt-32 px-6 max-w-xl mx-auto text-center">
           <div className="glass rounded-2xl p-8 border border-white/10">
             <div className="text-3xl mb-3">🔐</div>
-            <h1 className="text-2xl font-bold text-white mb-2">Admin only</h1>
-            <p className="text-sm text-gray-400">The Google Ads dashboard is restricted to Club admins.</p>
+            <h1 className="text-2xl font-bold text-white mb-2">Directors only</h1>
+            <p className="text-sm text-gray-400">The Google Ads dashboard is for the Club&apos;s directors.</p>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@ export default function AdsDashboardPage() {
             </p>
           </div>
           <div className="flex gap-2">
-            {data && 'controlsUrl' in data && data.controlsUrl && (
+            {isC3HAdmin(session.user?.email) && data && 'controlsUrl' in data && data.controlsUrl && (
               <a href={data.controlsUrl} target="_blank" rel="noopener noreferrer"
                 className="px-4 py-2 rounded-lg bg-primary-500 text-black font-semibold hover:bg-primary-400 transition-all">
                 Pause / budget controls

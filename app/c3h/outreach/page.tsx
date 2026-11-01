@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { isC3HAdmin, isC3HCommittee } from '@/lib/c3h-access';
+import { isC3HDashboardViewer } from '@/lib/c3h-access';
 import { staleHours, type OutreachSummary } from '@/lib/outreach-summary';
 import { Kpi, fmt } from '@/app/c3h/lib/Kpi';
 import Navbar from '@/components/Navbar';
@@ -48,7 +48,7 @@ export default function OutreachDashboardPage() {
   }, [status, router]);
 
   useEffect(() => {
-    if (!isC3HCommittee(email)) return;
+    if (!isC3HDashboardViewer(email)) return;
     fetch('/api/outreach-summary')
       .then((r) => r.json())
       .then(setData)
@@ -63,15 +63,15 @@ export default function OutreachDashboardPage() {
     );
   }
   if (!session) return null;
-  if (!isC3HCommittee(email)) {
+  if (!isC3HDashboardViewer(email)) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
         <Navbar />
         <div className="pt-32 px-6 max-w-xl mx-auto text-center">
           <div className="glass rounded-2xl p-8 border border-white/10">
             <div className="text-3xl mb-3">🔐</div>
-            <h1 className="text-2xl font-bold text-white mb-2">Committee only</h1>
-            <p className="text-sm text-gray-400">The sponsor outreach summary is for directors and officers.</p>
+            <h1 className="text-2xl font-bold text-white mb-2">Directors only</h1>
+            <p className="text-sm text-gray-400">The sponsor outreach summary is for the Club&apos;s directors.</p>
           </div>
         </div>
       </div>
@@ -97,7 +97,7 @@ export default function OutreachDashboardPage() {
               {s ? ` · updated ${new Date(s.generated).toLocaleString('en-CA', { dateStyle: 'medium', timeStyle: 'short' })}` : ''}
             </p>
           </div>
-          {isC3HAdmin(email) && (
+          {isC3HDashboardViewer(email) && (
             <a href="/c3h/ads"
               className="px-4 py-2 rounded-lg border border-white/20 text-white hover:bg-white/10 transition-all">
               Google Ads dashboard

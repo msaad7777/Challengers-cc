@@ -222,7 +222,10 @@ export const isC3HGovernanceReader = (email?: string | null) => {
   );
 };
 
-// Committee = directors + formal officers (+ admin). Used for read-only
-// club-operations pages such as /c3h/outreach (sponsor outreach summary).
-export const isC3HCommittee = (email?: string | null) =>
-  isC3HAdmin(email) || isC3HDirector(email) || isC3HOfficer(email);
+// Club dashboards (/c3h/overview, /c3h/ads, /c3h/outreach): the five
+// directors can VIEW them. Any edit or action on them (the Ads controls
+// sheet, budget changes, pausing) is Saad only — use isC3HAdmin — as he is
+// the Treasurer and the Club's only bank signing authority (per Saad,
+// 2026-11-01). Non-director officers and captains have no access.
+export const isC3HDashboardViewer = (email?: string | null) =>
+  isC3HAdmin(email) || isC3HDirector(email);

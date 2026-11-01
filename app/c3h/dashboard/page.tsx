@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import PublicLiveScore from '@/components/PublicLiveScore';
-import { isC3HAdmin, isC3HBoard, isC3HCommittee, isC3HDirector, isC3HOfficer, isC3HGovernanceReader } from '@/lib/c3h-access';
+import { isC3HAdmin, isC3HBoard, isC3HDashboardViewer, isC3HDirector, isC3HOfficer, isC3HGovernanceReader } from '@/lib/c3h-access';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -32,7 +32,7 @@ export default function DashboardPage() {
   const isOfficer = isC3HOfficer(session.user?.email);
   const isGovernanceReader = isC3HGovernanceReader(session.user?.email);
   const isAdmin = isC3HAdmin(session.user?.email);
-  const isCommittee = isC3HCommittee(session.user?.email);
+  const isDashboardViewer = isC3HDashboardViewer(session.user?.email);
   const userName = session.user?.name || 'Player';
   const userImage = session.user?.image || '';
 
@@ -239,12 +239,12 @@ export default function DashboardPage() {
               </a>
             )}
 
-            {/* Club Overview — directors + officers: ads, players, outreach */}
-            {isCommittee && (
+            {/* Club Overview — directors: ads, players, outreach */}
+            {isDashboardViewer && (
               <a href="/c3h/overview" className="glass rounded-2xl p-6 border-2 border-primary-500/30 hover:border-primary-500/60 transition-all duration-300 block">
                 <div className="text-3xl mb-3">📊</div>
                 <h2 className="text-xl font-bold text-white mb-1">Club Overview</h2>
-                <p className="text-primary-400 text-xs font-medium mb-3">Committee · Executive summary</p>
+                <p className="text-primary-400 text-xs font-medium mb-3">Directors · Executive summary</p>
                 <p className="text-gray-400 text-sm mb-4">
                   Ad Grant spend and reach, new player registrations, and sponsor outreach replies on one page.
                 </p>
@@ -254,12 +254,12 @@ export default function DashboardPage() {
               </a>
             )}
 
-            {/* Sponsor Outreach — directors + officers, read-only */}
-            {isCommittee && (
+            {/* Sponsor Outreach — directors, read-only */}
+            {isDashboardViewer && (
               <a href="/c3h/outreach" className="glass rounded-2xl p-6 border-2 border-green-500/20 hover:border-green-500/50 transition-all duration-300 block">
                 <div className="text-3xl mb-3">✉️</div>
                 <h2 className="text-xl font-bold text-white mb-1">Sponsor Outreach</h2>
-                <p className="text-green-400 text-xs font-medium mb-3">Committee · Daily sponsor emails</p>
+                <p className="text-green-400 text-xs font-medium mb-3">Directors · Daily sponsor emails</p>
                 <p className="text-gray-400 text-sm mb-4">
                   How many sponsorship emails went out, who replied, bounces and opt-outs, warm leads with their
                   next step, and whether today&apos;s automatic run worked.
@@ -270,12 +270,12 @@ export default function DashboardPage() {
               </a>
             )}
 
-            {/* Google Ads — Admin Only */}
-            {isAdmin && (
+            {/* Google Ads — directors view; controls are Saad only */}
+            {isDashboardViewer && (
               <a href="/c3h/ads" className="glass rounded-2xl p-6 border-2 border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 block">
                 <div className="text-3xl mb-3">📈</div>
                 <h2 className="text-xl font-bold text-white mb-1">Google Ads</h2>
-                <p className="text-blue-400 text-xs font-medium mb-3">Admin · Ad Grants account</p>
+                <p className="text-blue-400 text-xs font-medium mb-3">Directors · Ad Grants account</p>
                 <p className="text-gray-400 text-sm mb-4">
                   Clicks, conversions and grant spend for the last 30 days, plus anything the Ads script changed.
                 </p>

@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { isC3HCommittee } from '@/lib/c3h-access';
+import { isC3HDashboardViewer } from '@/lib/c3h-access';
 import { decryptSummary } from '@/lib/outreach-summary';
 
-// Committee-only. OUTREACH_SUMMARY_URL serves the encrypted summary the club
+// Directors only (read-only summary). OUTREACH_SUMMARY_URL serves the encrypted summary the club
 // Mac publishes after each outreach run; OUTREACH_SUMMARY_KEY decrypts it.
 // Both stay server-side so they never ship in the public bundle.
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   const token = await getToken({ req });
-  if (!isC3HCommittee(token?.email)) {
+  if (!isC3HDashboardViewer(token?.email)) {
     return NextResponse.json({ error: 'forbidden' }, { status: 403 });
   }
 

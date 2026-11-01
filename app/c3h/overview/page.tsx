@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { isC3HCommittee } from '@/lib/c3h-access';
+import { isC3HAdmin, isC3HDashboardViewer } from '@/lib/c3h-access';
 import { GRANT_DAILY_CAP_USD, GRANT_MONTHLY_USD, type AdsReport } from '@/lib/ads-report';
 import { staleHours, type OutreachSummary } from '@/lib/outreach-summary';
 import { Kpi, Meter, Panel, StatusPill, fmt, type Status } from '@/app/c3h/lib/Kpi';
@@ -37,7 +37,7 @@ export default function OverviewPage() {
   }, [status, router]);
 
   useEffect(() => {
-    if (!isC3HCommittee(email)) return;
+    if (!isC3HDashboardViewer(email)) return;
     load('/api/ads-report', setAds);
     load('/api/outreach-summary', setOut);
   }, [email]);
@@ -46,15 +46,15 @@ export default function OverviewPage() {
     return <div className="min-h-screen bg-black flex items-center justify-center"><div className="text-primary-400 text-xl">Loading…</div></div>;
   }
   if (!session) return null;
-  if (!isC3HCommittee(email)) {
+  if (!isC3HDashboardViewer(email)) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
         <Navbar />
         <div className="pt-32 px-6 max-w-xl mx-auto text-center">
           <div className="glass rounded-2xl p-8 border border-white/10">
             <div className="text-3xl mb-3">🔐</div>
-            <h1 className="text-2xl font-bold text-white mb-2">Committee only</h1>
-            <p className="text-sm text-gray-400">The Club overview is for directors and officers.</p>
+            <h1 className="text-2xl font-bold text-white mb-2">Directors only</h1>
+            <p className="text-sm text-gray-400">The Club overview is for the Club&apos;s directors.</p>
           </div>
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function OverviewPage() {
       <div className="pt-28 pb-16 px-4 sm:px-6 max-w-6xl mx-auto space-y-6">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-primary-400 mb-1">Committee briefing</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-primary-400 mb-1">Directors&apos; briefing</p>
             <h1 className="text-3xl sm:text-4xl font-bold text-white">Club overview</h1>
             <p className="text-sm text-gray-400 mt-1">
               Google Ad Grants, player sign-ups and sponsor outreach in one place.
@@ -138,7 +138,7 @@ export default function OverviewPage() {
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Google Ad Grants */}
           <Panel icon="📈" title="Google Ad Grants" subtitle="Free search ads from Google for non-profits · last 30 days"
-            action={a?.controlsUrl ? <a href={a.controlsUrl} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-lg bg-primary-500 text-black font-semibold">Controls</a> : undefined}>
+            action={isC3HAdmin(email) && a?.controlsUrl ? <a href={a.controlsUrl} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-lg bg-primary-500 text-black font-semibold">Controls</a> : undefined}>
             <NotReady data={ads} what="Google Ads" />
             {a && (
               <div className="space-y-5">
