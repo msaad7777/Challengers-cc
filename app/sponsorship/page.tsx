@@ -244,7 +244,7 @@ export default function SponsorshipPage() {
               Choose the partnership level that fits your organization
             </p>
             <p className="text-gray-300 max-w-2xl mx-auto mt-3">
-              Sponsors confirmed by 1 March 2027 are on the jersey print for the 2027 season.
+              Title and Platinum sponsors confirmed by 1 March 2027 are on the jersey print for the 2027 season.
             </p>
             <div className="mt-6">
               <SponsorPackageLink />
