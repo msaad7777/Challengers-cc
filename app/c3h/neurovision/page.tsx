@@ -22,6 +22,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import { isC3HDirector } from '@/lib/c3h-access';
+import DeskVisionPlan from './DeskVisionPlan';
 import { db, firebaseAuthReady } from '@/lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import {
@@ -2404,7 +2405,7 @@ function PowerHittingTrainer({ onLog, email }: { onLog: (type: MetricType, value
 //  PAGE
 // ════════════════════════════════════════════════════════════════════════
 
-type LabTab = 'warmup' | 'ball' | 'field' | 'perceptual' | 'visualize' | 'mot' | 'juggle' | 'power' | 'mindset' | 'breathing' | 'progress';
+type LabTab = 'desk' | 'warmup' | 'ball' | 'field' | 'perceptual' | 'visualize' | 'mot' | 'juggle' | 'power' | 'mindset' | 'breathing' | 'progress';
 
 export default function NeuroVisionPage() {
   const { data: session, status } = useSession();
@@ -2495,6 +2496,7 @@ export default function NeuroVisionPage() {
   }
 
   const TABS: { key: LabTab; label: string; emoji: string }[] = [
+    { key: 'desk', label: 'Desk Plan', emoji: '💻' },
     { key: 'warmup', label: 'Warm-Up', emoji: '👀' },
     { key: 'ball', label: 'Ball Pickup', emoji: '🎯' },
     { key: 'field', label: 'Field Scanner', emoji: '🗺️' },
@@ -2539,6 +2541,7 @@ export default function NeuroVisionPage() {
             ))}
           </div>
 
+          {tab === 'desk' && <DeskVisionPlan />}
           {tab === 'warmup' && <WarmUp />}
           {tab === 'ball' && <BallPickupTrainer onLog={logEntry} />}
           {tab === 'field' && <FieldScanner />}
