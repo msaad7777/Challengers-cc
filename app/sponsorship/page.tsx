@@ -2,10 +2,13 @@
 
 import { useState, FormEvent } from 'react';
 import { trackConversion } from '@/lib/gtag';
+import { sendInquiry } from '@/lib/inquiry-forms';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import VerifiedBanner from '@/components/VerifiedBanner';
 import SponsorPackageLink from '@/components/SponsorPackageLink';
+
+const FAILURE_MESSAGE = 'Your enquiry did not reach us. Please email contact@challengerscc.ca directly.';
 
 export default function SponsorshipPage() {
   const [formData, setFormData] = useState({
@@ -19,44 +22,23 @@ export default function SponsorshipPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
-  const GOOGLE_FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSeER8z1nKUCUfuRZdIUDEQ0qvHIvp-XtwufQHALyt3hWUBtVA/formResponse";
-  const ENTRY_IDS = {
-    organizationName: "entry.1917539462",
-    contactName: "entry.2112366391",
-    email: "entry.1606284375",
-    phone: "entry.1557446055",
-    sponsorshipLevel: "entry.861380879",
-    message: "entry.1857964256"
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitMessage('');
 
     try {
-      const formBody = new URLSearchParams();
-      formBody.append(ENTRY_IDS.organizationName, formData.organizationName);
-      formBody.append(ENTRY_IDS.contactName, formData.contactName);
-      formBody.append(ENTRY_IDS.email, formData.email);
-      formBody.append(ENTRY_IDS.phone, formData.phone);
-      formBody.append(ENTRY_IDS.sponsorshipLevel, formData.sponsorshipLevel);
-      formBody.append(ENTRY_IDS.message, formData.message);
-
-      await fetch(GOOGLE_FORM_ACTION, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formBody.toString(),
-      });
+      const saved = await sendInquiry('sponsor', formData);
+      if (!saved) {
+        setSubmitMessage(FAILURE_MESSAGE);
+        return;
+      }
 
       trackConversion('sponsorship');
       setSubmitMessage('Thank you for your interest! We\'ll be in touch soon. Not heard from us within 48 hours? Email contact@challengerscc.ca.');
       setFormData({ organizationName: '', contactName: '', email: '', phone: '', sponsorshipLevel: '', message: '' });
-    } catch (error) {
-      setSubmitMessage('Something went wrong. Please try emailing us directly at contact@challengerscc.ca');
+    } catch {
+      setSubmitMessage(FAILURE_MESSAGE);
     } finally {
       setIsSubmitting(false);
     }

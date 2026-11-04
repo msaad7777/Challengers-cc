@@ -2,6 +2,9 @@
 
 import { useState, FormEvent } from 'react';
 import { trackConversion } from '@/lib/gtag';
+import { sendInquiry } from '@/lib/inquiry-forms';
+
+const FAILURE_MESSAGE = 'Your message did not reach us. Please email contact@challengerscc.ca directly.';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -12,38 +15,23 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
-  const GOOGLE_FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLScgqIxs2teuYvIhtwK0GEK11tej62oaGtGy6UTPTLvipxKPlg/formResponse";
-  const ENTRY_IDS = {
-    name: "entry.1210353107",
-    email: "entry.21661433",
-    message: "entry.747707509"
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitMessage('');
 
     try {
-      const formBody = new URLSearchParams();
-      formBody.append(ENTRY_IDS.name, formData.name);
-      formBody.append(ENTRY_IDS.email, formData.email);
-      formBody.append(ENTRY_IDS.message, formData.message);
-
-      await fetch(GOOGLE_FORM_ACTION, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formBody.toString(),
-      });
+      const saved = await sendInquiry('contact', formData);
+      if (!saved) {
+        setSubmitMessage(FAILURE_MESSAGE);
+        return;
+      }
 
       trackConversion('contact');
       setSubmitMessage('Message sent successfully! We\'ll get back to you soon.');
       setFormData({ name: '', email: '', message: '' });
-    } catch (error) {
-      setSubmitMessage('Failed to send message. Please try again.');
+    } catch {
+      setSubmitMessage(FAILURE_MESSAGE);
     } finally {
       setIsSubmitting(false);
     }
