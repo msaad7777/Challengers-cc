@@ -21,7 +21,7 @@ export default function LiveStreaming() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
                 </span>
-                <span className="text-sm font-semibold text-red-400">Coming Soon — 2026 Season</span>
+                <span className="text-sm font-semibold text-red-400">Watch on YouTube</span>
               </div>
 
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -29,8 +29,8 @@ export default function LiveStreaming() {
               </h2>
 
               <p className="text-gray-300 mb-6">
-                Catch every Challengers CC match live on our brand-new YouTube channel.
-                Match highlights, player spotlights, coaching tips, and full archived
+                Follow Challengers CC on our YouTube channel.
+                Match livestreams, highlights, player spotlights, coaching tips, and archived
                 matches — all in one place.
               </p>
 
@@ -39,7 +39,7 @@ export default function LiveStreaming() {
                   <svg className="w-5 h-5 text-primary-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span className="text-sm text-gray-300">Full 2026 season match livestreams</span>
+                  <span className="text-sm text-gray-300">Match livestreams</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <svg className="w-5 h-5 text-primary-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

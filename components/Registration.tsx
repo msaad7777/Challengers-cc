@@ -425,7 +425,7 @@ export default function Registration() {
                   <option value="" className="bg-gray-900 text-gray-400">Select jersey type (optional)</option>
                   <option value="Full Sleeve" className="bg-gray-900 text-white">Full Sleeve</option>
                   <option value="Half Sleeve" className="bg-gray-900 text-white">Half Sleeve</option>
-                  <option value="Both (1 each)" className="bg-gray-900 text-white">Both (1 each)</option>
+                  <option value="Both ( 1 each)" className="bg-gray-900 text-white">Both (1 each)</option>
                 </select>
               </div>
 
