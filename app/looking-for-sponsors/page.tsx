@@ -10,6 +10,21 @@ export const metadata: Metadata = {
   description:
     'Challengers Cricket Club is looking for local businesses to back its 2027 season in London, Ontario. See what sponsorship pays for and how sponsors are credited.',
   alternates: { canonical: '/looking-for-sponsors' },
+  openGraph: {
+    title: 'Looking for 2027 Sponsors in London, Ontario',
+    description: 'See what sponsorship pays for and how sponsors are credited.',
+    url: '/looking-for-sponsors',
+    siteName: 'Challengers Cricket Club',
+    locale: 'en_CA',
+    type: 'website',
+    images: ['/ccc-logo.png'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Looking for 2027 Sponsors in London, Ontario',
+    description: 'See what sponsorship pays for and how sponsors are credited.',
+    images: ['/ccc-logo.png'],
+  },
 };
 
 export default function LookingForSponsorsPage() {
@@ -33,7 +48,7 @@ export default function LookingForSponsorsPage() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-              Looking for <span className="gradient-text">Sponsors</span>
+              Looking for <span className="gradient-text">2027 Sponsors</span>
             </h1>
 
             <p className="text-xl sm:text-2xl text-gray-300 mb-4 max-w-3xl mx-auto">
@@ -46,6 +61,13 @@ export default function LookingForSponsorsPage() {
               London, Ontario. We are seeking sponsors for our 2027 season to help grow the sport we love.
               We are not a registered charity and do not issue charitable tax receipts.
             </p>
+
+            <Link
+              href="/sponsorship#sponsorship-form"
+              className="inline-block mt-8 px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-semibold shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105"
+            >
+              See tiers and enquire
+            </Link>
           </div>
         </div>
       </section>
@@ -109,7 +131,7 @@ export default function LookingForSponsorsPage() {
                 </svg>
               </div>
               <h3 className="text-lg font-bold mb-2">Community Impact</h3>
-              <p className="text-sm text-gray-400">Support local youth development programs, cricket training sessions, and community engagement in London, Ontario</p>
+              <p className="text-sm text-gray-400">Support cricket training sessions and community engagement in London, Ontario</p>
             </div>
 
             <div className="glass rounded-2xl p-6 glass-hover">
@@ -204,6 +226,7 @@ export default function LookingForSponsorsPage() {
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-600 to-primary-500"></div>
               <div className="text-4xl mb-4">🥇</div>
               <h3 className="text-xl font-bold mb-1">Platinum Sponsor</h3>
+              <p className="text-xs text-accent-400 font-semibold mb-2">Only 1 Available</p>
               <div className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-primary-600 to-primary-500 text-sm font-semibold mb-4">
                 $1,000
               </div>
@@ -240,6 +263,7 @@ export default function LookingForSponsorsPage() {
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 to-accent-500"></div>
               <div className="text-4xl mb-4">🥈</div>
               <h3 className="text-xl font-bold mb-1">Gold Sponsor</h3>
+              <p className="text-xs text-accent-400 font-semibold mb-2">3 Spots Open</p>
               <div className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-primary-500 to-accent-500 text-sm font-semibold mb-4">
                 $500
               </div>
@@ -330,8 +354,8 @@ export default function LookingForSponsorsPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
-              <h3 className="text-lg font-bold mb-2">Youth Cricket Training</h3>
-              <p className="text-sm text-gray-400">Training programs and school cricket sessions for young players</p>
+              <h3 className="text-lg font-bold mb-2">Player Training</h3>
+              <p className="text-sm text-gray-400">Indoor winter nets and training sessions for our players</p>
             </div>
 
             <div className="glass rounded-2xl p-6 glass-hover text-center">
@@ -481,8 +505,7 @@ export default function LookingForSponsorsPage() {
               </h2>
               <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
                 We invite you to partner with us and make a lasting impact in the community through the power of cricket.
-                We look forward to building a successful partnership that strengthens community ties, promotes youth
-                development, and grows cricket in London.
+                We look forward to building a successful partnership that strengthens community ties and grows cricket in London.
               </p>
 
               <div className="grid sm:grid-cols-3 gap-6 mb-10">

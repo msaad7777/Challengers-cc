@@ -2,11 +2,27 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import Registration from '@/components/Registration';
 import TierCalculator from './TierCalculator';
 
 export const metadata: Metadata = {
   title: 'Join a Cricket Club in London, Ontario — 2027 Registration | Challengers CC',
   alternates: { canonical: '/join' },
+  openGraph: {
+    title: 'Join a Cricket Club in London, Ontario',
+    description: 'Registration is open for the 2027 season. Open to newcomers and experienced players alike.',
+    url: '/join',
+    siteName: 'Challengers Cricket Club',
+    locale: 'en_CA',
+    type: 'website',
+    images: ['/ccc-logo.png'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Join a Cricket Club in London, Ontario',
+    description: 'Registration is open for the 2027 season. Open to newcomers and experienced players alike.',
+    images: ['/ccc-logo.png'],
+  },
   description:
     'Registration is open for the 2027 season. $150 secures your place; full-season members pay the balance in March. Cricket in London, Ontario — open to newcomers and experienced players alike.',
 };
@@ -51,6 +67,12 @@ export default function JoinPage() {
             That is the whole ask for now — the full-season decision comes in March 2027, once the
             leagues have published their schedules and you can see what you would be committing to.
           </p>
+          <Link
+            href="#registration"
+            className="inline-block w-full sm:w-auto sm:px-10 text-center px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-bold text-white shadow-lg hover:shadow-primary-500/50 transition-all duration-300 mt-8"
+          >
+            Register for 2027
+          </Link>
         </div>
       </section>
 
@@ -81,7 +103,7 @@ export default function JoinPage() {
                 <li>Covers up to 50% of the T30 season — nothing further to pay</li>
               </ul>
               <Link
-                href="/#registration"
+                href="#registration"
                 className="mt-6 inline-block w-full text-center px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-bold text-white shadow-lg hover:shadow-primary-500/50 transition-all duration-300"
               >
                 Register for 2027
@@ -288,12 +310,12 @@ export default function JoinPage() {
           <div className="glass rounded-2xl p-8 sm:p-12 text-center">
             <h2 className="text-3xl sm:text-4xl font-bold">Ready to play?</h2>
             <p className="text-gray-400 mt-3 max-w-xl mx-auto">
-              Register your place for 2027. If you are new to the club or new to London, say so on
-              the form — we will get you into winter nets and introduce you to the group.
+              Register your place for 2027. If you are new to the club or new to London, tell us when
+              we get in touch — we will get you into winter nets and introduce you to the group.
             </p>
             <div className="flex flex-wrap justify-center gap-3 mt-7">
               <Link
-                href="/#registration"
+                href="#registration"
                 className="px-7 py-3.5 bg-gradient-to-r from-primary-600 to-primary-500 rounded-lg font-bold text-white shadow-xl hover:shadow-primary-500/50 transition-all duration-300 hover:scale-105"
               >
                 Register for 2027
@@ -308,6 +330,8 @@ export default function JoinPage() {
           </div>
         </div>
       </section>
+
+      <Registration />
 
       <Footer />
     </main>

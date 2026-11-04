@@ -53,7 +53,7 @@ export default function SponsorshipPage() {
       });
 
       trackConversion('sponsorship');
-      setSubmitMessage('Thank you for your interest! We\'ll be in touch soon to discuss partnership opportunities.');
+      setSubmitMessage('Thank you for your interest! We\'ll be in touch soon. Not heard from us within 48 hours? Email contact@challengerscc.ca.');
       setFormData({ organizationName: '', contactName: '', email: '', phone: '', sponsorshipLevel: '', message: '' });
     } catch (error) {
       setSubmitMessage('Something went wrong. Please try emailing us directly at contact@challengerscc.ca');
@@ -85,7 +85,7 @@ export default function SponsorshipPage() {
     {
       name: "Platinum Sponsor",
       price: "$1,000",
-      subtitle: "Ideal for growing businesses",
+      subtitle: "Only 1 Available",
       color: "from-primary-600 to-primary-500",
       icon: "🥇",
       benefits: [
@@ -100,7 +100,7 @@ export default function SponsorshipPage() {
     {
       name: "Gold Sponsor",
       price: "$500",
-      subtitle: "Perfect for small & medium businesses",
+      subtitle: "3 Spots Open",
       color: "from-primary-500 to-accent-500",
       icon: "🥈",
       benefits: [
@@ -123,7 +123,7 @@ export default function SponsorshipPage() {
         "Logo on challengerscc.ca",
         "Social media recognition",
         "Mention at community events",
-        "Helping grow youth & adult cricket in London, Ontario"
+        "Helping grow community cricket in London, Ontario"
       ]
     }
   ];
@@ -153,7 +153,7 @@ export default function SponsorshipPage() {
             </h1>
 
             <p className="text-xl sm:text-2xl text-gray-300 mb-4 max-w-3xl mx-auto">
-              Support local cricket & grow your brand in London, Ontario
+              Sponsor a cricket club in London, Ontario. Tiers from $500 to $2,000, plus in-kind partnerships.
             </p>
 
             <div className="max-w-3xl mx-auto glass rounded-2xl p-6 mt-8">
@@ -225,7 +225,7 @@ export default function SponsorshipPage() {
                 </svg>
               </div>
               <h3 className="text-lg font-bold mb-2">Ground Floor</h3>
-              <p className="text-sm text-gray-400">Be a founding sponsor of London&apos;s premier cricket club from day one</p>
+              <p className="text-sm text-gray-400">Back a young London club in its second season.</p>
             </div>
           </div>
         </div>
