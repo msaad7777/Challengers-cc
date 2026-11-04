@@ -508,7 +508,7 @@ The Ontario Trillium Foundation invests in community-based initiatives that help
 
 **Eligibility for Challengers CC**:
 ✅ **Not-for-profit organizations** incorporated in Ontario
-✅ **Registered Ontario NFP Corporation** (#1746974-8) - WE QUALIFY!
+✅ **Registered Canada NFP Corporation** (#1746974-8) - WE QUALIFY!
 ✅ Organizations with charitable registration (or partnered with one)
 
 **Grant Streams**:
@@ -1434,7 +1434,7 @@ Provincial government program providing substantial funding to organizations hos
 
 **Eligibility for Challengers CC**:
 ✅ **Stream 2 Applicant** - Not-for-profit organizations incorporated in Ontario
-✅ **Registered Ontario NFP Corporation** (#1746974-8) - WE QUALIFY!
+✅ **Registered Canada NFP Corporation** (#1746974-8) - WE QUALIFY!
 ✅ Can apply for both national and international events
 
 **CRITICAL REQUIREMENT**:
@@ -2303,7 +2303,7 @@ Email: challengerscricketclub2026@gmail.com
 Website: challengerscc.ca
 Instagram: @challengers.cc
 
-**Legal Status**: Registered Ontario NFP Corporation #1746974-8
+**Legal Status**: Registered Canada NFP Corporation #1746974-8
 
 ---
 
