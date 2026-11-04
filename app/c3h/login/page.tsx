@@ -33,7 +33,7 @@ function LoginContent() {
               <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30">
                 <p className="text-red-400 text-sm text-center">
                   {error === 'AccessDenied'
-                    ? 'Access denied. Your email is not authorized. Contact the admin if you believe this is an error.'
+                    ? 'Access denied. This email isn’t on the C3H list for this season. Contact the admin if you believe this is an error.'
                     : 'Something went wrong. Please try again.'}
                 </p>
               </div>

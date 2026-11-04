@@ -1,6 +1,7 @@
 import { createHash } from 'crypto';
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import { isActiveSeasonPlayer } from '@/lib/c3h-seasons';
 
 // SECURITY BLOCKLIST — checked FIRST, before any allowlist or the
 // @challengerscc.ca domain auto-approve below. Any address here is denied
@@ -10,8 +11,8 @@ import GoogleProvider from 'next-auth/providers/google';
 // blocked while the Google Workspace account is secured after a security
 // incident. Blocking it here severs the app-side access in the meantime. This is a temporary lockout —
 // remove from this list only once the account is fully recovered + secured.
-// NOTE: existing JWT sessions persist up to `maxAge`; rotate NEXTAUTH_SECRET
-// to force-invalidate any active session immediately.
+// NOTE: access is re-checked whenever a session is read (see the jwt callback),
+// so a removed or blocked address loses its session on the deploy that removes it.
 const BLOCKED_EMAILS = [
   'contact@challengerscc.ca',
   // Former members — explicitly blocked so their @challengerscc.ca workspace
@@ -58,40 +59,6 @@ const BOARD_EMAILS = [
   'romans987@gmail.com',           // Roman (Sazzad Mahmud)
 ];
 
-// Whitelisted player Gmail accounts (non-board players only)
-const PLAYER_EMAILS: string[] = [
-  'denisondavis9@gmail.com',
-  'judinthomas96@gmail.com',
-  'abhishekladva09@gmail.com',
-  'ashvak.realtor07@gmail.com',
-  'bhindadhesi18@gmail.com',
-  'sallu.ahmed8@gmail.com',
-  'saiakhira@gmail.com',
-  'farooqchoudhary123@gmail.com',
-  'vijayvyadav1998@gmail.com',
-  'rajputshivam9558@gmail.com',
-  'shabyansari0023@gmail.com',
-  'manoharanukuri9@gmail.com',
-  'mohayminul13@gmail.com',
-  'fahadakbar@gmail.com',
-  'georgefreddy963@gmail.com',
-  'andrewjebarson18@gmail.com',
-  'tgururaga@gmail.com',
-  '108.noman@gmail.com',
-  'shafiul078.aust@gmail.com',
-  'sujelahmed06@gmail.com',
-  'syedshahriar77@gmail.com',
-  // shabyansari0023@gmail.com (Shoeb) removed 2026-07-28 — left the Club; blocked above.
-  'gmc715625@gmail.com',
-  'atik1991rah@gmail.com',
-  'majharulalam456@gmail.com',
-  'siva4593@gmail.com',
-  'rajath.s.shetty@gmail.com',
-  'maaleemq@gmail.com',
-  'thoufeeqmuhammed99@gmail.com',
-  'ameeyasingh1@gmail.com',
-];
-
 function getUserRole(email: string): 'board' | 'player' | null {
   const lower = email.toLowerCase();
   // Blocklist wins over everything.
@@ -102,7 +69,7 @@ function getUserRole(email: string): 'board' | 'player' | null {
   // explicitly in BOARD_EMAILS below — so a new director/officer is a one-line
   // add, and an ex-member is denied by default the moment they're removed.
   if (BOARD_EMAILS.includes(lower)) return 'board';
-  if (PLAYER_EMAILS.includes(lower)) return 'player';
+  if (isActiveSeasonPlayer(lower)) return 'player';
   return null;
 }
 
@@ -115,8 +82,8 @@ const handler = NextAuth({
   ],
   session: {
     strategy: 'jwt',
-    // 24 hours — short enough that allowlist changes (captain access,
-    // player removals) propagate within a day. Users re-login daily.
+    // 24 hours, renewed while the user is active. Renewal alone would keep an
+    // active user in forever, so the jwt callback re-checks access every time.
     maxAge: 24 * 60 * 60, // 24 hours
     updateAge: 60 * 60, // refresh JWT every hour while user is active
   },
@@ -127,12 +94,16 @@ const handler = NextAuth({
       return role !== null;
     },
     async jwt({ token, user }) {
-      if (user?.email) {
-        token.role = getUserRole(user.email);
-      }
+      // Runs on sign-in and on every session read, so removing someone from
+      // the lists (or moving to a new season) takes effect straight away.
+      const email = user?.email ?? token.email;
+      token.role = email ? getUserRole(email) : null;
       return token;
     },
     async session({ session, token }) {
+      // An empty session reads as signed out, on the client and in
+      // getServerSession alike, and sends the user back to the login page.
+      if (!token.role) return {} as typeof session;
       if (session.user?.email) {
         Object.assign(session, { role: token.role });
       }
