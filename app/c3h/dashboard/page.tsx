@@ -254,6 +254,21 @@ export default function DashboardPage() {
               </a>
             )}
 
+            {/* Registrations and sponsor enquiries — directors */}
+            {isDashboardViewer && (
+              <a href="/c3h/intake" className="glass rounded-2xl p-6 border-2 border-accent-500/20 hover:border-accent-500/50 transition-all group">
+                <div className="text-3xl mb-3">📥</div>
+                <h2 className="text-xl font-bold text-white mb-1">Registrations &amp; Enquiries</h2>
+                <p className="text-accent-400 text-xs font-medium mb-3">Directors · New players and sponsors</p>
+                <p className="text-gray-400 text-sm mb-4">
+                  Follow up new player registrations and sponsor enquiries, confirm payments and open portal access.
+                </p>
+                <span className="text-xs px-3 py-1 rounded-full bg-accent-500/20 text-accent-400 border border-accent-500/30">
+                  Open
+                </span>
+              </a>
+            )}
+
             {/* Sponsor Outreach — directors, read-only */}
             {isDashboardViewer && (
               <a href="/c3h/outreach" className="glass rounded-2xl p-6 border-2 border-green-500/20 hover:border-green-500/50 transition-all duration-300 block">

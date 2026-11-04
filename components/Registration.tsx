@@ -2,6 +2,7 @@
 
 import { useState, FormEvent, useRef, useEffect } from 'react';
 import { trackConversion } from '@/lib/gtag';
+import { sendInquiry } from '@/lib/inquiry-forms';
 import {
   buildAdvice,
   T30_FIXTURES,
@@ -11,42 +12,6 @@ import {
   WEEKEND_OPTIONS,
   WORK_PATTERN_OPTIONS,
 } from '@/lib/registrationAdvice';
-
-/**
- * Google Form field mapping. Every input's `name` comes from here rather than
- * being written inline, so the whole mapping is auditable in one place.
- *
- * ⚠️ THE LAST THREE ARE NOT WIRED UP YET. The questions exist on this page and
- * drive the on-page recommendation, but the Google Form has no matching fields,
- * so their answers are NOT recorded. To capture them:
- *   1. Open the Google Form and add three questions (any order):
- *        "In 2027 you will be..."            (multiple choice)
- *        "Weekend availability"              (multiple choice)
- *        "Matches you can commit to (of 26)" (short answer)
- *   2. Preview the form, inspect each field, and copy its `entry.NNNNNN` name.
- *   3. Paste them below. Nothing else needs to change.
- * A blank id means the input renders with no `name`, so it is simply not
- * submitted — never silently posted to the wrong question.
- * See GOOGLE_FORMS_SETUP.md for the full walkthrough.
- */
-const ENTRY_IDS = {
-  name: 'entry.1407381676',
-  email: 'entry.112847984',
-  phone: 'entry.578432831',
-  skillLevel: 'entry.980943308',
-  willingToPlay: 'entry.1652603126',
-  playingRole: 'entry.1089654944',
-  jerseySize: 'entry.1146547898',
-  jerseyType: 'entry.1555965869',
-  trouserWaistSize: 'entry.1033675185',
-  workPattern: '',
-  weekendAvailability: '',
-  gamesCommitted: '',
-} as const;
-
-/** Undefined (rather than "") so React omits the attribute entirely. */
-const fieldName = (key: keyof typeof ENTRY_IDS): string | undefined =>
-  ENTRY_IDS[key] || undefined;
 
 /** A genuine person does not complete this form in under four seconds. */
 const MIN_HUMAN_SECONDS = 4;
@@ -69,8 +34,6 @@ export default function Registration() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
   const [honeypot, setHoneypot] = useState('');
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
   const mountedAt = useRef<number>(0);
 
   useEffect(() => {
@@ -85,9 +48,6 @@ export default function Registration() {
     workPattern: workPatternCodeFor(formData.workPattern),
   });
 
-  // Google Form URL - just change this if you create a new form
-  const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfVYSWAYY8wgl_KIjsNwENzf2w57xp4ZcMBWXLeXRkY7L4DxQ/formResponse";
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -101,38 +61,31 @@ export default function Registration() {
       (Date.now() - mountedAt.current) / 1000 < MIN_HUMAN_SECONDS;
     const looksAutomated = honeypot.trim().length > 0 || tooFast;
 
-    if (!looksAutomated && formRef.current) {
-      formRef.current.submit();
-    }
-
-    // Show success message after brief delay
-    setTimeout(() => {
+    try {
       if (!looksAutomated) {
+        const saved = await sendInquiry('player', {
+          ...formData,
+          gamesCommitted: String(formData.gamesCommitted),
+        });
+        if (!saved) {
+          setSubmitMessage('failed');
+          return;
+        }
         trackConversion('registration');
       }
       setSubmitMessage('success');
       setFormData({ name: '', email: '', phone: '', skillLevel: '', willingToPlay: '', playingRole: '', workPattern: '', weekendAvailability: '', gamesCommitted: 13, jerseySize: '', jerseyType: '', trouserWaistSize: '' });
+    } catch {
+      setSubmitMessage('failed');
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   return (
     <section id="registration" className="section-padding bg-gradient-to-b from-black to-gray-950 relative overflow-hidden">
       {/* Legacy anchor — older links and emails point at #interest-section. */}
       <span id="interest-section" aria-hidden="true" />
-      {/* Hidden iframe for form submission */}
-      <iframe
-        ref={iframeRef}
-        name="hidden_iframe"
-        id="hidden_iframe"
-        style={{ display: 'none' }}
-        onLoad={() => {
-          if (isSubmitting) {
-            setIsSubmitting(false);
-          }
-        }}
-      />
-
       {/* Background Glow */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-primary-500/10 to-accent-500/10 rounded-full blur-3xl"></div>
@@ -181,10 +134,6 @@ export default function Registration() {
             </p>
 
             <form
-              ref={formRef}
-              action={GOOGLE_FORM_URL}
-              method="POST"
-              target="hidden_iframe"
               onSubmit={handleSubmit}
               className="space-y-4"
             >
@@ -195,7 +144,6 @@ export default function Registration() {
                 <input
                   type="text"
                   id="name"
-                  name={fieldName('name')}
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -211,7 +159,6 @@ export default function Registration() {
                 <input
                   type="email"
                   id="email"
-                  name={fieldName('email')}
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -227,7 +174,6 @@ export default function Registration() {
                 <input
                   type="tel"
                   id="phone"
-                  name={fieldName('phone')}
                   required
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -242,7 +188,6 @@ export default function Registration() {
                 </label>
                 <select
                   id="skillLevel"
-                  name={fieldName('skillLevel')}
                   required
                   value={formData.skillLevel}
                   onChange={(e) => setFormData({ ...formData, skillLevel: e.target.value })}
@@ -261,7 +206,6 @@ export default function Registration() {
                 </label>
                 <select
                   id="willingToPlay"
-                  name={fieldName('willingToPlay')}
                   required
                   value={formData.willingToPlay}
                   onChange={(e) => setFormData({ ...formData, willingToPlay: e.target.value })}
@@ -280,7 +224,6 @@ export default function Registration() {
                 </label>
                 <select
                   id="playingRole"
-                  name={fieldName('playingRole')}
                   required
                   value={formData.playingRole}
                   onChange={(e) => setFormData({ ...formData, playingRole: e.target.value })}
@@ -312,7 +255,6 @@ export default function Registration() {
                 </label>
                 <select
                   id="workPattern"
-                  name={fieldName('workPattern')}
                   required
                   value={formData.workPattern}
                   onChange={(e) => setFormData({ ...formData, workPattern: e.target.value })}
@@ -331,7 +273,6 @@ export default function Registration() {
                 </label>
                 <select
                   id="weekendAvailability"
-                  name={fieldName('weekendAvailability')}
                   required
                   value={formData.weekendAvailability}
                   onChange={(e) => setFormData({ ...formData, weekendAvailability: e.target.value })}
@@ -358,7 +299,6 @@ export default function Registration() {
                   className="w-full accent-primary-500 cursor-pointer"
                   aria-describedby="registration-advice"
                 />
-                <input type="hidden" name={fieldName('gamesCommitted')} value={formData.gamesCommitted} />
                 <div className="flex justify-between text-[11px] text-gray-500 font-mono mt-1">
                   <span>0</span><span>13 · half a season</span><span>{T30_FIXTURES}</span>
                 </div>
@@ -395,7 +335,6 @@ export default function Registration() {
                 </label>
                 <select
                   id="jerseySize"
-                  name={fieldName('jerseySize')}
                   value={formData.jerseySize}
                   onChange={(e) => setFormData({ ...formData, jerseySize: e.target.value })}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all text-white"
@@ -417,7 +356,6 @@ export default function Registration() {
                 </label>
                 <select
                   id="jerseyType"
-                  name={fieldName('jerseyType')}
                   value={formData.jerseyType}
                   onChange={(e) => setFormData({ ...formData, jerseyType: e.target.value })}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all text-white"
@@ -436,7 +374,6 @@ export default function Registration() {
                 <input
                   type="text"
                   id="trouserWaistSize"
-                  name={fieldName('trouserWaistSize')}
                   value={formData.trouserWaistSize}
                   onChange={(e) => setFormData({ ...formData, trouserWaistSize: e.target.value })}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
@@ -493,6 +430,14 @@ export default function Registration() {
               >
                 {isSubmitting ? 'Submitting...' : 'Join Our Club'}
               </button>
+
+              {submitMessage === 'failed' && (
+                <div role="alert" className="p-4 rounded-lg bg-red-500/20 border border-red-500/30">
+                  <p className="text-sm text-center">
+                    Your registration did not reach us. Please email contact@challengerscc.ca directly.
+                  </p>
+                </div>
+              )}
 
               {submitMessage === 'success' && (
                 <div className="p-6 rounded-lg bg-primary-500/20 border border-primary-500/30">

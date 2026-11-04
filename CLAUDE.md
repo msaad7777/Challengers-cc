@@ -24,7 +24,7 @@ npm run test:ui          # vitest --ui
 npx vitest tests/matchStats.test.ts             # run a single file
 npx vitest -t "best batter"                     # run by test-name regex
 npx tsc --noEmit                                # typecheck only (no npm script for this)
-node scripts/read-form-entry-ids.mjs --check    # verify Registration.tsx entry IDs still match the live Google Form
+node scripts/read-form-entry-ids.mjs --check    # verify the player form's entry IDs in lib/inquiry-forms.ts still match the live Google Form
 ```
 
 There is no `typecheck` npm script — `npm run build` is the only thing that type-checks in CI, so run `npx tsc --noEmit` before pushing anything non-trivial.
@@ -52,6 +52,12 @@ Two conventions hold across `app/c3h/lib/`, and new modules are expected to foll
 - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — from Google Cloud Console OAuth 2.0
 
 **Firebase config is hardcoded** in `lib/firebase.ts` (project: `challengers-c3h`) — no env var needed for the Firestore client. The Firestore project is the source of truth for all C3H data. Security rules now live in `firestore.rules` at the repo root (deploy via Firebase Console paste or `firebase deploy --only firestore:rules`). The app uses Firebase **anonymous auth** to satisfy `request.auth != null`; real per-user access control happens at the NextAuth layer, so rules only do shape validation, append-only enforcement, and email allowlists — the director allowlist in `firestore.rules` must be kept in sync with `C3H_DIRECTOR_ROSTER` in `lib/c3h-access.ts`.
+
+## Registrations and enquiries (`/c3h/intake`)
+
+Directors review player registrations and sponsor enquiries at `/c3h/intake`. `/api/inquiry` sends them to Google Forms and saves a copy to Firestore. Confirming a payment there writes `c3h_members/{email}`, and the NextAuth role check reads it, so that player can sign in without a code change. Access lasts through `REGISTRATION_SEASON`. Records hold personal details, so they use `firebase-admin` in server routes only (`lib/c3h-intake-store.ts`). `firestore.rules` denies both collections to the browser client through the default rule. Never read them with `lib/firebase.ts`.
+
+`FIREBASE_SERVICE_ACCOUNT_KEY` holds the service account JSON. Without it the page says it is not set up and forms use Google Forms only. For local testing, run with `INTAKE_STORE=memory`, which production ignores. An approved player still needs the display-name steps to appear in the Dugout and squad lists.
 
 ## Deployment
 
@@ -240,7 +246,7 @@ The public pages that need interactivity keep the page itself a server component
 ### Google Forms Integration
 
 Two submission techniques in use — pick to match the existing component you're editing:
-1. **Registration.tsx**: hidden `<iframe>` + native `form target` POST to `GOOGLE_FORM_URL` with entry IDs as `name=` attrs; success after `setTimeout(1000)`.
+1. **Registration.tsx**: posts to `/api/inquiry`, like the sponsor and contact forms. Entry IDs live in `lib/inquiry-forms.ts`. The form shows an error if the enquiry was not saved anywhere.
 2. **Contact.tsx** + Sponsorship page: `fetch(GOOGLE_FORM_ACTION, { mode: 'no-cors', method: 'POST' })` with `ENTRY_IDS` constants.
 
 Setup: form ID from URL → inspect fields for `entry.123…` IDs → update constants. `GOOGLE_FORMS_SETUP.md` at the repo root has the detailed walkthrough (partially stale — Contact and Sponsorship are now configured).

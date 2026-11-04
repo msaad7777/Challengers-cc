@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { buildInquiryBody, submitInquiry } from '@/lib/inquiry-forms';
+import { buildInquiryBody, cleanInquiryValues, submitInquiry } from '@/lib/inquiry-forms';
 
 const sponsor = {
   organizationName: 'Test Org',
@@ -22,6 +22,20 @@ describe('buildInquiryBody', () => {
     expect(buildInquiryBody('sponsor', { ...sponsor, email: ' ' })).toBeNull();
     expect(buildInquiryBody('contact', { name: 'A', email: 'a@b.c', message: 'x'.repeat(5001) })).toBeNull();
     expect(buildInquiryBody('contact', null)).toBeNull();
+  });
+});
+
+describe('player form', () => {
+  const values = {
+    name: 'A', email: 'a@b.ca', phone: '1', skillLevel: 'Beginner', willingToPlay: 'Both', playingRole: 'Bowler',
+    jerseyType: 'Both ( 1 each)', gamesCommitted: '13',
+  };
+
+  it('sends mapped answers to Google and keeps the rest for directors', () => {
+    const body = buildInquiryBody('player', values);
+    expect(body?.get('entry.1555965869')).toBe('Both ( 1 each)');
+    expect([...body!.values()]).not.toContain('13');
+    expect(cleanInquiryValues('player', values)?.gamesCommitted).toBe('13');
   });
 });
 

@@ -4,14 +4,14 @@
  * straight off its public page, and check them against the website.
  *
  *   node scripts/read-form-entry-ids.mjs           # list questions + entry IDs
- *   node scripts/read-form-entry-ids.mjs --check   # compare against Registration.tsx
+ *   node scripts/read-form-entry-ids.mjs --check   # compare against lib/inquiry-forms.ts
  *
  * No credentials, no API, no Apps Script. A published Google Form ships its
  * whole structure to the browser in a global called FB_PUBLIC_LOAD_DATA_ —
  * that is how the form renders itself — so the entry IDs are readable by
  * anyone who can open the form. We are only reading our own club's form.
  *
- * Why this exists: components/Registration.tsx POSTs to Google Forms using
+ * Why this exists: lib/inquiry-forms.ts POSTs to Google Forms using
  * hardcoded `entry.NNNNN` names. If a question is renamed, replaced or newly
  * added in the Forms UI, its entry ID changes or appears, and the website
  * silently posts to nothing. --check catches that drift.
@@ -27,22 +27,24 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const REGISTRATION = resolve(HERE, '..', 'components', 'Registration.tsx');
+const REGISTRATION = resolve(HERE, '..', 'lib', 'inquiry-forms.ts');
 
-/** Pulled from Registration.tsx so there is one URL, not two. */
-function formUrlFromSource(src) {
-  const m = src.match(/GOOGLE_FORM_URL\s*=\s*["']([^"']+)["']/);
-  if (!m) throw new Error('Could not find GOOGLE_FORM_URL in Registration.tsx');
-  return m[1].replace(/\/formResponse\b.*$/, '/viewform');
+/** The player form's section of lib/inquiry-forms.ts. */
+function playerConfig(src) {
+  const block = src.match(/player: \{\s*id: '([^']+)',\s*fields: \{([\s\S]*?)\n {4}\},/);
+  if (!block) throw new Error('Could not find the player form in lib/inquiry-forms.ts');
+  return { id: block[1], fields: block[2] };
 }
 
-/** The ENTRY_IDS map the website is currently using. */
+function formUrlFromSource(src) {
+  return `https://docs.google.com/forms/d/e/${playerConfig(src).id}/viewform`;
+}
+
+/** The entry IDs the website is currently using. */
 function entryIdsFromSource(src) {
-  const block = src.match(/const ENTRY_IDS = \{([\s\S]*?)\} as const;/);
-  if (!block) throw new Error('Could not find ENTRY_IDS in Registration.tsx');
   const ids = {};
-  for (const line of block[1].split('\n')) {
-    const m = line.match(/^\s*(\w+)\s*:\s*'([^']*)'/);
+  for (const line of playerConfig(src).fields.split('\n')) {
+    const m = line.match(/^\s*(\w+)\s*:\s*\{\s*entry:\s*'([^']*)'/);
     if (m) ids[m[1]] = m[2];
   }
   return ids;
@@ -84,7 +86,7 @@ for (const q of questions) {
 }
 
 if (!process.argv.includes('--check')) {
-  console.log('\nRun with --check to compare against components/Registration.tsx.');
+  console.log('\nRun with --check to compare against lib/inquiry-forms.ts.');
   process.exit(0);
 }
 

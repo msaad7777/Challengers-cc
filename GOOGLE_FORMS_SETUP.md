@@ -150,11 +150,11 @@ page. No API, no token, no Apps Script:
 
 ```bash
 node scripts/read-form-entry-ids.mjs           # list questions + entry IDs
-node scripts/read-form-entry-ids.mjs --check   # compare against Registration.tsx
+node scripts/read-form-entry-ids.mjs --check   # compare against lib/inquiry-forms.ts
 ```
 
 `--check` is the useful one. It reads `ENTRY_IDS` and `GOOGLE_FORM_URL` straight
-out of `components/Registration.tsx` and reports:
+out of `lib/inquiry-forms.ts` and reports:
 
 - **UNWIRED** — a website field with no entry ID; its answers are not recorded.
 - **DEAD** — a wired entry ID that no longer exists on the form (a renamed or
@@ -183,7 +183,7 @@ entry IDs in one pass.
 4. Paste that into `FORM_EDIT_URL` at the top of the script.
 5. Run `addRegistrationQuestions`. The log ends with a `title -> entry.NNNNN`
    listing.
-6. Copy the three new IDs into `ENTRY_IDS` in `components/Registration.tsx`:
+6. Copy the three new IDs into the player form's `entry` values in `lib/inquiry-forms.ts`:
    `workPattern`, `weekendAvailability`, `gamesCommitted`.
 
 Re-running is safe — questions are matched by title and never duplicated, so
