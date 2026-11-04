@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
+  approvedPlayers,
   canSetStatus,
   IntakeRecord,
   memberHasAccess,
@@ -7,6 +8,7 @@ import {
   recordFromInquiry,
   REGISTRATION_SEASON,
 } from '@/lib/c3h-intake';
+import { mergeApprovedPlayers, PLAYER_ROSTER } from '@/lib/c3h-roster';
 import { applyIntakeAction, clearMemberCache, IntakeStore, isPortalMember, memoryStore } from '@/lib/c3h-intake-store';
 
 const player = (): IntakeRecord =>
@@ -38,14 +40,15 @@ describe('recordFromInquiry', () => {
 
 describe('parseIntakeAction', () => {
   it('accepts valid actions and lowercases a granted email', () => {
-    expect(parseIntakeAction({ action: 'grant', id: 'x', email: ' A@B.ca ' })).toEqual({ action: 'grant', id: 'x', email: 'a@b.ca' });
+    expect(parseIntakeAction({ action: 'grant', id: 'x', email: ' A@B.ca ', name: ' New ' })).toEqual({ action: 'grant', id: 'x', email: 'a@b.ca', name: 'New' });
     expect(parseIntakeAction({ action: 'revoke', id: 'x' })).toEqual({ action: 'revoke', id: 'x' });
     expect(parseIntakeAction({ action: 'update', id: 'x', note: '' })).toEqual({ action: 'update', id: 'x', status: undefined, note: '' });
   });
 
   it('rejects invalid requests', () => {
     expect(parseIntakeAction(null)).toBeNull();
-    expect(parseIntakeAction({ action: 'grant', id: 'x', email: 'nope' })).toBeNull();
+    expect(parseIntakeAction({ action: 'grant', id: 'x', email: 'nope', name: 'A' })).toBeNull();
+    expect(parseIntakeAction({ action: 'grant', id: 'x', email: 'a@b.ca' })).toBeNull();
     expect(parseIntakeAction({ action: 'update', id: 'x' })).toBeNull();
     expect(parseIntakeAction({ action: 'add', kind: 'other', name: 'A', email: 'a@b.ca' })).toBeNull();
     expect(parseIntakeAction({ action: 'delete', id: 'x' })).toBeNull();
@@ -74,6 +77,26 @@ describe('memberHasAccess', () => {
   });
 });
 
+describe('approvedPlayers', () => {
+  const m = (email: string, season: number, name?: string) => ({ email, name, season, addedBy: 'd', addedAt: '' });
+  it('lists current members and falls back to the email name', () => {
+    expect(approvedPlayers([m('a@x.ca', 2027, 'Ann'), m('old@x.ca', 2025, 'Old'), m('bob@x.ca', 2027)], 2026)).toEqual([
+      { email: 'a@x.ca', name: 'Ann' },
+      { email: 'bob@x.ca', name: 'bob' },
+    ]);
+  });
+});
+
+describe('mergeApprovedPlayers', () => {
+  it('adds approved players without touching the code roster', () => {
+    const { emailToPlayer, allPlayers } = mergeApprovedPlayers([{ email: 'new@x.ca', name: 'Zed Newplayer' }]);
+    expect(emailToPlayer['new@x.ca']).toBe('Zed Newplayer');
+    expect(allPlayers).toContain('Zed Newplayer');
+    expect(allPlayers.length).toBe(PLAYER_ROSTER.length + 1);
+    expect(PLAYER_ROSTER).not.toContain('Zed Newplayer');
+  });
+});
+
 describe('portal access', () => {
   let store: IntakeStore;
 
@@ -87,7 +110,7 @@ describe('portal access', () => {
     expect(await isPortalMember('login@gmail.com', store)).toBe(false);
     clearMemberCache();
 
-    const granted = await applyIntakeAction(store, { action: 'grant', id: 'p1', email: 'login@gmail.com' }, 'director@x.ca');
+    const granted = await applyIntakeAction(store, { action: 'grant', id: 'p1', email: 'login@gmail.com', name: 'Zed Newplayer' }, 'director@x.ca');
     expect(granted).toMatchObject({ ok: true, record: { status: 'paid', portalEmail: 'login@gmail.com' } });
     expect(await store.getMember('login@gmail.com')).toMatchObject({ addedBy: 'director@x.ca', season: REGISTRATION_SEASON });
     expect(await isPortalMember('login@gmail.com', store)).toBe(true);
@@ -100,9 +123,18 @@ describe('portal access', () => {
 
   it('refuses access for sponsors and a status shortcut to paid', async () => {
     await store.put({ ...player(), id: 's1', kind: 'sponsor' });
-    expect(await applyIntakeAction(store, { action: 'grant', id: 's1', email: 'a@b.ca' }, 'd')).toMatchObject({ ok: false });
+    expect(await applyIntakeAction(store, { action: 'grant', id: 's1', email: 'a@b.ca', name: 'Zed' }, 'd')).toMatchObject({ ok: false });
     expect(await applyIntakeAction(store, { action: 'update', id: 'p1', status: 'paid' }, 'd')).toMatchObject({ ok: false });
     expect(await store.getMember('a@b.ca')).toBeNull();
+  });
+
+  it('refuses a name another player already has', async () => {
+    await store.putMember({ email: 'first@x.ca', name: 'Zed Newplayer', season: 2027, addedBy: 'd', addedAt: '' });
+    const taken = await applyIntakeAction(store, { action: 'grant', id: 'p1', email: 'second@x.ca', name: 'zed newplayer' }, 'd');
+    expect(taken).toMatchObject({ ok: false, status: 409 });
+    expect(await store.getMember('second@x.ca')).toBeNull();
+    const roster = await applyIntakeAction(store, { action: 'grant', id: 'p1', email: 'second@x.ca', name: PLAYER_ROSTER[0] }, 'd');
+    expect(roster).toMatchObject({ ok: false, status: 409 });
   });
 
   it('refuses an unknown record', async () => {

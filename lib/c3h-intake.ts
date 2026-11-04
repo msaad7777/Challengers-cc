@@ -41,12 +41,12 @@ export type IntakeRecord = {
   history: IntakeEvent[];
 };
 
-export type PortalMember = { email: string; season: number; addedBy: string; addedAt: string };
+export type PortalMember = { email: string; name?: string; season: number; addedBy: string; addedAt: string };
 
 export type IntakeAction =
   | { action: 'add'; kind: IntakeKind; name: string; email: string; phone: string; note: string }
   | { action: 'update'; id: string; status?: string; note?: string }
-  | { action: 'grant'; id: string; email: string }
+  | { action: 'grant'; id: string; email: string; name: string }
   | { action: 'revoke'; id: string };
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -59,6 +59,13 @@ export const isValidEmail = (email: string): boolean => email.length <= 254 && E
 
 export const memberHasAccess = (member: PortalMember | null, activeSeason: number = ACTIVE_SEASON): boolean =>
   !!member && member.season >= activeSeason;
+
+// Portal members with current access, as the Dugout lists them.
+export function approvedPlayers(members: PortalMember[], activeSeason: number = ACTIVE_SEASON) {
+  return members
+    .filter(member => memberHasAccess(member, activeSeason))
+    .map(member => ({ email: member.email, name: member.name || member.email.split('@')[0] }));
+}
 
 const text = (value: unknown): string | null => {
   if (typeof value !== 'string') return null;
@@ -93,7 +100,8 @@ export function parseIntakeAction(body: unknown): IntakeAction | null {
   }
   if (b.action === 'grant') {
     const email = normalizeEmail(b.email);
-    return isValidEmail(email) ? { action: 'grant', id, email } : null;
+    const name = text(b.name);
+    return isValidEmail(email) && name ? { action: 'grant', id, email, name } : null;
   }
   if (b.action === 'revoke') return { action: 'revoke', id };
   return null;

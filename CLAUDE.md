@@ -57,7 +57,7 @@ Two conventions hold across `app/c3h/lib/`, and new modules are expected to foll
 
 Directors review player registrations and sponsor enquiries at `/c3h/intake`. `/api/inquiry` sends them to Google Forms and saves a copy to Firestore. Confirming a payment there writes `c3h_members/{email}`, and the NextAuth role check reads it, so that player can sign in without a code change. Access lasts through `REGISTRATION_SEASON`. Records hold personal details, so they use `firebase-admin` in server routes only (`lib/c3h-intake-store.ts`). `firestore.rules` denies both collections to the browser client through the default rule. Never read them with `lib/firebase.ts`.
 
-`FIREBASE_SERVICE_ACCOUNT_KEY` holds the service account JSON. Without it the page says it is not set up and forms use Google Forms only. For local testing, run with `INTAKE_STORE=memory`, which production ignores. An approved player still needs the display-name steps to appear in the Dugout and squad lists.
+`FIREBASE_SERVICE_ACCOUNT_KEY` holds the service account JSON. Without it the page says it is not set up and forms use Google Forms only. For local testing, run with `INTAKE_STORE=memory`, which production ignores. Approved players appear in the Dugout, Nets squad picker and Field Editor through `useApprovedPlayers`, which reads `/api/c3h/roster`.
 
 ## Deployment
 

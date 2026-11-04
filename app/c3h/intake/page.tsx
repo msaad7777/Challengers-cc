@@ -183,6 +183,7 @@ function AddForm({ kind, onAdded }: { kind: IntakeKind; onAdded: (r: IntakeRecor
 function RecordCard({ record, onChange }: { record: IntakeRecord; onChange: (r: IntakeRecord) => void }) {
   const [note, setNote] = useState(record.note);
   const [portalEmail, setPortalEmail] = useState(record.portalEmail || record.email);
+  const [squadName, setSquadName] = useState(record.name);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const isPlayer = record.kind === 'player';
@@ -204,7 +205,7 @@ function RecordCard({ record, onChange }: { record: IntakeRecord; onChange: (r: 
     const ok = window.confirm(
       `Confirm payment from ${record.name} and open portal access for ${portalEmail}?`,
     );
-    if (ok) run({ action: 'grant', email: portalEmail });
+    if (ok) run({ action: 'grant', email: portalEmail, name: squadName });
   };
   const revoke = () => {
     const ok = window.confirm(`Remove portal access for ${record.portalEmail}?`);
@@ -270,16 +271,18 @@ function RecordCard({ record, onChange }: { record: IntakeRecord; onChange: (r: 
           <label className="block text-xs text-gray-400">Google email they will sign in with
             <input type="email" value={portalEmail} onChange={e => setPortalEmail(e.target.value)} className={`${INPUT} mt-1`} />
           </label>
+          <label className="block text-xs text-gray-400 mt-3">Name in the Dugout and squad lists
+            <input value={squadName} onChange={e => setSquadName(e.target.value)} className={`${INPUT} mt-1`} />
+          </label>
           <button
-            disabled={saving || !portalEmail}
+            disabled={saving || !portalEmail || !squadName.trim()}
             onClick={grant}
             className="mt-3 px-4 py-2 rounded-lg bg-primary-600 text-sm font-semibold disabled:opacity-50"
           >
             Confirm payment and open portal access
           </button>
           <p className="text-xs text-gray-500 mt-2">
-            Access lasts through the {REGISTRATION_SEASON} season. They can sign in within a minute, but won&apos;t appear
-            in the Dugout or squad lists until they are added to the player roster in the code.
+            Access lasts through the {REGISTRATION_SEASON} season. They can sign in within a minute and appear in the Dugout and squad lists.
           </p>
         </div>
       )}

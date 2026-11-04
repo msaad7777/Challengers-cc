@@ -8,7 +8,7 @@ import { doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import { isC3HBoard } from '@/lib/c3h-access';
-import { resolvePlayerName } from '@/lib/c3h-roster';
+import { useApprovedPlayers } from '@/app/c3h/lib/useApprovedPlayers';
 
 interface FieldPlayer {
   name: string;
@@ -332,6 +332,7 @@ function buildFieldFromSquad(
 }
 
 function FieldEditorContent() {
+  const { emailToPlayer, ready: rosterReady } = useApprovedPlayers();
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -618,9 +619,9 @@ function FieldEditorContent() {
   // the doc is still being fetched.
   const userEmail = session.user?.email || '';
   const isBoardMember = isC3HBoard(userEmail);
-  const userPlayerName = resolvePlayerName(userEmail);
+  const userPlayerName = emailToPlayer[userEmail.toLowerCase()] ?? null;
   const isInSquad = userPlayerName ? fullSquad.includes(userPlayerName) : false;
-  if (loaded && !isBoardMember && !isInSquad) {
+  if (loaded && rosterReady && !isBoardMember && !isInSquad) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
         <Navbar />
