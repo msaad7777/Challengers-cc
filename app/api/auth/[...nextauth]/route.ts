@@ -1,6 +1,7 @@
 import { createHash } from 'crypto';
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import { isPortalMember } from '@/lib/c3h-intake-store';
 import { isActiveSeasonPlayer } from '@/lib/c3h-seasons';
 
 // SECURITY BLOCKLIST — checked FIRST, before any allowlist or the
@@ -59,7 +60,7 @@ const BOARD_EMAILS = [
   'romans987@gmail.com',           // Roman (Sazzad Mahmud)
 ];
 
-function getUserRole(email: string): 'board' | 'player' | null {
+async function getUserRole(email: string): Promise<'board' | 'player' | null> {
   const lower = email.toLowerCase();
   // Blocklist wins over everything.
   if (isBlocked(lower)) return null;
@@ -70,6 +71,8 @@ function getUserRole(email: string): 'board' | 'player' | null {
   // add, and an ex-member is denied by default the moment they're removed.
   if (BOARD_EMAILS.includes(lower)) return 'board';
   if (isActiveSeasonPlayer(lower)) return 'player';
+  // Players a director approved in C3H after confirming payment.
+  if (await isPortalMember(lower)) return 'player';
   return null;
 }
 
@@ -90,14 +93,14 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user }) {
       const email = user.email || '';
-      const role = getUserRole(email);
+      const role = await getUserRole(email);
       return role !== null;
     },
     async jwt({ token, user }) {
       // Runs on sign-in and on every session read, so removing someone from
       // the lists (or moving to a new season) takes effect straight away.
       const email = user?.email ?? token.email;
-      token.role = email ? getUserRole(email) : null;
+      token.role = email ? await getUserRole(email) : null;
       return token;
     },
     async session({ session, token }) {

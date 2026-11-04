@@ -22,6 +22,24 @@ export const INQUIRY_FORMS: Record<string, FormConfig> = {
       message: { entry: 'entry.1857964256', required: false },
     },
   },
+  player: {
+    id: '1FAIpQLSfVYSWAYY8wgl_KIjsNwENzf2w57xp4ZcMBWXLeXRkY7L4DxQ',
+    fields: {
+      name: { entry: 'entry.1407381676', required: true },
+      email: { entry: 'entry.112847984', required: true },
+      phone: { entry: 'entry.578432831', required: true },
+      skillLevel: { entry: 'entry.980943308', required: true },
+      willingToPlay: { entry: 'entry.1652603126', required: true },
+      playingRole: { entry: 'entry.1089654944', required: true },
+      jerseySize: { entry: 'entry.1146547898', required: false },
+      jerseyType: { entry: 'entry.1555965869', required: false },
+      trouserWaistSize: { entry: 'entry.1033675185', required: false },
+      // The Google Form has no questions for these, so only C3H records them.
+      workPattern: { entry: '', required: false },
+      weekendAvailability: { entry: '', required: false },
+      gamesCommitted: { entry: '', required: false },
+    },
+  },
   contact: {
     id: '1FAIpQLScgqIxs2teuYvIhtwK0GEK11tej62oaGtGy6UTPTLvipxKPlg',
     fields: {
@@ -32,16 +50,29 @@ export const INQUIRY_FORMS: Record<string, FormConfig> = {
   },
 };
 
-export function buildInquiryBody(formName: unknown, values: unknown): URLSearchParams | null {
+// Keeps only the form's known fields, or returns null if the request is invalid.
+export function cleanInquiryValues(formName: unknown, values: unknown): Record<string, string> | null {
   if (typeof formName !== 'string' || !Object.hasOwn(INQUIRY_FORMS, formName)) return null;
   if (!values || typeof values !== 'object') return null;
 
-  const body = new URLSearchParams();
+  const clean: Record<string, string> = {};
   for (const [name, field] of Object.entries(INQUIRY_FORMS[formName].fields)) {
     const raw = (values as Record<string, unknown>)[name];
     const value = typeof raw === 'string' ? raw.trim() : '';
     if ((field.required && !value) || value.length > MAX_FIELD_LENGTH) return null;
-    if (value) body.append(field.entry, value);
+    if (value) clean[name] = value;
+  }
+  return clean;
+}
+
+export function buildInquiryBody(formName: unknown, values: unknown): URLSearchParams | null {
+  const clean = cleanInquiryValues(formName, values);
+  if (!clean) return null;
+
+  const body = new URLSearchParams();
+  for (const [name, value] of Object.entries(clean)) {
+    const { entry } = INQUIRY_FORMS[formName as string].fields[name];
+    if (entry) body.append(entry, value);
   }
   return body;
 }
@@ -64,7 +95,7 @@ export async function submitInquiry(
 }
 
 // Browser helper: true only when the server confirms Google saved the enquiry.
-export async function sendInquiry(form: 'sponsor' | 'contact', values: Record<string, string>): Promise<boolean> {
+export async function sendInquiry(form: 'sponsor' | 'player' | 'contact', values: Record<string, string>): Promise<boolean> {
   const response = await fetch('/api/inquiry', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
