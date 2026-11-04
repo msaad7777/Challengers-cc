@@ -99,7 +99,7 @@ Fixtures are the exception that has no single home — see the duplication warni
 
 Two layered access checks:
 
-1. **Login eligibility** — `app/api/auth/[...nextauth]/route.ts` hardcodes `BLOCKED_EMAILS` + `BOARD_EMAILS` + `PLAYER_EMAILS` whitelists, checked in that order. `BLOCKED_EMAILS` (checked first) hard-denies former members even if their address would otherwise match — currently `contact@challengerscc.ca` (shared inbox) plus former members Madhu and Shoeb, and further addresses stored only as SHA-256 hashes in `BLOCKED_EMAIL_HASHES` (so they are not published in the repo). The **blanket `@challengerscc.ca` domain auto-approve was removed 2026-07-27** (after a Workspace account-compromise incident): a new director/officer must now be added explicitly to `BOARD_EMAILS`, not just given a Workspace address. Anything not on any list is rejected at sign-in. Sessions are JWT, 30-day max age. Custom `signIn` / `error` pages: `/c3h/login`.
+1. **Login eligibility** — `app/api/auth/[...nextauth]/route.ts` hardcodes `BLOCKED_EMAILS` + `BOARD_EMAILS` whitelists, then the active season's players from `lib/c3h-seasons.ts`, checked in that order. `BLOCKED_EMAILS` (checked first) hard-denies former members even if their address would otherwise match — currently `contact@challengerscc.ca` (shared inbox) plus former members Madhu and Shoeb, and further addresses stored only as SHA-256 hashes in `BLOCKED_EMAIL_HASHES` (so they are not published in the repo). The **blanket `@challengerscc.ca` domain auto-approve was removed 2026-07-27** (after a Workspace account-compromise incident): a new director/officer must now be added explicitly to `BOARD_EMAILS`, not just given a Workspace address. Anything not on any list is rejected at sign-in. Sessions are JWT with a 24-hour rolling max age, and access is re-checked on every session read, so a removal or season change ends the session immediately. Firestore rules are not per-season (see the Auth model). Custom `signIn` / `error` pages: `/c3h/login`.
 2. **Board-only UI inside C3H** — `lib/c3h-access.ts` is the single source of truth. Predicates:
    - `isC3HAdmin` — Saad only.
    - `isC3HCaptain` / `isC3HBoard` — admin + designated league captains/VCs. Use this for any board-only mutation surface.
@@ -295,13 +295,13 @@ Setup: form ID from URL → inspect fields for `entry.123…` IDs → update con
 **Former members**: do not name the former Treasurer who left in June 2026 anywhere in the repo (code, comments, tests, blog, docs). The repo is the public record; anything about him stays in `/private/` or the local memory files.
 
 **Add a player to C3H — three files, all required** (editing only one fails silently, with no error in the UI):
-1. `app/api/auth/[...nextauth]/route.ts` → `PLAYER_EMAILS` — login eligibility. Without it Google sign-in is rejected.
+1. `lib/c3h-seasons.ts` → `SEASON_PLAYERS[ACTIVE_SEASON]` — login eligibility for this season. Without it Google sign-in is rejected.
 2. `lib/c3h-roster.ts` → `EMAIL_TO_PLAYER` — the email→display-name lookup behind `resolvePlayerName()`, used by the Dugout, Field Editor, and player analysis. Add both the workspace and personal-Gmail address if they have both, pointing at the same name.
 3. `app/c3h/availability/page.tsx` → `ALL_PLAYERS` — the display names the Dugout actually renders (must match `EMAIL_TO_PLAYER` exactly). Players appear in **both** leagues by default; restrict via `LPL_ONLY` / `LCL_ONLY`, and override a wrong auto-derived short name via `SHORT_NAMES`, all in the same file.
 
 Skipping step 2 or 3 is the classic bug: the player signs in fine but `resolvePlayerName()` returns null so they never appear in the availability matrix. Do **not** touch `lib/c3h-access.ts` for a regular player — that file only grants admin/captain/director/officer privileges.
 
-**C3H login allowlist**: edit `BOARD_EMAILS` / `PLAYER_EMAILS` in `app/api/auth/[...nextauth]/route.ts`. Edit `lib/c3h-access.ts` separately to grant board-only UI inside C3H.
+**C3H login allowlist**: edit `BOARD_EMAILS` in `app/api/auth/[...nextauth]/route.ts` for board, or `SEASON_PLAYERS` in `lib/c3h-seasons.ts` for players. New season: add its full list, then change `ACTIVE_SEASON`; nobody carries over automatically. Edit `lib/c3h-access.ts` separately to grant board-only UI inside C3H.
 
 **Change the match schedule — two files, both required**: `app/schedule/page.tsx` (public: `lclT30Matches` / `lplT30Matches` / `lclT20Matches`) **and** `ALL_MATCHES` near the top of `app/c3h/availability/page.tsx` (Dugout). Editing one leaves the site self-contradictory with no build or test failure.
 
