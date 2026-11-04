@@ -31,7 +31,7 @@ import {
   buildHuddleScript,
   getLeadership,
 } from '../lib/matchPlan';
-import { EMAIL_TO_PLAYER } from '@/lib/c3h-roster';
+import { useApprovedPlayers } from '@/app/c3h/lib/useApprovedPlayers';
 import { isC3HCaptain, isC3HDirector } from '@/lib/c3h-access';
 
 // Map scorer's wicket type to the reflection's HOW_GOT_OUT_OPTIONS
@@ -667,6 +667,7 @@ function isMatchAvailable(matchDate: string): boolean {
 }
 
 export default function NetsPage() {
+  const { emailToPlayer } = useApprovedPlayers();
   const { data: session, status } = useSession();
   const router = useRouter();
   const [view, setView] = useState<'list' | 'new' | 'detail' | 'patterns' | 'planner' | 'training' | 'principles' | 'shot-mechanics' | 'visual-training' | 'match-plan' | 'team-roles'>('list');
@@ -955,7 +956,7 @@ export default function NetsPage() {
     }
   };
 
-  // Add/remove a player from the squad. roster = EMAIL_TO_PLAYER map.
+  // Add/remove a player from the squad. roster = the code roster plus approved players.
   const toggleSquadPlayer = (email: string, playerName: string) => {
     setMpSquad((cur) => {
       const exists = cur.find((p) => p.email === email);
@@ -2567,8 +2568,8 @@ export default function NetsPage() {
                     <label className="text-emerald-300 text-xs font-bold uppercase tracking-wider block mb-2">3. Squad (pick up to 12 — 11 + twelfth man)</label>
                     <p className="text-xs text-gray-500 mb-3">Current selection: {mpSquad.length} / 12</p>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      {Array.from(new Set(Object.values(EMAIL_TO_PLAYER))).sort().map((name) => {
-                        const email = Object.entries(EMAIL_TO_PLAYER).find(([_e, n]) => n === name)?.[0] || '';
+                      {Array.from(new Set(Object.values(emailToPlayer))).sort().map((name) => {
+                        const email = Object.entries(emailToPlayer).find(([_e, n]) => n === name)?.[0] || '';
                         const selected = mpSquad.some((p) => p.email === email);
                         return (
                           <button

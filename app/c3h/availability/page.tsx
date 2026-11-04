@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom';
 import { db, firebaseAuthReady } from '@/lib/firebase';
 import { collection, doc, setDoc, updateDoc, getDocs } from 'firebase/firestore';
 import { isC3HBoard, isC3HCaptain, isC3HSquadViewer } from '@/lib/c3h-access';
-import { EMAIL_TO_PLAYER } from '@/lib/c3h-roster';
+import { useApprovedPlayers } from '@/app/c3h/lib/useApprovedPlayers';
 import { computePlayerTracker, requiredForLeague, matchesInLeague, type PlayerTrackerRow, type LeagueStat } from '@/app/c3h/lib/playerTracker';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
@@ -109,30 +109,6 @@ const ALL_MATCHES: ScheduledMatch[] = [
   { id: 'lclt20-4', league: 'LCL T20', date: 'Oct 4', fullDate: '2026-10-04', opponent: 'London Stars', time: '7:15 AM', venue: 'NLAF', clash: false, homeAway: 'away' },
 ];
 
-const ALL_PLAYERS = [
-  'Mohammed Saad', 'Tarek Islam', 'Gokul Prakash',
-  'Ankush Arora', 'Roman Mahmud', 'Judin Thomas', 'Saikrishna Goriparthi',
-  'Fahad Aktar', 'Fahad Ahmad', 'Denison Davis', 'Abhishek Ladva',
-  'Salman Ahmed', 'Farooq Choudhary', 'Vijay Yadav', 'Shivam Rajput',
-  'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
-  'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Siva Sriram', 'Rajath Shetty', 'Murshad Azad',
-  'Aleem Quadri', 'Ameeya Singh', 'Dhamu',
-  // Part-time players added 2026-07 (roster-only — no login yet)
-  'Thoufeeque', 'Swapnil', 'Raunak', 'Raj', 'Segu', 'Fawaz', 'Abdullah',
-  // Joined after Jul 18 (roster-only — no login yet). Tracker only counts the
-  // post–Jul-18 matches captains actually select them into.
-  'Lovely', 'Sahaj', 'RP',
-  // Added Aug 2026 for the LCL T20 (roster-only — no login yet). Available in
-  // every league by default, same as the rest of the roster; there is no
-  // T20-only bucket. Must be registered in CricClubs by Sep 5 to play a T20.
-  'Shashank', 'Muhib', 'Mustajab',
-  // Added 2026-08-23 for the LCL T20 (roster-only — no login yet). Distinct
-  // from the existing 'RP' above, who is a different player.
-  'Rahul Patel',
-  // Added 2026-10-02 for the LCL T20 (roster-only — no login yet).
-  'Tanishq',
-];
-
 // Players restricted to specific leagues
 // Aleem Quadri removed 2026-10-02 — he is registered for the LCL T20 as well,
 // and LPL_ONLY was hiding him from every non-LPL fixture.
@@ -141,24 +117,21 @@ const LCL_ONLY = ['Shivam Rajput'];
 
 // Former players — left the club (login/email access removed) but appear in
 // the historical record because they played matches earlier in the season.
-// Kept OUT of ALL_PLAYERS so they don't clutter current availability/selection.
+// Kept OUT of PLAYER_ROSTER so they don't clutter current availability/selection.
 // Captains can still select them into the Playing 12 of the specific games
 // they actually played (via the Former section in the squad picker) so the
 // Tracker counts those appearances.
 const FORMER_PLAYERS = ['Madhu Reddy', 'Shoeb Ahmad'];
 
 // Get players for a specific match based on league
-const getPlayersForMatch = (league: string) => {
-  return ALL_PLAYERS.filter(p => {
+const getPlayersForMatch = (league: string, allPlayers: string[]) => {
+  return allPlayers.filter(p => {
     // Prefix match so LCL-only players cover both LCL T30 and LCL T20.
     if (LPL_ONLY.includes(p) && !league.startsWith('LPL')) return false;
     if (LCL_ONLY.includes(p) && !league.startsWith('LCL')) return false;
     return true;
   });
 };
-
-// Keep PLAYER_NAMES for backward compatibility (all players)
-const PLAYER_NAMES = ALL_PLAYERS;
 
 // Short display names — use last name or nickname where first name is ambiguous
 const SHORT_NAMES: Record<string, string> = {
@@ -180,9 +153,6 @@ const LEAGUE_BADGE: Record<string, string> = {
 };
 const leagueBadge = (league: string) => LEAGUE_BADGE[league] || 'bg-white/10 text-gray-300';
 
-// Map all emails (board + personal) to a single player name
-// EMAIL_TO_PLAYER lives in lib/c3h-roster.ts so the Field Editor can share it
-// for its access guard without duplicating the map. See import above.
 
 // Roles that can only be held by ONE player at a time per match.
 // (Captain, Vice-Captain, Wicketkeeper, Batting Sub, Bowling Sub.)
@@ -594,6 +564,8 @@ export default function AvailabilityPage() {
   // C3H board-level access (captain view, squad management, last-saved-by)
   // is admin + captains only — see lib/c3h-access.ts for the allowlist.
   // Other club board members log in as regular players here.
+  // The code roster plus players directors approved at /c3h/intake.
+  const { allPlayers, emailToPlayer } = useApprovedPlayers();
   const isBoard = isC3HBoard(session?.user?.email);
   const isCaptain = isC3HCaptain(session?.user?.email);
   // Read-only access to the captain view (squad + availability matrix).
@@ -602,16 +574,16 @@ export default function AvailabilityPage() {
   const playerName = (() => {
     const email = session?.user?.email?.toLowerCase() || '';
     // First try exact email mapping (most reliable)
-    if (EMAIL_TO_PLAYER[email]) return EMAIL_TO_PLAYER[email];
+    if (emailToPlayer[email]) return emailToPlayer[email];
     // Then try @challengerscc.ca prefix match
     if (email.endsWith('@challengerscc.ca')) {
       const prefix = email.split('@')[0];
-      const found = Object.entries(EMAIL_TO_PLAYER).find(([e]) => e.startsWith(prefix));
+      const found = Object.entries(emailToPlayer).find(([e]) => e.startsWith(prefix));
       if (found) return found[1];
     }
     // Fallback to display name
     const name = session?.user?.name?.toLowerCase() || '';
-    const byName = PLAYER_NAMES.find(n =>
+    const byName = allPlayers.find(n =>
       name.includes(n.split(' ')[0].toLowerCase())
     );
     return byName || session?.user?.name || '';
@@ -856,7 +828,7 @@ export default function AvailabilityPage() {
   };
 
   const getMatchCounts = (matchId: string, league: string) => {
-    const players = getPlayersForMatch(league);
+    const players = getPlayersForMatch(league, allPlayers);
     let available = 0, maybe = 0, unavailable = 0, noResponse = 0;
     players.forEach(n => {
       const s = getPlayerStatus(n, matchId);
@@ -916,10 +888,10 @@ export default function AvailabilityPage() {
               straight into these numbers. */}
           {viewMode === 'tracker' && isSquadViewer && (() => {
             const todayISO = new Date().toLocaleDateString('en-CA');
-            const rows = computePlayerTracker([...ALL_PLAYERS, ...FORMER_PLAYERS], ALL_MATCHES, squads, allAvailability, todayISO)
+            const rows = computePlayerTracker([...allPlayers, ...FORMER_PLAYERS], ALL_MATCHES, squads, allAvailability, todayISO)
               // Former players only appear once they've been recorded in a
               // Playing 12 — otherwise they'd clutter the table with zeroes.
-              .filter(r => ALL_PLAYERS.includes(r.player) || r.totalPlayed > 0)
+              .filter(r => allPlayers.includes(r.player) || r.totalPlayed > 0)
               .sort((a, b) => {
                 if (trackerSort === 'lcl') return b.lcl.played - a.lcl.played;
                 if (trackerSort === 'lpl') return b.lpl.played - a.lpl.played;
@@ -1039,7 +1011,7 @@ export default function AvailabilityPage() {
           {viewMode === 'player' && (
             <div className="space-y-3">
               {filteredMatches.map(m => {
-                const matchPlayers = getPlayersForMatch(m.league);
+                const matchPlayers = getPlayersForMatch(m.league, allPlayers);
                 const isEligible = matchPlayers.includes(playerName);
                 const myStatus = getPlayerStatus(playerName, m.id);
                 const counts = getMatchCounts(m.id, m.league);
@@ -1096,7 +1068,7 @@ export default function AvailabilityPage() {
           {viewMode === 'captain' && isSquadViewer && (
             <div className="space-y-4">
               {filteredMatches.map(m => {
-                const matchPlayers = getPlayersForMatch(m.league);
+                const matchPlayers = getPlayersForMatch(m.league, allPlayers);
                 const available = matchPlayers.filter(n => getPlayerStatus(n, m.id) === 'available');
                 const maybe = matchPlayers.filter(n => getPlayerStatus(n, m.id) === 'maybe');
                 const unavailable = matchPlayers.filter(n => getPlayerStatus(n, m.id) === 'unavailable');
@@ -1299,7 +1271,7 @@ export default function AvailabilityPage() {
                               </button>
                               {(() => {
                                 const attendeeCount = (squads[m.id] || [])
-                                  .map((n) => getPrimaryEmailForPlayer(n, EMAIL_TO_PLAYER))
+                                  .map((n) => getPrimaryEmailForPlayer(n, emailToPlayer))
                                   .filter(Boolean).length;
                                 const unlockAt = getFinalizeUnlockTime(m.fullDate, m.time);
                                 const canFinalize = Date.now() >= unlockAt.getTime();
@@ -1515,13 +1487,13 @@ export default function AvailabilityPage() {
           match: matchData,
           squad: squadPlayers,
           roles: matchRoles,
-          emailToPlayer: EMAIL_TO_PLAYER,
+          emailToPlayer: emailToPlayer,
         });
         const playersWithEmail = squadPlayers
-          .map((n) => ({ name: n, email: getPrimaryEmailForPlayer(n, EMAIL_TO_PLAYER) }))
+          .map((n) => ({ name: n, email: getPrimaryEmailForPlayer(n, emailToPlayer) }))
           .filter((p): p is { name: string; email: string } => Boolean(p.email));
         const playersWithoutEmail = squadPlayers.filter(
-          (n) => !getPrimaryEmailForPlayer(n, EMAIL_TO_PLAYER),
+          (n) => !getPrimaryEmailForPlayer(n, emailToPlayer),
         );
 
         return createPortal(

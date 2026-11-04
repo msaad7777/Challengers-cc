@@ -58,3 +58,54 @@ export function resolvePlayerName(email: string | null | undefined): string | nu
   const lower = email.toLowerCase();
   return EMAIL_TO_PLAYER[lower] ?? null;
 }
+
+// Everyone selectable in the Dugout, including roster-only players with no login.
+// Players approved at /c3h/intake are added to this at runtime.
+export const PLAYER_ROSTER: readonly string[] = [
+  'Mohammed Saad', 'Tarek Islam', 'Gokul Prakash',
+  'Ankush Arora', 'Roman Mahmud', 'Judin Thomas', 'Saikrishna Goriparthi',
+  'Fahad Aktar', 'Fahad Ahmad', 'Denison Davis', 'Abhishek Ladva',
+  'Salman Ahmed', 'Farooq Choudhary', 'Vijay Yadav', 'Shivam Rajput',
+  'Manohar Anukuri', 'Mohayminul', 'Andrew Jebarson', 'Guru Raga', 'Noman',
+  'Shafiul', 'Sujel Ahmed', 'Syed Shahriar', 'Atik Rahman', 'Majharul Alam', 'Siva Sriram', 'Rajath Shetty', 'Murshad Azad',
+  'Aleem Quadri', 'Ameeya Singh', 'Dhamu',
+  // Part-time players added 2026-07 (roster-only — no login yet)
+  'Thoufeeque', 'Swapnil', 'Raunak', 'Raj', 'Segu', 'Fawaz', 'Abdullah',
+  // Joined after Jul 18 (roster-only — no login yet). Tracker only counts the
+  // post–Jul-18 matches captains actually select them into.
+  'Lovely', 'Sahaj', 'RP',
+  // Added Aug 2026 for the LCL T20 (roster-only — no login yet). Available in
+  // every league by default, same as the rest of the roster; there is no
+  // T20-only bucket. Must be registered in CricClubs by Sep 5 to play a T20.
+  'Shashank', 'Muhib', 'Mustajab',
+  // Added 2026-08-23 for the LCL T20 (roster-only — no login yet). Distinct
+  // from the existing 'RP' above, who is a different player.
+  'Rahul Patel',
+  // Added 2026-10-02 for the LCL T20 (roster-only — no login yet).
+  'Tanishq',
+];
+
+export type ApprovedPlayer = { email: string; name: string };
+
+// True if this name would be shared with a different person. The Dugout stores
+// availability by name, so two people with one name would overwrite each other.
+export function isPlayerNameTaken(name: string, email: string, approved: readonly ApprovedPlayer[]): boolean {
+  const lower = name.trim().toLowerCase();
+  const inCode = EMAIL_TO_PLAYER[email];
+  if (inCode) return inCode.toLowerCase() !== lower;
+  return (
+    PLAYER_ROSTER.some(n => n.toLowerCase() === lower) ||
+    Object.values(EMAIL_TO_PLAYER).some(n => n.toLowerCase() === lower) ||
+    approved.some(p => p.email !== email && p.name.toLowerCase() === lower)
+  );
+}
+
+export function mergeApprovedPlayers(approved: readonly ApprovedPlayer[]) {
+  const emailToPlayer: Record<string, string> = { ...EMAIL_TO_PLAYER };
+  const allPlayers = [...PLAYER_ROSTER];
+  for (const { email, name } of approved) {
+    emailToPlayer[email] ??= name;
+    if (!allPlayers.includes(emailToPlayer[email])) allPlayers.push(emailToPlayer[email]);
+  }
+  return { emailToPlayer, allPlayers };
+}

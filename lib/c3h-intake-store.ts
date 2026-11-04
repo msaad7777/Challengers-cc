@@ -2,7 +2,9 @@
 // the Admin SDK from API routes. The browser Firestore client cannot read them:
 // firestore.rules denies these collections.
 import { randomUUID } from 'crypto';
+import { isPlayerNameTaken } from '@/lib/c3h-roster';
 import {
+  approvedPlayers,
   canSetStatus,
   IntakeAction,
   IntakeKind,
@@ -21,6 +23,7 @@ export type IntakeStore = {
   list(): Promise<IntakeRecord[]>;
   get(id: string): Promise<IntakeRecord | null>;
   put(record: IntakeRecord): Promise<void>;
+  listMembers(): Promise<PortalMember[]>;
   getMember(email: string): Promise<PortalMember | null>;
   putMember(member: PortalMember): Promise<void>;
   deleteMember(email: string): Promise<void>;
@@ -44,6 +47,10 @@ async function firestoreStore(serviceAccountJson: string): Promise<IntakeStore> 
     async put(record) {
       await db.collection(INTAKE).doc(record.id).set(record);
     },
+    async listMembers() {
+      const snap = await db.collection(MEMBERS).get();
+      return snap.docs.map(d => d.data() as PortalMember);
+    },
     async getMember(email) {
       const doc = await db.collection(MEMBERS).doc(email).get();
       return doc.exists ? (doc.data() as PortalMember) : null;
@@ -64,6 +71,7 @@ export function memoryStore(): IntakeStore {
     list: async () => [...records.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
     get: async id => records.get(id) ?? null,
     put: async record => void records.set(record.id, record),
+    listMembers: async () => [...members.values()],
     getMember: async email => members.get(email) ?? null,
     putMember: async member => void members.set(member.email, member),
     deleteMember: async email => void members.delete(email),
@@ -144,13 +152,22 @@ export async function applyIntakeAction(
     return { ok: false, error: 'Only players get portal access', status: 400 };
   } else if (action.action === 'grant') {
     if (record.status === 'paid') return { ok: false, error: 'Access is already open', status: 400 };
-    await store.putMember({ email: action.email, season: REGISTRATION_SEASON, addedBy: by, addedAt: now });
+    if (isPlayerNameTaken(action.name, action.email, approvedPlayers(await store.listMembers()))) {
+      return { ok: false, error: 'That name is already in the squad lists. Please add a surname or initial.', status: 409 };
+    }
+    await store.putMember({
+      email: action.email,
+      name: action.name,
+      season: REGISTRATION_SEASON,
+      addedBy: by,
+      addedAt: now,
+    });
     memberCache.delete(action.email);
     next = {
       ...record,
       status: 'paid',
       portalEmail: action.email,
-      history: log(`Confirmed payment, opened portal access for ${action.email}`),
+      history: log(`Confirmed payment, opened portal access for ${action.email} as ${action.name}`),
     };
   } else {
     if (record.status !== 'paid') return { ok: false, error: 'This player has no open access', status: 400 };
