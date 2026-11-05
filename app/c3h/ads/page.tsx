@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { isC3HAdmin, isC3HDashboardViewer } from '@/lib/c3h-access';
-import { adsBriefing, GRANT_MONTHLY_USD, type AdsReport } from '@/lib/ads-report';
+import { adsBriefing, GRANT_MONTHLY_USD, adsUpdateStatus, hasLittleAdActivity, type AdsReport } from '@/lib/ads-report';
 import { Meter, fmt } from '@/app/c3h/lib/Kpi';
 import AdsScorecard from '@/app/c3h/lib/AdsScorecard';
+import AdsStatusNotice from '@/app/c3h/lib/AdsStatusNotice';
 import Navbar from '@/components/Navbar';
 
 type Response =
@@ -15,6 +16,7 @@ type Response =
   | { configured: true; error: string };
 
 const ADS_URL = 'https://ads.google.com/aw/campaigns?ocid=822-016-7403';
+const REFRESH_MS = 5 * 60 * 1000;
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
 const usd = (n: number) => `$${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
@@ -22,6 +24,7 @@ export default function AdsDashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [data, setData] = useState<Response | null>(null);
+  const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/c3h/login');
@@ -29,10 +32,27 @@ export default function AdsDashboardPage() {
 
   useEffect(() => {
     if (!isC3HDashboardViewer(session?.user?.email)) return;
-    fetch('/api/ads-report')
-      .then((r) => r.json())
-      .then(setData)
-      .catch(() => setData({ configured: true, error: 'Could not reach the server' }));
+    // A failed refresh keeps the last good report; its age then shows it is old.
+    // Only the newest request may set the report, so a slow one can't overwrite it.
+    let latest = 0;
+    const load = () => {
+      const request = ++latest;
+      setNow(Date.now());
+      fetch('/api/ads-report', { cache: 'no-store' })
+        .then((r) => r.json())
+        .then((next: Response) => {
+          if (request === latest) setData((prev) => (prev && 'totals' in prev && !('totals' in next) ? prev : next));
+        })
+        .catch(() => {
+          if (request === latest) setData((prev) => (prev && 'totals' in prev ? prev : { configured: true, error: 'Could not reach the server' }));
+        });
+    };
+    load();
+    const timer = setInterval(load, REFRESH_MS);
+    return () => {
+      latest = -1;
+      clearInterval(timer);
+    };
   }, [session?.user?.email]);
 
   if (status === 'loading') {
@@ -58,6 +78,8 @@ export default function AdsDashboardPage() {
     );
   }
 
+  const updateStatus = data && 'updated' in data ? adsUpdateStatus(data.updated, now) : null;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
       <Navbar />
@@ -67,7 +89,10 @@ export default function AdsDashboardPage() {
             <h1 className="text-3xl font-bold text-white">Google Ads</h1>
             <p className="text-sm text-gray-400">
               Ad Grants account 822-016-7403 · last 30 days
-              {data && 'updated' in data && data.updated ? ` · updated ${data.updated}` : ''}
+              {updateStatus ? ` · updated ${updateStatus.updated} London time` : ''}
+              {updateStatus && !updateStatus.stale
+                ? updateStatus.next ? `, next around ${updateStatus.next}` : ', awaiting the next update'
+                : ''}
             </p>
           </div>
           <div className="flex gap-2">
@@ -101,6 +126,8 @@ export default function AdsDashboardPage() {
 
         {data && 'totals' in data && (
           <>
+            <AdsStatusNotice status={updateStatus} littleActivity={hasLittleAdActivity(data.totals)}
+              impressions={data.totals.impressions} />
             <div className="glass rounded-2xl p-5 border border-white/10 mb-4">
               <Meter label={'cost_mtd' in data.metrics ? 'Grant used this month' : 'Grant used (last 30 days)'}
                 value={data.metrics.cost_mtd ?? data.totals.cost} max={GRANT_MONTHLY_USD} format={fmt.usd}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { adsBriefing, parseAdsReport, parseCsv, type AdsReport } from '@/lib/ads-report';
+import { adsBriefing, adsUpdateStatus, hasLittleAdActivity, parseAdsReport, parseAdsTimestamp, parseCsv, type AdsReport } from '@/lib/ads-report';
 
 const HEADER = 'type,name,status,daily_budget,impressions_30d,clicks_30d,ctr_30d,conversions_30d,cost_30d,clicks_yesterday,note,updated';
 
@@ -61,6 +61,54 @@ describe('parseAdsReport', () => {
       'metric,players_registered_total,,,,,,,,,31,',
     ].join('\n');
     expect(parseAdsReport(csv).metrics).toEqual({ cost_mtd: 1234.5, players_registered_total: 31 });
+  });
+});
+
+describe('adsUpdateStatus', () => {
+  // 21:44 Newfoundland time on Nov 4 is 01:14 UTC on Nov 5 and 8:14 p.m. in London.
+  const stamp = '2026-11-04 21:44';
+  const at = Date.UTC(2026, 10, 5, 1, 14);
+  const MIN = 60 * 1000;
+
+  it('reads the stamp as Newfoundland time, in and out of daylight time', () => {
+    expect(parseAdsTimestamp(stamp)).toBe(at);
+    expect(parseAdsTimestamp('2026-07-01 12:00')).toBe(Date.UTC(2026, 6, 1, 14, 30));
+  });
+
+  it('rejects anything else', () => {
+    expect(parseAdsTimestamp(null)).toBeNull();
+    expect(parseAdsTimestamp('yesterday')).toBeNull();
+    expect(parseAdsTimestamp('2026-11-05 24:14')).toBeNull();
+    expect(parseAdsTimestamp('2026-02-30 09:00')).toBeNull();
+    expect(adsUpdateStatus(null, at)).toBeNull();
+  });
+
+  it('shows London time and the next hourly run', () => {
+    const status = adsUpdateStatus(stamp, at + 30 * MIN)!;
+    expect(status.stale).toBe(false);
+    expect(status.updated).toMatch(/^8:14/);
+    expect(status.next).toMatch(/^9:14/);
+  });
+
+  it('stops promising a next time once the run is due', () => {
+    expect(adsUpdateStatus(stamp, at + 90 * MIN)!.next).toBeNull();
+  });
+
+  it('turns stale after three hours and names the day', () => {
+    expect(adsUpdateStatus(stamp, at + 180 * MIN)!.stale).toBe(false);
+    const status = adsUpdateStatus(stamp, at + 24 * 60 * MIN)!;
+    expect(status.stale).toBe(true);
+    expect(status.updated).toMatch(/Nov.*4.*8:14/);
+  });
+});
+
+describe('hasLittleAdActivity', () => {
+  const totals = { impressions: 11, clicks: 0, ctr: 0, conversions: 0, cost: 0 };
+
+  it('is true only with no clicks and under 100 impressions', () => {
+    expect(hasLittleAdActivity(totals)).toBe(true);
+    expect(hasLittleAdActivity({ ...totals, clicks: 1 })).toBe(false);
+    expect(hasLittleAdActivity({ ...totals, impressions: 100 })).toBe(false);
   });
 });
 

@@ -111,6 +111,60 @@ export function parseAdsReport(csv: string): AdsReport {
   };
 }
 
+// The script stamps each row in the Ads account's time zone (Newfoundland) with
+// no offset, and runs hourly. The dashboard shows the time in London, Ontario.
+const ACCOUNT_TIME_ZONE = 'America/St_Johns';
+const CLUB_TIME_ZONE = 'America/Toronto';
+const HOUR_MS = 60 * 60 * 1000;
+const STALE_AFTER_MS = 3 * HOUR_MS;
+
+function zoneOffsetMs(timeZone: string, at: number): number {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric',
+    hour: 'numeric', minute: 'numeric', second: 'numeric',
+  }).formatToParts(at);
+  const part = (type: string) => Number(parts.find((p) => p.type === type)?.value);
+  return Date.UTC(part('year'), part('month') - 1, part('day'), part('hour'), part('minute'), part('second')) - at;
+}
+
+export function parseAdsTimestamp(text: string | null): number | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/.exec((text ?? '').trim());
+  if (!m) return null;
+  const wall = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]);
+  // Date.UTC rolls bad fields over ("24:14" becomes the next day), so check they survived.
+  if (new Date(wall).toISOString().slice(0, 16) !== `${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}`) return null;
+  const guess = wall - zoneOffsetMs(ACCOUNT_TIME_ZONE, wall);
+  return wall - zoneOffsetMs(ACCOUNT_TIME_ZONE, guess);
+}
+
+const clubTime = (at: number) =>
+  new Date(at).toLocaleTimeString('en-CA', { timeZone: CLUB_TIME_ZONE, hour: 'numeric', minute: '2-digit' });
+const clubDay = (at: number) =>
+  new Date(at).toLocaleDateString('en-CA', { timeZone: CLUB_TIME_ZONE, month: 'short', day: 'numeric' });
+
+export type AdsUpdateStatus = {
+  stale: boolean;
+  // "8:14 p.m." today, "Nov. 3, 8:14 p.m." on any other day. London, Ontario time.
+  updated: string;
+  // Null once the next run is due, so the page never promises a time already past.
+  next: string | null;
+};
+
+export function adsUpdateStatus(updated: string | null, now: number): AdsUpdateStatus | null {
+  const at = parseAdsTimestamp(updated);
+  if (at === null) return null;
+  const next = at + HOUR_MS;
+  return {
+    stale: now - at > STALE_AFTER_MS,
+    updated: clubDay(at) === clubDay(now) ? clubTime(at) : `${clubDay(at)}, ${clubTime(at)}`,
+    next: next > now ? clubTime(next) : null,
+  };
+}
+
+// Too few impressions for the numbers to move from one hour to the next.
+export const hasLittleAdActivity = (totals: AdsReport['totals']) =>
+  totals.clicks === 0 && totals.impressions < 100;
+
 export type AdsBriefing = {
   // The result the ads exist to drive. Null when the sheet doesn't report it.
   playersRegistered: { total: number; last30Days: number | null } | null;
