@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import {
   approvedPlayers,
   canSetStatus,
+  intakeSummary,
   IntakeRecord,
   memberHasAccess,
   parseIntakeAction,
@@ -153,5 +154,22 @@ describe('portal access', () => {
     await store.putMember({ email: 'a@b.ca', season: 2027, addedBy: 'd', addedAt: '' });
     expect(await isPortalMember('a@b.ca', store, t + 59_000)).toBe(false);
     expect(await isPortalMember('a@b.ca', store, t + 61_000)).toBe(true);
+  });
+});
+
+describe('intakeSummary', () => {
+  const r = (kind: 'player' | 'sponsor', status: string) => ({ kind, status }) as IntakeRecord;
+
+  it('counts results and says what to do next', () => {
+    const summary = intakeSummary([
+      r('player', 'paid'), r('player', 'new'), r('player', 'new'), r('player', 'contacted'),
+      r('sponsor', 'confirmed'), r('sponsor', 'new'), r('player', 'declined'),
+    ]);
+    expect(summary).toMatchObject({ playersPaid: 1, sponsorsConfirmed: 1, newPlayers: 2, newSponsors: 1, awaitingPayment: 1 });
+    expect(summary.nextStep).toBe('Next: reply to 2 new players, reply to 1 new sponsor, check payment from 1 player.');
+  });
+
+  it('says so when nothing is waiting', () => {
+    expect(intakeSummary([r('player', 'paid')]).nextStep).toBe('Nothing is waiting on a director.');
   });
 });
