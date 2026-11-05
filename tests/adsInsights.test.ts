@@ -132,7 +132,8 @@ describe('honesty', () => {
 describe('sponsor update', () => {
   it('holds totals and a limit, and leaves out spending and campaign names', () => {
     const brief = buildAdsInsights(report([campaign({ name: 'Private name', cost: 4321.09 })])).sponsorBrief!;
-    expect(brief).toContain('the 30 days to 2026-11-02 09:00');
+    expect(brief).toContain('the 30 days to 2026-11-02:');
+    expect(brief).not.toContain('09:00');
     expect(brief).toContain('shown 1,000 times, 80 clicks, 4 conversions');
     expect(brief).toContain('do not measure any sponsor');
     expect(brief).not.toContain('$');
@@ -146,5 +147,6 @@ describe('sponsor update', () => {
 
   it('does not invent a date', () => {
     expect(buildAdsInsights(report([campaign()], null)).sponsorBrief).toContain('the last 30 days');
+    expect(buildAdsInsights(report([campaign()], 'yesterday')).sponsorBrief).toContain('the last 30 days');
   });
 });
