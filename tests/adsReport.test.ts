@@ -75,6 +75,12 @@ describe('adsUpdateStatus', () => {
     expect(parseAdsTimestamp('2026-07-01 12:00')).toBe(Date.UTC(2026, 6, 1, 14, 30));
   });
 
+  it('accepts the single-digit hours Sheets publishes', () => {
+    expect(parseAdsTimestamp('2026-11-05 0:44')).toBe(Date.UTC(2026, 10, 5, 4, 14));
+    expect(parseAdsTimestamp('2026-11-05 9:05')).toBe(parseAdsTimestamp('2026-11-05 09:05'));
+    expect(adsUpdateStatus('2026-11-05 0:44', Date.UTC(2026, 10, 5, 4, 30))!.updated).toMatch(/^11:14/);
+  });
+
   it('rejects anything else', () => {
     expect(parseAdsTimestamp(null)).toBeNull();
     expect(parseAdsTimestamp('yesterday')).toBeNull();
