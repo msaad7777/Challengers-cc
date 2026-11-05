@@ -67,6 +67,30 @@ export function approvedPlayers(members: PortalMember[], activeSeason: number = 
     .map(member => ({ email: member.email, name: member.name || member.email.split('@')[0] }));
 }
 
+// The numbers directors act on: results first, then the follow-ups that drive them.
+export function intakeSummary(records: IntakeRecord[]) {
+  const count = (kind: IntakeKind, status: string) =>
+    records.filter(record => record.kind === kind && record.status === status).length;
+  const newPlayers = count('player', 'new');
+  const newSponsors = count('sponsor', 'new');
+  const awaitingPayment = count('player', 'contacted');
+  const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
+  const next = [
+    newPlayers && `reply to ${plural(newPlayers, 'new player')}`,
+    newSponsors && `reply to ${plural(newSponsors, 'new sponsor')}`,
+    awaitingPayment && `check payment from ${plural(awaitingPayment, 'player')}`,
+  ].filter(Boolean);
+  return {
+    playersPaid: count('player', 'paid'),
+    sponsorsConfirmed: count('sponsor', 'confirmed'),
+    newPlayers,
+    newSponsors,
+    awaitingPayment,
+    sponsorsContacted: count('sponsor', 'contacted'),
+    nextStep: next.length ? `Next: ${next.join(', ')}.` : 'Nothing is waiting on a director.',
+  };
+}
+
 const text = (value: unknown): string | null => {
   if (typeof value !== 'string') return null;
   const trimmed = value.trim();

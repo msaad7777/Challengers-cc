@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { isC3HAdmin, isC3HDashboardViewer } from '@/lib/c3h-access';
-import { GRANT_MONTHLY_USD, type AdsReport } from '@/lib/ads-report';
+import { adsBriefing, GRANT_MONTHLY_USD, type AdsReport } from '@/lib/ads-report';
 import { Meter, fmt } from '@/app/c3h/lib/Kpi';
 import AdsScorecard from '@/app/c3h/lib/AdsScorecard';
 import Navbar from '@/components/Navbar';
@@ -108,6 +108,8 @@ export default function AdsDashboardPage() {
             </div>
             <AdsScorecard report={data} />
 
+            <Briefing report={data} />
+
             {data.alerts.length > 0 && (
               <div className="rounded-2xl p-5 mb-6 border border-amber-500/40 bg-amber-500/10">
                 <h2 className="font-semibold text-amber-200 mb-2">Needs attention</h2>
@@ -162,6 +164,24 @@ export default function AdsDashboardPage() {
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+function Briefing({ report }: { report: AdsReport }) {
+  const { playersRegistered, notes } = adsBriefing(report);
+  return (
+    <div className="glass rounded-2xl p-5 border border-white/10 mb-6">
+      <h2 className="font-semibold text-white mb-1">What this means</h2>
+      <p className="text-sm text-gray-300 mb-3">
+        {playersRegistered
+          ? `Players registered: ${fmt.int(playersRegistered.total)}` +
+            (playersRegistered.last30Days === null ? '.' : `, ${fmt.int(playersRegistered.last30Days)} in the last 30 days.`)
+          : 'Players registered: not reported by the sheet.'}
+      </p>
+      <ul className="list-disc pl-5 space-y-1 text-sm text-gray-300">
+        {notes.map((note) => <li key={note}>{note}</li>)}
+      </ul>
     </div>
   );
 }

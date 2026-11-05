@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { isC3HAdmin, resolveDirectorWorkspaceEmail } from '@/lib/c3h-access';
-import { INTAKE_STATUSES, IntakeKind, IntakeRecord, REGISTRATION_SEASON } from '@/lib/c3h-intake';
+import { INTAKE_STATUSES, intakeSummary, IntakeKind, IntakeRecord, REGISTRATION_SEASON } from '@/lib/c3h-intake';
 
 const DETAIL_LABELS: Record<string, string> = {
   contactName: 'Contact person',
@@ -93,6 +93,8 @@ export default function IntakePage() {
 
       {state === 'ready' && (
         <>
+          <Summary records={records} />
+
           <div className="flex gap-2 mb-6" role="tablist">
             {(['player', 'sponsor'] as const).map(k => (
               <button
@@ -125,6 +127,29 @@ function Shell({ children }: { children: React.ReactNode }) {
       <Navbar />
       <main className="max-w-4xl mx-auto px-4 pt-28 pb-16">{children}</main>
     </div>
+  );
+}
+
+function Summary({ records }: { records: IntakeRecord[] }) {
+  const summary = intakeSummary(records);
+  const tiles: [string, number][] = [
+    ['Players paid', summary.playersPaid],
+    ['Sponsors confirmed', summary.sponsorsConfirmed],
+    ['Players waiting on payment', summary.awaitingPayment],
+    ['New enquiries', summary.newPlayers + summary.newSponsors],
+  ];
+  return (
+    <section aria-label="Summary" className="glass rounded-2xl p-5 border border-white/10 mb-6">
+      <dl className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-3">
+        {tiles.map(([label, value]) => (
+          <div key={label}>
+            <dt className="text-xs text-gray-400">{label}</dt>
+            <dd className="text-2xl font-bold text-white">{value}</dd>
+          </div>
+        ))}
+      </dl>
+      <p className="text-sm text-gray-300">{summary.nextStep}</p>
+    </section>
   );
 }
 
