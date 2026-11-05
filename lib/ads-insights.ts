@@ -170,7 +170,9 @@ function decide(r: AdsReport): AdsInsights['decision'] {
 function sponsorBrief(r: AdsReport): string | null {
   const { impressions, clicks, conversions } = r.totals;
   if (impressions < MIN_IMPRESSIONS) return null;
-  const asOf = r.updated ? `the 30 days to ${r.updated}` : 'the last 30 days';
+  // The sheet's times are in the Ads account's time zone, so share only the date.
+  const day = /^\d{4}-\d{2}-\d{2}\b/.exec(r.updated ?? '')?.[0];
+  const asOf = day ? `the 30 days to ${day}` : 'the last 30 days';
   return (
     `Challengers Cricket Club's Google Ads, ${asOf}: shown ${times(impressions, 'time')}, ` +
     `${times(clicks, 'click')}, ${times(conversions, 'conversion')}. ` +
