@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseAdsReport, parseCsv } from '@/lib/ads-report';
+import { adsBriefing, parseAdsReport, parseCsv, type AdsReport } from '@/lib/ads-report';
 
 const HEADER = 'type,name,status,daily_budget,impressions_30d,clicks_30d,ctr_30d,conversions_30d,cost_30d,clicks_yesterday,note,updated';
 
@@ -61,5 +61,37 @@ describe('parseAdsReport', () => {
       'metric,players_registered_total,,,,,,,,,31,',
     ].join('\n');
     expect(parseAdsReport(csv).metrics).toEqual({ cost_mtd: 1234.5, players_registered_total: 31 });
+  });
+});
+
+describe('adsBriefing', () => {
+  const report = (totals: Partial<AdsReport['totals']>, metrics: Record<string, number> = {}): AdsReport => ({
+    campaigns: [], alerts: [], changes: [], updated: null, metrics,
+    totals: { impressions: 1000, clicks: 100, ctr: 0.1, conversions: 5, cost: 0, ...totals },
+  });
+
+  it('never invents the registered count', () => {
+    expect(adsBriefing(report({})).playersRegistered).toBeNull();
+    expect(adsBriefing(report({}, { players_registered_total: 0 })).playersRegistered).toEqual({ total: 0, last30Days: null });
+    expect(adsBriefing(report({}, { players_registered_total: 9, players_registered_30d: 2 })).playersRegistered)
+      .toEqual({ total: 9, last30Days: 2 });
+  });
+
+  it('flags low CTR only with enough impressions', () => {
+    expect(adsBriefing(report({ ctr: 0.03 })).notes[0]).toContain('below');
+    expect(adsBriefing(report({ ctr: 0.03, impressions: 50 })).notes[0]).toContain('too few');
+    expect(adsBriefing(report({})).notes[0]).toContain('No change');
+  });
+
+  it('flags clicks that never convert', () => {
+    expect(adsBriefing(report({ conversions: 0 })).notes[1]).toContain('Check conversion tracking');
+    expect(adsBriefing(report({})).notes[1]).toBe('5 conversions from 100 clicks (5.0%).');
+    expect(adsBriefing(report({ clicks: 0, conversions: 0 })).notes).toHaveLength(1);
+  });
+
+  it('only talks about the grant when its spend is reported', () => {
+    expect(adsBriefing(report({})).notes.join()).not.toContain('grant');
+    expect(adsBriefing(report({}, { cost_mtd: 9500 })).notes.at(-1)).toContain('Close to the limit');
+    expect(adsBriefing(report({}, { cost_mtd: 100 })).notes.at(-1)).toContain('$100 of the $10,000');
   });
 });

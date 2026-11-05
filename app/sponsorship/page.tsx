@@ -10,6 +10,44 @@ import SponsorPackageLink from '@/components/SponsorPackageLink';
 
 const FAILURE_MESSAGE = 'Your enquiry did not reach us. Please email contact@challengerscc.ca directly.';
 
+const HOW_IT_WORKS = [
+  {
+    title: "Choose how to help",
+    body: "Pick a tier, or suggest store credit, equipment or another in-kind partnership.",
+  },
+  {
+    title: "Send the form",
+    body: "Fill in the form on this page and a director will follow up with you.",
+  },
+  {
+    title: "Pay and get your receipt",
+    body: "Pay online, by cheque or in person. We email a payment receipt within 2 business days of confirming payment.",
+  },
+];
+
+const SPONSOR_QUESTIONS = [
+  {
+    question: "Who are you?",
+    answer:
+      "Challengers is a volunteer-run Canada Not-for-Profit Corporation (CNCA #1746974-8), incorporated in November 2025. In 2026 we played 26 T30 matches across two London leagues and reached the LPL Division 2 semi-final in our debut year.",
+  },
+  {
+    question: "Can a small business help without paying $500?",
+    answer:
+      "Yes. Community Partners can give any amount, or support us with store credit, discounts, gift cards or equipment. You get your logo on challengerscc.ca and social media recognition.",
+  },
+  {
+    question: "Will sponsoring bring me customers?",
+    answer:
+      "We can't promise leads or sales. We put your brand on the placements your tier includes and share your information with our members. Whether a member uses your business is up to them.",
+  },
+  {
+    question: "Do I get a tax receipt?",
+    answer:
+      "You get a payment receipt, but not a charitable tax receipt, because we are not a registered charity. For the tax treatment of a contribution, please ask your own accountant or tax adviser.",
+  },
+];
+
 export default function SponsorshipPage() {
   const [formData, setFormData] = useState({
     organizationName: '',
@@ -273,6 +311,27 @@ export default function SponsorshipPage() {
         </div>
       </section>
 
+      {/* How It Works */}
+      <section className="section-padding bg-black">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-4xl sm:text-5xl font-bold mb-10 text-center">
+            How It <span className="gradient-text">Works</span>
+          </h2>
+          <ol className="grid md:grid-cols-3 gap-6">
+            {HOW_IT_WORKS.map((step, index) => (
+              <li key={step.title} className="glass rounded-2xl p-6">
+                <div className="text-sm font-semibold text-accent-400 mb-2">Step {index + 1}</div>
+                <h3 className="text-lg font-bold mb-2">{step.title}</h3>
+                <p className="text-sm text-gray-400">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+          <p className="text-sm text-gray-400 text-center mt-6">
+            Title and Platinum sponsors confirmed by 1 March 2027 are on the jersey print for the 2027 season.
+          </p>
+        </div>
+      </section>
+
       {/* Payment Options */}
       <section className="section-padding bg-black">
         <div className="max-w-7xl mx-auto">
@@ -501,6 +560,23 @@ export default function SponsorshipPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Questions Sponsors Ask */}
+      <section className="section-padding bg-black">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-4xl sm:text-5xl font-bold mb-10 text-center">
+            Questions <span className="gradient-text">Sponsors Ask</span>
+          </h2>
+          <div className="space-y-3">
+            {SPONSOR_QUESTIONS.map((item) => (
+              <details key={item.question} className="glass rounded-xl p-5">
+                <summary className="font-semibold cursor-pointer">{item.question}</summary>
+                <p className="text-sm text-gray-400 mt-3">{item.answer}</p>
+              </details>
+            ))}
           </div>
         </div>
       </section>
