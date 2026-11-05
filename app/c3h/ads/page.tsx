@@ -5,7 +5,8 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { isC3HAdmin, isC3HDashboardViewer } from '@/lib/c3h-access';
 import { GRANT_MONTHLY_USD, type AdsReport } from '@/lib/ads-report';
-import { Kpi, Meter, fmt } from '@/app/c3h/lib/Kpi';
+import { Meter, fmt } from '@/app/c3h/lib/Kpi';
+import AdsScorecard from '@/app/c3h/lib/AdsScorecard';
 import Navbar from '@/components/Navbar';
 
 type Response =
@@ -105,15 +106,7 @@ export default function AdsDashboardPage() {
                 value={data.metrics.cost_mtd ?? data.totals.cost} max={GRANT_MONTHLY_USD} format={fmt.usd}
                 note="Google Ad Grants allow up to $10,000 a month." />
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-              <Kpi hero label="Clicks" value={fmt.int(data.totals.clicks)} sub={`${fmt.int(data.totals.impressions)} impressions`} />
-              <Kpi hero label="CTR" value={pct(data.totals.ctr)} sub="Google requires 5%+"
-                status={data.totals.impressions >= 100 ? (data.totals.ctr < 0.05 ? 'bad' : 'good') : undefined}
-                statusLabel={data.totals.impressions >= 100 && data.totals.ctr < 0.05 ? 'Below 5%' : undefined} />
-              <Kpi hero label="Conversions" value={fmt.int(data.totals.conversions)}
-                sub={`${data.totals.clicks ? pct(data.totals.conversions / data.totals.clicks) : '0.0%'} of clicks`} />
-              <Kpi hero label="Grant spend" value={usd(data.totals.cost)} sub="last 30 days" />
-            </div>
+            <AdsScorecard report={data} />
 
             {data.alerts.length > 0 && (
               <div className="rounded-2xl p-5 mb-6 border border-amber-500/40 bg-amber-500/10">
