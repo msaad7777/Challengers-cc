@@ -110,3 +110,44 @@ export function parseAdsReport(csv: string): AdsReport {
     },
   };
 }
+
+export type AdsBriefing = {
+  // The result the ads exist to drive. Null when the sheet doesn't report it.
+  playersRegistered: { total: number; last30Days: number | null } | null;
+  notes: string[];
+};
+
+// One plain sentence per driver: what the number means and what to do about it.
+export function adsBriefing(report: AdsReport): AdsBriefing {
+  const { clicks, impressions, ctr, conversions } = report.totals;
+  const { players_registered_total: total, players_registered_30d: recent, cost_mtd: spent } = report.metrics;
+  const percent = (n: number) => `${(n * 100).toFixed(1)}%`;
+  const notes: string[] = [];
+
+  if (impressions < 100) {
+    notes.push(`Only ${impressions} impressions in 30 days, too few to judge CTR. Check that campaigns are running.`);
+  } else if (ctr < 0.05) {
+    notes.push(`CTR is ${percent(ctr)}, below Google's 5% minimum. Rewrite or pause the weakest ads.`);
+  } else {
+    notes.push(`CTR is ${percent(ctr)}, above Google's 5% minimum. No change needed.`);
+  }
+
+  if (clicks >= 100 && conversions === 0) {
+    notes.push(`${clicks} clicks and no conversions. Check conversion tracking and the page the ads link to.`);
+  } else if (clicks > 0) {
+    notes.push(`${conversions} conversions from ${clicks} clicks (${percent(conversions / clicks)}).`);
+  }
+
+  if (spent !== undefined) {
+    const nearLimit = spent >= GRANT_MONTHLY_USD * 0.9;
+    notes.push(
+      `$${Math.round(spent).toLocaleString('en-CA')} of the $${GRANT_MONTHLY_USD.toLocaleString('en-CA')} grant used this month. ` +
+        (nearLimit ? 'Close to the limit, so keep the best campaigns funded.' : 'Budget is not what limits results.'),
+    );
+  }
+
+  return {
+    playersRegistered: total === undefined ? null : { total, last30Days: recent ?? null },
+    notes,
+  };
+}
