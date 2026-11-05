@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { isC3HAdmin, isC3HDashboardViewer } from '@/lib/c3h-access';
-import { GRANT_DAILY_CAP_USD, GRANT_MONTHLY_USD, type AdsReport } from '@/lib/ads-report';
+import { GRANT_DAILY_CAP_USD, GRANT_MONTHLY_USD, adsUpdateStatus, type AdsReport } from '@/lib/ads-report';
 import { staleHours, type OutreachSummary } from '@/lib/outreach-summary';
 import { Kpi, Meter, Panel, StatusPill, fmt, type Status } from '@/app/c3h/lib/Kpi';
 import Navbar from '@/components/Navbar';
@@ -62,6 +62,7 @@ export default function OverviewPage() {
   }
 
   const a = ads && 'totals' in ads ? ads : null;
+  const adsUpdate = a ? adsUpdateStatus(a.updated, Date.now()) : null;
   const o = out && 'sent' in out ? out : null;
   const m = a?.metrics ?? {};
   const has = (k: string) => k in m;
@@ -102,7 +103,7 @@ export default function OverviewPage() {
             <h1 className="text-3xl sm:text-4xl font-bold text-white">Club overview</h1>
             <p className="text-sm text-gray-400 mt-1">
               Google Ad Grants, player sign-ups and sponsor outreach in one place.
-              {a?.updated ? ` Ads updated ${a.updated}.` : ''}
+              {adsUpdate ? ` Ads updated ${adsUpdate.updated} London time.` : ''}
               {o ? ` Outreach updated ${new Date(o.generated).toLocaleString('en-CA', { dateStyle: 'medium', timeStyle: 'short' })}`.replace(/\.?$/, '.') : ''}
             </p>
           </div>
