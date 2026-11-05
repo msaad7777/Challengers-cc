@@ -127,12 +127,13 @@ function zoneOffsetMs(timeZone: string, at: number): number {
   return Date.UTC(part('year'), part('month') - 1, part('day'), part('hour'), part('minute'), part('second')) - at;
 }
 
+// Sheets publishes hours before 10 a.m. without a leading zero ("2026-11-05 0:44").
 export function parseAdsTimestamp(text: string | null): number | null {
-  const m = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/.exec((text ?? '').trim());
+  const m = /^(\d{4})-(\d{2})-(\d{2}) (\d{1,2}):(\d{2})$/.exec((text ?? '').trim());
   if (!m) return null;
   const wall = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]);
   // Date.UTC rolls bad fields over ("24:14" becomes the next day), so check they survived.
-  if (new Date(wall).toISOString().slice(0, 16) !== `${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}`) return null;
+  if (new Date(wall).toISOString().slice(0, 16) !== `${m[1]}-${m[2]}-${m[3]}T${m[4].padStart(2, '0')}:${m[5]}`) return null;
   const guess = wall - zoneOffsetMs(ACCOUNT_TIME_ZONE, wall);
   return wall - zoneOffsetMs(ACCOUNT_TIME_ZONE, guess);
 }
