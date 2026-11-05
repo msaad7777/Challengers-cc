@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { isC3HAdmin, isC3HDashboardViewer } from '@/lib/c3h-access';
-import { GRANT_MONTHLY_USD, adsUpdateStatus, hasLittleAdActivity, type AdsReport } from '@/lib/ads-report';
-import { Kpi, Meter, fmt } from '@/app/c3h/lib/Kpi';
+import { adsBriefing, GRANT_MONTHLY_USD, adsUpdateStatus, hasLittleAdActivity, type AdsReport } from '@/lib/ads-report';
+import { Meter, fmt } from '@/app/c3h/lib/Kpi';
+import AdsScorecard from '@/app/c3h/lib/AdsScorecard';
 import AdsStatusNotice from '@/app/c3h/lib/AdsStatusNotice';
 import Navbar from '@/components/Navbar';
 
@@ -32,16 +33,26 @@ export default function AdsDashboardPage() {
   useEffect(() => {
     if (!isC3HDashboardViewer(session?.user?.email)) return;
     // A failed refresh keeps the last good report; its age then shows it is old.
+    // Only the newest request may set the report, so a slow one can't overwrite it.
+    let latest = 0;
     const load = () => {
+      const request = ++latest;
       setNow(Date.now());
-      fetch('/api/ads-report')
+      fetch('/api/ads-report', { cache: 'no-store' })
         .then((r) => r.json())
-        .then((next: Response) => setData((prev) => (prev && 'totals' in prev && !('totals' in next) ? prev : next)))
-        .catch(() => setData((prev) => (prev && 'totals' in prev ? prev : { configured: true, error: 'Could not reach the server' })));
+        .then((next: Response) => {
+          if (request === latest) setData((prev) => (prev && 'totals' in prev && !('totals' in next) ? prev : next));
+        })
+        .catch(() => {
+          if (request === latest) setData((prev) => (prev && 'totals' in prev ? prev : { configured: true, error: 'Could not reach the server' }));
+        });
     };
     load();
     const timer = setInterval(load, REFRESH_MS);
-    return () => clearInterval(timer);
+    return () => {
+      latest = -1;
+      clearInterval(timer);
+    };
   }, [session?.user?.email]);
 
   if (status === 'loading') {
@@ -80,7 +91,7 @@ export default function AdsDashboardPage() {
               Ad Grants account 822-016-7403 · last 30 days
               {updateStatus ? ` · updated ${updateStatus.updated} London time` : ''}
               {updateStatus && !updateStatus.stale
-                ? updateStatus.next ? `, next around ${updateStatus.next}` : ', next update due now'
+                ? updateStatus.next ? `, next around ${updateStatus.next}` : ', awaiting the next update'
                 : ''}
             </p>
           </div>
@@ -122,15 +133,9 @@ export default function AdsDashboardPage() {
                 value={data.metrics.cost_mtd ?? data.totals.cost} max={GRANT_MONTHLY_USD} format={fmt.usd}
                 note="Google Ad Grants allow up to $10,000 a month." />
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-              <Kpi hero label="Clicks" value={fmt.int(data.totals.clicks)} sub={`${fmt.int(data.totals.impressions)} impressions`} />
-              <Kpi hero label="CTR" value={pct(data.totals.ctr)} sub="Google requires 5%+"
-                status={data.totals.impressions >= 100 ? (data.totals.ctr < 0.05 ? 'bad' : 'good') : undefined}
-                statusLabel={data.totals.impressions >= 100 && data.totals.ctr < 0.05 ? 'Below 5%' : undefined} />
-              <Kpi hero label="Conversions" value={fmt.int(data.totals.conversions)}
-                sub={`${data.totals.clicks ? pct(data.totals.conversions / data.totals.clicks) : '0.0%'} of clicks`} />
-              <Kpi hero label="Grant spend" value={usd(data.totals.cost)} sub="last 30 days" />
-            </div>
+            <AdsScorecard report={data} />
+
+            <Briefing report={data} />
 
             {data.alerts.length > 0 && (
               <div className="rounded-2xl p-5 mb-6 border border-amber-500/40 bg-amber-500/10">
@@ -186,6 +191,24 @@ export default function AdsDashboardPage() {
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+function Briefing({ report }: { report: AdsReport }) {
+  const { playersRegistered, notes } = adsBriefing(report);
+  return (
+    <div className="glass rounded-2xl p-5 border border-white/10 mb-6">
+      <h2 className="font-semibold text-white mb-1">What this means</h2>
+      <p className="text-sm text-gray-300 mb-3">
+        {playersRegistered
+          ? `Players registered: ${fmt.int(playersRegistered.total)}` +
+            (playersRegistered.last30Days === null ? '.' : `, ${fmt.int(playersRegistered.last30Days)} in the last 30 days.`)
+          : 'Players registered: not reported by the sheet.'}
+      </p>
+      <ul className="list-disc pl-5 space-y-1 text-sm text-gray-300">
+        {notes.map((note) => <li key={note}>{note}</li>)}
+      </ul>
     </div>
   );
 }
