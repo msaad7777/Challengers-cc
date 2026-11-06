@@ -255,7 +255,9 @@ Setup: form ID from URL → inspect fields for `entry.123…` IDs → update con
 
 `app/layout.tsx` injects the gtag script (`AW-18005598397`); `lib/gtag.ts` is the only thing that fires events. `trackConversion(key, value?)` is called on successful submit from exactly three places — `components/Registration.tsx` (`'registration'`), `components/Contact.tsx` (`'contact'`), `app/sponsorship/page.tsx` (`'sponsorship'`).
 
-⚠️ **All three `CONVERSION_LABELS` in `lib/gtag.ts` are currently empty strings, which is a deliberate no-op** — nothing is reported to Ads until the conversion actions are created in the Ads UI and their `send_to` labels are pasted in. `trackConversion` also no-ops during SSR and when the tag has not loaded, so it is safe to call from anywhere. Adding a new tracked form means adding a key to `CONVERSION_LABELS`, not calling `gtag` directly.
+All three `CONVERSION_LABELS` in `lib/gtag.ts` are set (registration, sponsorship, contact) and live, matching the Ads conversion actions Sign-up, Submit lead form and Contact in account 822-016-7403. An empty label would be a deliberate no-op. `trackConversion` also no-ops during SSR and when the tag has not loaded, so it is safe to call from anywhere. Adding a new tracked form means adding a key to `CONVERSION_LABELS`, not calling `gtag` directly.
+
+Zero conversions in Ads with the actions showing "Awaiting conversions" means no ad clicks led to a form submit, not that tracking is broken. Check ad traffic before touching this code.
 
 ### Stripe payment flow
 
