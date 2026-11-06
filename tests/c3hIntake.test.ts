@@ -1,14 +1,19 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
   approvedPlayers,
+  canReadIntake,
   canSetStatus,
+  intakeBadge,
+  intakeReaderKey,
   intakeSummary,
   IntakeRecord,
   memberHasAccess,
+  nextSeenAt,
   parseIntakeAction,
   recordFromInquiry,
   REGISTRATION_SEASON,
 } from '@/lib/c3h-intake';
+import { C3H_DIRECTOR_ROSTER } from '@/lib/c3h-access';
 import { mergeApprovedPlayers, PLAYER_ROSTER } from '@/lib/c3h-roster';
 import { applyIntakeAction, clearMemberCache, IntakeStore, isPortalMember, memoryStore } from '@/lib/c3h-intake-store';
 
@@ -171,5 +176,72 @@ describe('intakeSummary', () => {
 
   it('says so when nothing is waiting', () => {
     expect(intakeSummary([r('player', 'paid')]).nextStep).toBe('Nothing is waiting on a director.');
+  });
+});
+
+describe('intakeBadge', () => {
+  const r = (status: string, createdAt: string, source: 'website' | 'manual' = 'website') =>
+    ({ kind: 'player', status, createdAt, source }) as IntakeRecord;
+  const records = [
+    r('new', '2026-11-06T10:00:00.000Z'),
+    r('new', '2026-11-05T10:00:00.000Z'),
+    r('new', '2026-11-06T11:00:00.000Z', 'manual'),
+    r('contacted', '2026-11-06T12:00:00.000Z'),
+  ];
+
+  it('counts every New enquiry as waiting, for all directors', () => {
+    expect(intakeBadge(records, null).waiting).toBe(3);
+    expect(intakeBadge(records, '2026-11-07T00:00:00.000Z').waiting).toBe(3);
+  });
+
+  it('counts New website enquiries since this director last looked as unread', () => {
+    expect(intakeBadge(records, '2026-11-05T12:00:00.000Z').unread).toBe(1);
+    expect(intakeBadge(records, '2026-11-07T00:00:00.000Z').unread).toBe(0);
+  });
+
+  it('counts every New website enquiry for a director who has never opened the page', () => {
+    expect(intakeBadge(records, null).unread).toBe(2);
+  });
+});
+
+describe('nextSeenAt', () => {
+  const now = new Date('2026-11-06T12:00:00.000Z');
+
+  it('uses the page load time', () => {
+    expect(nextSeenAt('2026-11-06T11:59:00.000Z', null, now)).toBe('2026-11-06T11:59:00.000Z');
+  });
+
+  it('uses now for a missing, invalid or future time', () => {
+    expect(nextSeenAt(undefined, null, now)).toBe(now.toISOString());
+    expect(nextSeenAt('nope', null, now)).toBe(now.toISOString());
+    expect(nextSeenAt('2027-01-01T00:00:00.000Z', null, now)).toBe(now.toISOString());
+  });
+
+  it('never moves back, so an old tab cannot bring back read items', () => {
+    expect(nextSeenAt('2026-11-06T09:00:00.000Z', '2026-11-06T10:00:00.000Z', now)).toBe('2026-11-06T10:00:00.000Z');
+  });
+});
+
+describe('intake readers', () => {
+  const director = C3H_DIRECTOR_ROSTER.find(d => d.personalEmail)!;
+
+  it('lets directors in by workspace or personal address, and no one else', () => {
+    expect(canReadIntake(director.workspaceEmail)).toBe(true);
+    expect(canReadIntake(director.personalEmail)).toBe(true);
+    expect(canReadIntake('someone@example.com')).toBe(false);
+    expect(canReadIntake(null)).toBe(false);
+  });
+
+  it('gives both of a director\'s addresses one read time', () => {
+    expect(intakeReaderKey(director.personalEmail!)).toBe(director.workspaceEmail);
+    expect(intakeReaderKey(director.workspaceEmail.toUpperCase())).toBe(director.workspaceEmail);
+  });
+
+  it('stores read times per director', async () => {
+    const store = memoryStore();
+    expect(await store.getSeen('a@b.ca')).toBeNull();
+    await store.putSeen('a@b.ca', '2026-11-06T00:00:00.000Z');
+    expect(await store.getSeen('a@b.ca')).toBe('2026-11-06T00:00:00.000Z');
+    expect(await store.getSeen('c@d.ca')).toBeNull();
   });
 });

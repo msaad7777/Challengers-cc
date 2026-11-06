@@ -17,6 +17,7 @@ import {
 
 const INTAKE = 'c3h_intake';
 const MEMBERS = 'c3h_members';
+const SEEN = 'c3h_intake_seen';
 const MEMBER_CACHE_MS = 60_000;
 
 export type IntakeStore = {
@@ -27,6 +28,9 @@ export type IntakeStore = {
   getMember(email: string): Promise<PortalMember | null>;
   putMember(member: PortalMember): Promise<void>;
   deleteMember(email: string): Promise<void>;
+  // When a director last opened /c3h/intake, keyed by intakeReaderKey.
+  getSeen(director: string): Promise<string | null>;
+  putSeen(director: string, at: string): Promise<void>;
 };
 
 // Loaded only when needed, so public pages and tests don't load the Admin SDK.
@@ -61,12 +65,20 @@ async function firestoreStore(serviceAccountJson: string): Promise<IntakeStore> 
     async deleteMember(email) {
       await db.collection(MEMBERS).doc(email).delete();
     },
+    async getSeen(director) {
+      const doc = await db.collection(SEEN).doc(director).get();
+      return doc.exists ? ((doc.data() as { at?: string }).at ?? null) : null;
+    },
+    async putSeen(director, at) {
+      await db.collection(SEEN).doc(director).set({ at });
+    },
   };
 }
 
 export function memoryStore(): IntakeStore {
   const records = new Map<string, IntakeRecord>();
   const members = new Map<string, PortalMember>();
+  const seen = new Map<string, string>();
   return {
     list: async () => [...records.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
     get: async id => records.get(id) ?? null,
@@ -75,6 +87,8 @@ export function memoryStore(): IntakeStore {
     getMember: async email => members.get(email) ?? null,
     putMember: async member => void members.set(member.email, member),
     deleteMember: async email => void members.delete(email),
+    getSeen: async director => seen.get(director) ?? null,
+    putSeen: async (director, at) => void seen.set(director, at),
   };
 }
 

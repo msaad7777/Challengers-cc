@@ -57,6 +57,8 @@ Two conventions hold across `app/c3h/lib/`, and new modules are expected to foll
 
 Directors review player registrations and sponsor enquiries at `/c3h/intake`. `/api/inquiry` sends them to Google Forms and saves a copy to Firestore. Confirming a payment there writes `c3h_members/{email}`, and the NextAuth role check reads it, so that player can sign in without a code change. Access lasts through `REGISTRATION_SEASON`. Records hold personal details, so they use `firebase-admin` in server routes only (`lib/c3h-intake-store.ts`). `firestore.rules` denies both collections to the browser client through the default rule. Never read them with `lib/firebase.ts`.
 
+**Unread badge.** The Registrations & Enquiries card on `/c3h/dashboard` (`app/c3h/lib/IntakeCard.tsx`) reads counts only from `/api/c3h/intake/badge`. *Waiting* is every record still `new`, shared by all directors. *Unread* is `new` website records created since this director last opened `/c3h/intake`. That time is stored per director in `c3h_intake_seen/{workspace email}`, so a director's workspace and personal addresses share it. Like the other intake collections, the browser client cannot read it. The intake page and the card refresh every 60 seconds while the tab is visible, and when it becomes visible again. The page marks records read up to the `loadedAt` time it was served, so a record that arrives after that stays unread.
+
 `FIREBASE_SERVICE_ACCOUNT_KEY` holds the service account JSON. Without it the page says it is not set up and forms use Google Forms only. For local testing, run with `INTAKE_STORE=memory`, which production ignores. Approved players appear in the Dugout, Nets squad picker and Field Editor through `useApprovedPlayers`, which reads `/api/c3h/roster`.
 
 ## Deployment

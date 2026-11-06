@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import PublicLiveScore from '@/components/PublicLiveScore';
+import IntakeCard from '@/app/c3h/lib/IntakeCard';
 import { isC3HAdmin, isC3HBoard, isC3HDashboardViewer, isC3HDirector, isC3HOfficer, isC3HGovernanceReader } from '@/lib/c3h-access';
 
 export default function DashboardPage() {
@@ -254,20 +255,8 @@ export default function DashboardPage() {
               </a>
             )}
 
-            {/* Registrations and sponsor enquiries — directors */}
-            {isDashboardViewer && (
-              <a href="/c3h/intake" className="glass rounded-2xl p-6 border-2 border-accent-500/20 hover:border-accent-500/50 transition-all group">
-                <div className="text-3xl mb-3">📥</div>
-                <h2 className="text-xl font-bold text-white mb-1">Registrations &amp; Enquiries</h2>
-                <p className="text-accent-400 text-xs font-medium mb-3">Directors · New players and sponsors</p>
-                <p className="text-gray-400 text-sm mb-4">
-                  Follow up new player registrations and sponsor enquiries, confirm payments and open portal access.
-                </p>
-                <span className="text-xs px-3 py-1 rounded-full bg-accent-500/20 text-accent-400 border border-accent-500/30">
-                  Open
-                </span>
-              </a>
-            )}
+            {/* Registrations and sponsor enquiries — directors, with an unread badge */}
+            {isDashboardViewer && <IntakeCard />}
 
             {/* Sponsor Outreach — directors, read-only */}
             {isDashboardViewer && (

@@ -25,6 +25,17 @@ const DETAIL_LABELS: Record<string, string> = {
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' });
 
+const REFRESH_MS = 60_000;
+
+// Clears this director's unread badge up to the time the shown list was loaded.
+function markRead(loadedAt?: string) {
+  fetch('/api/c3h/intake/badge', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ at: loadedAt }),
+  }).catch(() => {});
+}
+
 async function postAction(body: object): Promise<IntakeRecord> {
   const res = await fetch('/api/c3h/intake', {
     method: 'POST',
@@ -50,17 +61,43 @@ export default function IntakePage() {
     if (status === 'unauthenticated') router.push('/c3h/login');
   }, [status, router]);
 
+  // Loads on open, then every minute while the tab is visible and whenever the
+  // director comes back to it, so new enquiries appear without a reload. Each
+  // load marks what it showed as read for this director. A failed background
+  // refresh keeps the list on screen rather than replacing it with an error.
   useEffect(() => {
     if (!allowed) return;
-    fetch('/api/c3h/intake', { cache: 'no-store' })
-      .then(res => res.json())
-      .then(data => {
+    let cancelled = false;
+    let loaded = false;
+    const load = async () => {
+      try {
+        const res = await fetch('/api/c3h/intake', { cache: 'no-store' });
+        const data = await res.json();
+        if (cancelled) return;
         if (!data.configured) return setState('unconfigured');
-        if (data.error) return setState('error');
+        if (data.error) {
+          if (!loaded) setState('error');
+          return;
+        }
         setRecords(data.records);
         setState('ready');
-      })
-      .catch(() => setState('error'));
+        loaded = true;
+        if (document.visibilityState === 'visible') markRead(data.loadedAt);
+      } catch {
+        if (!cancelled && !loaded) setState('error');
+      }
+    };
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') load();
+    };
+    load();
+    const timer = setInterval(onVisible, REFRESH_MS);
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, [allowed]);
 
   const replace = (record: IntakeRecord) =>
