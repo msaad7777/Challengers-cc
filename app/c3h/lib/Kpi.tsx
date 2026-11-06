@@ -47,7 +47,7 @@ export function Kpi({ label, value, sub, status, statusLabel, hero }: {
   return (
     <div className="rounded-xl border border-white/10 bg-black/30 p-4 flex flex-col gap-1 min-w-0">
       <span className="text-[11px] uppercase tracking-wider text-gray-400">{label}</span>
-      <div className={`${hero ? 'text-3xl sm:text-4xl' : 'text-2xl'} font-bold text-white tabular-nums truncate`}>{value}</div>
+      <div className={`${hero ? 'text-3xl sm:text-4xl' : 'text-2xl'} font-bold text-white tabular-nums leading-tight break-words`}>{value}</div>
       {sub && <div className="text-xs text-gray-400">{sub}</div>}
       {status && <div className="mt-1"><StatusPill status={status} label={statusLabel} /></div>}
     </div>
