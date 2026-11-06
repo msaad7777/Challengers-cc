@@ -1,5 +1,6 @@
 // Sponsor enquiries and player registrations that directors review in C3H.
 // Pure so it can be unit-tested. Storage is in c3h-intake-store.ts.
+import { isC3HAdmin, resolveDirectorWorkspaceEmail } from '@/lib/c3h-access';
 import { ACTIVE_SEASON } from '@/lib/c3h-seasons';
 
 // Registrations open now are for this season. A member approved for it keeps
@@ -89,6 +90,35 @@ export function intakeSummary(records: IntakeRecord[]) {
     sponsorsContacted: count('sponsor', 'contacted'),
     nextStep: next.length ? `Next: ${next.join(', ')}.` : 'Nothing is waiting on a director.',
   };
+}
+
+// Who may read intake records: admins and directors, by workspace or personal address.
+export const canReadIntake = (email?: string | null): boolean =>
+  isC3HAdmin(email) || resolveDirectorWorkspaceEmail(email) !== null;
+
+// One key per director, so their workspace and personal addresses share one
+// "last opened" time.
+export const intakeReaderKey = (email: string): string =>
+  resolveDirectorWorkspaceEmail(email) ?? normalizeEmail(email);
+
+// The dashboard badge. `waiting` is every enquiry still marked New, the same
+// for all directors, and drops when anyone follows up. `unread` is what reached
+// the website since this director last opened the page and is still New.
+export function intakeBadge(records: IntakeRecord[], lastSeen: string | null) {
+  const fresh = records.filter(record => record.status === 'new');
+  return {
+    waiting: fresh.length,
+    unread: fresh.filter(record => record.source === 'website' && (!lastSeen || record.createdAt > lastSeen)).length,
+  };
+}
+
+// The "last opened" time to store: the page's load time if it is valid and not
+// in the future, otherwise now. Never earlier than what is stored, so an old
+// tab cannot bring back items already read in a newer one.
+export function nextSeenAt(value: unknown, previous: string | null, now: Date = new Date()): string {
+  const at = typeof value === 'string' ? new Date(value) : null;
+  const candidate = at && !Number.isNaN(at.getTime()) && at <= now ? at.toISOString() : now.toISOString();
+  return previous && previous > candidate ? previous : candidate;
 }
 
 const text = (value: unknown): string | null => {
